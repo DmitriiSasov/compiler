@@ -15,13 +15,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="lexer.flex.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
     <Flex Include="lexer.l">
       <Filter>Исходные файлы</Filter>
     </Flex>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="lexer.flex.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

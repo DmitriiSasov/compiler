@@ -17,10 +17,11 @@ BIN_DIGIT         [01]
 %{ 	int numInt;
 long numLong;
 float numFloat;
-double numDouble'
+double numDouble;
 char commentText[1000];
 char str[1000];
-char tmpChar
+char tmpChar;
+char * tmp = 0;
 %}
 
 file			{ printf("Found keyword - FILE\n"); }
@@ -165,7 +166,7 @@ ByteArray       {printf("Found datatype - BYTEARRAY");}
 BooleanArray    {printf("Found datatype - BOOLEANARRAY");}
 
                     
-"//"				{   commmentText[0] = 0; BEGIN(SLCOMMENT);}
+"//"				{   commentText[0] = 0; BEGIN(SLCOMMENT);}
 <SLCOMMENT>[^\n]+	{   strcat(commentText, yytext);}
 <SLCOMMENT>\n		{   printf("Found comment - %s\n", commentText);
 					        BEGIN(INITIAL);}
@@ -176,47 +177,52 @@ BooleanArray    {printf("Found datatype - BOOLEANARRAY");}
 <MLCOMMENT>\*+\/	{   printf("Found comment - %s\n", commentText);
 					        BEGIN(INITIAL); }
 
-([1-9](_?{DIGIT})*|0)L?      {  remove_all_inputs_of_symbol( yytext, tmp, '_');
-                                if( tmp[strlen(tmp)-1] == 'L' || tmp[strlen(tmp)-1] == 'l'){
-                                    tmp[strlen(tmp)-1] = 0;
-                                    numLong = atol(tmp);
-                                    printf("Found decimal number - %ld\n", numLong);
-                                } else {
-                                    numInt = atoi(tmp);
-                                    printf("Found decimal number - %d\n", numInt);
-                                }
+[1-9](_*{DIGIT})*|0       {  remove_all_inputs_of_symbol( yytext, tmp, '_');
+                                numInt = atoi(tmp);
+                                printf("Found decimal number - %d\n", numInt);
                              }
 
-0[xX]{HEX_DIGIT}(_?{HEX_DIGIT})*    { remove_all_inputs_of_symbol( yytext + 2, tmp,'_');
+([1-9](_*{DIGIT})*|0)[lL]    {  remove_all_inputs_of_symbol( yytext, tmp, '_');
+                                tmp[strlen(tmp)-1] = 0;
+                                numLong = atol(tmp);
+                                printf("Found decimal number - %ld\n", numLong);
+                             }
+
+([1-9](_*{DIGIT})*|0)_+       {  printf("Illegal underscore", yytext);}
+([1-9](_*{DIGIT})*|0)_+[lL]       {  printf("Illegal underscore", yytext);}
+
+
+0[xX]{HEX_DIGIT}(_*{HEX_DIGIT})*    { remove_all_inputs_of_symbol( yytext + 2, tmp,'_');
                                       sscanf(tmp,"%x",&numInt);
                                       printf("Found hex number - %d\n", numInt);
                                     }
 
-
-(0|[1-9](_?{DIGIT})*)(\.{DIGIT}(_?{DIGIT})*)?([eE][+-]?[{DIGIT}](_?{DIGIT})*)?[fF]? { 
+(0|[1-9](_*{DIGIT})*)(\.{DIGIT}(_*{DIGIT})*)?([eE][+-]?[{DIGIT}](_*{DIGIT})*)? { 
                                     remove_all_inputs_of_symbol( yytext, tmp, '_'); 
-                                    if( tmp[strlen(tmp)-1] == 'F' || tmp[strlen(tmp)-1] == 'f'){
-                                        tmp[strlen(tmp)-1] = 0;
-                                        numFloat = (float)atof(tmp);
-                                        printf("Found decimal number - %.2f\n", numFloat);
-                                    } else {
-                                        numDouble = atof(tmp);
-                                        printf("Found decimal number - %.2f\n", numDouble);
-                                    }
+                                    numDouble = atof(tmp);
+                                    printf("Found decimal number - %.2f\n", numDouble);                                    
 }
 
-0[bB]{BIN_DIGIT}(_?{BIN_DIGIT})*    { remove_all_inputs_of_symbol( yytext + 2, tmp, '_');
+(0|[1-9](_*{DIGIT})*)(\.{DIGIT}(_*{DIGIT})*)?([eE][+-]?[{DIGIT}](_*{DIGIT})*)?[fF] { 
+                                    remove_all_inputs_of_symbol( yytext, tmp, '_'); 
+                                    tmp[strlen(tmp)-1] = 0;
+                                    numFloat = (float)atof(tmp);
+                                    printf("Found decimal number - %.2f\n", numFloat);
+}
+
+0[bB]{BIN_DIGIT}(_*{BIN_DIGIT})*    { remove_all_inputs_of_symbol( yytext + 2, tmp, '_');
                                       tmp = strchr(tmp, 1);
                                       numInt = bin_from_str_to_dec(tmp);
                                       printf("Found binary number - %d\n", numInt); 
                                     }
 
-true { printf("Found boolean literal - TRUE");
-false { printf("Found boolean literal - FALSE");
+true { printf("Found boolean literal - TRUE"); }
+false { printf("Found boolean literal - FALSE"); }
 
-      \'                { tmpChar[0] = 0 ; BEGIN(CHAR); }
+      "\'"               { tmpChar = 0 ; BEGIN(CHAR); }
 <CHAR>[^\n\\]           { tmpChar = yytext[0]; }
-<CHAR>\\u{HEX_DIGIT}{4} { // Преобразовать юникод строку в юникод символ}
+<CHAR>\\u{HEX_DIGIT}{4} { // Преобразовать юникод строку в юникод символ
+                        }
 <CHAR>\\t               { tmpChar = '\t'; }
 <CHAR>\\b               { tmpChar = '\b'; }
 <CHAR>\\r               { tmpChar = '\r'; }
@@ -226,9 +232,9 @@ false { printf("Found boolean literal - FALSE");
 <CHAR>\\\\              { tmpChar = '\\'; }
 <CHAR>\\\$              { tmpChar = '\$'; }
 <CHAR>\'                { printf("Found char literal - %c\n", tmpChar);
-                            BEGIN(INITIAL}
+                            BEGIN(INITIAL);}
 
-[a-zA-Z_]\w* { printf("Found identificator - %s\n", yytext)}
+[a-zA-Z_]\w* { printf("Found identificator - %s\n", yytext);}
 
 
 
