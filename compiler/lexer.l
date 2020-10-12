@@ -219,7 +219,7 @@ BooleanArray    {printf("Found datatype - BOOLEANARRAY");}
 true { printf("Found boolean literal - TRUE"); }
 false { printf("Found boolean literal - FALSE"); }
 
-      "\'"               { tmpChar = 0 ; BEGIN(CHAR); }
+      \'              { tmpChar = 0 ; BEGIN(CHAR); }
 <CHAR>[^\n\\]           { tmpChar = yytext[0]; }
 <CHAR>\\u{HEX_DIGIT}{4} { // Преобразовать юникод строку в юникод символ
                         }
@@ -233,6 +233,33 @@ false { printf("Found boolean literal - FALSE"); }
 <CHAR>\\\$              { tmpChar = '\$'; }
 <CHAR>\'                { printf("Found char literal - %c\n", tmpChar);
                             BEGIN(INITIAL);}
+
+\"                  {   
+                        str[0] = 0;
+                        BEGIN(STRING);
+                    }
+<STRING>[^\\\"\n]+  { strcat(str, yytext); }
+<STRING>\\n         { strcat(str, "\n"); }
+<STRING>\\\\        { strcat(str, "\\"); }
+<STRING>\\\"        { strcat(str, "\""); }
+<STRING>\\t         { strcat(str, "\t"); }
+<STRING>\\b         { strcat(str, "\b"); }
+<STRING>\\r         { strcat(str, "\r"); }
+<STRING>\\t         { strcat(str, "\$"); }
+<STRING>\\\'        { strcat(str, "\'"); }
+<STRING>\"          { 
+                        printf("Found string literal %s", str);
+                        BEGIN(INITIAL);
+                    }
+<STRING>\n          {
+                        printf("ERROR in string %s, expected \"", yytext);
+                    }
+<STRING>\\\n        {//Делать ничего не нужно
+                    ;}
+
+
+
+\n { printf("Found new line"); }
 
 [a-zA-Z_]\w* { printf("Found identificator - %s\n", yytext);}
 
