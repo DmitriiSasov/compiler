@@ -188,20 +188,21 @@ BooleanArray    {printf("Found datatype - BOOLEANARRAY");}
                                 printf("Found decimal number - %ld\n", numLong);
                              }
 
-([1-9](_*{DIGIT})*|0)_+       {  printf("Illegal underscore", yytext);}
-([1-9](_*{DIGIT})*|0)_+[lL]       {  printf("Illegal underscore", yytext);}
+([1-9](_*{DIGIT})*|0)_+|([1-9](_*{DIGIT})*|0)_*[lL]_+ {  printf("Illegal underscore", yytext);}
 
 
 0[xX]{HEX_DIGIT}(_*{HEX_DIGIT})*    { remove_all_inputs_of_symbol( yytext + 2, tmp,'_');
                                       sscanf(tmp,"%x",&numInt);
                                       printf("Found hex number - %d\n", numInt);
                                     }
+0[xX]{HEX_DIGIT}(_*{HEX_DIGIT})*_+  {  printf("Illegal underscore", yytext);}
 
 (0|[1-9](_*{DIGIT})*)(\.{DIGIT}(_*{DIGIT})*)?([eE][+-]?[{DIGIT}](_*{DIGIT})*)? { 
                                     remove_all_inputs_of_symbol( yytext, tmp, '_'); 
                                     numDouble = atof(tmp);
                                     printf("Found decimal number - %.2f\n", numDouble);                                    
-}
+                                    }
+
 
 (0|[1-9](_*{DIGIT})*)(\.{DIGIT}(_*{DIGIT})*)?([eE][+-]?[{DIGIT}](_*{DIGIT})*)?[fF] { 
                                     remove_all_inputs_of_symbol( yytext, tmp, '_'); 
@@ -215,6 +216,7 @@ BooleanArray    {printf("Found datatype - BOOLEANARRAY");}
                                       numInt = bin_from_str_to_dec(tmp);
                                       printf("Found binary number - %d\n", numInt); 
                                     }
+0[bB]{BIN_DIGIT}(_*{BIN_DIGIT})*_+  {  printf("Illegal underscore", yytext);}
 
 true { printf("Found boolean literal - TRUE"); }
 false { printf("Found boolean literal - FALSE"); }
@@ -261,7 +263,8 @@ false { printf("Found boolean literal - FALSE"); }
 
 \n { printf("Found new line"); }
 
-[a-zA-Z_]\w* { printf("Found identificator - %s\n", yytext);}
+[a-zA-Z_]\w*|\`[^\`]+\' { printf("Found identificator - %s\n", yytext);}
+
 
 
 
