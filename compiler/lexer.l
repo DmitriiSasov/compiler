@@ -6,6 +6,7 @@
     #include <stdio.h>
     void remove_all_inputs_of_symbol(const char * str, char * result, char deleted_symbol);
     int bin_from_str_to_dec(const char * str);
+    void reportAboutErrorInSimpleTemplate(bool* isSimpleTemplate, const char* str);
 %}
 
 %x MLCOMMENT SLCOMMENT STRING CHAR
@@ -22,79 +23,366 @@ char commentText[1000];
 char str[1000];
 char tmpChar;
 char * tmp = 0;
+bool isSimpleTemplate = false; //Относится ли текущая часть строки к простому шаблону $varname
+int complexTemplateNestingLevel = 0; //Уровень вложенности для сложных шаблонов ${}
+
 %}
 
-file			{ printf("Found keyword - FILE\n"); }
-field			{ printf("Found keyword - FIELD\n"); }
-property		{ printf("Found keyword - PROPERTY\n"); }
-get				{ printf("Found keyword - GET\n"); }
-set				{ printf("Found keyword - SET\n"); }
-receiver		{ printf("Found keyword - RECEIVER\n"); }
-param			{ printf("Found keyword - PARAM\n"); }
-setparam		{ printf("Found keyword - SETPARAM\n"); }
-delegate		{ printf("Found keyword - DELEGATE\n"); }
-package			{ printf("Found keyword - PACKAGE\n"); }
-import			{ printf("Found keyword - IMPORT\n"); }
-class			{ printf("Found keyword - CLASS\n"); }
-interface		{ printf("Found keyword - INTERFACE\n"); }
-fun				{ printf("Found keyword - FUN\n"); }
-object			{ printf("Found keyword - OBJECT\n"); }
-val				{ printf("Found keyword - VAL\n"); }
-var				{ printf("Found keyword - VAR\n"); }
-typealias		{ printf("Found keyword - TYPE_ALIAS\n"); }
-constructor		{ printf("Found keyword - CONSTRUCTOR\n"); }
-by				{ printf("Found keyword - BY\n"); }
-companion		{ printf("Found keyword - COMPANION\n"); }
-init			{ printf("Found keyword - INIT\n"); }
-this			{ printf("Found keyword - THIS\n"); }
-super			{ printf("Found keyword - SUPER\n"); }
-typeof			{ printf("Found keyword - TYPEOF\n"); }
-where			{ printf("Found keyword - WHERE\n"); }
-if				{ printf("Found keyword - IF\n"); }
-else			{ printf("Found keyword - ELSE\n"); }
-when			{ printf("Found keyword - WHEN\n"); }
-try				{ printf("Found keyword - TRY\n"); }
-catch			{ printf("Found keyword - CATCH\n"); }
-finally			{ printf("Found keyword - FINALLY\n"); }
-for				{ printf("Found keyword - FOR\n"); }
-do				{ printf("Found keyword - DO\n"); }
-while			{ printf("Found keyword - WHILE\n"); }
-throw			{ printf("Found keyword - THROW\n"); }
-return			{ printf("Found keyword - RETURN\n"); }
-continue		{ printf("Found keyword - COUNTINUE\n"); }
-break			{ printf("Found keyword - BREAK\n"); }
-as				{ printf("Found keyword - AS\n"); }
-is				{ printf("Found keyword - IS\n"); }
-in				{ printf("Found keyword - IN\n"); }
-out				{ printf("Found keyword - OUT\n"); }
-dynamic			{ printf("Found keyword - DYNAMIC\n"); }
-public			{ printf("Found keyword - PUBLIC\n"); }
-private			{ printf("Found keyword - PRIVATE\n"); }
-protected		{ printf("Found keyword - PROTECTED\n"); }
-internal		{ printf("Found keyword - INTERNAL\n"); }
-enum			{ printf("Found keyword - ENUM\n"); }
-sealed			{ printf("Found keyword - SEALED\n"); }
-annotation		{ printf("Found keyword - ANNOTATION\n"); }
-data			{ printf("Found keyword - DATA\n"); }
-inner			{ printf("Found keyword - INNER\n"); }
-tailrec			{ printf("Found keyword - TAILREC\n"); }
-operator		{ printf("Found keyword - OPERATOR\n"); }
-inline			{ printf("Found keyword - INLINE\n"); }
-infix			{ printf("Found keyword - INFIX\n"); }
-external		{ printf("Found keyword - EXTERNAL\n"); }
-suspend			{ printf("Found keyword - SUSPEND\n"); }
-override		{ printf("Found keyword - OVERRIDE\n"); }
-abstract		{ printf("Found keyword - ABSTRACT\n"); }
-final			{ printf("Found keyword - FINAL\n"); }
-open			{ printf("Found keyword - OPEN\n"); }
-const			{ printf("Found keyword - CONST\n"); }
-lateinit		{ printf("Found keyword - LATEINIT\n"); }
-vararg			{ printf("Found keyword - VARARG\n"); }
-noinline		{ printf("Found keyword - NOINLINE\n"); }
-crossinline		{ printf("Found keyword - CROSSINLINE\n"); }
-reified			{ printf("Found keyword - REIFIED\n"); }
-expect			{ printf("Found keyword - EXPECT\n"); }
-actual			{ printf("Found keyword - ACTUAL\n"); }
+file			{ 
+                  printf("Found keyword - FILE\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword file cannot be used as an identifier");
+                }
+field			{  
+                  printf("Found keyword - FIELD\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword field cannot be used as an identifier");
+                }
+property		{  
+                  printf("Found keyword - PROPERTY\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword property cannot be used as an identifier");
+                }
+get				{ 
+                  printf("Found keyword - GET\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword get cannot be used as an identifier");
+                }
+set				{  
+                  printf("Found keyword - SET\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword set cannot be used as an identifier");
+                }
+receiver		{  
+                  printf("Found keyword - RECEIVER\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword receiver cannot be used as an identifier");
+                }
+param			{  
+                  printf("Found keyword - PARAM\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword param cannot be used as an identifier");
+                }
+setparam		{  
+                  printf("Found keyword - SETPARAM\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword setparam cannot be used as an identifier");
+                }
+delegate		{  
+                  printf("Found keyword - DELEGATE\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword delegate cannot be used as an identifier");
+                }
+package			{  
+                  printf("Found keyword - PACKAGE\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword field cannot be used as an identifier");package
+                }
+import			{  
+                  printf("Found keyword - IMPORT\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword import cannot be used as an identifier");
+                }
+class			{  
+                  printf("Found keyword - CLASS\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword class cannot be used as an identifier");
+                }
+interface		{ 
+                  printf("Found keyword - INTERFACE\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword interface cannot be used as an identifier");
+                }
+fun				{  
+                  printf("Found keyword - FUN\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword fun cannot be used as an identifier");
+                }
+object			{  
+                  printf("Found keyword - OBJECT\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword object cannot be used as an identifier");
+                }
+val				{  
+                  printf("Found keyword - VAL\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword val cannot be used as an identifier");
+                }
+var				{  
+                  printf("Found keyword - VAR\n");
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword var cannot be used as an identifier");
+                }
+typealias		{  
+                  printf("Found keyword - TYPE_ALIAS\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword typealias cannot be used as an identifier");
+                }
+constructor		{  
+                  printf("Found keyword - CONSTRUCTOR\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword constructor cannot be used as an identifier");
+                }
+by				{  
+                  printf("Found keyword - BY\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword by cannot be used as an identifier");
+                }
+companion		{  
+                  printf("Found keyword - COMPANION\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword companion cannot be used as an identifier");
+                }
+init			{  
+                  printf("Found keyword - INIT\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword init cannot be used as an identifier");
+                }
+this			{  
+                  printf("Found keyword - THIS\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword this cannot be used as an identifier");
+                }
+super			{  
+                  printf("Found keyword - SUPER\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword super cannot be used as an identifier");
+                }
+typeof			{  
+                  printf("Found keyword - TYPEOF\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword typeof cannot be used as an identifier");
+                }
+where			{  
+                  printf("Found keyword - WHERE\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword where cannot be used as an identifier");
+                }
+if				{  
+                  printf("Found keyword - IF\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword if cannot be used as an identifier");
+                }
+else			{  
+                  printf("Found keyword - ELSE\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword else cannot be used as an identifier");
+                }
+when			{  
+                  printf("Found keyword - WHEN\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword when cannot be used as an identifier");
+                }
+try				{  
+                  printf("Found keyword - TRY\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword try cannot be used as an identifier");
+                }
+catch			{  
+                  printf("Found keyword - CATCH\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword catch cannot be used as an identifier");
+                }
+finally			{  
+                  printf("Found keyword - FINALLY\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword finally cannot be used as an identifier");
+                }
+for				{  
+                  printf("Found keyword - FOR\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword for cannot be used as an identifier");
+                }
+do				{  
+                  printf("Found keyword - DO\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword do cannot be used as an identifier");
+                }
+while			{  
+                  printf("Found keyword - WHILE\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword while cannot be used as an identifier");
+                }
+throw			{  
+                  printf("Found keyword - THROW\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword throw cannot be used as an identifier");
+                }
+return			{  
+                  printf("Found keyword - RETURN\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword return cannot be used as an identifier");
+                }
+continue		{  
+                  printf("Found keyword - COUNTINUE\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword continue cannot be used as an identifier");
+                }
+break			{  
+                  printf("Found keyword - BREAK\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword break cannot be used as an identifier");
+                }
+as				{  
+                  printf("Found keyword - AS\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword as cannot be used as an identifier");
+                }
+is				{  
+                  printf("Found keyword - IS\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword is cannot be used as an identifier");
+                }
+in				{  
+                  printf("Found keyword - IN\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword in cannot be used as an identifier");
+                }
+out				{  
+                  printf("Found keyword - OUT\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword out cannot be used as an identifier");
+                }
+dynamic			{  
+                  printf("Found keyword - DYNAMIC\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword dynamic cannot be used as an identifier");
+                }
+public			{  
+                  printf("Found keyword - PUBLIC\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword public cannot be used as an identifier");
+                }
+private			{  
+                  printf("Found keyword - PRIVATE\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword private cannot be used as an identifier");
+                }
+protected		{  
+                  printf("Found keyword - PROTECTED\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword protected cannot be used as an identifier");
+                }
+internal		{  
+                  printf("Found keyword - INTERNAL\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword internal cannot be used as an identifier");
+                }
+enum			{  
+                  printf("Found keyword - ENUM\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword enum cannot be used as an identifier");
+                }
+sealed			{  
+                  printf("Found keyword - SEALED\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword sealed cannot be used as an identifier");
+                }
+annotation		{  
+                  printf("Found keyword - ANNOTATION\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword annotation cannot be used as an identifier");
+                }
+data			{  
+                  printf("Found keyword - DATA\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword data cannot be used as an identifier");
+                }
+inner			{  
+                  printf("Found keyword - INNER\n");
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword inner cannot be used as an identifier");
+                }
+tailrec			{  
+                  printf("Found keyword - TAILREC\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword tailrec cannot be used as an identifier");
+                }
+operator		{  
+                  printf("Found keyword - OPERATOR\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword operator cannot be used as an identifier");
+                }
+inline			{  
+                  printf("Found keyword - INLINE\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword inline cannot be used as an identifier");
+                }
+infix			{  
+                  printf("Found keyword - INFIX\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword infix cannot be used as an identifier");
+                }
+external		{  
+                  printf("Found keyword - EXTERNAL\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword external cannot be used as an identifier");
+                }
+suspend			{  
+                  printf("Found keyword - SUSPEND\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword suspend cannot be used as an identifier");
+                }
+override		{  
+                  printf("Found keyword - OVERRIDE\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword override cannot be used as an identifier");
+                }
+abstract		{  
+                  printf("Found keyword - ABSTRACT\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword abstract cannot be used as an identifier");
+                }
+final			{  
+                  printf("Found keyword - FINAL\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword final cannot be used as an identifier");
+                }
+open			{  
+                  printf("Found keyword - OPEN\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword open cannot be used as an identifier");
+                }
+const			{  
+                  printf("Found keyword - CONST\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword const cannot be used as an identifier");
+                }
+lateinit		{  
+                  printf("Found keyword - LATEINIT\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword lateinit cannot be used as an identifier");
+                }
+vararg			{  
+                  printf("Found keyword - VARARG\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword vararg cannot be used as an identifier");
+                }
+noinline		{  
+                  printf("Found keyword - NOINLINE\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword noinline cannot be used as an identifier");
+                }
+crossinline		{  
+                  printf("Found keyword - CROSSINLINE\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword crossinline cannot be used as an identifier");
+                }
+reified			{  
+                  printf("Found keyword - REIFIED\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword reified cannot be used as an identifier");
+                }
+expect			{ 
+                  printf("Found keyword - EXPECT\n");
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword expect cannot be used as an identifier");
+                }
+actual			{  
+                  printf("Found keyword - ACTUAL\n"); 
+                  reportAboutErrorInSimpleTemplate(&isSimpleTemplate, 
+                  "Keyword actual cannot be used as an identifier");
+                }
 
 \.\.\.		{printf("Found operator - \.\.\. RESERVED");}
 \.			{printf("Found operator - \. DOT");}
@@ -104,7 +392,19 @@ actual			{ printf("Found keyword - ACTUAL\n"); }
 \[			{printf("Found operator - \[ LSQUARE");}
 \]			{printf("Found operator - \] RSQUARE");}
 \{			{printf("Found operator - \{ LCURL");}
-\}			{printf("Found operator - \} RCURL");}
+\}			{
+                if (complexTemplateNestingLevel > 0) 
+                {
+                    printf("Found operator - + ADD\n");
+                    str[0] = 0;
+                    --complexTemplateNestingLevel;
+                    BEGIN(STRING);
+                }
+                else 
+                {
+                    printf("Found operator - \} RCURL");                
+                }                
+            }
 \*			{printf("Found operator - \* MULT");}
 \%			{printf("Found operator - \% MOD");}
 \/			{printf("Found operator - \\ DIV");}
@@ -245,7 +545,7 @@ false { printf("Found boolean literal - FALSE"); }
 <STRING>\\t         { strcat(str, "\t"); }
 <STRING>\\b         { strcat(str, "\b"); }
 <STRING>\\r         { strcat(str, "\r"); }
-<STRING>\\t         { strcat(str, "\$"); }
+<STRING>\\$         { strcat(str, "\$"); }
 <STRING>\\\'        { strcat(str, "\'"); }
 <STRING>\"          { 
                         printf("Found string literal %s", str);
@@ -256,16 +556,45 @@ false { printf("Found boolean literal - FALSE"); }
                     }
 <STRING>\\\n        {//Делать ничего не нужно
                     ;}
+<STRING>\$[a-zA-Z_] {
+                            printf("Found string literal %s", str);
+                            printf("Found operator - \+ ADD");
+                            unput(yytext[1]);
+                            isSimpleTemplate = true;
+                            BEGIN(INITIAL)                            
+                    }
 
-
+<STRING>\$\{        {
+                        printf("Found string literal %s", str);
+                        printf("Found operator - \+ ADD");
+                        ++complexTemplateNestingLevel;
+                        BEGIN(INITIAL)
+                    }
 
 \n { printf("Found new line"); }
 
-[a-zA-Z_]\w* { printf("Found identificator - %s\n", yytext);}
+[a-zA-Z_]\w* { printf("Found identificator - %s\n", yytext);
+               if (isSimpleTemplate) 
+               {
+                    printf("Found operator - + ADD\n");
+                    str[0] = 0;
+                    isSimpleTemplate = false;
+                    BEGIN(STRING);                    
+               } 
+             }
 
 
 
 %%
+
+void reportAboutErrorInSimpleTemplate(bool* isSimpleTemplate, const char* str)
+{
+    if (*isSimpleTemplate)
+    {
+        printf(str);
+        *isSimpleTemplate = false;
+    }
+}
 
 void remove_all_inputs_of_symbol(const char * str, char * result, char deleted_symbol) {
 	int j = 0;	
