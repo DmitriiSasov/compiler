@@ -374,8 +374,8 @@ static void yynoreturn yy_fatal_error ( const char* msg  );
 	(yy_hold_char) = *yy_cp; \
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
-#define YY_NUM_RULES 191
-#define YY_END_OF_BUFFER 192
+#define YY_NUM_RULES 192
+#define YY_END_OF_BUFFER 193
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -386,28 +386,28 @@ struct yy_trans_info
 static const flex_int16_t yy_accept[549] =
     {   0,
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,  192,  191,  184,   90,  169,  104,   82,  191,
+        0,    0,  193,  192,  185,   90,  170,  104,   82,  192,
       157,   75,   76,   81,   84,   74,   85,   73,   83,  146,
-      146,   91,   92,  106,   93,  107,  105,  185,  185,  185,
-      185,  185,  185,  185,  185,  185,   77,   78,  186,  185,
-      185,  185,  185,  185,  185,  185,  185,  185,  185,  185,
-      185,  185,  185,  185,  185,  185,  185,  185,   79,  191,
-       80,  143,  144,  140,  141,  170,  180,  179,  170,  191,
-      158,  158,  191,  187,  188,  189,  190,  110,   98,   88,
+      146,   91,   92,  106,   93,  107,  105,  186,  186,  186,
+      186,  186,  186,  186,  186,  186,   77,   78,  187,  186,
+      186,  186,  186,  186,  186,  186,  186,  186,  186,  186,
+      186,  186,  186,  186,  186,  186,  186,  186,   79,  192,
+       80,  143,  144,  140,  141,  171,  169,  180,  171,  192,
+      158,  158,  192,  188,  189,  190,  191,  110,   98,   88,
        96,   86,   94,   87,   95,   99,  101,  142,  139,   97,
 
         0,    0,    0,  152,  147,    0,  148,  146,  148,  102,
-      103,  108,  113,  100,  109,    0,  185,    0,    0,    0,
+      103,  108,  113,  100,  109,    0,  186,    0,    0,    0,
         0,    0,    0,    0,    0,    0,    0,    0,    0,   40,
         0,   20,    0,    0,    0,    0,    0,    0,   34,    0,
         0,    0,    0,    0,    0,    0,    0,    0,   27,    0,
        42,   41,    0,    0,    0,    0,  119,    0,    0,    0,
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
         0,    0,    0,    0,   89,  143,  144,  144,  145,  140,
-      170,  170,  170,  177,  173,  178,  172,  175,  171,  176,
-      174,  165,  167,  164,  166,  161,  163,  162,  160,    0,
+      171,  171,  171,  178,  174,  179,  173,  176,  172,  177,
+      175,  165,  167,  164,  166,  161,  163,  162,  160,    0,
 
-      187,  111,   72,  151,  153,    0,  151,  148,  149,    0,
+      188,  111,   72,  151,  153,    0,  151,  148,  149,    0,
       114,    0,    0,    0,    0,    0,    0,  122,    0,    0,
         0,    0,    0,  118,    0,  112,    0,    0,    0,    0,
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
@@ -824,7 +824,7 @@ static const flex_int16_t yy_chk[876] =
     } ;
 
 /* Table of booleans, true if rule could match eol. */
-static const flex_int32_t yy_rule_can_match_eol[192] =
+static const flex_int32_t yy_rule_can_match_eol[193] =
     {   0,
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
@@ -834,8 +834,8 @@ static const flex_int32_t yy_rule_can_match_eol[192] =
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
     0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-    1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0,     };
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0,     };
 
 static yy_state_type yy_last_accepting_state;
 static char *yy_last_accepting_cpos;
@@ -2180,12 +2180,18 @@ YY_RULE_SETUP
 case 145:
 YY_RULE_SETUP
 #line 478 "lexer.l"
-{   printf("Found comment - %s\n", commentText);
-					        BEGIN(INITIAL); }
+{   
+                        printf("Found comment - %s\n", commentText);
+					    BEGIN(INITIAL); 
+                    }
+	YY_BREAK
+case YY_STATE_EOF(MLCOMMENT):
+#line 482 "lexer.l"
+{ printf("ERROR End of file found after \"%s\", but expected */", commentText); }
 	YY_BREAK
 case 146:
 YY_RULE_SETUP
-#line 481 "lexer.l"
+#line 485 "lexer.l"
 {  remove_all_inputs_of_symbol( yytext, tmp, '_');
                                 numInt = atoi(tmp);
                                 printf("Found decimal number - %d\n", numInt);
@@ -2193,7 +2199,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 147:
 YY_RULE_SETUP
-#line 486 "lexer.l"
+#line 490 "lexer.l"
 {  remove_all_inputs_of_symbol( yytext, tmp, '_');
                                 tmp[strlen(tmp)-1] = 0;
                                 numLong = atol(tmp);
@@ -2202,12 +2208,12 @@ YY_RULE_SETUP
 	YY_BREAK
 case 148:
 YY_RULE_SETUP
-#line 492 "lexer.l"
+#line 496 "lexer.l"
 {  printf("Illegal underscore", yytext);}
 	YY_BREAK
 case 149:
 YY_RULE_SETUP
-#line 495 "lexer.l"
+#line 499 "lexer.l"
 { remove_all_inputs_of_symbol( yytext + 2, tmp,'_');
                                       sscanf(tmp,"%x",&numInt);
                                       printf("Found hex number - %d\n", numInt);
@@ -2215,12 +2221,12 @@ YY_RULE_SETUP
 	YY_BREAK
 case 150:
 YY_RULE_SETUP
-#line 499 "lexer.l"
+#line 503 "lexer.l"
 {  printf("Illegal underscore", yytext);}
 	YY_BREAK
 case 151:
 YY_RULE_SETUP
-#line 501 "lexer.l"
+#line 505 "lexer.l"
 { 
                                     remove_all_inputs_of_symbol( yytext, tmp, '_'); 
                                     numDouble = atof(tmp);
@@ -2229,7 +2235,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 152:
 YY_RULE_SETUP
-#line 508 "lexer.l"
+#line 512 "lexer.l"
 { 
                                     remove_all_inputs_of_symbol( yytext, tmp, '_'); 
                                     tmp[strlen(tmp)-1] = 0;
@@ -2239,7 +2245,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 153:
 YY_RULE_SETUP
-#line 515 "lexer.l"
+#line 519 "lexer.l"
 { remove_all_inputs_of_symbol( yytext + 2, tmp, '_');
                                       tmp = strchr(tmp, 1);
                                       numInt = bin_from_str_to_dec(tmp);
@@ -2248,163 +2254,174 @@ YY_RULE_SETUP
 	YY_BREAK
 case 154:
 YY_RULE_SETUP
-#line 520 "lexer.l"
+#line 524 "lexer.l"
 {  printf("Illegal underscore", yytext);}
 	YY_BREAK
 case 155:
 YY_RULE_SETUP
-#line 522 "lexer.l"
+#line 526 "lexer.l"
 { printf("Found boolean literal - TRUE"); }
 	YY_BREAK
 case 156:
 YY_RULE_SETUP
-#line 523 "lexer.l"
+#line 527 "lexer.l"
 { printf("Found boolean literal - FALSE"); }
 	YY_BREAK
 case 157:
 YY_RULE_SETUP
-#line 525 "lexer.l"
+#line 529 "lexer.l"
 { tmpChar = 0 ; BEGIN(CHAR); }
 	YY_BREAK
 case 158:
 YY_RULE_SETUP
-#line 526 "lexer.l"
+#line 530 "lexer.l"
 { tmpChar = yytext[0]; }
 	YY_BREAK
 case 159:
 YY_RULE_SETUP
-#line 527 "lexer.l"
+#line 531 "lexer.l"
 { // Преобразовать юникод строку в юникод символ
                         }
 	YY_BREAK
 case 160:
 YY_RULE_SETUP
-#line 529 "lexer.l"
+#line 533 "lexer.l"
 { tmpChar = '\t'; }
 	YY_BREAK
 case 161:
 YY_RULE_SETUP
-#line 530 "lexer.l"
+#line 534 "lexer.l"
 { tmpChar = '\b'; }
 	YY_BREAK
 case 162:
 YY_RULE_SETUP
-#line 531 "lexer.l"
+#line 535 "lexer.l"
 { tmpChar = '\r'; }
 	YY_BREAK
 case 163:
 YY_RULE_SETUP
-#line 532 "lexer.l"
+#line 536 "lexer.l"
 { tmpChar = '\n'; }
 	YY_BREAK
 case 164:
 YY_RULE_SETUP
-#line 533 "lexer.l"
+#line 537 "lexer.l"
 { tmpChar = '\''; }
 	YY_BREAK
 case 165:
 YY_RULE_SETUP
-#line 534 "lexer.l"
+#line 538 "lexer.l"
 { tmpChar = '\"'; }
 	YY_BREAK
 case 166:
 YY_RULE_SETUP
-#line 535 "lexer.l"
+#line 539 "lexer.l"
 { tmpChar = '\\'; }
 	YY_BREAK
 case 167:
 YY_RULE_SETUP
-#line 536 "lexer.l"
+#line 540 "lexer.l"
 { tmpChar = '\$'; }
 	YY_BREAK
 case 168:
 YY_RULE_SETUP
-#line 537 "lexer.l"
+#line 541 "lexer.l"
 { printf("Found char literal - %c\n", tmpChar);
                             BEGIN(INITIAL);}
 	YY_BREAK
 case 169:
+/* rule 169 can match eol */
 YY_RULE_SETUP
-#line 540 "lexer.l"
+#line 543 "lexer.l"
+{ printf("ERROR New line found, but expected \'"); }
+	YY_BREAK
+case YY_STATE_EOF(STRING):
+#line 544 "lexer.l"
+{ printf("ERROR End of file found, but expected \'"); }
+	YY_BREAK
+case 170:
+YY_RULE_SETUP
+#line 546 "lexer.l"
 {   
                         str[0] = 0;
                         BEGIN(STRING);
                     }
 	YY_BREAK
-case 170:
-YY_RULE_SETUP
-#line 544 "lexer.l"
-{ strcat(str, yytext); }
-	YY_BREAK
 case 171:
 YY_RULE_SETUP
-#line 545 "lexer.l"
-{ strcat(str, "\n"); }
+#line 550 "lexer.l"
+{ strcat(str, yytext); }
 	YY_BREAK
 case 172:
 YY_RULE_SETUP
-#line 546 "lexer.l"
-{ strcat(str, "\\"); }
+#line 551 "lexer.l"
+{ strcat(str, "\n"); }
 	YY_BREAK
 case 173:
 YY_RULE_SETUP
-#line 547 "lexer.l"
-{ strcat(str, "\""); }
+#line 552 "lexer.l"
+{ strcat(str, "\\"); }
 	YY_BREAK
 case 174:
 YY_RULE_SETUP
-#line 548 "lexer.l"
-{ strcat(str, "\t"); }
+#line 553 "lexer.l"
+{ strcat(str, "\""); }
 	YY_BREAK
 case 175:
 YY_RULE_SETUP
-#line 549 "lexer.l"
-{ strcat(str, "\b"); }
+#line 554 "lexer.l"
+{ strcat(str, "\t"); }
 	YY_BREAK
 case 176:
 YY_RULE_SETUP
-#line 550 "lexer.l"
-{ strcat(str, "\r"); }
+#line 555 "lexer.l"
+{ strcat(str, "\b"); }
 	YY_BREAK
 case 177:
+YY_RULE_SETUP
+#line 556 "lexer.l"
+{ strcat(str, "\r"); }
+	YY_BREAK
+case 178:
 *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 551 "lexer.l"
+#line 557 "lexer.l"
 { strcat(str, "\$"); }
-	YY_BREAK
-case 178:
-YY_RULE_SETUP
-#line 552 "lexer.l"
-{ strcat(str, "\'"); }
 	YY_BREAK
 case 179:
 YY_RULE_SETUP
-#line 553 "lexer.l"
+#line 558 "lexer.l"
+{ strcat(str, "\'"); }
+	YY_BREAK
+case 180:
+YY_RULE_SETUP
+#line 559 "lexer.l"
 { 
                         printf("Found string literal %s\n", str);
                         BEGIN(INITIAL);
                     }
 	YY_BREAK
-case 180:
-/* rule 180 can match eol */
-YY_RULE_SETUP
-#line 557 "lexer.l"
-{
-                        printf("ERROR in string %s, expected \"", yytext);
-                    }
-	YY_BREAK
 case 181:
 /* rule 181 can match eol */
 YY_RULE_SETUP
-#line 560 "lexer.l"
-{//Делать ничего не нужно
-                    ;}
+#line 563 "lexer.l"
+{ printf("ERROR New line found after \"%s\", but \" expected", str); }
+	YY_BREAK
+#line 564 "lexer.l"
+{ printf("ERROR End of file found after \"%s\", but \" expected", str); }
 	YY_BREAK
 case 182:
+/* rule 182 can match eol */
 YY_RULE_SETUP
-#line 562 "lexer.l"
+#line 565 "lexer.l"
+{;//Делать ничего не нужно
+                    }
+	YY_BREAK
+case 183:
+YY_RULE_SETUP
+#line 567 "lexer.l"
 {
                             printf("Found string literal %s\n", str);
                             printf("Found operator - \+ ADD\n");
@@ -2413,9 +2430,9 @@ YY_RULE_SETUP
                             BEGIN(INITIAL);                            
                     }
 	YY_BREAK
-case 183:
+case 184:
 YY_RULE_SETUP
-#line 570 "lexer.l"
+#line 575 "lexer.l"
 {
                         printf("Found string literal %s\n", str);
                         printf("Found operator - \+ ADD\n");
@@ -2423,15 +2440,15 @@ YY_RULE_SETUP
                         BEGIN(INITIAL);
                     }
 	YY_BREAK
-case 184:
-/* rule 184 can match eol */
+case 185:
+/* rule 185 can match eol */
 YY_RULE_SETUP
-#line 577 "lexer.l"
+#line 583 "lexer.l"
 { printf("Found new line"); }
 	YY_BREAK
-case 185:
+case 186:
 YY_RULE_SETUP
-#line 579 "lexer.l"
+#line 585 "lexer.l"
 { printf("Found identificator - %s\n", yytext);
                if (isSimpleTemplate) 
                {
@@ -2442,54 +2459,63 @@ YY_RULE_SETUP
                } 
              }
 	YY_BREAK
-case 186:
+case 187:
 YY_RULE_SETUP
-#line 589 "lexer.l"
+#line 595 "lexer.l"
 {
                                     str[0] = 0;
                                     BEGIN(IDENTIFICATOR);
                                 }
 	YY_BREAK
-case 187:
+case 188:
 YY_RULE_SETUP
-#line 593 "lexer.l"
+#line 599 "lexer.l"
 { strcat(str, yytext); }
 	YY_BREAK
-case 188:
-/* rule 188 can match eol */
-YY_RULE_SETUP
-#line 594 "lexer.l"
-{ printf("ERROR! In string %s expected `\n", str); }
-	YY_BREAK
 case 189:
+/* rule 189 can match eol */
 YY_RULE_SETUP
-#line 595 "lexer.l"
-{ printf("ERROR! There is an illegal character %s In string %s \n", yytext, str); }
-	YY_BREAK
-case YY_STATE_EOF(IDENTIFICATOR):
-#line 596 "lexer.l"
+#line 600 "lexer.l"
 { printf("ERROR! In string %s expected `\n", str); }
 	YY_BREAK
 case 190:
 YY_RULE_SETUP
-#line 597 "lexer.l"
+#line 601 "lexer.l"
+{ printf("ERROR! There is an illegal character %s In string %s \n", yytext, str); }
+	YY_BREAK
+case YY_STATE_EOF(IDENTIFICATOR):
+#line 602 "lexer.l"
+{ printf("ERROR! In string %s expected `\n", str); }
+	YY_BREAK
+case 191:
+YY_RULE_SETUP
+#line 603 "lexer.l"
 {
                                     printf("Found identificator - %s\n", str);
                                     BEGIN(INITIAL);
                                 }
 	YY_BREAK
-case 191:
+case YY_STATE_EOF(INITIAL):
+case YY_STATE_EOF(SLCOMMENT):
+case YY_STATE_EOF(CHAR):
+#line 608 "lexer.l"
+{
+            if (complexTemplateNestingLevel > 0) 
+            {
+                printf("Found end of file, but expected }");
+            }
+            else 
+            {
+                printf("Found end of file");
+            }
+        }
+	YY_BREAK
+case 192:
 YY_RULE_SETUP
-#line 603 "lexer.l"
+#line 619 "lexer.l"
 ECHO;
 	YY_BREAK
-#line 2486 "lexer.flex.cpp"
-case YY_STATE_EOF(INITIAL):
-case YY_STATE_EOF(MLCOMMENT):
-case YY_STATE_EOF(SLCOMMENT):
-case YY_STATE_EOF(STRING):
-case YY_STATE_EOF(CHAR):
-	yyterminate();
+#line 2518 "lexer.flex.cpp"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -3505,7 +3531,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 603 "lexer.l"
+#line 619 "lexer.l"
 
 
 void reportAboutErrorInSimpleTemplate(bool* isSimpleTemplate, const char* str)

@@ -474,8 +474,12 @@ BooleanArray    {printf("Found datatype - BOOLEANARRAY");}
 "/*"				{	commentText[0] = 0; BEGIN(MLCOMMENT);}
 <MLCOMMENT>[^*]+	{   strcat(commentText, yytext);}
 <MLCOMMENT>\*+[^/]* {   strcat(commentText, yytext);}
-<MLCOMMENT>\*+\/	{   printf("Found comment - %s\n", commentText);
-					        BEGIN(INITIAL); }
+<MLCOMMENT>\*+\/	{   
+                        printf("Found comment - %s\n", commentText);
+					    BEGIN(INITIAL); 
+                    }
+<MLCOMMENT><<EOF>>	{ printf("ERROR End of file found after \"%s\", but expected */", commentText); }
+
 
 [1-9](_*{DIGIT})*|0       {  remove_all_inputs_of_symbol( yytext, tmp, '_');
                                 numInt = atoi(tmp);
@@ -535,6 +539,8 @@ false { printf("Found boolean literal - FALSE"); }
 <CHAR>\\\$              { tmpChar = '\$'; }
 <CHAR>\'                { printf("Found char literal - %c\n", tmpChar);
                             BEGIN(INITIAL);}
+<STRING>\n              { printf("ERROR New line found, but expected \'"); }
+<STRING><<EOF>>         { printf("ERROR End of file found, but expected \'"); }
 
 \"                  {   
                         str[0] = 0;
@@ -553,11 +559,10 @@ false { printf("Found boolean literal - FALSE"); }
                         printf("Found string literal %s\n", str);
                         BEGIN(INITIAL);
                     }
-<STRING>\n          {
-                        printf("ERROR in string %s, expected \"", yytext);
+<STRING>\n          { printf("ERROR New line found after \"%s\", but \" expected", str); }
+<STRING><<EOF>>     { printf("ERROR End of file found after \"%s\", but \" expected", str); }
+<STRING>\\\n        {;//Делать ничего не нужно
                     }
-<STRING>\\\n        {//Делать ничего не нужно
-                    ;}
 <STRING>\$[a-zA-Z_] {
                             printf("Found string literal %s\n", str);
                             printf("Found operator - \+ ADD\n");
@@ -573,6 +578,7 @@ false { printf("Found boolean literal - FALSE"); }
                         BEGIN(INITIAL);
                     }
 
+
 \n { printf("Found new line"); }
 
 [a-zA-Z_]\w* { printf("Found identificator - %s\n", yytext);
@@ -585,7 +591,7 @@ false { printf("Found boolean literal - FALSE"); }
                } 
              }
 
-"`"                               {
+"`"                             {
                                     str[0] = 0;
                                     BEGIN(IDENTIFICATOR);
                                 }
@@ -598,6 +604,16 @@ false { printf("Found boolean literal - FALSE"); }
                                     BEGIN(INITIAL);
                                 }
 
+<<EOF>> {
+            if (complexTemplateNestingLevel > 0) 
+            {
+                printf("Found end of file, but expected }");
+            }
+            else 
+            {
+                printf("Found end of file");
+            }
+        }
 
 %%
 
