@@ -2466,9 +2466,13 @@ YY_RULE_SETUP
 #line 595 "lexer.l"
 { printf("ERROR! There is an illegal character %s In string %s \n", yytext, str); }
 	YY_BREAK
+case YY_STATE_EOF(IDENTIFICATOR):
+#line 596 "lexer.l"
+{ printf("ERROR! In string %s expected `\n", str); }
+	YY_BREAK
 case 190:
 YY_RULE_SETUP
-#line 596 "lexer.l"
+#line 597 "lexer.l"
 {
                                     printf("Found identificator - %s\n", str);
                                     BEGIN(INITIAL);
@@ -2476,16 +2480,15 @@ YY_RULE_SETUP
 	YY_BREAK
 case 191:
 YY_RULE_SETUP
-#line 602 "lexer.l"
+#line 603 "lexer.l"
 ECHO;
 	YY_BREAK
-#line 2482 "lexer.flex.cpp"
+#line 2486 "lexer.flex.cpp"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(MLCOMMENT):
 case YY_STATE_EOF(SLCOMMENT):
 case YY_STATE_EOF(STRING):
 case YY_STATE_EOF(CHAR):
-case YY_STATE_EOF(IDENTIFICATOR):
 	yyterminate();
 
 	case YY_END_OF_BUFFER:
@@ -3502,7 +3505,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 602 "lexer.l"
+#line 603 "lexer.l"
 
 
 void reportAboutErrorInSimpleTemplate(bool* isSimpleTemplate, const char* str)

@@ -592,6 +592,7 @@ false { printf("Found boolean literal - FALSE"); }
 <IDENTIFICATOR>[^\n\\`\[\]]+    { strcat(str, yytext); }
 <IDENTIFICATOR>\n               { printf("ERROR! In string %s expected `\n", str); }
 <IDENTIFICATOR>[\\\[\]]         { printf("ERROR! There is an illegal character %s In string %s \n", yytext, str); }
+<IDENTIFICATOR><<EOF>>               { printf("ERROR! In string %s expected `\n", str); }
 <IDENTIFICATOR>`                {
                                     printf("Found identificator - %s\n", str);
                                     BEGIN(INITIAL);
