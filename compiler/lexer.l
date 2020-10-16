@@ -577,7 +577,7 @@ false { printf("Found boolean literal - FALSE"); }
                         ++complexTemplateNestingLevel;
                         BEGIN(INITIAL);
                     }
-
+<STRING>\$\{\}      { printf("ERROR! Found empty complex template"); }
 
 \n { printf("Found new line"); }
 
@@ -607,7 +607,7 @@ false { printf("Found boolean literal - FALSE"); }
 <<EOF>> {
             if (complexTemplateNestingLevel > 0) 
             {
-                printf("Found end of file, but expected }");
+                printf("ERROR! Found end of file, but expected }");
             }
             else 
             {
