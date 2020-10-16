@@ -294,6 +294,19 @@ false { printf("Found boolean literal - FALSE"); }
                             
                         }
 
+<STRING>\$`[^\n\\`\[\]]+` {
+                               printf("Found string literal %s\n", str);
+                               printf("Found operator - \+ ADD\n");
+                               str[0] = 0;
+                               strcpy(str, yytext + 2);
+                               str[yyleng - 2 - 1] = 0;
+                               printf("Found identificator - %s\n", str);
+                               printf("Found operator - \+ ADD\n");
+                               str[0] = 0;                            
+                          }
+
+<STRING>\$`[^`\n]*[\\\[\]][^`\n]*` { printf("ERROR! Found invalid identificator in template %s\n", yytext); }
+
 <STRING>\$\{        {
                         printf("Found string literal %s\n", str);
                         printf("Found operator - \+ ADD\n");
