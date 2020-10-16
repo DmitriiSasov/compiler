@@ -9,7 +9,7 @@
     void reportAboutErrorInSimpleTemplate(bool* isSimpleTemplate, const char* str);
 %}
 
-%x MLCOMMENT SLCOMMENT STRING CHAR
+%x MLCOMMENT SLCOMMENT STRING CHAR IDENTIFICATOR
 DIGIT             [0-9]
 HEX_DIGIT         [0-9A-Fa-f]
 BIN_DIGIT         [01]
@@ -550,7 +550,7 @@ false { printf("Found boolean literal - FALSE"); }
 <STRING>\\$         { strcat(str, "\$"); }
 <STRING>\\\'        { strcat(str, "\'"); }
 <STRING>\"          { 
-                        printf("Found string literal %s", str);
+                        printf("Found string literal %s\n", str);
                         BEGIN(INITIAL);
                     }
 <STRING>\n          {
@@ -559,16 +559,16 @@ false { printf("Found boolean literal - FALSE"); }
 <STRING>\\\n        {//Делать ничего не нужно
                     ;}
 <STRING>\$[a-zA-Z_] {
-                            printf("Found string literal %s", str);
-                            printf("Found operator - \+ ADD");
+                            printf("Found string literal %s\n", str);
+                            printf("Found operator - \+ ADD\n");
                             unput(yytext[1]);
                             isSimpleTemplate = true;
                             BEGIN(INITIAL);                            
                     }
 
 <STRING>\$\{        {
-                        printf("Found string literal %s", str);
-                        printf("Found operator - \+ ADD");
+                        printf("Found string literal %s\n", str);
+                        printf("Found operator - \+ ADD\n");
                         ++complexTemplateNestingLevel;
                         BEGIN(INITIAL);
                     }
@@ -584,8 +584,18 @@ false { printf("Found boolean literal - FALSE"); }
                     BEGIN(STRING);                    
                } 
              }
-[a-zA-Z_]\w*|\`[^\`]+\` { printf("Found identificator - %s\n", yytext);}
 
+"`"                               {
+                                    str[0] = 0;
+                                    BEGIN(IDENTIFICATOR);
+                                }
+<IDENTIFICATOR>[^\n\\`\[\]]+    { strcat(str, yytext); }
+<IDENTIFICATOR>\n               { printf("ERROR! In string %s expected `\n", str); }
+<IDENTIFICATOR>[\\\[\]]         { printf("ERROR! There is an illegal character %s In string %s \n", yytext, str); }
+<IDENTIFICATOR>`                {
+                                    printf("Found identificator - %s\n", str);
+                                    BEGIN(INITIAL);
+                                }
 
 
 %%
