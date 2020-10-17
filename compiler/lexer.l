@@ -240,9 +240,10 @@ BooleanArray    {printf("Found datatype - BOOLEANARRAY");}
 true { printf("Found boolean literal - TRUE"); }
 false { printf("Found boolean literal - FALSE"); }
 
+\'\'                    { printf("ERROR! Found empty character literal\n"); }
 \'                      { tmpChar = 0 ; BEGIN(CHAR); }
-<CHAR>[^\n\\]           { tmpChar = yytext[0]; }
-<CHAR>\\u{HEX_DIGIT}{4} { // Преобразовать юникод строку в юникод символ
+<CHAR>[^\n\\\']         { tmpChar = yytext[0]; }
+<CHAR>\\u{HEX_DIGIT}{4} {; // Преобразовать юникод строку в юникод символ
                         }
 <CHAR>\\t               { tmpChar = '\t'; }
 <CHAR>\\b               { tmpChar = '\b'; }
@@ -252,8 +253,10 @@ false { printf("Found boolean literal - FALSE"); }
 <CHAR>\\\"              { tmpChar = '\"'; }
 <CHAR>\\\\              { tmpChar = '\\'; }
 <CHAR>\\\$              { tmpChar = '\$'; }
-<CHAR>\'                { printf("Found char literal - %c\n", tmpChar);
-                            BEGIN(INITIAL);}
+<CHAR>\'                { 
+                            printf("Found char literal - %c\n", tmpChar);
+                            BEGIN(INITIAL);
+                        }
 <STRING>\n              { printf("ERROR New line found, but expected \'"); }
 <STRING><<EOF>>         { printf("ERROR End of file found, but expected \'"); }
 
@@ -332,6 +335,7 @@ false { printf("Found boolean literal - FALSE"); }
 
 [a-zA-Z_]\w* { printf("Found identificator - %s\n", yytext); }
 
+``                              { printf("ERROR! Found empty identificator name\n"); }
 "`"                             {
                                     str[0] = 0;
                                     BEGIN(IDENTIFICATOR);
