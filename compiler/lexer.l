@@ -99,14 +99,14 @@ reified			{ printf("Found keyword - REIFIED\n"); }
 expect			{ printf("Found keyword - EXPECT\n"); }
 actual			{ printf("Found keyword - ACTUAL\n"); }
 
-\.\.\.		{printf("Found operator - \.\.\. RESERVED");}
-\.			{printf("Found operator - \. DOT");}
-\,			{printf("Found operator - \, COMMA");}
-\(			{printf("Found operator - \( LPAREN");}
-\)			{printf("Found operator - \) RPAREN");}
-\[			{printf("Found operator - \[ LSQUARE");}
-\]			{printf("Found operator - \] RSQUARE");}
-\{			{printf("Found operator - \{ LCURL");}
+\.\.\.		{printf("Found operator - \.\.\. RESERVED\n");}
+\.			{printf("Found operator - \. DOT\n");}
+\,			{printf("Found operator - \, COMMA\n");}
+\(			{printf("Found operator - \( LPAREN\n");}
+\)			{printf("Found operator - \) RPAREN\n");}
+\[			{printf("Found operator - \[ LSQUARE\n");}
+\]			{printf("Found operator - \] RSQUARE\n");}
+\{			{printf("Found operator - \{ LCURL\n");}
 \}			{
                 if (complexTemplateNestingLevel > 0) 
                 {
@@ -117,68 +117,68 @@ actual			{ printf("Found keyword - ACTUAL\n"); }
                 }
                 else 
                 {
-                    printf("Found operator - \} RCURL");                
+                    printf("Found operator - \} RCURL\n");                
                 }                
             }
-\*			{printf("Found operator - \* MULT");}
-\%			{printf("Found operator - \% MOD");}
-\/			{printf("Found operator - \\ DIV");}
-\+			{printf("Found operator - \+ ADD");}
-\-			{printf("Found operator - \- SUB");}
-\+\+		{printf("Found operator - \+\+ INCR");}
-\-\-		{printf("Found operator - \-\- DECR");}
-\&\&		{printf("Found operator - \&\& CONJ");}
-\|\|		{printf("Found operator - \|\| DISJ");}
-\!			{printf("Found operator - \! EXCL");}
-\:			{printf("Found operator - \: COLON");}
-\;			{printf("Found operator - \; SEMICOLON");}
-\=			{printf("Found operator - \= ASSIGNMENT");}
-\+\=		{printf("Found operator - \+\= ADD_ASSIGNMENT");}
-\-\=		{printf("Found operator - \-\= SUB_ASSIGNMENT");}
-\*\=		{printf("Found operator - \*\= MULT_ASSIGNMENT");}
-\/\=		{printf("Found operator - \/\= DIV_ASSIGNMENT");}
-\%\=		{printf("Found operator - \%\= MOD_ASSIGNMENT");}
-\-\>		{printf("Found operator - \-\> ARROW");}
-\=\>		{printf("Found operator - \=\> DOUBLE_ARROW");}
-\.\.		{printf("Found operator - \.\. RANGE");}
-\:\:		{printf("Found operator - \:\: COLONCOLON");}
-\;\;		{printf("Found operator - \;\; DOUBLE_SEMICOLONS");}
-\#			{printf("Found operator - \# HASH");}
-\@			{printf("Found operator - \@ AT_NO");}
-\<			{printf("Found operator - \< LANGLE");}
-\>			{printf("Found operator - \> RANGLE");}
-\<\=		{printf("Found operator - \<\= LE");}
-\>\=		{printf("Found operator - \>\= GE");}
-\!\=		{printf("Found operator - \!\= EXCL_EQ");}
-\!\=\=		{printf("Found operator - \!\=\= EXCL_EQEQ");}
-as\?		{printf("Found operator - AS\? AS_SAFE");}
-\=\=		{printf("Found operator - \=\= EQEQ");}
-\=\=\=		{printf("Found operator - \=\=\= EQEQEQ");}
-shl         {printf("Found operator - shl LSHIFT");}
-shr         {printf("Found operator - shr RSHIFT");}
-ushr        {printf("Found operator - ushr URSHIFT");}
-and         {printf("Found operator - and AND");}
-or          {printf("Found operator - or OR");}
-xor         {printf("Found operator - xor XOR");}
-inv         {printf("Found operator - inv INV");}
+\*			{printf("Found operator - \* MULT\n");}
+\%			{printf("Found operator - \% MOD\n");}
+\/			{printf("Found operator - \\ DIV\n");}
+\+			{printf("Found operator - \+ ADD\n");}
+\-			{printf("Found operator - \- SUB\n");}
+\+\+		{printf("Found operator - \+\+ INCR\n");}
+\-\-		{printf("Found operator - \-\- DECR\n");}
+\&\&		{printf("Found operator - \&\& CONJ\n");}
+\|\|		{printf("Found operator - \|\| DISJ\n");}
+\!			{printf("Found operator - \! EXCL\n");}
+\:			{printf("Found operator - \: COLON\n");}
+\;			{printf("Found operator - \; SEMICOLON\n");}
+\=			{printf("Found operator - \= ASSIGNMENT\n");}
+\+\=		{printf("Found operator - \+\= ADD_ASSIGNMENT\n");}
+\-\=		{printf("Found operator - \-\= SUB_ASSIGNMENT\n");}
+\*\=		{printf("Found operator - \*\= MULT_ASSIGNMENT\n");}
+\/\=		{printf("Found operator - \/\= DIV_ASSIGNMENT\n");}
+\%\=		{printf("Found operator - \%\= MOD_ASSIGNMENT\n");}
+\-\>		{printf("Found operator - \-\> ARROW\n");}
+\=\>		{printf("Found operator - \=\> DOUBLE_ARROW\n");}
+\.\.		{printf("Found operator - \.\. RANGE\n");}
+\:\:		{printf("Found operator - \:\: COLONCOLON\n");}
+\;\;		{printf("Found operator - \;\; DOUBLE_SEMICOLONS\n");}
+\#			{printf("Found operator - \# HASH\n");}
+\@			{printf("Found operator - \@ AT_NO\n");}
+\<			{printf("Found operator - \< LANGLE\n");}
+\>			{printf("Found operator - \> RANGLE\n");}
+\<\=		{printf("Found operator - \<\= LE\n");}
+\>\=		{printf("Found operator - \>\= GE\n");}
+\!\=		{printf("Found operator - \!\= EXCL_EQ\n");}
+\!\=\=		{printf("Found operator - \!\=\= EXCL_EQEQ\n");}
+as\?		{printf("Found operator - AS\? AS_SAFE\n");}
+\=\=		{printf("Found operator - \=\= EQEQ\n");}
+\=\=\=		{printf("Found operator - \=\=\= EQEQEQ\n");}
+shl         {printf("Found operator - shl LSHIFT\n");}
+shr         {printf("Found operator - shr RSHIFT\n");}
+ushr        {printf("Found operator - ushr URSHIFT\n");}
+and         {printf("Found operator - and AND\n");}
+or          {printf("Found operator - or OR\n");}
+xor         {printf("Found operator - xor XOR\n");}
+inv         {printf("Found operator - inv INV\n");}
 
-Int             {printf("Found datatype - INT");}
-Float           {printf("Found datatype - FLOAT");}
-Double          {printf("Found datatype - DOUBLE");}
-Long            {printf("Found datatype - LONG");}
-Short           {printf("Found datatype - SHORT");}
-Byte            {printf("Found datatype - BYTE");}
-String          {printf("Found datatype - STRING");}
-Char            {printf("Found datatype - CHAR");}
-Boolean         {printf("Found datatype - BOOLEAN");}
-Array           {printf("Found datatype - ARRAY");}
-IntArray        {printf("Found datatype - INTARRAY");}
-FloatArray      {printf("Found datatype - FLOATARRAY");}
-DoubleArray     {printf("Found datatype - DOUBLEARRAY");}
-LongArray       {printf("Found datatype - LONGARRAY");}
-ShortArray      {printf("Found datatype - SHORTARRAY");}
-ByteArray       {printf("Found datatype - BYTEARRAY");}
-BooleanArray    {printf("Found datatype - BOOLEANARRAY");}
+Int             {printf("Found datatype - INT\n");}
+Float           {printf("Found datatype - FLOAT\n");}
+Double          {printf("Found datatype - DOUBLE\n");}
+Long            {printf("Found datatype - LONG\n");}
+Short           {printf("Found datatype - SHORT\n");}
+Byte            {printf("Found datatype - BYTE\n");}
+String          {printf("Found datatype - STRING\n");}
+Char            {printf("Found datatype - CHAR\n");}
+Boolean         {printf("Found datatype - BOOLEAN\n");}
+Array           {printf("Found datatype - ARRAY\n");}
+IntArray        {printf("Found datatype - INTARRAY\n");}
+FloatArray      {printf("Found datatype - FLOATARRAY\n");}
+DoubleArray     {printf("Found datatype - DOUBLEARRAY\n");}
+LongArray       {printf("Found datatype - LONGARRAY\n");}
+ShortArray      {printf("Found datatype - SHORTARRAY\n");}
+ByteArray       {printf("Found datatype - BYTEARRAY\n");}
+BooleanArray    {printf("Found datatype - BOOLEANARRAY\n");}
 
                     
 "//"				{   commentText[0] = 0; BEGIN(SLCOMMENT);}
@@ -193,7 +193,7 @@ BooleanArray    {printf("Found datatype - BOOLEANARRAY");}
                         printf("Found comment - %s\n", commentText);
 					    BEGIN(INITIAL); 
                     }
-<MLCOMMENT><<EOF>>	{ printf("ERROR End of file found after \"%s\", but expected */", commentText); }
+<MLCOMMENT><<EOF>>	{ printf("ERROR! End of file found after \"%s\", but expected */\n", commentText); }
 
 
 [1-9](_*{DIGIT})*|0       {  remove_all_inputs_of_symbol( yytext, tmp, '_');
@@ -207,14 +207,14 @@ BooleanArray    {printf("Found datatype - BOOLEANARRAY");}
                                 printf("Found decimal number - %ld\n", numLong);
                              }
 
-([1-9](_*{DIGIT})*|0)_+|([1-9](_*{DIGIT})*|0)_*[lL]_+ {  printf("Illegal underscore", yytext);}
+([1-9](_*{DIGIT})*|0)_+|([1-9](_*{DIGIT})*|0)_*[lL]_+ {  printf("ERROR! Illegal underscore\n", yytext);}
 
 
 0[xX]{HEX_DIGIT}(_*{HEX_DIGIT})*    { remove_all_inputs_of_symbol( yytext + 2, tmp,'_');
                                       sscanf(tmp,"%x",&numInt);
                                       printf("Found hex number - %d\n", numInt);
                                     }
-0[xX]{HEX_DIGIT}(_*{HEX_DIGIT})*_+  {  printf("Illegal underscore", yytext);}
+0[xX]{HEX_DIGIT}(_*{HEX_DIGIT})*_+  {  printf("ERROR! Illegal underscore\n", yytext);}
 
 (0|[1-9](_*{DIGIT})*)(\.{DIGIT}(_*{DIGIT})*)?([eE][+-]?[{DIGIT}](_*{DIGIT})*)? { 
                                     remove_all_inputs_of_symbol( yytext, tmp, '_'); 
@@ -235,10 +235,10 @@ BooleanArray    {printf("Found datatype - BOOLEANARRAY");}
                                       numInt = bin_from_str_to_dec(tmp);
                                       printf("Found binary number - %d\n", numInt); 
                                     }
-0[bB]{BIN_DIGIT}(_*{BIN_DIGIT})*_+  {  printf("Illegal underscore", yytext);}
+0[bB]{BIN_DIGIT}(_*{BIN_DIGIT})*_+  {  printf("ERROR! Illegal underscore\n", yytext);}
 
-true { printf("Found boolean literal - TRUE"); }
-false { printf("Found boolean literal - FALSE"); }
+true { printf("Found boolean literal - TRUE\n"); }
+false { printf("Found boolean literal - FALSE\n"); }
 
 \'\'                    { printf("ERROR! Found empty character literal\n"); }
 \'                      { tmpChar = 0 ; BEGIN(CHAR); }
@@ -257,8 +257,8 @@ false { printf("Found boolean literal - FALSE"); }
                             printf("Found char literal - %c\n", tmpChar);
                             BEGIN(INITIAL);
                         }
-<CHAR>\n                { printf("ERROR New line found, but expected \'"); }
-<CHAR><<EOF>>           { printf("ERROR End of file found, but expected \'"); }
+<CHAR>\n                { printf("ERROR! New line found, but expected \'\n"); }
+<CHAR><<EOF>>           { printf("ERROR! End of file found, but expected \'\n"); }
 
 <CHAR,STRING>\\([^utbrn'"\\$]|(u({HEX_DIGIT}{5,}|{HEX_DIGIT}{0,3}))) { 
                           printf("ERROR! Found illegal escape %s\n", yytext); 
@@ -282,8 +282,8 @@ false { printf("Found boolean literal - FALSE"); }
                         printf("Found string literal %s\n", str);
                         BEGIN(INITIAL);
                     }
-<STRING>\n          { printf("ERROR New line found after \"%s\", but \" expected", str); }
-<STRING><<EOF>>     { printf("ERROR End of file found after \"%s\", but \" expected", str); }
+<STRING>\n          { printf("ERROR! New line found after \"%s\", but \" expected\n", str); }
+<STRING><<EOF>>     { printf("ERROR! End of file found after \"%s\", but \" expected\n", str); }
 <STRING>\\\n        {;//Делать ничего не нужно
                     }
 <STRING,MLSTRING>\$[a-zA-Z_]\w*  {
@@ -320,7 +320,7 @@ false { printf("Found boolean literal - FALSE"); }
                                     ++complexTemplateNestingLevel;
                                     BEGIN(INITIAL);
                                 }
-<STRING,MLSTRING>\$\{\}      { printf("ERROR! Found empty complex template"); }
+<STRING,MLSTRING>\$\{\}      { printf("ERROR! Found empty complex template\n"); }
 
 \"\"\"              {
                         str[0] = 0;
@@ -333,10 +333,10 @@ false { printf("Found boolean literal - FALSE"); }
                         str[strlen(str - 3)] = 0;
                         printf("Found multi line string literal %s\n", str);
                     }
-<MLSTRING><<EOF>>   { printf("ERROR! Found end of file, but expected \"\"\""); }
+<MLSTRING><<EOF>>   { printf("ERROR! Found end of file, but expected \"\"\"\n"); }
 
 
-\n { printf("Found new line"); }
+\n { printf("Found new line\n"); }
 
 [a-zA-Z_]\w* { printf("Found identificator - %s\n", yytext); }
 
@@ -357,11 +357,11 @@ false { printf("Found boolean literal - FALSE"); }
 <<EOF>> {
             if (complexTemplateNestingLevel > 0) 
             {
-                printf("ERROR! Found end of file, but expected }");
+                printf("ERROR! Found end of file, but expected }\n");
             }
             else 
             {
-                printf("Found end of file");
+                printf("Found end of file\n");
             }
         }
 

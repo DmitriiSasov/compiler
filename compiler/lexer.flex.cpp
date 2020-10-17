@@ -1572,42 +1572,42 @@ YY_RULE_SETUP
 case 72:
 YY_RULE_SETUP
 #line 103 "lexer.l"
-{printf("Found operator - \.\.\. RESERVED");}
+{printf("Found operator - \.\.\. RESERVED\n");}
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
 #line 104 "lexer.l"
-{printf("Found operator - \. DOT");}
+{printf("Found operator - \. DOT\n");}
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
 #line 105 "lexer.l"
-{printf("Found operator - \, COMMA");}
+{printf("Found operator - \, COMMA\n");}
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
 #line 106 "lexer.l"
-{printf("Found operator - \( LPAREN");}
+{printf("Found operator - \( LPAREN\n");}
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
 #line 107 "lexer.l"
-{printf("Found operator - \) RPAREN");}
+{printf("Found operator - \) RPAREN\n");}
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
 #line 108 "lexer.l"
-{printf("Found operator - \[ LSQUARE");}
+{printf("Found operator - \[ LSQUARE\n");}
 	YY_BREAK
 case 78:
 YY_RULE_SETUP
 #line 109 "lexer.l"
-{printf("Found operator - \] RSQUARE");}
+{printf("Found operator - \] RSQUARE\n");}
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
 #line 110 "lexer.l"
-{printf("Found operator - \{ LCURL");}
+{printf("Found operator - \{ LCURL\n");}
 	YY_BREAK
 case 80:
 YY_RULE_SETUP
@@ -1622,299 +1622,299 @@ YY_RULE_SETUP
                 }
                 else 
                 {
-                    printf("Found operator - \} RCURL");                
+                    printf("Found operator - \} RCURL\n");                
                 }                
             }
 	YY_BREAK
 case 81:
 YY_RULE_SETUP
 #line 124 "lexer.l"
-{printf("Found operator - \* MULT");}
+{printf("Found operator - \* MULT\n");}
 	YY_BREAK
 case 82:
 YY_RULE_SETUP
 #line 125 "lexer.l"
-{printf("Found operator - \% MOD");}
+{printf("Found operator - \% MOD\n");}
 	YY_BREAK
 case 83:
 YY_RULE_SETUP
 #line 126 "lexer.l"
-{printf("Found operator - \\ DIV");}
+{printf("Found operator - \\ DIV\n");}
 	YY_BREAK
 case 84:
 YY_RULE_SETUP
 #line 127 "lexer.l"
-{printf("Found operator - \+ ADD");}
+{printf("Found operator - \+ ADD\n");}
 	YY_BREAK
 case 85:
 YY_RULE_SETUP
 #line 128 "lexer.l"
-{printf("Found operator - \- SUB");}
+{printf("Found operator - \- SUB\n");}
 	YY_BREAK
 case 86:
 YY_RULE_SETUP
 #line 129 "lexer.l"
-{printf("Found operator - \+\+ INCR");}
+{printf("Found operator - \+\+ INCR\n");}
 	YY_BREAK
 case 87:
 YY_RULE_SETUP
 #line 130 "lexer.l"
-{printf("Found operator - \-\- DECR");}
+{printf("Found operator - \-\- DECR\n");}
 	YY_BREAK
 case 88:
 YY_RULE_SETUP
 #line 131 "lexer.l"
-{printf("Found operator - \&\& CONJ");}
+{printf("Found operator - \&\& CONJ\n");}
 	YY_BREAK
 case 89:
 YY_RULE_SETUP
 #line 132 "lexer.l"
-{printf("Found operator - \|\| DISJ");}
+{printf("Found operator - \|\| DISJ\n");}
 	YY_BREAK
 case 90:
 YY_RULE_SETUP
 #line 133 "lexer.l"
-{printf("Found operator - \! EXCL");}
+{printf("Found operator - \! EXCL\n");}
 	YY_BREAK
 case 91:
 YY_RULE_SETUP
 #line 134 "lexer.l"
-{printf("Found operator - \: COLON");}
+{printf("Found operator - \: COLON\n");}
 	YY_BREAK
 case 92:
 YY_RULE_SETUP
 #line 135 "lexer.l"
-{printf("Found operator - \; SEMICOLON");}
+{printf("Found operator - \; SEMICOLON\n");}
 	YY_BREAK
 case 93:
 YY_RULE_SETUP
 #line 136 "lexer.l"
-{printf("Found operator - \= ASSIGNMENT");}
+{printf("Found operator - \= ASSIGNMENT\n");}
 	YY_BREAK
 case 94:
 YY_RULE_SETUP
 #line 137 "lexer.l"
-{printf("Found operator - \+\= ADD_ASSIGNMENT");}
+{printf("Found operator - \+\= ADD_ASSIGNMENT\n");}
 	YY_BREAK
 case 95:
 YY_RULE_SETUP
 #line 138 "lexer.l"
-{printf("Found operator - \-\= SUB_ASSIGNMENT");}
+{printf("Found operator - \-\= SUB_ASSIGNMENT\n");}
 	YY_BREAK
 case 96:
 YY_RULE_SETUP
 #line 139 "lexer.l"
-{printf("Found operator - \*\= MULT_ASSIGNMENT");}
+{printf("Found operator - \*\= MULT_ASSIGNMENT\n");}
 	YY_BREAK
 case 97:
 YY_RULE_SETUP
 #line 140 "lexer.l"
-{printf("Found operator - \/\= DIV_ASSIGNMENT");}
+{printf("Found operator - \/\= DIV_ASSIGNMENT\n");}
 	YY_BREAK
 case 98:
 YY_RULE_SETUP
 #line 141 "lexer.l"
-{printf("Found operator - \%\= MOD_ASSIGNMENT");}
+{printf("Found operator - \%\= MOD_ASSIGNMENT\n");}
 	YY_BREAK
 case 99:
 YY_RULE_SETUP
 #line 142 "lexer.l"
-{printf("Found operator - \-\> ARROW");}
+{printf("Found operator - \-\> ARROW\n");}
 	YY_BREAK
 case 100:
 YY_RULE_SETUP
 #line 143 "lexer.l"
-{printf("Found operator - \=\> DOUBLE_ARROW");}
+{printf("Found operator - \=\> DOUBLE_ARROW\n");}
 	YY_BREAK
 case 101:
 YY_RULE_SETUP
 #line 144 "lexer.l"
-{printf("Found operator - \.\. RANGE");}
+{printf("Found operator - \.\. RANGE\n");}
 	YY_BREAK
 case 102:
 YY_RULE_SETUP
 #line 145 "lexer.l"
-{printf("Found operator - \:\: COLONCOLON");}
+{printf("Found operator - \:\: COLONCOLON\n");}
 	YY_BREAK
 case 103:
 YY_RULE_SETUP
 #line 146 "lexer.l"
-{printf("Found operator - \;\; DOUBLE_SEMICOLONS");}
+{printf("Found operator - \;\; DOUBLE_SEMICOLONS\n");}
 	YY_BREAK
 case 104:
 YY_RULE_SETUP
 #line 147 "lexer.l"
-{printf("Found operator - \# HASH");}
+{printf("Found operator - \# HASH\n");}
 	YY_BREAK
 case 105:
 YY_RULE_SETUP
 #line 148 "lexer.l"
-{printf("Found operator - \@ AT_NO");}
+{printf("Found operator - \@ AT_NO\n");}
 	YY_BREAK
 case 106:
 YY_RULE_SETUP
 #line 149 "lexer.l"
-{printf("Found operator - \< LANGLE");}
+{printf("Found operator - \< LANGLE\n");}
 	YY_BREAK
 case 107:
 YY_RULE_SETUP
 #line 150 "lexer.l"
-{printf("Found operator - \> RANGLE");}
+{printf("Found operator - \> RANGLE\n");}
 	YY_BREAK
 case 108:
 YY_RULE_SETUP
 #line 151 "lexer.l"
-{printf("Found operator - \<\= LE");}
+{printf("Found operator - \<\= LE\n");}
 	YY_BREAK
 case 109:
 YY_RULE_SETUP
 #line 152 "lexer.l"
-{printf("Found operator - \>\= GE");}
+{printf("Found operator - \>\= GE\n");}
 	YY_BREAK
 case 110:
 YY_RULE_SETUP
 #line 153 "lexer.l"
-{printf("Found operator - \!\= EXCL_EQ");}
+{printf("Found operator - \!\= EXCL_EQ\n");}
 	YY_BREAK
 case 111:
 YY_RULE_SETUP
 #line 154 "lexer.l"
-{printf("Found operator - \!\=\= EXCL_EQEQ");}
+{printf("Found operator - \!\=\= EXCL_EQEQ\n");}
 	YY_BREAK
 case 112:
 YY_RULE_SETUP
 #line 155 "lexer.l"
-{printf("Found operator - AS\? AS_SAFE");}
+{printf("Found operator - AS\? AS_SAFE\n");}
 	YY_BREAK
 case 113:
 YY_RULE_SETUP
 #line 156 "lexer.l"
-{printf("Found operator - \=\= EQEQ");}
+{printf("Found operator - \=\= EQEQ\n");}
 	YY_BREAK
 case 114:
 YY_RULE_SETUP
 #line 157 "lexer.l"
-{printf("Found operator - \=\=\= EQEQEQ");}
+{printf("Found operator - \=\=\= EQEQEQ\n");}
 	YY_BREAK
 case 115:
 YY_RULE_SETUP
 #line 158 "lexer.l"
-{printf("Found operator - shl LSHIFT");}
+{printf("Found operator - shl LSHIFT\n");}
 	YY_BREAK
 case 116:
 YY_RULE_SETUP
 #line 159 "lexer.l"
-{printf("Found operator - shr RSHIFT");}
+{printf("Found operator - shr RSHIFT\n");}
 	YY_BREAK
 case 117:
 YY_RULE_SETUP
 #line 160 "lexer.l"
-{printf("Found operator - ushr URSHIFT");}
+{printf("Found operator - ushr URSHIFT\n");}
 	YY_BREAK
 case 118:
 YY_RULE_SETUP
 #line 161 "lexer.l"
-{printf("Found operator - and AND");}
+{printf("Found operator - and AND\n");}
 	YY_BREAK
 case 119:
 YY_RULE_SETUP
 #line 162 "lexer.l"
-{printf("Found operator - or OR");}
+{printf("Found operator - or OR\n");}
 	YY_BREAK
 case 120:
 YY_RULE_SETUP
 #line 163 "lexer.l"
-{printf("Found operator - xor XOR");}
+{printf("Found operator - xor XOR\n");}
 	YY_BREAK
 case 121:
 YY_RULE_SETUP
 #line 164 "lexer.l"
-{printf("Found operator - inv INV");}
+{printf("Found operator - inv INV\n");}
 	YY_BREAK
 case 122:
 YY_RULE_SETUP
 #line 166 "lexer.l"
-{printf("Found datatype - INT");}
+{printf("Found datatype - INT\n");}
 	YY_BREAK
 case 123:
 YY_RULE_SETUP
 #line 167 "lexer.l"
-{printf("Found datatype - FLOAT");}
+{printf("Found datatype - FLOAT\n");}
 	YY_BREAK
 case 124:
 YY_RULE_SETUP
 #line 168 "lexer.l"
-{printf("Found datatype - DOUBLE");}
+{printf("Found datatype - DOUBLE\n");}
 	YY_BREAK
 case 125:
 YY_RULE_SETUP
 #line 169 "lexer.l"
-{printf("Found datatype - LONG");}
+{printf("Found datatype - LONG\n");}
 	YY_BREAK
 case 126:
 YY_RULE_SETUP
 #line 170 "lexer.l"
-{printf("Found datatype - SHORT");}
+{printf("Found datatype - SHORT\n");}
 	YY_BREAK
 case 127:
 YY_RULE_SETUP
 #line 171 "lexer.l"
-{printf("Found datatype - BYTE");}
+{printf("Found datatype - BYTE\n");}
 	YY_BREAK
 case 128:
 YY_RULE_SETUP
 #line 172 "lexer.l"
-{printf("Found datatype - STRING");}
+{printf("Found datatype - STRING\n");}
 	YY_BREAK
 case 129:
 YY_RULE_SETUP
 #line 173 "lexer.l"
-{printf("Found datatype - CHAR");}
+{printf("Found datatype - CHAR\n");}
 	YY_BREAK
 case 130:
 YY_RULE_SETUP
 #line 174 "lexer.l"
-{printf("Found datatype - BOOLEAN");}
+{printf("Found datatype - BOOLEAN\n");}
 	YY_BREAK
 case 131:
 YY_RULE_SETUP
 #line 175 "lexer.l"
-{printf("Found datatype - ARRAY");}
+{printf("Found datatype - ARRAY\n");}
 	YY_BREAK
 case 132:
 YY_RULE_SETUP
 #line 176 "lexer.l"
-{printf("Found datatype - INTARRAY");}
+{printf("Found datatype - INTARRAY\n");}
 	YY_BREAK
 case 133:
 YY_RULE_SETUP
 #line 177 "lexer.l"
-{printf("Found datatype - FLOATARRAY");}
+{printf("Found datatype - FLOATARRAY\n");}
 	YY_BREAK
 case 134:
 YY_RULE_SETUP
 #line 178 "lexer.l"
-{printf("Found datatype - DOUBLEARRAY");}
+{printf("Found datatype - DOUBLEARRAY\n");}
 	YY_BREAK
 case 135:
 YY_RULE_SETUP
 #line 179 "lexer.l"
-{printf("Found datatype - LONGARRAY");}
+{printf("Found datatype - LONGARRAY\n");}
 	YY_BREAK
 case 136:
 YY_RULE_SETUP
 #line 180 "lexer.l"
-{printf("Found datatype - SHORTARRAY");}
+{printf("Found datatype - SHORTARRAY\n");}
 	YY_BREAK
 case 137:
 YY_RULE_SETUP
 #line 181 "lexer.l"
-{printf("Found datatype - BYTEARRAY");}
+{printf("Found datatype - BYTEARRAY\n");}
 	YY_BREAK
 case 138:
 YY_RULE_SETUP
 #line 182 "lexer.l"
-{printf("Found datatype - BOOLEANARRAY");}
+{printf("Found datatype - BOOLEANARRAY\n");}
 	YY_BREAK
 case 139:
 YY_RULE_SETUP
@@ -1960,7 +1960,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case YY_STATE_EOF(MLCOMMENT):
 #line 197 "lexer.l"
-{ printf("ERROR End of file found after \"%s\", but expected */", commentText); }
+{ printf("ERROR! End of file found after \"%s\", but expected */\n", commentText); }
 	YY_BREAK
 case 146:
 YY_RULE_SETUP
@@ -1982,7 +1982,7 @@ YY_RULE_SETUP
 case 148:
 YY_RULE_SETUP
 #line 211 "lexer.l"
-{  printf("Illegal underscore", yytext);}
+{  printf("ERROR! Illegal underscore\n", yytext);}
 	YY_BREAK
 case 149:
 YY_RULE_SETUP
@@ -1995,7 +1995,7 @@ YY_RULE_SETUP
 case 150:
 YY_RULE_SETUP
 #line 218 "lexer.l"
-{  printf("Illegal underscore", yytext);}
+{  printf("ERROR! Illegal underscore\n", yytext);}
 	YY_BREAK
 case 151:
 YY_RULE_SETUP
@@ -2028,17 +2028,17 @@ YY_RULE_SETUP
 case 154:
 YY_RULE_SETUP
 #line 239 "lexer.l"
-{  printf("Illegal underscore", yytext);}
+{  printf("ERROR! Illegal underscore\n", yytext);}
 	YY_BREAK
 case 155:
 YY_RULE_SETUP
 #line 241 "lexer.l"
-{ printf("Found boolean literal - TRUE"); }
+{ printf("Found boolean literal - TRUE\n"); }
 	YY_BREAK
 case 156:
 YY_RULE_SETUP
 #line 242 "lexer.l"
-{ printf("Found boolean literal - FALSE"); }
+{ printf("Found boolean literal - FALSE\n"); }
 	YY_BREAK
 case 157:
 YY_RULE_SETUP
@@ -2113,11 +2113,11 @@ case 170:
 /* rule 170 can match eol */
 YY_RULE_SETUP
 #line 261 "lexer.l"
-{ printf("ERROR New line found, but expected \'"); }
+{ printf("ERROR! New line found, but expected \'\n"); }
 	YY_BREAK
 case YY_STATE_EOF(CHAR):
 #line 262 "lexer.l"
-{ printf("ERROR End of file found, but expected \'"); }
+{ printf("ERROR! End of file found, but expected \'\n"); }
 	YY_BREAK
 case 171:
 /* rule 171 can match eol */
@@ -2200,11 +2200,11 @@ case 184:
 /* rule 184 can match eol */
 YY_RULE_SETUP
 #line 286 "lexer.l"
-{ printf("ERROR New line found after \"%s\", but \" expected", str); }
+{ printf("ERROR! New line found after \"%s\", but \" expected\n", str); }
 	YY_BREAK
 case YY_STATE_EOF(STRING):
 #line 287 "lexer.l"
-{ printf("ERROR End of file found after \"%s\", but \" expected", str); }
+{ printf("ERROR! End of file found after \"%s\", but \" expected\n", str); }
 	YY_BREAK
 case 185:
 /* rule 185 can match eol */
@@ -2263,7 +2263,7 @@ YY_RULE_SETUP
 case 190:
 YY_RULE_SETUP
 #line 324 "lexer.l"
-{ printf("ERROR! Found empty complex template"); }
+{ printf("ERROR! Found empty complex template\n"); }
 	YY_BREAK
 case 191:
 YY_RULE_SETUP
@@ -2295,13 +2295,13 @@ YY_RULE_SETUP
 	YY_BREAK
 case YY_STATE_EOF(MLSTRING):
 #line 337 "lexer.l"
-{ printf("ERROR! Found end of file, but expected \"\"\""); }
+{ printf("ERROR! Found end of file, but expected \"\"\"\n"); }
 	YY_BREAK
 case 195:
 /* rule 195 can match eol */
 YY_RULE_SETUP
 #line 340 "lexer.l"
-{ printf("Found new line"); }
+{ printf("Found new line\n"); }
 	YY_BREAK
 case 196:
 YY_RULE_SETUP
@@ -2355,11 +2355,11 @@ case YY_STATE_EOF(SLCOMMENT):
 {
             if (complexTemplateNestingLevel > 0) 
             {
-                printf("ERROR! Found end of file, but expected }");
+                printf("ERROR! Found end of file, but expected }\n");
             }
             else 
             {
-                printf("Found end of file");
+                printf("Found end of file\n");
             }
         }
 	YY_BREAK
