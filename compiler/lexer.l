@@ -257,8 +257,8 @@ false { printf("Found boolean literal - FALSE"); }
                             printf("Found char literal - %c\n", tmpChar);
                             BEGIN(INITIAL);
                         }
-<STRING>\n              { printf("ERROR New line found, but expected \'"); }
-<STRING><<EOF>>         { printf("ERROR End of file found, but expected \'"); }
+<CHAR>\n              { printf("ERROR New line found, but expected \'"); }
+<CHAR><<EOF>>         { printf("ERROR End of file found, but expected \'"); }
 
 \"                  {   
                         str[0] = 0;
