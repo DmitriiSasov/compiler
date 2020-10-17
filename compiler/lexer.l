@@ -244,7 +244,7 @@ false { printf("Found boolean literal - FALSE"); }
 \'                      { tmpChar = 0 ; BEGIN(CHAR); }
 <CHAR>[^\n\\\']         { tmpChar = yytext[0]; }
 <CHAR>\\u{HEX_DIGIT}{4} {; // Преобразовать юникод строку в юникод символ
-                        }
+                        } 
 <CHAR>\\t               { tmpChar = '\t'; }
 <CHAR>\\b               { tmpChar = '\b'; }
 <CHAR>\\r               { tmpChar = '\r'; }
@@ -264,7 +264,7 @@ false { printf("Found boolean literal - FALSE"); }
                         str[0] = 0;
                         BEGIN(STRING);
                     }
-<STRING>[^\\\"\n]+  { strcat(str, yytext); }
+<STRING>[^\\\"\n$]+  { strcat(str, yytext); }
 <STRING>\\n         { strcat(str, "\n"); }
 <STRING>\\\\        { strcat(str, "\\"); }
 <STRING>\\\"        { strcat(str, "\""); }
