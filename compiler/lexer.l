@@ -257,8 +257,13 @@ false { printf("Found boolean literal - FALSE"); }
                             printf("Found char literal - %c\n", tmpChar);
                             BEGIN(INITIAL);
                         }
-<CHAR>\n              { printf("ERROR New line found, but expected \'"); }
-<CHAR><<EOF>>         { printf("ERROR End of file found, but expected \'"); }
+<CHAR>\n                { printf("ERROR New line found, but expected \'"); }
+<CHAR><<EOF>>           { printf("ERROR End of file found, but expected \'"); }
+
+<CHAR,STRING>\\([^utbrn'"\\$]|(u({HEX_DIGIT}{5,}|{HEX_DIGIT}{0,3}))) { 
+                          printf("ERROR! Found illegal escape %s\n", yytext); 
+                        }
+<CHAR>..+               { printf("ERROR! Too many symbols in character literal %s\n", yytext); }
 
 \"                  {   
                         str[0] = 0;
