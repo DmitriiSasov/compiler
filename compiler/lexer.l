@@ -183,14 +183,14 @@ BooleanArray    {printf("Found datatype - BOOLEANARRAY\n");}
                     
 "//"				{   commentText[0] = 0; BEGIN(SLCOMMENT);}
 <SLCOMMENT>[^\n]+	{   strcat(commentText, yytext);}
-<SLCOMMENT>\n		{   printf("Found comment - %s\n", commentText);
+<SLCOMMENT>\n		{   printf("Found comment - \"%s\"\n", commentText);
 					        BEGIN(INITIAL);}
 
 "/*"				{	commentText[0] = 0; BEGIN(MLCOMMENT);}
 <MLCOMMENT>[^*]+	{   strcat(commentText, yytext);}
 <MLCOMMENT>\*+[^/]* {   strcat(commentText, yytext);}
 <MLCOMMENT>\*+\/	{   
-                        printf("Found comment - %s\n", commentText);
+                        printf("Found comment - \"%s\"\n", commentText);
 					    BEGIN(INITIAL); 
                     }
 <MLCOMMENT><<EOF>>	{ printf("ERROR! End of file found after \"%s\", but expected */\n", commentText); }
@@ -263,7 +263,7 @@ false { printf("Found boolean literal - FALSE\n"); }
 <CHAR,STRING>\\([^utbrn'"\\$]|(u({HEX_DIGIT}{5,}|{HEX_DIGIT}{0,3}))) { 
                           printf("ERROR! Found illegal escape %s\n", yytext); 
                         }
-<CHAR>..+               { printf("ERROR! Too many symbols in character literal %s\n", yytext); }
+<CHAR>.[^'\n]+          { printf("ERROR! Too many symbols in character literal %s\n", yytext); }
 
 \"                  {   
                         str[0] = 0;
@@ -279,7 +279,7 @@ false { printf("Found boolean literal - FALSE\n"); }
 <STRING>\\$         { strcat(str, "\$"); }
 <STRING>\\\'        { strcat(str, "\'"); }
 <STRING>\"          { 
-                        printf("Found string literal %s\n", str);
+                        printf("Found string literal \"%s\"\n", str);
                         BEGIN(INITIAL);
                     }
 <STRING>\n          { printf("ERROR! New line found after \"%s\", but \" expected\n", str); }
@@ -293,29 +293,29 @@ false { printf("Found boolean literal - FALSE\n"); }
                                     }
                                     else 
                                     {
-                                        printf("Found string literal %s\n", str);
+                                        printf("Found string literal \"%s\"\n", str);
                                         printf("Found operator - \+ ADD\n");
-                                        printf("Found identificator - %s\n", yytext + 1);
+                                        printf("Found identificator - \"%s\"\n", yytext + 1);
                                         printf("Found operator - \+ ADD\n");
                                         str[0] = 0;
                                     }                            
                                 }
 
 <STRING,MLSTRING>\$`[^\n\\`\[\]]+` {
-                               printf("Found string literal %s\n", str);
+                               printf("Found string literal \"%s\"\n", str);
                                printf("Found operator - \+ ADD\n");
                                str[0] = 0;
                                strcpy(str, yytext + 2);
                                str[yyleng - 2 - 1] = 0;
-                               printf("Found identificator - %s\n", str);
+                               printf("Found identificator - \"%s\"\n", str);
                                printf("Found operator - \+ ADD\n");
                                str[0] = 0;                            
                           }
 
-<STRING,MLSTRING>\$`[^`\n]*[\\\[\]][^`\n]*` { printf("ERROR! Found invalid identificator in template %s\n", yytext); }
+<STRING,MLSTRING>\$`[^`\n]*[\\\[\]][^`\n]*` { printf("ERROR! Found invalid identificator in template \"%s\"\n", yytext); }
 
 <STRING,MLSTRING>\$\{          {
-                                    printf("Found string literal %s\n", str);
+                                    printf("Found string literal \"%s\"\n", str);
                                     printf("Found operator - \+ ADD\n");
                                     ++complexTemplateNestingLevel;
                                     BEGIN(INITIAL);
@@ -331,14 +331,14 @@ false { printf("Found boolean literal - FALSE\n"); }
 <MLSTRING>\"{3,}    {
                         strcat(str, yytext);
                         str[strlen(str - 3)] = 0;
-                        printf("Found multi line string literal %s\n", str);
+                        printf("Found multi line string literal \"%s\"\n", str);
                     }
 <MLSTRING><<EOF>>   { printf("ERROR! Found end of file, but expected \"\"\"\n"); }
 
 
 \n { printf("Found new line\n"); }
 
-[a-zA-Z_]\w* { printf("Found identificator - %s\n", yytext); }
+[a-zA-Z_][a-zA-Z_0-9]* { printf("Found identificator - \"%s\"\n", yytext); }
 
 ``                              { printf("ERROR! Found empty identificator name\n"); }
 "`"                             {
@@ -350,7 +350,7 @@ false { printf("Found boolean literal - FALSE\n"); }
 <IDENTIFICATOR>[\\\[\]]         { printf("ERROR! There is an illegal character %s In string %s \n", yytext, str); }
 <IDENTIFICATOR><<EOF>>               { printf("ERROR! In string %s expected `\n", str); }
 <IDENTIFICATOR>`                {
-                                    printf("Found identificator - %s\n", str);
+                                    printf("Found identificator - \"%s\"\n", str);
                                     BEGIN(INITIAL);
                                 }
 
@@ -416,7 +416,7 @@ int bin_from_str_to_dec(const char * str) {
 }
 
 void main(int argc, char **argv ){
-	yyin = fopen(argv[1], "r" );
+    yyin = fopen(argv[1], "r" );
 
     yylex();
     return;
