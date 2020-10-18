@@ -2275,7 +2275,7 @@ YY_RULE_SETUP
 case 189:
 YY_RULE_SETUP
 #line 326 "lexer.l"
-{ printf("ERROR! Found invalid identificator in template \"%s\"\n", yytext); }
+{ printf("ERROR! Found invalid identificator in template %s\n", yytext + 1); }
 	YY_BREAK
 case 190:
 YY_RULE_SETUP
