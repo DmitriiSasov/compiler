@@ -296,7 +296,7 @@ false { printf("Found boolean literal - FALSE\n"); }
 <STRING><<EOF>>     { printf("ERROR! End of file found after \"%s\", but \" expected\n", str); }
 <STRING>\\\n        {;//Делать ничего не нужно
                     }
-<STRING>\$[a-zA-Z_]\w*  {
+<STRING>\$[a-zA-Z_][a-zA-Z_0-9]*  {
                             if (!isNotKeyword(yytext + 1))
                             {
                                 printf("ERROR! Found keyword \"%s\", but expected identificator\n", yytext + 1);
@@ -322,7 +322,7 @@ false { printf("Found boolean literal - FALSE\n"); }
                                str[0] = 0;                            
                           }
 
-<STRING,MLSTRING>\$`[^`\n]*[\\\[\]][^`\n]*` { printf("ERROR! Found invalid identificator in template \"%s\"\n", yytext); }
+<STRING,MLSTRING>\$`[^`\n]*[\\\[\]][^`\n]*` { printf("ERROR! Found invalid identificator in template %s\n", yytext + 1); }
 
 <STRING>\$\{                    {
                                     printf("Found string literal \"%s\"\n", str);
@@ -345,7 +345,7 @@ false { printf("Found boolean literal - FALSE\n"); }
                         printf("Found multi line string literal \"%s\"\n", str);
                         BEGIN(INITIAL);
                     }
-<MLSTRING>\$[a-zA-Z_]\w* {
+<MLSTRING>\$[a-zA-Z_][a-zA-Z_0-9]* {
                             if (!isNotKeyword(yytext + 1))
                             {
                                 printf("ERROR! Found keyword \"%s\", but expected identificator\n", yytext + 1);
