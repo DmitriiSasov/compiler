@@ -411,6 +411,8 @@ false { printf("Found boolean literal - FALSE\n"); }
             }
         }
 
+[\r\t\f\v ]+ {;}
+.            {printf("Found unidentified symbol \'%s\'\n", yytext);}
 
 %%
 
