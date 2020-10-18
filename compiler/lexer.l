@@ -269,7 +269,7 @@ false { printf("Found boolean literal - FALSE\n"); }
 <CHAR>\n                { printf("ERROR! New line found, but expected \'\n"); }
 <CHAR><<EOF>>           { printf("ERROR! End of file found, but expected \'\n"); }
 
-<CHAR,STRING>\\([^utbrn'"\\$]|(u({HEX_DIGIT}{5,}|{HEX_DIGIT}{0,3}))) { 
+<CHAR>\\([^utbrn'"\\$]|(u({HEX_DIGIT}{5,}|{HEX_DIGIT}{0,3}))) { 
                           printf("ERROR! Found illegal escape %s\n", yytext); 
                         }
 <CHAR>[^'\n][^'\n]+          { printf("ERROR! Too many symbols in character literal %s\n", yytext); }
@@ -291,6 +291,7 @@ false { printf("Found boolean literal - FALSE\n"); }
                         printf("Found string literal \"%s\"\n", str);
                         BEGIN(INITIAL);
                     }
+<STRING>\\([^utbrn'"\\$]|(u{HEX_DIGIT}{0,3})) { printf("ERROR! Found illegal escape %s\n", yytext); }
 <STRING>\n          { printf("ERROR! New line found after \"%s\", but \" expected\n", str); }
 <STRING><<EOF>>     { printf("ERROR! End of file found after \"%s\", but \" expected\n", str); }
 <STRING>\\\n        {;//Делать ничего не нужно
@@ -409,6 +410,7 @@ false { printf("Found boolean literal - FALSE\n"); }
                 return 0;
             }
         }
+
 
 %%
 
