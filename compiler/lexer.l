@@ -216,14 +216,14 @@ BooleanArray    {printf("Found datatype - BOOLEANARRAY\n");}
                                 printf("Found decimal number - %ld\n", numLong);
                              }
 
-([1-9](_*{DIGIT})*|0)_+|([1-9](_*{DIGIT})*|0)_*[lL]_+ {  printf("ERROR! Illegal underscore\n", yytext);}
+([1-9](_*{DIGIT})*|0)_+|([1-9](_*{DIGIT})*|0)_*[lL]_+ {  printf("ERROR! Illegal underscore\"%s\"\n", yytext);}
 
 
 0[xX]{HEX_DIGIT}(_*{HEX_DIGIT})*    { remove_all_inputs_of_symbol( yytext + 2, tmp,'_');
                                       sscanf(tmp,"%x",&numInt);
                                       printf("Found hex number - %d\n", numInt);
                                     }
-0[xX]{HEX_DIGIT}(_*{HEX_DIGIT})*_+  {  printf("ERROR! Illegal underscore\n", yytext);}
+0[xX]{HEX_DIGIT}(_*{HEX_DIGIT})*_+  {  printf("ERROR! Illegal underscore\"%s\"\n", yytext);}
 
 (0|[1-9](_*{DIGIT})*)(\.{DIGIT}(_*{DIGIT})*)?([eE][+-]?[{DIGIT}](_*{DIGIT})*)? { 
                                     remove_all_inputs_of_symbol( yytext, tmp, '_'); 
@@ -244,7 +244,7 @@ BooleanArray    {printf("Found datatype - BOOLEANARRAY\n");}
                                       numInt = bin_from_str_to_dec(tmp);
                                       printf("Found binary number - %d\n", numInt); 
                                     }
-0[bB]{BIN_DIGIT}(_*{BIN_DIGIT})*_+  {  printf("ERROR! Illegal underscore\n", yytext);}
+0[bB]{BIN_DIGIT}(_*{BIN_DIGIT})*_+  {  printf("ERROR! Illegal underscore \"%s\"\n", yytext);}
 
 true { printf("Found boolean literal - TRUE\n"); }
 false { printf("Found boolean literal - FALSE\n"); }
@@ -263,16 +263,16 @@ false { printf("Found boolean literal - FALSE\n"); }
 <CHAR>\\\\              { tmpChar = '\\'; }
 <CHAR>\\\$              { tmpChar = '\$'; }
 <CHAR>\'                { 
-                            printf("Found char literal - %c\n", tmpChar);
+                            printf("Found char literal - \'%c\'\n", tmpChar);
                             BEGIN(INITIAL);
                         }
 <CHAR>\n                { printf("ERROR! New line found, but expected \'\n"); }
 <CHAR><<EOF>>           { printf("ERROR! End of file found, but expected \'\n"); }
 
 <CHAR>\\([^utbrn'"\\$]|(u({HEX_DIGIT}{5,}|{HEX_DIGIT}{0,3}))) { 
-                          printf("ERROR! Found illegal escape %s\n", yytext); 
+                          printf("ERROR! Found illegal escape \'%s\'\n", yytext); 
                         }
-<CHAR>[^'\n][^'\n]+          { printf("ERROR! Too many symbols in character literal %s\n", yytext); }
+<CHAR>[^'\n][^'\n]+          { printf("ERROR! Too many symbols in character literal \'%s\'\n", yytext); }
 
 \"                  {   
                         str[0] = 0;
@@ -291,7 +291,7 @@ false { printf("Found boolean literal - FALSE\n"); }
                         printf("Found string literal \"%s\"\n", str);
                         BEGIN(INITIAL);
                     }
-<STRING>\\([^utbrn'"\\$]|(u{HEX_DIGIT}{0,3})) { printf("ERROR! Found illegal escape %s\n", yytext); }
+<STRING>\\([^utbrn'"\\$]|(u{HEX_DIGIT}{0,3})) { printf("ERROR! Found illegal escape \"%s\"\n", yytext); }
 <STRING>\n          { printf("ERROR! New line found after \"%s\", but \" expected\n", str); }
 <STRING><<EOF>>     { printf("ERROR! End of file found after \"%s\", but \" expected\n", str); }
 <STRING>\\\n        {;//Делать ничего не нужно
@@ -299,7 +299,7 @@ false { printf("Found boolean literal - FALSE\n"); }
 <STRING>\$[a-zA-Z_]\w*  {
                             if (!isNotKeyword(yytext + 1))
                             {
-                                printf("ERROR! Found keyword, but expected identificator\n", yytext + 1);
+                                printf("ERROR! Found keyword \"%s\", but expected identificator\n", yytext + 1);
                             }
                             else 
                             {
@@ -348,7 +348,7 @@ false { printf("Found boolean literal - FALSE\n"); }
 <MLSTRING>\$[a-zA-Z_]\w* {
                             if (!isNotKeyword(yytext + 1))
                             {
-                                printf("ERROR! Found keyword, but expected identificator\n", yytext + 1);
+                                printf("ERROR! Found keyword \"%s\", but expected identificator\n", yytext + 1);
                             }
                             else 
                             {
@@ -391,8 +391,8 @@ false { printf("Found boolean literal - FALSE\n"); }
                                 }
 <IDENTIFICATOR>[^\n\\`\[\]]+    { strcat(str, yytext); }
 <IDENTIFICATOR>\n               { printf("ERROR! In string %s expected `\n", str); }
-<IDENTIFICATOR>[\\\[\]]         { printf("ERROR! There is an illegal character %s In string %s \n", yytext, str); }
-<IDENTIFICATOR><<EOF>>               { printf("ERROR! In string %s expected `\n", str); }
+<IDENTIFICATOR>[\\\[\]]         { printf("ERROR! There is an illegal character \'%s\' in identificator \"%s\" \n", yytext, str); }
+<IDENTIFICATOR><<EOF>>               { printf("ERROR! In string \"%s\" expected `\n", str); }
 <IDENTIFICATOR>`                {
                                     printf("Found identificator - \"%s\"\n", str);
                                     BEGIN(INITIAL);

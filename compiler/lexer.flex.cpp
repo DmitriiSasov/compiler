@@ -2003,7 +2003,7 @@ YY_RULE_SETUP
 case 148:
 YY_RULE_SETUP
 #line 220 "lexer.l"
-{  printf("ERROR! Illegal underscore\n", yytext);}
+{  printf("ERROR! Illegal underscore\"%s\"\n", yytext);}
 	YY_BREAK
 case 149:
 YY_RULE_SETUP
@@ -2016,7 +2016,7 @@ YY_RULE_SETUP
 case 150:
 YY_RULE_SETUP
 #line 227 "lexer.l"
-{  printf("ERROR! Illegal underscore\n", yytext);}
+{  printf("ERROR! Illegal underscore\"%s\"\n", yytext);}
 	YY_BREAK
 case 151:
 YY_RULE_SETUP
@@ -2049,7 +2049,7 @@ YY_RULE_SETUP
 case 154:
 YY_RULE_SETUP
 #line 248 "lexer.l"
-{  printf("ERROR! Illegal underscore\n", yytext);}
+{  printf("ERROR! Illegal underscore \"%s\"\n", yytext);}
 	YY_BREAK
 case 155:
 YY_RULE_SETUP
@@ -2126,7 +2126,7 @@ case 169:
 YY_RULE_SETUP
 #line 266 "lexer.l"
 { 
-                            printf("Found char literal - %c\n", tmpChar);
+                            printf("Found char literal - \'%c\'\n", tmpChar);
                             BEGIN(INITIAL);
                         }
 	YY_BREAK
@@ -2145,13 +2145,13 @@ case 171:
 YY_RULE_SETUP
 #line 273 "lexer.l"
 { 
-                          printf("ERROR! Found illegal escape %s\n", yytext); 
+                          printf("ERROR! Found illegal escape \'%s\'\n", yytext); 
                         }
 	YY_BREAK
 case 172:
 YY_RULE_SETUP
 #line 276 "lexer.l"
-{ printf("ERROR! Too many symbols in character literal %s\n", yytext); }
+{ printf("ERROR! Too many symbols in character literal \'%s\'\n", yytext); }
 	YY_BREAK
 case 173:
 YY_RULE_SETUP
@@ -2221,7 +2221,7 @@ case 184:
 /* rule 184 can match eol */
 YY_RULE_SETUP
 #line 295 "lexer.l"
-{ printf("ERROR! Found illegal escape %s\n", yytext); }
+{ printf("ERROR! Found illegal escape \"%s\"\n", yytext); }
 	YY_BREAK
 case 185:
 /* rule 185 can match eol */
@@ -2246,7 +2246,7 @@ YY_RULE_SETUP
 {
                             if (!isNotKeyword(yytext + 1))
                             {
-                                printf("ERROR! Found keyword, but expected identificator\n", yytext + 1);
+                                printf("ERROR! Found keyword \"%s\", but expected identificator\n", yytext + 1);
                             }
                             else 
                             {
@@ -2332,7 +2332,7 @@ YY_RULE_SETUP
 {
                             if (!isNotKeyword(yytext + 1))
                             {
-                                printf("ERROR! Found keyword, but expected identificator\n", yytext + 1);
+                                printf("ERROR! Found keyword \"%s\", but expected identificator\n", yytext + 1);
                             }
                             else 
                             {
@@ -2411,11 +2411,11 @@ YY_RULE_SETUP
 case 206:
 YY_RULE_SETUP
 #line 395 "lexer.l"
-{ printf("ERROR! There is an illegal character %s In string %s \n", yytext, str); }
+{ printf("ERROR! There is an illegal character \'%s\' in identificator \"%s\" \n", yytext, str); }
 	YY_BREAK
 case YY_STATE_EOF(IDENTIFICATOR):
 #line 396 "lexer.l"
-{ printf("ERROR! In string %s expected `\n", str); }
+{ printf("ERROR! In string \"%s\" expected `\n", str); }
 	YY_BREAK
 case 207:
 YY_RULE_SETUP
