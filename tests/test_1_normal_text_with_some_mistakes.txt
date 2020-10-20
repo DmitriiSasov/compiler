@@ -1,0 +1,42 @@
+val e = "das"
+
+fun main(args: Array<String>) {
+
+    val a = "Name"
+    val text = "Hello ${" ${ "${a + a}" 
+    
+    } " 
+        
+    } World"
+    val text2 = "Hello " + " ${ a + a } " + " World"
+    val text3 = "Hello " + " " + a + a + " " + " World"
+    val newText = '1'
+    val rewre = "\u1231"
+    //newFun()
+    
+    /*println(text)
+    println(text2)
+    println(text3)*/
+    println(newText)
+}
+
+
+fun newFun(){
+    val `while= 6 = 6` = '6';
+    val `{} ` = """
+        ${
+
+        `while= 6 = 6`
+    }
+       |
+       |\н\н\нр\н\р\нр\н\р\н\\рн\
+       | 
+    
+    """"""
+    val `     ads` = "0"
+    var b = "$``"
+    val `asd#,!!!if` = '0xFF'
+    print(`{} `);
+    
+}
+val m = "$[]"
