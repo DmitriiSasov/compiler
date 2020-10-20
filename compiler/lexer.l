@@ -23,6 +23,7 @@ char commentText[1000];
 char str[1000];
 char tmpChar;
 char * tmp = 0;
+char forNum[100];
 int complexTemplateNestingLevel = 0; //Уровень вложенности для сложных шаблонов ${}
 bool isMLString = false;    //Встретилась ли интерполяция в многострочной строковой константе
 %}
@@ -205,46 +206,90 @@ BooleanArray    {printf("Found datatype - BOOLEANARRAY\n");}
 <MLCOMMENT><<EOF>>	{ printf("ERROR! End of file found after \"%s\", but expected */\n", commentText); }
 
 
-[1-9](_*{DIGIT})*|0       {  remove_all_inputs_of_symbol( yytext, tmp, '_');
-                                numInt = atoi(tmp);
-                                printf("Found decimal number - %d\n", numInt);
-                             }
-
-([1-9](_*{DIGIT})*|0)[lL]    {  remove_all_inputs_of_symbol( yytext, tmp, '_');
-                                tmp[strlen(tmp)-1] = 0;
-                                numLong = atol(tmp);
-                                printf("Found decimal number - %ld\n", numLong);
-                             }
-
-([1-9](_*{DIGIT})*|0)_+|([1-9](_*{DIGIT})*|0)_*[lL]_+ {  printf("ERROR! Illegal underscore\"%s\"\n", yytext);}
 
 
-0[xX]{HEX_DIGIT}(_*{HEX_DIGIT})*    { remove_all_inputs_of_symbol( yytext + 2, tmp,'_');
-                                      sscanf(tmp,"%x",&numInt);
+([1-9](_*{DIGIT})*|0)[fF]           { remove_all_inputs_of_symbol( yytext, forNum, '_'); 
+                                      forNum[strlen(forNum)-1] = 0;
+                                      numFloat = (float)atof(forNum);
+                                      printf("Found float number - %f\n", numFloat);
+                                    }
+([1-9](_*{DIGIT})*|0)(\.|[Ee][+-]?){DIGIT}(_*{DIGIT})* {
+                                      remove_all_inputs_of_symbol( yytext, forNum, '_'); 
+                                      numDouble = atof(forNum);
+                                      printf("Found double number - %f\n", numDouble);  
+                                    }
+
+([1-9](_*{DIGIT})*|0)(\.|[eE][+-]?){DIGIT}(_*{DIGIT})*[fF] {
+                                      remove_all_inputs_of_symbol( yytext, forNum, '_'); 
+                                      forNum[strlen(forNum)-1] = 0;
+                                      numFloat = (float)atof(forNum);
+                                      printf("Found float number - %f\n", numFloat);
+                                    }
+
+([1-9](_*{DIGIT})*|0)\.{DIGIT}(_*{DIGIT})*[eE][+-]?{DIGIT}(_*{DIGIT})* {
+                                      remove_all_inputs_of_symbol( yytext, forNum, '_'); 
+                                      numDouble = atof(forNum);
+                                      printf("Found double number - %f\n", numDouble);  
+                                    }
+
+([1-9](_*{DIGIT})*|0)\.{DIGIT}(_*{DIGIT})*[eE][+-]?{DIGIT}(_*{DIGIT})*[fF] {
+                                      remove_all_inputs_of_symbol( yytext, forNum, '_'); 
+                                      forNum[strlen(forNum)-1] = 0;
+                                      numFloat = (float)atof(forNum);
+                                      printf("Found float number - %f\n", numFloat); 
+                                    }
+
+
+[1-9](_*{DIGIT})*|0                 { remove_all_inputs_of_symbol( yytext, forNum, '_');
+                                      numInt = atoi(forNum);
+                                      printf("Found decimal number - %d\n", numInt);
+                                    }
+
+([1-9](_*{DIGIT})*|0)L              { remove_all_inputs_of_symbol( yytext, forNum, '_');
+                                      forNum[strlen(forNum)-1] = 0;
+                                      numLong = atol(forNum);
+                                      printf("Found decimal number - %ld\n", numLong);
+                                    }
+
+
+0[xX]{HEX_DIGIT}(_*{HEX_DIGIT})*    { remove_all_inputs_of_symbol( yytext + 2, forNum,'_');
+                                      sscanf(forNum,"%x",&numInt);
                                       printf("Found hex number - %d\n", numInt);
                                     }
-0[xX]{HEX_DIGIT}(_*{HEX_DIGIT})*_+  {  printf("ERROR! Illegal underscore\"%s\"\n", yytext);}
+                                    
 
-(0|[1-9](_*{DIGIT})*)(\.{DIGIT}(_*{DIGIT})*)?([eE][+-]?[{DIGIT}](_*{DIGIT})*)? { 
-                                    remove_all_inputs_of_symbol( yytext, tmp, '_'); 
-                                    numDouble = atof(tmp);
-                                    printf("Found decimal number - %.2f\n", numDouble);                                    
-                                    }
-
-
-(0|[1-9](_*{DIGIT})*)(\.{DIGIT}(_*{DIGIT})*)?([eE][+-]?[{DIGIT}](_*{DIGIT})*)?[fF] { 
-                                    remove_all_inputs_of_symbol( yytext, tmp, '_'); 
-                                    tmp[strlen(tmp)-1] = 0;
-                                    numFloat = (float)atof(tmp);
-                                    printf("Found decimal number - %.2f\n", numFloat);
-}
-
-0[bB]{BIN_DIGIT}(_*{BIN_DIGIT})*    { remove_all_inputs_of_symbol( yytext + 2, tmp, '_');
-                                      tmp = strchr(tmp, 1);
+0[bB]{BIN_DIGIT}(_*{BIN_DIGIT})*    { remove_all_inputs_of_symbol( yytext + 2, forNum, '_');
+                                      tmp = forNum;
                                       numInt = bin_from_str_to_dec(tmp);
                                       printf("Found binary number - %d\n", numInt); 
                                     }
+
+
+([1-9](_*{DIGIT})*|0)_+             {  printf("ERROR! Illegal underscore\"%s\"\n", yytext);}
+([1-9](_*{DIGIT})*|0)_*[LfF]_+      {  printf("ERROR! Illegal underscore\"%s\"\n", yytext);}
+
+0[xX]{HEX_DIGIT}(_*{HEX_DIGIT})*_+  {  printf("ERROR! Illegal underscore \"%s\"\n", yytext);}
 0[bB]{BIN_DIGIT}(_*{BIN_DIGIT})*_+  {  printf("ERROR! Illegal underscore \"%s\"\n", yytext);}
+0[xX]_+({HEX_DIGIT}*_*)*            {  printf("ERROR! Illegal underscore \"%s\"\n", yytext);}
+0[bB]_+({BIN_DIGIT}*_*)*            {  printf("ERROR! Illegal underscore \"%s\"\n", yytext);}
+
+([1-9](_*{DIGIT})*|0)_+(\._*|[Ee]_*[+-]?_*){DIGIT}(_*{DIGIT})*_*       { printf("ERROR! Illegal underscore \"%s\"\n", yytext);}
+([1-9](_*{DIGIT})*|0)_*(\._+|[Ee]_+[+-]?_*){DIGIT}(_*{DIGIT})*_*       { printf("ERROR! Illegal underscore \"%s\"\n", yytext);}
+([1-9](_*{DIGIT})*|0)_*(\._+|[Ee]_*[+-]_+){DIGIT}(_*{DIGIT})*_*        { printf("ERROR! Illegal underscore \"%s\"\n", yytext);}
+([1-9](_*{DIGIT})*|0)_*(\._*|[Ee]_*[+-]?_*){DIGIT}(_*{DIGIT})*_+       { printf("ERROR! Illegal underscore \"%s\"\n", yytext);}
+([1-9](_*{DIGIT})*|0)_*(\._*|[Ee]_*[+-]?_*){DIGIT}(_*{DIGIT})*_*[fF]_+ { printf("ERROR! Illegal underscore \"%s\"\n", yytext);}
+
+([1-9](_*{DIGIT})*|0)_+\._*{DIGIT}(_*{DIGIT})*_*[eE]_*[+-]?_*{DIGIT}(_*{DIGIT})*_*       { printf("ERROR! Illegal underscore \"%s\"\n", yytext);}
+([1-9](_*{DIGIT})*|0)_*\._+{DIGIT}(_*{DIGIT})*_*[eE]_*[+-]?_*{DIGIT}(_*{DIGIT})*_*       { printf("ERROR! Illegal underscore \"%s\"\n", yytext);}
+([1-9](_*{DIGIT})*|0)_*\._*{DIGIT}(_*{DIGIT})*_+[eE]_*[+-]?_*{DIGIT}(_*{DIGIT})*_*       { printf("ERROR! Illegal underscore \"%s\"\n", yytext);}
+([1-9](_*{DIGIT})*|0)_*\._*{DIGIT}(_*{DIGIT})*_*[eE]_+[+-]?_*{DIGIT}(_*{DIGIT})*_*       { printf("ERROR! Illegal underscore \"%s\"\n", yytext);}
+([1-9](_*{DIGIT})*|0)_*\._*{DIGIT}(_*{DIGIT})*_*[eE]_*[+-]_+{DIGIT}(_*{DIGIT})*_*        { printf("ERROR! Illegal underscore \"%s\"\n", yytext);}
+([1-9](_*{DIGIT})*|0)_*\._*{DIGIT}(_*{DIGIT})*_*[eE]_*[+-]?_*{DIGIT}(_*{DIGIT})*_+       { printf("ERROR! Illegal underscore \"%s\"\n", yytext);}
+([1-9](_*{DIGIT})*|0)_+\._*{DIGIT}(_*{DIGIT})*_*[eE]_*[+-]?_*{DIGIT}(_*{DIGIT})*_*[fF]_+ { printf("ERROR! Illegal underscore \"%s\"\n", yytext);}
+
+{DIGIT}+[eE][+-]?                    {  printf("ERROR! The value is out of range \"%s\"\n", yytext);}
+{DIGIT}[0-9_]*[a-zA-Z][0-9a-zA-Z_]*  {  printf("ERROR! Unresolved reference \"%s\"\n", yytext);}                               
+
 
 true { printf("Found boolean literal - TRUE\n"); }
 false { printf("Found boolean literal - FALSE\n"); }
@@ -446,12 +491,14 @@ bool isNotKeyword(const char* str)
 }
 
 void remove_all_inputs_of_symbol(const char * str, char * result, char deleted_symbol) {
-	int j = 0;	
+    int j = 0;
+	
     for(int i = 0; str[i] != 0; i++) {
         if(str[i] != deleted_symbol) {
             result[j++] = str[i];
         }
     }
+
     result[j] = 0;
 }
 
