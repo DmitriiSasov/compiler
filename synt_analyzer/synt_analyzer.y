@@ -103,40 +103,66 @@
  
 %%
 
-semi : ';' {$$ = createSemi();}
-| NEW_LINE {$$ = createSemi();}
+program : semis
+| class
+| func
+| program semis
+| program class 
+| program func 
+| EOF
+| program EOF
 
-semis : semi 	{$$ = createSemisList($1);}
-| semis semi	{$$ = addToSemisList($1, $2)}
+class : 
 
-???
-semi : ';' {;}
-| NEW_LINE{;}
-| ';' NEW_LINE{;}
-| EOF {;}
 
-???
-semis : ';' 
-| NEW_LINE {;}
-| ';' NEW_LINE {;}
-| NEW_LINE ';' {;}
-| ';' ';' {;}
-| NEW_LINE NEW_LINE {;}
-| EOF {;}
+classDeclaration: visibilityModifier CLASS ID 
+| CLASS ID
 
-stmt : label
-| declaration
-| assignment
-| whileLoop
-| forLoop
-| doWhileLoop
-| ifStmt
+ 
+classBody: '{' 
+
+visibilityModifier: PUBLIC
+| PRIVATE
+| INTERNAL
+| PROTECTED
+;
+
+
+
+
+func : 
+
+
+func_body : block
+| '=' newLines expr
+| '=' expr
+
+
+block : '{' newLines stmts newLines '}'
+| '{' stmts newLines '}'
+| '{' newLines stmts '}'
+| '{' stmts '}'
+
+stmt : label semis
+| declaration semis
+| assignment semis
+| whileLoop semis
+| forLoop semis
+| doWhileLoop semis
+| ifStmt semis
+| expr semis
 
 
 stmts : stmt
 | stmts stmt
 ;
 
+semis:
+
+semi:
+
+
+!!! Придумать, что делать с подряд идущими ;;;
 
 
 %%
