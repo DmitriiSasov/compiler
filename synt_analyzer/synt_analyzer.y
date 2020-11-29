@@ -1,6 +1,15 @@
+TODO Операторы и геттеры, сеттеры для полей
+%define parse.error verbose
 %{
 	Пролог
 	#include "tree_nodes.h"
+	#include <stdio.h>
+	void yyerror(const char* message) {
+		fprintf(stderr, message);
+	}
+	int yylex();
+	int yyparse();
+	extern FILE* yyin;
 %}
 //Секция объявлений
 %union {
@@ -18,6 +27,8 @@
 	char NewLine;
 	
 }
+
+
 %token NEW_LINE
 %token ID
 %token CLASS
@@ -82,67 +93,120 @@
 %token FINAL
 %token CONST
 %token FILE
+%token INT
+%token FLOAT
+%token DOUBLE
+%token STRING
+%token CHAR
+%token BOOLEAN
+%token ASUM
+%token ASUB
+%token ADIV
+%token AMUL
+%token AMOD
+%token OR
+%token AND
+%token EQ
+%token AEQ
+%token NEQ
+%token NAEQ
+%token LOEQ
+%token MOEQ
+%token TRUE
+%token FALSE
 
-
-
-
+%start program
 
 //Operators
-%right '=' ASUM ASUB ADIV AMUL AMOD
 %left OR
 %left AND
 %left EQ AEQ NEQ NAEQ
 %left '<' '>' LOEQ MOEQ
 %left '+' '-'
 %left '/' '*' '%'
-%left UMINUS
-
-
-%nonassoc ')'
-
+%right UMINUS
+%right UPLUS
+%right '!'
+%left '.'
+%nonassoc '(' ')'
+%nonassoc '[' ']'
  
 %%
 
-program : semis
+program: semis
+| newLines
 | class
-| func
+| method
+| stmt
 | program semis
+| program newLines
 | program class 
-| program func 
-| EOF
-| program EOF
-
-class : classDeclaration classBody
-| classDeclarationWithoutConstructors classBody
+| program method
+| program stmt
 ;
 
-classDeclarationWithoutConstructors: inheritanceModifier visibilityModifier CLASS ID
+class: classDeclaration classBody
+| classDeclarationWithoutInheritance classBody
+;
+
+classDeclarationWithoutInheritance: inheritanceModifier visibilityModifier CLASS ID
 | visibilityModifier inheritanceModifier CLASS ID
 | inheritanceModifier CLASS ID
 | visibilityModifier CLASS ID
 | CLASS ID
 ;
 
-classDeclaration : classDeclarationWithoutConstructors '(' optParamsList ')'
-| classDeclarationWithoutConstructors constructor '(' optParamsList ')'
-| classDeclarationWithoutConstructors visibilityModifier constructor '(' optParamsList ')'
-| classDeclarationWithoutConstructors '(' optParamsList ')' ':' ID '(' optParamsList ')'
-| classDeclarationWithoutConstructors constructor '(' optFormalParams ')' ':' ID '(' optFactParams ')'
-| classDeclarationWithoutConstructors visibilityModifier constructor '(' optFormalParams ')' ':' ID '(' optFactParams ')'
+classDeclaration: classDeclarationWithoutInheritance ':' ID
 ;
  
 classBody: '{' classMembersList '}'
+;
 
 classMembersList: /* empty */
-| classMembersList property
+| classMembersList stmt
 | classMembersList method
 | classMembersList initializer
 | classMembersList constructor
-| property
 | method
 | initializer
 | constructor
+| stmt
 ;
+
+/*
+property: valDeclaration
+| varDeclaration
+| visibilityModifier inheritanceModifier valDeclaration
+| visibilityModifier inheritanceModifier varDeclaration
+| inheritanceModifier visibilityModifier valDeclaration
+| inheritanceModifier visibilityModifier varDeclaration 
+| visibilityModifier varDeclaration
+| visibilityModifier valDeclaration
+| inheritanceModifier valDeclaration
+| inheritanceModifier varDeclaration
+| memberModifier valDeclaration
+| memberModifier varDeclaration
+| memberModifier visibilityModifier inheritanceModifier valDeclaration
+| visibilityModifier memberModifier inheritanceModifier valDeclaration
+| visibilityModifier inheritanceModifier memberModifier valDeclaration
+| memberModifier visibilityModifier inheritanceModifier varDeclaration
+| visibilityModifier memberModifier inheritanceModifier varDeclaration
+| visibilityModifier inheritanceModifier memberModifier varDeclaration
+| memberModifier inheritanceModifier visibilityModifier valDeclaration
+| inheritanceModifier memberModifier visibilityModifier valDeclaration
+| inheritanceModifier visibilityModifier memberModifier valDeclaration
+| memberModifier inheritanceModifier visibilityModifier varDeclaration
+| inheritanceModifier memberModifier visibilityModifier varDeclaration
+| inheritanceModifier visibilityModifier memberModifier varDeclaration
+| memberModifier visibilityModifier varDeclaration
+| visibilityModifier memberModifier varDeclaration
+| memberModifier visibilityModifier valDeclaration
+| visibilityModifier memberModifier valDeclaration
+| memberModifier inheritanceModifier varDeclaration
+| inheritanceModifier memberModifier varDeclaration
+| memberModifier inheritanceModifier valDeclaration
+| inheritanceModifier memberModifier valDeclaration
+;*/
 
 property: valDeclaration
 | varDeclaration
@@ -178,6 +242,7 @@ property: valDeclaration
 | inheritanceModifier memberModifier valDeclaration
 ;
 
+/*
 method: funcDeclaration ';'
 | func
 | visibilityModifier inheritanceModifier funcDeclaration ';'
@@ -210,6 +275,30 @@ method: funcDeclaration ';'
 | inheritanceModifier memberModifier func
 | memberModifier inheritanceModifier funcDeclaration ';'
 | inheritanceModifier memberModifier funcDeclaration ';'
+;*/
+
+method: optVisibilityModifier funcDeclaration ';'
+| optVisibilityModifier func
+| optVisibilityModifier inheritanceModifier funcDeclaration ';'
+| optVisibilityModifier inheritanceModifier func
+| inheritanceModifier optVisibilityModifier funcDeclaration ';'
+| inheritanceModifier optVisibilityModifier func 
+| memberModifier optVisibilityModifier inheritanceModifier funcDeclaration ';'
+| optVisibilityModifier memberModifier inheritanceModifier funcDeclaration ';'
+| optVisibilityModifier inheritanceModifier memberModifier funcDeclaration ';'
+| memberModifier optVisibilityModifier inheritanceModifier func
+| optVisibilityModifier memberModifier inheritanceModifier func
+| optVisibilityModifier inheritanceModifier memberModifier func
+| memberModifier inheritanceModifier optVisibilityModifier funcDeclaration ';'
+| inheritanceModifier memberModifier optVisibilityModifier funcDeclaration ';'
+| inheritanceModifier optVisibilityModifier memberModifier funcDeclaration ';'
+| memberModifier inheritanceModifier optVisibilityModifier func
+| inheritanceModifier memberModifier optVisibilityModifier func
+| inheritanceModifier optVisibilityModifier memberModifier func
+| memberModifier optVisibilityModifier func
+| optVisibilityModifier memberModifier func
+| memberModifier optVisibilityModifier funcDeclaration ';'
+| optVisibilityModifier memberModifier funcDeclaration ';'
 ;
 
 
@@ -217,7 +306,30 @@ initializer: INIT block
 ;
 
 
-memberModifier: override
+constructor: optVisibilityModifier CONSTRUCTOR '(' optFormalParams ')' block
+| optVisibilityModifier CONSTRUCTOR '(' optFormalParams ')'
+| optVisibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' SUPER '(' optFactParams ')'
+| optVisibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' THIS '(' optFactParams ')' 
+| optVisibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' SUPER '(' optFactParams ')' block
+| optVisibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' THIS '(' optFactParams ')' block
+;
+
+optVisibilityModifier: /*empty*/
+| visibilityModifier
+;
+
+
+optFormalParams: /*empty*/
+| formalParams
+;
+
+
+formalParams: ID ':' type
+| formalParams ',' ID ':' type
+;
+
+
+memberModifier: OVERRIDE
 ;
 
 
@@ -235,60 +347,178 @@ inheritanceModifier: ABSTRACT
 
 
 func : funcDeclaration block
-| funcDeclaration '=' expr
+| funcDeclaration '=' expr semis
+| funcDeclaration '=' expr newLines
 ;
 
 
-funcDeclaration: FUN ID '(' optFormalParams ')'
-| FUN ID '(' optFormalParams ')' ':' type
+funcDeclaration: FUN ID '(' optFormalParams ')' ':' type
 ;
 
 
-block : '{' newLines stmts newLines '}'
-| '{' stmts newLines '}'
-| '{' newLines stmts '}'
-| '{' stmts '}'
+block : '{' optNewLines stmts optNewLines'}'
+| '{' semis stmts '}'
+| '{' semis '}'
+| '{' optNewLines '}'
 ;
 
 
-varDeclaration: var ID '=' expr
+varDeclaration: VAR ID ':' type
+| VAR ID ':' type '=' expr
+| VAR '(' formalParams ')' '=' expr
+;
 
 
-valDeclaration: val ID '=' expr
+valDeclaration: VAL ID ':' type
+| VAL ID ':' type '=' expr
+| VAR '(' formalParams ')' '=' expr
+;
 
+type: easyType
+| templateType
+;
 
-type: INT
+templateType: ID '<' type_seq '>'
+| ID '<' templateType '>'
+;
+
+type_seq: easyType
+| type_seq ',' easyType
+;
+
+easyType: INT
 | UNIT
 | ID
-| 
+| STRING
+| CHAR
+| FLOAT
+| DOUBLE
 ;
-
-
-stmt : label semis
-| varDeclaration semis
-| valDeclaration semis
-| assignment semis
-| whileLoop semis
-| forLoop semis
-| doWhileLoop semis
-| ifStmt semis
-| expr semis
-
-
-
 
 stmts : stmt
 | stmts stmt
 ;
 
-semis:
+stmt : varDeclaration semis
+| varDeclaration newLines
+| valDeclaration semis
+| valDeclaration newLines
+| assignment semis
+| assignment newLines
+| whileLoop semis
+| whileLoop newLines
+| forLoop semis
+| forLoop newLines
+| doWhileLoop semis
+| doWhileLoop newLines
+| ifStmt semis
+| ifStmt newLines
+| expr newLines
+| expr semis
+| BREAK semis
+| BREAK newLines
+| CONTINUE semis
+| CONTINUE newLines
+| RETURN semis
+| RETURN newLines
+| RETURN expr newLines
+| RETURN expr semis
+;
 
-semi:
+expr: ID 
+| THIS 
+| expr '(' optFactParams ')'
+| INT 
+| FLOAT 
+| STRING 
+| CHAR 
+| DOUBLE 
+| BOOLEAN 
+| TRUE 
+| FALSE 
+| '(' expr ')' 
+| '!' expr 
+| '+' expr %prec UPLUS
+| '-' expr %prec UMINUS
+| expr '+' expr 
+| expr '-' expr 
+| expr '*' expr 
+| expr '/' expr 
+| expr '%' expr 
+| expr '<' expr 
+| expr '>' expr 
+| expr OR expr 
+| expr AND expr 
+| expr EQ expr 
+| expr AEQ expr 
+| expr NEQ expr 
+| expr NAEQ expr
+| expr LOEQ expr
+| expr MOEQ expr
+| expr '.' expr
+| expr '[' expr ']'
+| SUPER '.' expr
+;
 
+optFactParams: /*empty*/
+| factParams
+;
+
+factParams: expr
+| factParams ',' expr
+;
+
+assignment: expr '=' expr 
+| expr ASUM expr 
+| expr ASUB expr 
+| expr ADIV expr 
+| expr AMUL expr 
+| expr AMOD expr
+;
+
+whileLoop:
+
+;
+
+doWhileLoop: DO stmt WHILE '(' expr ')'
+
+;
+
+forLoop:
+
+;
+
+ifStmt:
+
+;
+
+
+optNewLines: newLines
+| /*empty*/
+;
+
+newLines: NEW_LINE
+| newLines NEW_LINE
+;
+
+semis: ';'
+| semis ';'
+| semis newLines
+;
 
 
 %%
 //Секция пользовательского кода
+
+
+void main(int argc, char **argv ){
+	yyin = fopen(argv[1], "r" );
+
+    yyparse();
+    return;
+}
+
+/*
 struct NSemi* createSemi()
 {
 	return (struct NSemi*) malloc(sizeof(struct NSemi));
@@ -299,6 +529,7 @@ struct NSemisList* addToSemisList(struct NSemisList* list, struct NSemi* semi)
 	list->last->next = semi;
 	list->last = semi;
 }
+*/
 
 
 
