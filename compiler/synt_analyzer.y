@@ -81,7 +81,6 @@
 %token OPEN
 %token FINAL
 %token CONST
-%token FILE
 %token INT
 %token FLOAT
 %token DOUBLE
@@ -279,40 +278,40 @@ stmts : stmt
 ;
 
 stmt : property semis
-| property NEW_LINE
+| property newLines
 | method semis
-| method NEW_LINE
+| method newLines
 | class semis
-| class NEW_LINE
+| class newLines
 | constructor semis
-| constructor NEW_LINE
+| constructor newLines
 | initializer semis
-| initializer NEW_LINE
+| initializer newLines
 | assignment semis
-| assignment NEW_LINE
+| assignment newLines
 | whileLoop semis
-| whileLoop NEW_LINE
+| whileLoop newLines
 | forLoop semis
-| forLoop NEW_LINE
+| forLoop newLines
 | doWhileLoop semis
-| doWhileLoop NEW_LINE
+| doWhileLoop newLines
 | ifStmt semis
-| ifStmt NEW_LINE
-//| expr NEW_LINE
+| ifStmt newLines
+| expr newLines
 | expr semis
 | BREAK semis
-| BREAK NEW_LINE
+| BREAK newLines
 | CONTINUE semis
-| CONTINUE NEW_LINE
+| CONTINUE newLines
 | RETURN semis
-| RETURN NEW_LINE
-| RETURN expr NEW_LINE
+| RETURN newLines
+| RETURN expr newLines
 | RETURN expr semis
 ;
 
 expr: ID 
 | THIS 
-| expr optNewLines '(' optNewLines optFactParams optNewLines ')'
+| expr '(' optNewLines optFactParams optNewLines ')'
 | INT 
 | FLOAT 
 | STRING 
@@ -321,29 +320,29 @@ expr: ID
 | BOOLEAN 
 | TRUE 
 | FALSE 
-| '(' optNewLines expr optNewLines ')' 
-| '!' optNewLines expr 
-| '+' optNewLines expr %prec UPLUS
-| '-' optNewLines expr %prec UMINUS
-| expr '+' optNewLines expr 
-| expr '-' optNewLines expr 
-| expr '*' optNewLines expr 
-| expr '/' optNewLines expr 
-| expr '%' optNewLines expr 
-| expr '<' optNewLines expr 
-| expr '>' optNewLines expr 
-| expr OR optNewLines expr 
-| expr AND optNewLines expr 
-| expr EQ optNewLines expr 
-| expr AEQ optNewLines expr 
-| expr NEQ optNewLines expr 
-| expr NAEQ optNewLines expr
-| expr LOEQ optNewLines expr
-| expr MOEQ optNewLines expr
-| expr '.' optNewLines expr
-| expr '[' optNewLines expr optNewLines ']'
-| SUPER '.' optNewLines expr
-| expr RANGE optNewLines expr
+| '(' expr ')' 
+| '!' expr 
+| '+' expr %prec UPLUS
+| '-' expr %prec UMINUS
+| expr '+' expr 
+| expr '-' expr 
+| expr '*' expr 
+| expr '/' expr 
+| expr '%' expr 
+| expr '<' expr 
+| expr '>' expr 
+| expr OR expr 
+| expr AND expr 
+| expr EQ expr 
+| expr AEQ expr 
+| expr NEQ expr 
+| expr NAEQ expr
+| expr LOEQ expr
+| expr MOEQ expr
+| expr '.' expr
+| expr '[' expr ']'
+| SUPER '.'  expr
+| expr RANGE expr
 ;
 
 optFactParams: /*empty*/
@@ -397,7 +396,7 @@ optNewLines: /*empty*/
 ;
 
 newLines: NEW_LINE
-| NEW_LINE newLines
+| newLines NEW_LINE 
 ;
 
 semis: ';'

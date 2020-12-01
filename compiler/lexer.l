@@ -4,6 +4,7 @@
 
 %{
     #include <stdio.h>
+    #include "synt_analyzer.tab.h"
     void remove_all_inputs_of_symbol(const char * str, char * result, char deleted_symbol);
     int bin_from_str_to_dec(const char * str);
     bool isNotKeyword(const char* str);
@@ -28,7 +29,6 @@ int complexTemplateNestingLevel = 0; //Уровень вложенности для сложных шаблонов 
 bool isMLString = false;    //Встретилась ли интерполяция в многострочной строковой константе
 %}
 
-file			{ printf("Found keyword - FILE\n"); }
 field			{ printf("Found keyword - FIELD\n"); }
 property		{ printf("Found keyword - PROPERTY\n"); }
 get				{ printf("Found keyword - GET\n"); }

@@ -118,31 +118,30 @@ extern int yydebug;
     OPEN = 319,                    /* OPEN  */
     FINAL = 320,                   /* FINAL  */
     CONST = 321,                   /* CONST  */
-    FILE = 322,                    /* FILE  */
-    INT = 323,                     /* INT  */
-    FLOAT = 324,                   /* FLOAT  */
-    DOUBLE = 325,                  /* DOUBLE  */
-    STRING = 326,                  /* STRING  */
-    CHAR = 327,                    /* CHAR  */
-    BOOLEAN = 328,                 /* BOOLEAN  */
-    ASUM = 329,                    /* ASUM  */
-    ASUB = 330,                    /* ASUB  */
-    ADIV = 331,                    /* ADIV  */
-    AMUL = 332,                    /* AMUL  */
-    AMOD = 333,                    /* AMOD  */
-    OR = 334,                      /* OR  */
-    AND = 335,                     /* AND  */
-    EQ = 336,                      /* EQ  */
-    AEQ = 337,                     /* AEQ  */
-    NEQ = 338,                     /* NEQ  */
-    NAEQ = 339,                    /* NAEQ  */
-    LOEQ = 340,                    /* LOEQ  */
-    MOEQ = 341,                    /* MOEQ  */
-    TRUE = 342,                    /* TRUE  */
-    FALSE = 343,                   /* FALSE  */
-    RANGE = 344,                   /* RANGE  */
-    UMINUS = 345,                  /* UMINUS  */
-    UPLUS = 346                    /* UPLUS  */
+    INT = 322,                     /* INT  */
+    FLOAT = 323,                   /* FLOAT  */
+    DOUBLE = 324,                  /* DOUBLE  */
+    STRING = 325,                  /* STRING  */
+    CHAR = 326,                    /* CHAR  */
+    BOOLEAN = 327,                 /* BOOLEAN  */
+    ASUM = 328,                    /* ASUM  */
+    ASUB = 329,                    /* ASUB  */
+    ADIV = 330,                    /* ADIV  */
+    AMUL = 331,                    /* AMUL  */
+    AMOD = 332,                    /* AMOD  */
+    OR = 333,                      /* OR  */
+    AND = 334,                     /* AND  */
+    EQ = 335,                      /* EQ  */
+    AEQ = 336,                     /* AEQ  */
+    NEQ = 337,                     /* NEQ  */
+    NAEQ = 338,                    /* NAEQ  */
+    LOEQ = 339,                    /* LOEQ  */
+    MOEQ = 340,                    /* MOEQ  */
+    TRUE = 341,                    /* TRUE  */
+    FALSE = 342,                   /* FALSE  */
+    RANGE = 343,                   /* RANGE  */
+    UMINUS = 344,                  /* UMINUS  */
+    UPLUS = 345                    /* UPLUS  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -156,7 +155,7 @@ union YYSTYPE
 	
 	
 
-#line 160 "synt_analyzer.tab.h"
+#line 159 "synt_analyzer.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
