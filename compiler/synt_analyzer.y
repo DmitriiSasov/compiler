@@ -1,8 +1,7 @@
-TODO Операторы и геттеры, сеттеры для полей
 %define parse.error verbose
+
 %{
-	Пролог
-	#include "tree_nodes.h"
+
 	#include <stdio.h>
 	void yyerror(const char* message) {
 		fprintf(stderr, message);
@@ -55,6 +54,7 @@ TODO Операторы и геттеры, сеттеры для полей
 %token ABSTRACT
 %token FUN
 %token VAR
+%token VAL
 %token TYPEOF
 %token IF
 %token ELSE
@@ -130,18 +130,16 @@ program: semis
 | newLines stmts
 ;
 
-class: classDeclaration block
-| classDeclarationWithoutInheritance block
+class: classDeclaration optNewLines block
+| classDeclarationWithoutInheritance optNewLines block
 ;
 
-classDeclarationWithoutInheritance: inheritanceModifier visibilityModifier CLASS ID
-| visibilityModifier inheritanceModifier CLASS ID
-| inheritanceModifier CLASS ID
-| visibilityModifier CLASS ID
-| CLASS ID
+classDeclarationWithoutInheritance: inheritanceModifier optNewLines optVisibilityModifier optNewLines CLASS optNewLines ID
+| optVisibilityModifier optNewLines inheritanceModifier optNewLines CLASS optNewLines ID
+| CLASS optNewLines ID
 ;
 
-classDeclaration: classDeclarationWithoutInheritance ':' ID
+classDeclaration: classDeclarationWithoutInheritance optNewLines ':' optNewLines ID
 ;
 
 property: optVisibilityModifier valDeclaration
@@ -193,16 +191,16 @@ method: optVisibilityModifier funcDeclaration ';'
 ;
 
 
-initializer: INIT block
+initializer: INIT optNewLines block
 ;
 
 
-constructor: optVisibilityModifier CONSTRUCTOR '(' optFormalParams ')' block
-| optVisibilityModifier CONSTRUCTOR '(' optFormalParams ')'
-| optVisibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' SUPER '(' optFactParams ')'
-| optVisibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' THIS '(' optFactParams ')' 
-| optVisibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' SUPER '(' optFactParams ')' block
-| optVisibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' THIS '(' optFactParams ')' block
+constructor: optVisibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines block
+| optVisibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')'
+| optVisibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines SUPER optNewLines '(' optNewLines optFactParams optNewLines ')'
+| optVisibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')'  optNewLines ':' optNewLines THIS optNewLines '(' optNewLines optFactParams optNewLines ')' 
+| optVisibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')'  optNewLines ':' optNewLines SUPER optNewLines '(' optNewLines optFactParams optNewLines ')' optNewLines block
+| optVisibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines THIS optNewLines '(' optNewLines optFactParams optNewLines ')' optNewLines block
 ;
 
 optVisibilityModifier: /*empty*/
@@ -215,8 +213,8 @@ optFormalParams: /*empty*/
 ;
 
 
-formalParams: ID ':' type
-| formalParams ',' ID ':' type
+formalParams: ID optNewLines ':' optNewLines type
+| formalParams optNewLines ',' optNewLines ID optNewLines ':' optNewLines type
 ;
 
 
@@ -237,13 +235,12 @@ inheritanceModifier: ABSTRACT
 ;
 
 
-func : funcDeclaration block
-| funcDeclaration '=' expr semis
-| funcDeclaration '=' expr newLines
+func : funcDeclaration optNewLines block
+| funcDeclaration optNewLines '=' optNewLines expr
 ;
 
 
-funcDeclaration: FUN ID '(' optFormalParams ')' ':' type
+funcDeclaration: FUN optNewLines ID optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines type
 ;
 
 
@@ -254,36 +251,27 @@ block : '{' optNewLines stmts optNewLines'}'
 ;
 
 
-varDeclaration: VAR ID ':' type
-| VAR ID ':' type '=' expr
-| VAR '(' formalParams ')' '=' expr
+varDeclaration: VAR optNewLines ID optNewLines ':' optNewLines type
+| VAR optNewLines ID optNewLines ':' optNewLines type optNewLines '=' optNewLines expr
+| VAR optNewLines ID optNewLines '(' optNewLines formalParams optNewLines ')' optNewLines '=' optNewLines expr
 ;
 
 
-valDeclaration: VAL ID ':' type
-| VAL ID ':' type '=' expr
-| VAR '(' formalParams ')' '=' expr
+valDeclaration: VAL optNewLines ID optNewLines ':' optNewLines type 
+| VAL optNewLines ID optNewLines ':' optNewLines type optNewLines '=' optNewLines expr
+| VAL optNewLines ID optNewLines '(' optNewLines formalParams optNewLines ')' optNewLines '=' optNewLines expr
 ;
 
-type: easyType
+type: ID
 | templateType
 ;
 
-templateType: ID '<' type_seq '>'
-| ID '<' templateType '>'
+templateType: ID optNewLines '<' optNewLines type_seq optNewLines '>'
+| ID optNewLines '<' optNewLines templateType optNewLines '>'
 ;
 
-type_seq: easyType
-| type_seq ',' easyType
-;
-
-easyType: INT
-| UNIT
-| ID
-| STRING
-| CHAR
-| FLOAT
-| DOUBLE
+type_seq: ID
+| type_seq optNewLines ',' optNewLines ID
 ;
 
 stmts : stmt
@@ -291,40 +279,40 @@ stmts : stmt
 ;
 
 stmt : property semis
-| property newLines
+| property NEW_LINE
 | method semis
-| method newLines
+| method NEW_LINE
 | class semis
-| class newLines
+| class NEW_LINE
 | constructor semis
-| constructor newLines
-| init semis
-| init newLines
+| constructor NEW_LINE
+| initializer semis
+| initializer NEW_LINE
 | assignment semis
-| assignment newLines
+| assignment NEW_LINE
 | whileLoop semis
-| whileLoop newLines
+| whileLoop NEW_LINE
 | forLoop semis
-| forLoop newLines
+| forLoop NEW_LINE
 | doWhileLoop semis
-| doWhileLoop newLines
+| doWhileLoop NEW_LINE
 | ifStmt semis
-| ifStmt newLines
-| expr newLines
+| ifStmt NEW_LINE
+//| expr NEW_LINE
 | expr semis
 | BREAK semis
-| BREAK newLines
+| BREAK NEW_LINE
 | CONTINUE semis
-| CONTINUE newLines
+| CONTINUE NEW_LINE
 | RETURN semis
-| RETURN newLines
-| RETURN expr newLines
+| RETURN NEW_LINE
+| RETURN expr NEW_LINE
 | RETURN expr semis
 ;
 
 expr: ID 
 | THIS 
-| expr '(' optFactParams ')'
+| expr optNewLines '(' optNewLines optFactParams optNewLines ')'
 | INT 
 | FLOAT 
 | STRING 
@@ -333,29 +321,29 @@ expr: ID
 | BOOLEAN 
 | TRUE 
 | FALSE 
-| '(' expr ')' 
-| '!' expr 
-| '+' expr %prec UPLUS
-| '-' expr %prec UMINUS
-| expr '+' expr 
-| expr '-' expr 
-| expr '*' expr 
-| expr '/' expr 
-| expr '%' expr 
-| expr '<' expr 
-| expr '>' expr 
-| expr OR expr 
-| expr AND expr 
-| expr EQ expr 
-| expr AEQ expr 
-| expr NEQ expr 
-| expr NAEQ expr
-| expr LOEQ expr
-| expr MOEQ expr
-| expr '.' expr
-| expr '[' expr ']'
-| SUPER '.' expr
-| expr RANGE expr
+| '(' optNewLines expr optNewLines ')' 
+| '!' optNewLines expr 
+| '+' optNewLines expr %prec UPLUS
+| '-' optNewLines expr %prec UMINUS
+| expr '+' optNewLines expr 
+| expr '-' optNewLines expr 
+| expr '*' optNewLines expr 
+| expr '/' optNewLines expr 
+| expr '%' optNewLines expr 
+| expr '<' optNewLines expr 
+| expr '>' optNewLines expr 
+| expr OR optNewLines expr 
+| expr AND optNewLines expr 
+| expr EQ optNewLines expr 
+| expr AEQ optNewLines expr 
+| expr NEQ optNewLines expr 
+| expr NAEQ optNewLines expr
+| expr LOEQ optNewLines expr
+| expr MOEQ optNewLines expr
+| expr '.' optNewLines expr
+| expr '[' optNewLines expr optNewLines ']'
+| SUPER '.' optNewLines expr
+| expr RANGE optNewLines expr
 ;
 
 optFactParams: /*empty*/
@@ -363,19 +351,19 @@ optFactParams: /*empty*/
 ;
 
 factParams: expr
-| factParams ',' expr
+| factParams optNewLines ',' optNewLines expr
 ;
 
-assignment: expr '=' expr 
-| expr ASUM expr 
-| expr ASUB expr 
-| expr ADIV expr 
-| expr AMUL expr 
-| expr AMOD expr
+assignment: expr '=' optNewLines expr 
+| expr ASUM optNewLines expr 
+| expr ASUB optNewLines expr 
+| expr ADIV optNewLines expr 
+| expr AMUL optNewLines expr 
+| expr AMOD optNewLines expr
 ;
 
-whileLoop: WHILE optNewLines '(' optNewLines expr optNewLines ')' optNewLines stmt optNewLines
-| WHILE optNewLines '(' optNewLines expr optNewLines ')' optNewLines block optNewLines
+whileLoop: WHILE optNewLines '(' optNewLines expr optNewLines ')' optNewLines stmt
+| WHILE optNewLines '(' optNewLines expr optNewLines ')' optNewLines block
 | WHILE optNewLines '(' optNewLines expr optNewLines ')' optNewLines ';'
 ;
 
@@ -404,17 +392,17 @@ ifStmt: IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines stmt
 ;
 
 
-optNewLines: newLines
-| /*empty*/
+optNewLines: /*empty*/
+| newLines
 ;
 
 newLines: NEW_LINE
-| newLines NEW_LINE
+| NEW_LINE newLines
 ;
 
 semis: ';'
 | semis ';'
-| semis newLines
+//| semis newLines
 ;
 
 

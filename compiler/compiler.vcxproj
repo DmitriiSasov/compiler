@@ -24,6 +24,14 @@
   <ItemGroup>
     <ClCompile Include="lexer.flex.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Bison Include="synt_analyzer.y">
+      <Verbose Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</Verbose>
+      <Verbose Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</Verbose>
+      <Verbose Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</Verbose>
+      <Verbose Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</Verbose>
+    </Bison>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{57828F25-E558-4125-92BF-3B648B884EB8}</ProjectGuid>

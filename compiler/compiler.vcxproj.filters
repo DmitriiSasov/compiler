@@ -24,4 +24,9 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Bison Include="synt_analyzer.y">
+      <Filter>Исходные файлы</Filter>
+    </Bison>
+  </ItemGroup>
 </Project>
