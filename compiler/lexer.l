@@ -25,89 +25,80 @@ char str[1000];
 char tmpChar;
 char * tmp = 0;
 char forNum[100];
-int complexTemplateNestingLevel = 0; //Уровень вложенности для сложных шаблонов ${}
-bool isMLString = false;    //Встретилась ли интерполяция в многострочной строковой константе
+static int complexTemplateNestingLevel = 0; //Уровень вложенности для сложных шаблонов ${}
+static bool isMLString = false;    //Встретилась ли интерполяция в многострочной строковой константе
 %}
 
-field			{ printf("Found keyword - FIELD\n"); }
-property		{ printf("Found keyword - PROPERTY\n"); }
-get				{ printf("Found keyword - GET\n"); }
-set				{ printf("Found keyword - SET\n"); }
-receiver		{ printf("Found keyword - RECEIVER\n"); }
-param			{ printf("Found keyword - PARAM\n"); }
-setparam		{ printf("Found keyword - SETPARAM\n"); }
-delegate		{ printf("Found keyword - DELEGATE\n"); }
-package			{ printf("Found keyword - PACKAGE\n"); }
-import			{ printf("Found keyword - IMPORT\n"); }
-class			{ printf("Found keyword - CLASS\n"); }
-interface		{ printf("Found keyword - INTERFACE\n"); }
-fun				{ printf("Found keyword - FUN\n"); }
-object			{ printf("Found keyword - OBJECT\n"); }
-val				{ printf("Found keyword - VAL\n"); }
-var				{ printf("Found keyword - VAR\n"); }
-typealias		{ printf("Found keyword - TYPE_ALIAS\n"); }
-constructor		{ printf("Found keyword - CONSTRUCTOR\n"); }
-by				{ printf("Found keyword - BY\n"); }
-companion		{ printf("Found keyword - COMPANION\n"); }
-init			{ printf("Found keyword - INIT\n"); }
-this			{ printf("Found keyword - THIS\n"); }
-super			{ printf("Found keyword - SUPER\n"); }
-typeof			{ printf("Found keyword - TYPEOF\n"); }
-where			{ printf("Found keyword - WHERE\n"); }
-if				{ printf("Found keyword - IF\n"); }
-else			{ printf("Found keyword - ELSE\n"); }
-when			{ printf("Found keyword - WHEN\n"); }
-try				{ printf("Found keyword - TRY\n"); }
-catch			{ printf("Found keyword - CATCH\n"); }
-finally			{ printf("Found keyword - FINALLY\n"); }
-for				{ printf("Found keyword - FOR\n"); }
-do				{ printf("Found keyword - DO\n"); }
-while			{ printf("Found keyword - WHILE\n"); }
-throw			{ printf("Found keyword - THROW\n"); }
-return			{ printf("Found keyword - RETURN\n"); }
-continue		{ printf("Found keyword - COUNTINUE\n"); }
-break			{ printf("Found keyword - BREAK\n"); }
-as				{ printf("Found keyword - AS\n"); }
-is				{ printf("Found keyword - IS\n"); }
-in				{ printf("Found keyword - IN\n"); }
-out				{ printf("Found keyword - OUT\n"); }
-dynamic			{ printf("Found keyword - DYNAMIC\n"); }
-public			{ printf("Found keyword - PUBLIC\n"); }
-private			{ printf("Found keyword - PRIVATE\n"); }
-protected		{ printf("Found keyword - PROTECTED\n"); }
-internal		{ printf("Found keyword - INTERNAL\n"); }
-enum			{ printf("Found keyword - ENUM\n"); }
-sealed			{ printf("Found keyword - SEALED\n"); }
-annotation		{ printf("Found keyword - ANNOTATION\n"); }
-data			{ printf("Found keyword - DATA\n"); }
-inner			{ printf("Found keyword - INNER\n"); }
-tailrec			{ printf("Found keyword - TAILREC\n"); }
-operator		{ printf("Found keyword - OPERATOR\n"); }
-inline			{ printf("Found keyword - INLINE\n"); }
-infix			{ printf("Found keyword - INFIX\n"); }
-external		{ printf("Found keyword - EXTERNAL\n"); }
-suspend			{ printf("Found keyword - SUSPEND\n"); }
-override		{ printf("Found keyword - OVERRIDE\n"); }
-abstract		{ printf("Found keyword - ABSTRACT\n"); }
-final			{ printf("Found keyword - FINAL\n"); }
-open			{ printf("Found keyword - OPEN\n"); }
-const			{ printf("Found keyword - CONST\n"); }
-lateinit		{ printf("Found keyword - LATEINIT\n"); }
-vararg			{ printf("Found keyword - VARARG\n"); }
-noinline		{ printf("Found keyword - NOINLINE\n"); }
-crossinline		{ printf("Found keyword - CROSSINLINE\n"); }
-reified			{ printf("Found keyword - REIFIED\n"); }
-expect			{ printf("Found keyword - EXPECT\n"); }
-actual			{ printf("Found keyword - ACTUAL\n"); }
+field			{ return FIELD; }
+property		{ return PROPERTY; }
+get				{ return GET; }
+set				{ return SET; }
+receiver		{ return RECEIVER;}
+param			{ return PARAM;}
+setparam		{ return SETPARAM;}
+delegate		{ return DELEGATE;}
+class			{ return CLASS;}
+interface		{ return INTERFACE;}
+fun				{ return FUN;}
+object			{ return OBJECT;}
+val				{ return VAL; }
+var				{ return VAR;}
+constructor		{ return CONSTRUCTOR;}
+by				{ return BY;}
+companion		{ return COMPANION;}
+init			{ return INIT;}
+this			{ return THIS;}
+super			{ return SUPER;}
+typeof			{ return TYPEOF;}
+where			{ return WHERE;}
+if				{ return IF;}
+else			{ return ELSE;}
+when			{ return WHEN;}
+for				{ return FOR;}
+do				{ return DO;}
+while			{ return WHILE;}
+return			{ return RETURN;}
+continue		{ return CONTINUE;}
+break			{ return BREAK;}
+as				{ return AS;}
+in				{ return IN;}
+out				{ return OUT;}
+dynamic			{ return DYNAMIC;}
+public			{ return PUBLIC;}
+private			{ return PRIVATE;}
+protected		{ return PROTECTED;}
+internal		{ return INTERNAL;}
+enum			{ return ENUM;}
+sealed			{ return SEALED;}
+annotation		{ return ANNOTATION;}
+data			{ return DATA;}
+inner			{ return INNER;}
+tailrec			{ return TAILREC;}
+operator		{ return OPERATOR;}
+inline			{ return INLINE;}
+infix			{ return INFIX;}
+external		{ return EXTERNAL;}
+suspend			{ return SUSPEND;}
+override		{ return OVERRIDE;}
+abstract		{ return ABSTRACT;}
+final			{ return FINAL;}
+open			{ return OPEN;}
+const			{ return CONST;}
+lateinit		{ return LATEINIT;}
+vararg			{ return VARARG;}
+noinline		{ return NOINLINE;}
+crossinline		{ return CROSSINLINE;}
+reified			{ return REIFIED;}
+expect			{ return EXPECT;}
+actual			{ return ACTUAL;}
 
-\.\.\.		{printf("Found operator - \.\.\. RESERVED\n");}
-\.			{printf("Found operator - \. DOT\n");}
-\,			{printf("Found operator - \, COMMA\n");}
-\(			{printf("Found operator - \( LPAREN\n");}
-\)			{printf("Found operator - \) RPAREN\n");}
-\[			{printf("Found operator - \[ LSQUARE\n");}
-\]			{printf("Found operator - \] RSQUARE\n");}
-\{			{printf("Found operator - \{ LCURL\n");}
+\.			{return '.';}
+\,			{return ',';}
+\(			{return '(';}
+\)			{return ')';}
+\[			{return '[';}
+\]			{return ']';}
+\{			{return '{';}
 \}			{
                 if (complexTemplateNestingLevel > 0) 
                 {
@@ -123,73 +114,39 @@ actual			{ printf("Found keyword - ACTUAL\n"); }
                     {
                         BEGIN(STRING);
                     }
-                    
+                    return '+';
                 }
                 else 
                 {
-                    printf("Found operator - \} RCURL\n");                
+				return '}';                
                 }                
             }
-\*			{printf("Found operator - \* MULT\n");}
-\%			{printf("Found operator - \% MOD\n");}
-\/			{printf("Found operator - \\ DIV\n");}
-\+			{printf("Found operator - \+ ADD\n");}
-\-			{printf("Found operator - \- SUB\n");}
-\+\+		{printf("Found operator - \+\+ INCR\n");}
-\-\-		{printf("Found operator - \-\- DECR\n");}
-\&\&		{printf("Found operator - \&\& CONJ\n");}
-\|\|		{printf("Found operator - \|\| DISJ\n");}
-\!			{printf("Found operator - \! EXCL\n");}
-\:			{printf("Found operator - \: COLON\n");}
-\;			{printf("Found operator - \; SEMICOLON\n");}
-\=			{printf("Found operator - \= ASSIGNMENT\n");}
-\+\=		{printf("Found operator - \+\= ADD_ASSIGNMENT\n");}
-\-\=		{printf("Found operator - \-\= SUB_ASSIGNMENT\n");}
-\*\=		{printf("Found operator - \*\= MULT_ASSIGNMENT\n");}
-\/\=		{printf("Found operator - \/\= DIV_ASSIGNMENT\n");}
-\%\=		{printf("Found operator - \%\= MOD_ASSIGNMENT\n");}
-\-\>		{printf("Found operator - \-\> ARROW\n");}
-\=\>		{printf("Found operator - \=\> DOUBLE_ARROW\n");}
-\.\.		{printf("Found operator - \.\. RANGE\n");}
-\:\:		{printf("Found operator - \:\: COLONCOLON\n");}
-\;\;		{printf("Found operator - \;\; DOUBLE_SEMICOLONS\n");}
-\#			{printf("Found operator - \# HASH\n");}
-\@			{printf("Found operator - \@ AT_NO\n");}
-\<			{printf("Found operator - \< LANGLE\n");}
-\>			{printf("Found operator - \> RANGLE\n");}
-\<\=		{printf("Found operator - \<\= LE\n");}
-\>\=		{printf("Found operator - \>\= GE\n");}
-\!\=		{printf("Found operator - \!\= EXCL_EQ\n");}
-\!\=\=		{printf("Found operator - \!\=\= EXCL_EQEQ\n");}
-as\?		{printf("Found operator - AS\? AS_SAFE\n");}
-\=\=		{printf("Found operator - \=\= EQEQ\n");}
-\=\=\=		{printf("Found operator - \=\=\= EQEQEQ\n");}
-shl         {printf("Found operator - shl LSHIFT\n");}
-shr         {printf("Found operator - shr RSHIFT\n");}
-ushr        {printf("Found operator - ushr URSHIFT\n");}
-and         {printf("Found operator - and AND\n");}
-or          {printf("Found operator - or OR\n");}
-xor         {printf("Found operator - xor XOR\n");}
-inv         {printf("Found operator - inv INV\n");}
-
-Int             {printf("Found datatype - INT\n");}
-Float           {printf("Found datatype - FLOAT\n");}
-Double          {printf("Found datatype - DOUBLE\n");}
-Long            {printf("Found datatype - LONG\n");}
-Short           {printf("Found datatype - SHORT\n");}
-Byte            {printf("Found datatype - BYTE\n");}
-String          {printf("Found datatype - STRING\n");}
-Char            {printf("Found datatype - CHAR\n");}
-Boolean         {printf("Found datatype - BOOLEAN\n");}
-Array           {printf("Found datatype - ARRAY\n");}
-IntArray        {printf("Found datatype - INTARRAY\n");}
-FloatArray      {printf("Found datatype - FLOATARRAY\n");}
-DoubleArray     {printf("Found datatype - DOUBLEARRAY\n");}
-LongArray       {printf("Found datatype - LONGARRAY\n");}
-ShortArray      {printf("Found datatype - SHORTARRAY\n");}
-ByteArray       {printf("Found datatype - BYTEARRAY\n");}
-BooleanArray    {printf("Found datatype - BOOLEANARRAY\n");}
-
+\*			{return '*';}
+\%			{return '%';}
+\/			{return '/';}
+\+			{return '+';}
+\-			{return '-';}
+\&\&		{return AND;}
+\|\|		{return OR;}
+\!			{return '!';}
+\:			{return ':';}
+\;			{return ';';}
+\=			{return '=';}
+\+\=		{return ASUM;}
+\-\=		{return ASUB;}
+\*\=		{return AMUL;}
+\/\=		{return ADIV;}
+\%\=		{return AMOD;}
+\.\.		{return RANGE;}
+\;\;		{printf("ERROR! Found %s", yytext);}
+\#			{return '#';}
+\@			{return '@';}
+\<			{return '<';}
+\>			{return '>';}
+\<\=		{return LOEQ;}
+\>\=		{return MOEQ;}
+\!\=		{return NEQ;}
+\=\=		{return EQ;}
                     
 "//"				{   commentText[0] = 0; BEGIN(SLCOMMENT);}
 <SLCOMMENT>[^\n]+	{   strcat(commentText, yytext);}
@@ -210,39 +167,39 @@ BooleanArray    {printf("Found datatype - BOOLEANARRAY\n");}
 
 ([1-9](_*{DIGIT})*|0)[fF]           { remove_all_inputs_of_symbol( yytext, forNum, '_'); 
                                       forNum[strlen(forNum)-1] = 0;
-                                      numFloat = (float)atof(forNum);
-                                      printf("Found float number - %f\n", numFloat);
+                                      yylval.Float_v = (float)atof(forNum);
+                                      return FLOAT;
                                     }
 ([1-9](_*{DIGIT})*|0)(\.|[Ee][+-]?){DIGIT}(_*{DIGIT})* {
                                       remove_all_inputs_of_symbol( yytext, forNum, '_'); 
-                                      numDouble = atof(forNum);
-                                      printf("Found double number - %f\n", numDouble);  
+                                      yylval.Double_v = atof(forNum);
+                                      return DOUBLE;  
                                     }
 
 ([1-9](_*{DIGIT})*|0)(\.|[eE][+-]?){DIGIT}(_*{DIGIT})*[fF] {
                                       remove_all_inputs_of_symbol( yytext, forNum, '_'); 
                                       forNum[strlen(forNum)-1] = 0;
-                                      numFloat = (float)atof(forNum);
-                                      printf("Found float number - %f\n", numFloat);
+                                      yylval.Float_v = (float)atof(forNum);
+                                      return FLOAT;
                                     }
 
 ([1-9](_*{DIGIT})*|0)\.{DIGIT}(_*{DIGIT})*[eE][+-]?{DIGIT}(_*{DIGIT})* {
                                       remove_all_inputs_of_symbol( yytext, forNum, '_'); 
-                                      numDouble = atof(forNum);
-                                      printf("Found double number - %f\n", numDouble);  
+                                      yylval.Double_v = atof(forNum);
+                                      return DOUBLE;  
                                     }
 
 ([1-9](_*{DIGIT})*|0)\.{DIGIT}(_*{DIGIT})*[eE][+-]?{DIGIT}(_*{DIGIT})*[fF] {
                                       remove_all_inputs_of_symbol( yytext, forNum, '_'); 
                                       forNum[strlen(forNum)-1] = 0;
-                                      numFloat = (float)atof(forNum);
-                                      printf("Found float number - %f\n", numFloat); 
+                                      yylval.Double_v = atof(forNum);
+                                      return DOUBLE;  
                                     }
 
 
 [1-9](_*{DIGIT})*|0                 { remove_all_inputs_of_symbol( yytext, forNum, '_');
-                                      numInt = atoi(forNum);
-                                      printf("Found decimal number - %d\n", numInt);
+                                      yylval.Int_v = atoi(forNum);
+                                      return INT;
                                     }
 
 ([1-9](_*{DIGIT})*|0)L              { remove_all_inputs_of_symbol( yytext, forNum, '_');
@@ -254,14 +211,15 @@ BooleanArray    {printf("Found datatype - BOOLEANARRAY\n");}
 
 0[xX]{HEX_DIGIT}(_*{HEX_DIGIT})*    { remove_all_inputs_of_symbol( yytext + 2, forNum,'_');
                                       sscanf(forNum,"%x",&numInt);
-                                      printf("Found hex number - %d\n", numInt);
+                                      yylval.Int_v = numInt;
+                                      return INT;
                                     }
                                     
 
 0[bB]{BIN_DIGIT}(_*{BIN_DIGIT})*    { remove_all_inputs_of_symbol( yytext + 2, forNum, '_');
                                       tmp = forNum;
-                                      numInt = bin_from_str_to_dec(tmp);
-                                      printf("Found binary number - %d\n", numInt); 
+                                      yylval.Int_v = bin_from_str_to_dec(tmp);
+                                      return INT; 
                                     }
 
 
@@ -291,8 +249,12 @@ BooleanArray    {printf("Found datatype - BOOLEANARRAY\n");}
 {DIGIT}[0-9_]*[a-zA-Z][0-9a-zA-Z_]*  {  printf("ERROR! Unresolved reference \"%s\"\n", yytext);}                               
 
 
-true { printf("Found boolean literal - TRUE\n"); }
-false { printf("Found boolean literal - FALSE\n"); }
+true 	{	yylval.Bool_v = true;
+			return BOOLEAN;
+		}
+false 	{	yylval.Bool_v = false;
+			return BOOLEAN;
+		}
 
 \'\'                    { printf("ERROR! Found empty character literal\n"); }
 \'                      { tmpChar = 0 ; BEGIN(CHAR); }
@@ -308,8 +270,9 @@ false { printf("Found boolean literal - FALSE\n"); }
 <CHAR>\\\\              { tmpChar = '\\'; }
 <CHAR>\\\$              { tmpChar = '\$'; }
 <CHAR>\'                { 
-                            printf("Found char literal - \'%c\'\n", tmpChar);
+                            yylval.Char_v = tmpChar;
                             BEGIN(INITIAL);
+							return CHAR;
                         }
 <CHAR>\n                { printf("ERROR! New line found, but expected \'\n"); }
 <CHAR><<EOF>>           { printf("ERROR! End of file found, but expected \'\n"); }
@@ -333,8 +296,9 @@ false { printf("Found boolean literal - FALSE\n"); }
 <STRING>\\$         { strcat(str, "\$"); }
 <STRING>\\\'        { strcat(str, "\'"); }
 <STRING>\"          { 
-                        printf("Found string literal \"%s\"\n", str);
+                        yylval.String_v = str;
                         BEGIN(INITIAL);
+						return STRING;
                     }
 <STRING>\\([^utbrn'"\\$]|(u{HEX_DIGIT}{0,3})) { printf("ERROR! Found illegal escape \"%s\"\n", yytext); }
 <STRING>\n          { printf("ERROR! New line found after \"%s\", but \" expected\n", str); }
@@ -387,8 +351,9 @@ false { printf("Found boolean literal - FALSE\n"); }
 <MLSTRING>\"{3,}    {
                         strcat(str, yytext);
                         str[strlen(str) - 3] = 0;
-                        printf("Found multi line string literal \"%s\"\n", str);
+                        yylval.String_v = str;
                         BEGIN(INITIAL);
+						return STRING;
                     }
 <MLSTRING>\$[a-zA-Z_][a-zA-Z_0-9]* {
                             if (!isNotKeyword(yytext + 1))
@@ -427,7 +392,10 @@ false { printf("Found boolean literal - FALSE\n"); }
 
 \n { printf("Found new line\n"); }
 
-[a-zA-Z_][a-zA-Z_0-9]* { printf("Found identificator - \"%s\"\n", yytext); }
+[a-zA-Z_][a-zA-Z_0-9]* 	{ 
+							strcpy(yylval.Id, yytext);
+							return ID;						
+						}
 
 ``                              { printf("ERROR! Found empty identificator name\n"); }
 "`"                             {
@@ -439,8 +407,9 @@ false { printf("Found boolean literal - FALSE\n"); }
 <IDENTIFICATOR>[\\\[\]]         { printf("ERROR! There is an illegal character \'%s\' in identificator \"%s\" \n", yytext, str); }
 <IDENTIFICATOR><<EOF>>               { printf("ERROR! In string \"%s\" expected `\n", str); }
 <IDENTIFICATOR>`                {
-                                    printf("Found identificator - \"%s\"\n", str);
+                                    yylval.Id = str;
                                     BEGIN(INITIAL);
+									return ID;
                                 }
 
 <<EOF>> {
@@ -511,9 +480,65 @@ int bin_from_str_to_dec(const char * str) {
     return value;
 }
 
-void main(int argc, char **argv ){
-    yyin = fopen(argv[1], "r" );
 
-    yylex();
-    return;
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

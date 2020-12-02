@@ -12,13 +12,22 @@
 %}
 //Секция объявлений
 %union {
-	
-	
+	int Int_v;
+	float Float_v;
+	double Double_v;
+	char Char_v;
+	char * String_v;
+	char * Id;
+	bool Bool_v;
 }
 
 
+
+
+
+
 %token NEW_LINE
-%token ID
+%token <Id> ID
 %token CLASS
 %token PUBLIC
 %token PRIVATE
@@ -81,12 +90,12 @@
 %token OPEN
 %token FINAL
 %token CONST
-%token INT
-%token FLOAT
-%token DOUBLE
-%token STRING
-%token CHAR
-%token BOOLEAN
+%token <Int_v> INT
+%token <Float_v> FLOAT
+%token <Double_v> DOUBLE
+%token <String_v> STRING
+%token <Char_v> CHAR
+%token <Bool_v> BOOLEAN
 %token ASUM
 %token ASUB
 %token ADIV
@@ -100,8 +109,6 @@
 %token NAEQ
 %token LOEQ
 %token MOEQ
-%token TRUE
-%token FALSE
 
 %start program
 
@@ -317,9 +324,7 @@ expr: ID
 | STRING 
 | CHAR 
 | DOUBLE 
-| BOOLEAN 
-| TRUE 
-| FALSE 
+| BOOLEAN
 | '(' expr ')' 
 | '!' expr 
 | '+' expr %prec UPLUS

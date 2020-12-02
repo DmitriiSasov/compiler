@@ -137,11 +137,9 @@ extern int yydebug;
     NAEQ = 338,                    /* NAEQ  */
     LOEQ = 339,                    /* LOEQ  */
     MOEQ = 340,                    /* MOEQ  */
-    TRUE = 341,                    /* TRUE  */
-    FALSE = 342,                   /* FALSE  */
-    RANGE = 343,                   /* RANGE  */
-    UMINUS = 344,                  /* UMINUS  */
-    UPLUS = 345                    /* UPLUS  */
+    RANGE = 341,                   /* RANGE  */
+    UMINUS = 342,                  /* UMINUS  */
+    UPLUS = 343                    /* UPLUS  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -152,10 +150,15 @@ union YYSTYPE
 {
 #line 14 "synt_analyzer.y"
 
-	
-	
+	int Int_v;
+	float Float_v;
+	double Double_v;
+	char Char_v;
+	char * String_v;
+	char * Id;
+	bool Bool_v;
 
-#line 159 "synt_analyzer.tab.h"
+#line 162 "synt_analyzer.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

@@ -23,10 +23,18 @@
     <ClCompile Include="lexer.flex.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="synt_analyzer.tab.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Bison Include="synt_analyzer.y">
       <Filter>Исходные файлы</Filter>
     </Bison>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="synt_analyzer.tab.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
