@@ -174,13 +174,36 @@
 
 program: semis
 | newLines
-| stmts
-| semis stmts
-| newLines stmts
+| class
+| method
+| property semis
+| property newLines
+| program class
+| program method
+| program property semis
+| program property newLines
+| program newLines
+| program semis
+; 
+
+class: classDeclaration optNewLines '{' optNewLines classBody '}'
+| classDeclarationWithoutInheritance optNewLines '{' optNewLines classBody '}'
 ;
 
-class: classDeclaration optNewLines block
-| classDeclarationWithoutInheritance optNewLines block
+classBody: semis
+| newLines
+| method
+| property semis
+| property newLines
+| constructor
+| initializer
+| classBody method optNewLines
+| classBody property semis
+| classBody property newLines
+| classBody newLines
+| classBody constructor optNewLines
+| classBody initializer optNewLines
+| classBody semis
 ;
 
 classDeclarationWithoutInheritance: inheritanceModifier optNewLines optVisibilityModifier optNewLines CLASS optNewLines ID
@@ -329,14 +352,6 @@ stmts : stmt
 
 stmt : property semis
 | property newLines
-| method semis
-| method newLines
-| class semis
-| class newLines
-| constructor semis
-| constructor newLines
-| initializer semis
-| initializer newLines
 | assignment semis
 | assignment newLines
 | whileLoop semis
