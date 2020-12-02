@@ -20,6 +20,8 @@
 	char * Id;
 	bool Bool_v;
 }
+
+
 /*
 %type <> 
 %type <> 
@@ -359,7 +361,7 @@ stmt : property semis
 
 expr: ID 
 | THIS 
-| expr '(' optNewLines optFactParams optNewLines ')'
+| ID '(' optNewLines optFactParams optNewLines ')'
 | INT 
 | FLOAT 
 | STRING 
@@ -385,9 +387,11 @@ expr: ID
 | expr NAEQ expr
 | expr LOEQ expr
 | expr MOEQ expr
-| expr '.' expr
+| expr '.' ID 
+| expr '.' ID '(' optNewLines optFactParams optNewLines ')'
 | expr '[' expr ']'
-| SUPER '.'  expr
+| SUPER '.' ID
+| SUPER '.' ID '(' optNewLines optFactParams optNewLines ')'
 | expr RANGE expr
 ;
 

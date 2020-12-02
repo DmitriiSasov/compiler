@@ -48,7 +48,7 @@ enum stmtType {
 	Break,
 	Continue,
 	Return,
-	ReturnValue;
+	ReturnValue
 };
 
 struct exprS {
@@ -79,7 +79,7 @@ struct factParamS {
 };
 
 struct stmtS {
-	enum stmtType;
+	enum stmtType type;
 	struct propertyS * property;
 	struct methodS * method;
 	struct classS * _class;
@@ -104,11 +104,12 @@ struct forLoopS {
 
 
 
-
 };
 
 
+struct formalParams {
 
+};
 
 
 

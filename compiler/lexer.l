@@ -16,7 +16,8 @@ HEX_DIGIT         [0-9A-Fa-f]
 BIN_DIGIT         [01]
 
 %%
-%{ 	int numInt;
+%{ 	
+int numInt;
 long numLong;
 float numFloat;
 double numDouble;
@@ -27,6 +28,7 @@ char * tmp = 0;
 char forNum[100];
 static int complexTemplateNestingLevel = 0; //Уровень вложенности для сложных шаблонов ${}
 static bool isMLString = false;    //Встретилась ли интерполяция в многострочной строковой константе
+
 %}
 
 field			{ return FIELD; }
