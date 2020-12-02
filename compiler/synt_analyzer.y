@@ -20,6 +20,47 @@
 	char * Id;
 	bool Bool_v;
 }
+/*
+%type <> 
+%type <> 
+%type <> 
+%type <> 
+%type <> 
+%type <> 
+%type <> 
+%type <> 
+%type <> 
+%type <> 
+%type <> 
+%type <> 
+%type <> 
+%type <> 
+%type <> 
+%type <> 
+%type <> 
+%type <> 
+%type <> 
+%type <> 
+%type <> 
+%type <> 
+%type <> 
+%type <> 
+%type <> 
+%type <> 
+%type <> 
+%type <> 
+%type <> 
+%type <> 
+%type <> 
+%type <> 
+%type <> 
+%type <> 
+%type <> 
+%type <> 
+%type <> 
+%type <> 
+*/
+
 
 
 
