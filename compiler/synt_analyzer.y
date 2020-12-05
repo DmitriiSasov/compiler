@@ -206,90 +206,110 @@ classBody: semis
 | classBody semis
 ;
 
-classDeclarationWithoutInheritance: inheritanceModifier optNewLines optVisibilityModifier optNewLines CLASS optNewLines ID
-| optVisibilityModifier optNewLines inheritanceModifier optNewLines CLASS optNewLines ID
-| CLASS optNewLines ID
+classDeclarationWithoutInheritance: modifiers optNewLines CLASS optNewLines ID
 ;
 
 classDeclaration: classDeclarationWithoutInheritance optNewLines ':' optNewLines ID
 ;
 
-property: optVisibilityModifier valDeclaration
-| optVisibilityModifier varDeclaration
-| optVisibilityModifier inheritanceModifier valDeclaration
-| optVisibilityModifier inheritanceModifier varDeclaration
-| inheritanceModifier optVisibilityModifier valDeclaration
-| inheritanceModifier optVisibilityModifier varDeclaration 
-| memberModifier optVisibilityModifier inheritanceModifier valDeclaration
-| optVisibilityModifier memberModifier inheritanceModifier valDeclaration
-| optVisibilityModifier inheritanceModifier memberModifier valDeclaration
-| memberModifier optVisibilityModifier inheritanceModifier varDeclaration
-| optVisibilityModifier memberModifier inheritanceModifier varDeclaration
-| optVisibilityModifier inheritanceModifier memberModifier varDeclaration
-| memberModifier inheritanceModifier optVisibilityModifier valDeclaration
-| inheritanceModifier memberModifier optVisibilityModifier valDeclaration
-| inheritanceModifier optVisibilityModifier memberModifier valDeclaration
-| memberModifier inheritanceModifier optVisibilityModifier varDeclaration
-| inheritanceModifier memberModifier optVisibilityModifier varDeclaration
-| inheritanceModifier optVisibilityModifier memberModifier varDeclaration
-| memberModifier optVisibilityModifier varDeclaration
-| optVisibilityModifier memberModifier varDeclaration
-| memberModifier optVisibilityModifier valDeclaration
-| optVisibilityModifier memberModifier valDeclaration
+property: modifiers optNewLines valDeclaration
+| modifiers optNewLines varDeclaration
 ;
 
-method: optVisibilityModifier funcDeclaration ';'
-| optVisibilityModifier func
-| optVisibilityModifier inheritanceModifier funcDeclaration ';'
-| optVisibilityModifier inheritanceModifier func
-| inheritanceModifier optVisibilityModifier funcDeclaration ';'
-| inheritanceModifier optVisibilityModifier func 
-| memberModifier optVisibilityModifier inheritanceModifier funcDeclaration ';'
-| optVisibilityModifier memberModifier inheritanceModifier funcDeclaration ';'
-| optVisibilityModifier inheritanceModifier memberModifier funcDeclaration ';'
-| memberModifier optVisibilityModifier inheritanceModifier func
-| optVisibilityModifier memberModifier inheritanceModifier func
-| optVisibilityModifier inheritanceModifier memberModifier func
-| memberModifier inheritanceModifier optVisibilityModifier funcDeclaration ';'
-| inheritanceModifier memberModifier optVisibilityModifier funcDeclaration ';'
-| inheritanceModifier optVisibilityModifier memberModifier funcDeclaration ';'
-| memberModifier inheritanceModifier optVisibilityModifier func
-| inheritanceModifier memberModifier optVisibilityModifier func
-| inheritanceModifier optVisibilityModifier memberModifier func
-| memberModifier optVisibilityModifier func
-| optVisibilityModifier memberModifier func
-| memberModifier optVisibilityModifier funcDeclaration ';'
-| optVisibilityModifier memberModifier funcDeclaration ';'
+method: modifiers optNewLines funcDeclaration ';'
+| modifiers optNewLines func
 ;
-
 
 initializer: INIT optNewLines block
 ;
 
 
-constructor: optVisibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines block
-| optVisibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')'
-| optVisibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines SUPER optNewLines '(' optNewLines optFactParams optNewLines ')'
-| optVisibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')'  optNewLines ':' optNewLines THIS optNewLines '(' optNewLines optFactParams optNewLines ')' 
-| optVisibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')'  optNewLines ':' optNewLines SUPER optNewLines '(' optNewLines optFactParams optNewLines ')' optNewLines block
-| optVisibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines THIS optNewLines '(' optNewLines optFactParams optNewLines ')' optNewLines block
+constructor: visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines block
+| visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')'
+| visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines SUPER optNewLines '(' optNewLines optFactParams optNewLines ')'
+| visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')'  optNewLines ':' optNewLines THIS optNewLines '(' optNewLines optFactParams optNewLines ')' 
+| visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')'  optNewLines ':' optNewLines SUPER optNewLines '(' optNewLines optFactParams optNewLines ')' optNewLines block
+| visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines THIS optNewLines '(' optNewLines optFactParams optNewLines ')' optNewLines block
+| CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines block
+| CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')'
+| CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines SUPER optNewLines '(' optNewLines optFactParams optNewLines ')'
+| CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')'  optNewLines ':' optNewLines THIS optNewLines '(' optNewLines optFactParams optNewLines ')' 
+| CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')'  optNewLines ':' optNewLines SUPER optNewLines '(' optNewLines optFactParams optNewLines ')' optNewLines block
+| CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines THIS optNewLines '(' optNewLines optFactParams optNewLines ')' optNewLines block
 ;
-
-optVisibilityModifier: /*empty*/
-| visibilityModifier
-;
-
 
 optFormalParams: /*empty*/
 | formalParams
 ;
 
-
 formalParams: ID optNewLines ':' optNewLines type
 | formalParams optNewLines ',' optNewLines ID optNewLines ':' optNewLines type
 ;
 
-memberModifier: OVERRIDE
+modifiers: OVERRIDE
+| visibilityModifier
+| inheritanceModifier
+| ABSTRACT
+| OVERRIDE optNewLines  visibilityModifier
+| OVERRIDE optNewLines  inheritanceModifier
+| OVERRIDE optNewLines  ABSTRACT
+| visibilityModifier optNewLines  OVERRIDE
+| visibilityModifier optNewLines  inheritanceModifier
+| visibilityModifier optNewLines  ABSTRACT
+| inheritanceModifier optNewLines  OVERRIDE
+| inheritanceModifier optNewLines  visibilityModifier
+| inheritanceModifier optNewLines  ABSTRACT
+| ABSTRACT optNewLines  OVERRIDE
+| ABSTRACT optNewLines  visibilityModifier
+| ABSTRACT optNewLines  inheritanceModifier
+| OVERRIDE optNewLines visibilityModifier optNewLines inheritanceModifier
+| OVERRIDE optNewLines visibilityModifier optNewLines ABSTRACT
+| OVERRIDE optNewLines inheritanceModifier optNewLines visibilityModifier
+| OVERRIDE optNewLines inheritanceModifier optNewLines ABSTRACT
+| OVERRIDE optNewLines ABSTRACT optNewLines visibilityModifier
+| OVERRIDE optNewLines ABSTRACT optNewLines inheritanceModifier
+| visibilityModifier optNewLines OVERRIDE optNewLines inheritanceModifier
+| visibilityModifier optNewLines OVERRIDE optNewLines ABSTRACT
+| visibilityModifier optNewLines inheritanceModifier optNewLines OVERRIDE
+| visibilityModifier optNewLines inheritanceModifier optNewLines ABSTRACT
+| visibilityModifier optNewLines ABSTRACT optNewLines inheritanceModifier
+| visibilityModifier optNewLines ABSTRACT optNewLines OVERRIDE
+| inheritanceModifier optNewLines OVERRIDE optNewLines visibilityModifier
+| inheritanceModifier optNewLines OVERRIDE optNewLines ABSTRACT
+| inheritanceModifier optNewLines visibilityModifier optNewLines ABSTRACT
+| inheritanceModifier optNewLines visibilityModifier optNewLines OVERRIDE
+| inheritanceModifier optNewLines ABSTRACT optNewLines visibilityModifier
+| inheritanceModifier optNewLines ABSTRACT optNewLines OVERRIDE
+| ABSTRACT optNewLines OVERRIDE optNewLines inheritanceModifier
+| ABSTRACT optNewLines OVERRIDE optNewLines visibilityModifier
+| ABSTRACT optNewLines visibilityModifier optNewLines OVERRIDE
+| ABSTRACT optNewLines visibilityModifier optNewLines inheritanceModifier
+| ABSTRACT optNewLines inheritanceModifier optNewLines OVERRIDE
+| ABSTRACT optNewLines inheritanceModifier optNewLines visibilityModifier
+| OVERRIDE optNewLines visibilityModifier optNewLines inheritanceModifier optNewLines ABSTRACT
+| OVERRIDE optNewLines visibilityModifier optNewLines ABSTRACT optNewLines inheritanceModifier
+| OVERRIDE optNewLines inheritanceModifier optNewLines visibilityModifier optNewLines ABSTRACT
+| OVERRIDE optNewLines inheritanceModifier optNewLines ABSTRACT optNewLines visibilityModifier
+| OVERRIDE optNewLines ABSTRACT optNewLines visibilityModifier optNewLines inheritanceModifier
+| OVERRIDE optNewLines ABSTRACT optNewLines inheritanceModifier optNewLines visibilityModifier
+| visibilityModifier optNewLines OVERRIDE optNewLines inheritanceModifier optNewLines ABSTRACT
+| visibilityModifier optNewLines OVERRIDE optNewLines ABSTRACT optNewLines inheritanceModifier
+| visibilityModifier optNewLines inheritanceModifier optNewLines OVERRIDE optNewLines ABSTRACT
+| visibilityModifier optNewLines inheritanceModifier optNewLines ABSTRACT optNewLines OVERRIDE
+| visibilityModifier optNewLines ABSTRACT optNewLines inheritanceModifier optNewLines OVERRIDE
+| visibilityModifier optNewLines ABSTRACT optNewLines OVERRIDE optNewLines inheritanceModifier
+| inheritanceModifier optNewLines OVERRIDE optNewLines visibilityModifier optNewLines ABSTRACT
+| inheritanceModifier optNewLines OVERRIDE optNewLines ABSTRACT optNewLines visibilityModifier
+| inheritanceModifier optNewLines visibilityModifier optNewLines ABSTRACT optNewLines OVERRIDE
+| inheritanceModifier optNewLines visibilityModifier optNewLines OVERRIDE optNewLines ABSTRACT
+| inheritanceModifier optNewLines ABSTRACT optNewLines visibilityModifier optNewLines OVERRIDE
+| inheritanceModifier optNewLines ABSTRACT optNewLines OVERRIDE optNewLines visibilityModifier
+| ABSTRACT optNewLines OVERRIDE optNewLines inheritanceModifier optNewLines visibilityModifier
+| ABSTRACT optNewLines OVERRIDE optNewLines visibilityModifier optNewLines inheritanceModifier
+| ABSTRACT optNewLines visibilityModifier optNewLines OVERRIDE optNewLines inheritanceModifier
+| ABSTRACT optNewLines visibilityModifier optNewLines inheritanceModifier optNewLines OVERRIDE
+| ABSTRACT optNewLines inheritanceModifier optNewLines OVERRIDE optNewLines visibilityModifier
+| ABSTRACT optNewLines inheritanceModifier optNewLines visibilityModifier optNewLines OVERRIDE
 ;
 
 visibilityModifier: PUBLIC
@@ -299,11 +319,9 @@ visibilityModifier: PUBLIC
 ;
 
 
-inheritanceModifier: ABSTRACT
-| FINAL
+inheritanceModifier: FINAL
 | OPEN
 ;
-
 
 func : funcDeclaration optNewLines block
 | funcDeclaration optNewLines '=' optNewLines expr
