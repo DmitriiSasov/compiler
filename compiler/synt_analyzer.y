@@ -289,10 +289,8 @@ formalParams: ID optNewLines ':' optNewLines type
 | formalParams optNewLines ',' optNewLines ID optNewLines ':' optNewLines type
 ;
 
-
 memberModifier: OVERRIDE
 ;
-
 
 visibilityModifier: PUBLIC
 | PRIVATE
@@ -466,7 +464,6 @@ newLines: NEW_LINE
 
 semis: ';'
 | semis ';'
-//| semis newLines
 ;
 
 

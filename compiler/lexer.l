@@ -288,7 +288,7 @@ false 	{	yylval.Bool_v = false;
                         str[0] = 0;
                         BEGIN(STRING);
                     }
-<STRING>[^\\\"\n$]+  { strcat(str, yytext); }
+<STRING>[^\\\"\n$]+ { strcat(str, yytext); }
 <STRING>\\n         { strcat(str, "\n"); }
 <STRING>\\\\        { strcat(str, "\\"); }
 <STRING>\\\"        { strcat(str, "\""); }

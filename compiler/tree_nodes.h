@@ -1,4 +1,5 @@
-enum exprType {
+enum exprType 
+{
 	Identificator,
 	This,
 	MethodCall,
@@ -35,10 +36,6 @@ enum exprType {
 
 enum stmtType {
 	Property,
-	Method,
-	Class,
-	Constructor,
-	Initializer,
 	Assignment,
 	WhileLoop,
 	ForLoop,
