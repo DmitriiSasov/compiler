@@ -3,6 +3,7 @@
 %{
 
 	#include <stdio.h>
+	#include "tree_nodes.h"
 	void yyerror(const char* message) {
 		fprintf(stderr, message);
 	}

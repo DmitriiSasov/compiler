@@ -34,7 +34,18 @@ enum exprType
 	Range
 };
 
-enum stmtType {
+enum assignmentType
+{
+	Assign,
+	Asum,
+	Asub,
+	Adiv,
+	Amul,
+	Amod
+};
+
+enum stmtType 
+{
 	Property,
 	Assignment,
 	WhileLoop,
@@ -48,7 +59,32 @@ enum stmtType {
 	ReturnValue
 };
 
-struct exprS {
+struct modifiersS
+{
+	bool isAbstract;
+	bool isOverride;
+	enum visibilityMod vMod;
+	enum inheritanceMod iMod;
+};
+
+enum visibilityMod 
+{
+	Public,
+	Private,
+	Protected,
+	Internal,
+	Local
+};	
+
+enum inheritanceMod
+{
+	Final,
+	Open,
+	None
+};
+
+struct exprS 
+{
 	enum exprType type;
 	
 	struct exprS * left;
@@ -62,26 +98,21 @@ struct exprS {
 	double doubleV;
 	bool booleanV;
 	
-};
-
-struct factParamsList {
-	struct factParam * first;
-	struct factParam * last;
-};
-
-struct factParamS {
-	struct exprS * param;
 	struct exprS * next;
-
+	
 };
 
-struct stmtS {
+struct factParamsList 
+{
+	struct exprS * first;
+	struct exprS * last;
+};
+
+
+struct stmtS 
+{
 	enum stmtType type;
 	struct propertyS * property;
-	struct methodS * method;
-	struct classS * _class;
-	struct constructorS * constructor;
-	struct initializerS * initializer;
 	struct assignmentS * assignment;
 	struct whileLoopS * whileLoop;
 	struct forLoopS * forLoop;
@@ -90,33 +121,150 @@ struct stmtS {
 	struct exprS * expr;	
 };
 
-struct ifStmtS {
+struct ifStmtS 
+{
 	struct exprS * condition;
 	struct stmtList * actions;
 	struct stmtList * altActions;	
 };
 
-struct forLoopS {
-	
-
-
-
+struct forLoopS 
+{
+	struct formalParamsList * params;
+	struct exprS * iterableExpr;
+	struct stmtList * stmts;
 };
 
-
-struct formalParams {
-
+struct whileLoopS 
+{
+	bool isDoWhile;
+	struct exprS * cond;
+	struct stmtList * stmts;	
 };
 
+struct assignmentS
+{
+	enum assignmentType type;
+	struct exprS * left;
+	struct exprS * right;
+};
 
+struct propertyS 
+{
+	struct varOrValDeclS * varOrVal;
+	struct modifiersS * mods;
+};
 
+struct varOrValDeclS 
+{
+	bool isVal;
+	struct formalParamsList * namesAndTypes;
+	struct exprS * initValue;
+};
 
+struct typeS 
+{
+	struct idS * easyType;
+	struct templateTypeS * complexType;
+};
 
+struct templateTypeS 
+{
+	struct idS * type;
+	struct typesList * list;
+	struct templateTypeS * templ;	
+};
 
+struct typesList
+{
+	struct idS * first;
+	struct idS * last;
+};
 
+struct idS 
+{
+	char * name;
+	struct idS * next;
+};	
 
+struct formalParamS 
+{
+	struct typeS * type;
+	struct idS * name;
+	struct formalParamS * next;
+};	
 
+struct formalParamsList
+{
+	struct formalParamS * first;
+	struct formalParamS * last;
+};
 
+struct funcDeclS
+{
+	struct idS * name;
+	struct formalParamsList * params;
+	struct typeS * type;
+};
 
+struct funcS 
+{
+	struct funcDeclS * delc;
+	struct stmtList * stmts;
+	struct exprS * expr;
+};
 
+struct constructorS
+{
+	enum visibilityMod mod;
+	struct formalParamsList * params;
+	struct stmtList * stmts;
+};
 
+struct methodS
+{
+	struct modifiersS * mods;
+	struct funcS * func;
+};
+
+struct initializerS
+{
+	struct stmtList * stmts;
+};
+
+struct classS
+{
+	struct modifiersS * mods;
+	struct idS * name;
+	struct idS * parentClassName;
+	struct classBodyS * body;
+};
+
+struct classBodyElementS
+{
+	struct methodS * method;
+	struct propertyS * property;
+	struct constructorS * constructor;
+	struct initializerS * init;
+	struct classBodyElementS * next;
+};
+
+struct classBodyS
+{
+	struct classBodyElementS * first;
+	struct classBodyElementS * last;
+};
+
+struct programElementS
+{
+	struct classS * clas;
+	struct methodS * method;
+	struct propertyS * property;
+	struct programElementS * next;
+};
+
+struct program
+{
+	struct programElementS * first;
+	struct programElementS * last;
+};
