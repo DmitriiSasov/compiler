@@ -197,12 +197,12 @@ classBody: semis
 | property newLines
 | constructor
 | initializer
-| classBody method optNewLines
+| classBody method
 | classBody property semis
 | classBody property newLines
 | classBody newLines
-| classBody constructor optNewLines
-| classBody initializer optNewLines
+| classBody constructor
+| classBody initializer
 | classBody semis
 ;
 

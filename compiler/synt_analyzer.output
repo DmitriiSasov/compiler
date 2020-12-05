@@ -125,9 +125,6 @@ State 286 conflicts: 1 shift/reduce
 State 289 conflicts: 1 shift/reduce
 State 297 conflicts: 1 shift/reduce
 State 298 conflicts: 1 shift/reduce
-State 330 conflicts: 1 shift/reduce
-State 331 conflicts: 1 shift/reduce
-State 332 conflicts: 1 shift/reduce
 State 333 conflicts: 1 shift/reduce
 State 334 conflicts: 1 shift/reduce
 State 335 conflicts: 1 shift/reduce
@@ -139,24 +136,24 @@ State 364 conflicts: 1 shift/reduce
 State 365 conflicts: 1 shift/reduce
 State 367 conflicts: 1 shift/reduce
 State 368 conflicts: 1 shift/reduce
-State 414 conflicts: 1 shift/reduce
-State 419 conflicts: 1 shift/reduce
-State 452 conflicts: 1 shift/reduce
-State 461 conflicts: 1 shift/reduce
-State 462 conflicts: 1 shift/reduce
-State 463 conflicts: 2 shift/reduce
-State 480 conflicts: 1 shift/reduce
+State 411 conflicts: 1 shift/reduce
+State 416 conflicts: 1 shift/reduce
+State 449 conflicts: 1 shift/reduce
+State 458 conflicts: 1 shift/reduce
+State 459 conflicts: 1 shift/reduce
+State 460 conflicts: 2 shift/reduce
+State 477 conflicts: 1 shift/reduce
+State 498 conflicts: 1 shift/reduce
 State 501 conflicts: 1 shift/reduce
 State 504 conflicts: 1 shift/reduce
-State 507 conflicts: 1 shift/reduce
-State 515 conflicts: 1 shift/reduce
-State 516 conflicts: 1 shift/reduce
-State 529 conflicts: 1 shift/reduce
-State 530 conflicts: 1 shift/reduce
-State 539 conflicts: 1 shift/reduce
-State 540 conflicts: 1 shift/reduce
-State 549 conflicts: 1 shift/reduce
-State 550 conflicts: 1 shift/reduce
+State 512 conflicts: 1 shift/reduce
+State 513 conflicts: 1 shift/reduce
+State 526 conflicts: 1 shift/reduce
+State 527 conflicts: 1 shift/reduce
+State 536 conflicts: 1 shift/reduce
+State 537 conflicts: 1 shift/reduce
+State 546 conflicts: 1 shift/reduce
+State 547 conflicts: 1 shift/reduce
 
 
 Grammar
@@ -186,12 +183,12 @@ Grammar
    19          | property newLines
    20          | constructor
    21          | initializer
-   22          | classBody method optNewLines
+   22          | classBody method
    23          | classBody property semis
    24          | classBody property newLines
    25          | classBody newLines
-   26          | classBody constructor optNewLines
-   27          | classBody initializer optNewLines
+   26          | classBody constructor
+   27          | classBody initializer
    28          | classBody semis
 
    29 property: modifiers optNewLines valDeclaration
@@ -637,7 +634,7 @@ Nonterminals, with rules where they appear
         on right: 151 152
     optNewLines (139)
         on left: 228 229
-        on right: 13 14 22 26 27 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 48 49 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 120 121 122 123 126 127 128 129 130 131 132 135 136 138 165 192 195 200 201 202 203 204 205 206 207 208 209 210 211 212 213 214 215 216 217 218 219 220 221 222 223 224 225 226 227
+        on right: 13 14 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 48 49 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 120 121 122 123 126 127 128 129 130 131 132 135 136 138 165 192 195 200 201 202 203 204 205 206 207 208 209 210 211 212 213 214 215 216 217 218 219 220 221 222 223 224 225 226 227
     newLines (140)
         on left: 230 231
         on right: 2 6 10 11 16 19 24 25 142 144 146 148 150 152 153 156 158 160 161 229 231
@@ -4564,12 +4561,12 @@ State 271
 State 272
 
    14 class: modifiers optNewLines CLASS optNewLines ID optNewLines '{' optNewLines classBody . '}'
-   22 classBody: classBody . method optNewLines
+   22 classBody: classBody . method
    23          | classBody . property semis
    24          | classBody . property newLines
    25          | classBody . newLines
-   26          | classBody . constructor optNewLines
-   27          | classBody . initializer optNewLines
+   26          | classBody . constructor
+   27          | classBody . initializer
    28          | classBody . semis
 
     NEW_LINE     shift, and go to state 1
@@ -5768,41 +5765,23 @@ State 329
 
 State 330
 
-   22 classBody: classBody method . optNewLines
+   22 classBody: classBody method .
 
-    NEW_LINE  shift, and go to state 1
-
-    NEW_LINE  [reduce using rule 228 (optNewLines)]
-    $default  reduce using rule 228 (optNewLines)
-
-    optNewLines  go to state 369
-    newLines     go to state 21
+    $default  reduce using rule 22 (classBody)
 
 
 State 331
 
-   27 classBody: classBody initializer . optNewLines
+   27 classBody: classBody initializer .
 
-    NEW_LINE  shift, and go to state 1
-
-    NEW_LINE  [reduce using rule 228 (optNewLines)]
-    $default  reduce using rule 228 (optNewLines)
-
-    optNewLines  go to state 370
-    newLines     go to state 21
+    $default  reduce using rule 27 (classBody)
 
 
 State 332
 
-   26 classBody: classBody constructor . optNewLines
+   26 classBody: classBody constructor .
 
-    NEW_LINE  shift, and go to state 1
-
-    NEW_LINE  [reduce using rule 228 (optNewLines)]
-    $default  reduce using rule 228 (optNewLines)
-
-    optNewLines  go to state 371
-    newLines     go to state 21
+    $default  reduce using rule 26 (classBody)
 
 
 State 333
@@ -5890,7 +5869,7 @@ State 338
   100          | visibilityModifier optNewLines . ABSTRACT optNewLines inheritanceModifier optNewLines OVERRIDE
   101          | visibilityModifier optNewLines . ABSTRACT optNewLines OVERRIDE optNewLines inheritanceModifier
 
-    CONSTRUCTOR  shift, and go to state 372
+    CONSTRUCTOR  shift, and go to state 369
     OVERRIDE     shift, and go to state 52
     ABSTRACT     shift, and go to state 53
     OPEN         shift, and go to state 8
@@ -5903,21 +5882,21 @@ State 339
 
    48 formalParams: ID optNewLines . ':' optNewLines type
 
-    ':'  shift, and go to state 373
+    ':'  shift, and go to state 370
 
 
 State 340
 
   122 funcDeclaration: FUN optNewLines ID optNewLines '(' optNewLines optFormalParams optNewLines . ')' optNewLines ':' optNewLines type
 
-    ')'  shift, and go to state 374
+    ')'  shift, and go to state 371
 
 
 State 341
 
    49 formalParams: formalParams optNewLines . ',' optNewLines ID optNewLines ':' optNewLines type
 
-    ','  shift, and go to state 375
+    ','  shift, and go to state 372
 
 
 State 342
@@ -5925,8 +5904,8 @@ State 342
    49 formalParams: formalParams optNewLines . ',' optNewLines ID optNewLines ':' optNewLines type
   129 varDeclaration: VAR optNewLines ID optNewLines '(' optNewLines formalParams optNewLines . ')' optNewLines '=' optNewLines expr
 
-    ')'  shift, and go to state 376
-    ','  shift, and go to state 375
+    ')'  shift, and go to state 373
+    ','  shift, and go to state 372
 
 
 State 343
@@ -5934,14 +5913,14 @@ State 343
   135 templateType: ID optNewLines . '<' optNewLines type_seq optNewLines '>'
   136             | ID optNewLines . '<' optNewLines templateType optNewLines '>'
 
-    '<'  shift, and go to state 377
+    '<'  shift, and go to state 374
 
 
 State 344
 
   128 varDeclaration: VAR optNewLines ID optNewLines ':' optNewLines type optNewLines . '=' optNewLines expr
 
-    '='  shift, and go to state 378
+    '='  shift, and go to state 375
 
 
 State 345
@@ -5949,15 +5928,15 @@ State 345
    49 formalParams: formalParams optNewLines . ',' optNewLines ID optNewLines ':' optNewLines type
   132 valDeclaration: VAL optNewLines ID optNewLines '(' optNewLines formalParams optNewLines . ')' optNewLines '=' optNewLines expr
 
-    ')'  shift, and go to state 379
-    ','  shift, and go to state 375
+    ')'  shift, and go to state 376
+    ','  shift, and go to state 372
 
 
 State 346
 
   131 valDeclaration: VAL optNewLines ID optNewLines ':' optNewLines type optNewLines . '=' optNewLines expr
 
-    '='  shift, and go to state 380
+    '='  shift, and go to state 377
 
 
 State 347
@@ -6013,7 +5992,7 @@ State 348
 
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 381
+    optNewLines  go to state 378
     newLines     go to state 21
 
 
@@ -6028,7 +6007,7 @@ State 349
     ','       reduce using rule 228 (optNewLines)
     $default  reduce using rule 198 (optFactParams)
 
-    optNewLines  go to state 382
+    optNewLines  go to state 379
     newLines     go to state 21
 
 
@@ -6041,7 +6020,7 @@ State 350
     NEW_LINE  [reduce using rule 228 (optNewLines)]
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 383
+    optNewLines  go to state 380
     newLines     go to state 21
 
 
@@ -6074,21 +6053,21 @@ State 351
     '!'      shift, and go to state 175
     '('      shift, and go to state 176
 
-    expr  go to state 384
+    expr  go to state 381
 
 
 State 352
 
   211 doWhileLoop: DO optNewLines block optNewLines . WHILE '(' expr ')'
 
-    WHILE  shift, and go to state 385
+    WHILE  shift, and go to state 382
 
 
 State 353
 
   210 doWhileLoop: DO optNewLines stmt optNewLines . WHILE '(' expr ')'
 
-    WHILE  shift, and go to state 386
+    WHILE  shift, and go to state 383
 
 
 State 354
@@ -6111,7 +6090,7 @@ State 354
     '!'      shift, and go to state 175
     '('      shift, and go to state 176
 
-    expr  go to state 387
+    expr  go to state 384
 
 
 State 355
@@ -6121,8 +6100,8 @@ State 355
   214        | FOR optNewLines '(' optNewLines . '(' optNewLines formalParams optNewLines ')' optNewLines IN optNewLines expr optNewLines ')' optNewLines stmt
   215        | FOR optNewLines '(' optNewLines . '(' optNewLines formalParams optNewLines ')' optNewLines IN optNewLines expr optNewLines ')' optNewLines block
 
-    ID   shift, and go to state 388
-    '('  shift, and go to state 389
+    ID   shift, and go to state 385
+    '('  shift, and go to state 386
 
 
 State 356
@@ -6359,7 +6338,7 @@ State 361
     NEW_LINE  [reduce using rule 228 (optNewLines)]
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 390
+    optNewLines  go to state 387
     newLines     go to state 21
 
 
@@ -6424,7 +6403,7 @@ State 364
     NEW_LINE  [reduce using rule 228 (optNewLines)]
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 391
+    optNewLines  go to state 388
     newLines     go to state 21
 
 
@@ -6442,7 +6421,7 @@ State 365
     NEW_LINE  [reduce using rule 228 (optNewLines)]
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 392
+    optNewLines  go to state 389
     newLines     go to state 21
 
 
@@ -6477,27 +6456,6 @@ State 368
 
 State 369
 
-   22 classBody: classBody method optNewLines .
-
-    $default  reduce using rule 22 (classBody)
-
-
-State 370
-
-   27 classBody: classBody initializer optNewLines .
-
-    $default  reduce using rule 27 (classBody)
-
-
-State 371
-
-   26 classBody: classBody constructor optNewLines .
-
-    $default  reduce using rule 26 (classBody)
-
-
-State 372
-
    34 constructor: visibilityModifier optNewLines CONSTRUCTOR . optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines block
    35            | visibilityModifier optNewLines CONSTRUCTOR . optNewLines '(' optNewLines optFormalParams optNewLines ')'
    36            | visibilityModifier optNewLines CONSTRUCTOR . optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines SUPER optNewLines '(' optNewLines optFactParams optNewLines ')'
@@ -6509,13 +6467,49 @@ State 372
 
     $default  reduce using rule 228 (optNewLines)
 
+    optNewLines  go to state 390
+    newLines     go to state 21
+
+
+State 370
+
+   48 formalParams: ID optNewLines ':' . optNewLines type
+
+    NEW_LINE  shift, and go to state 1
+
+    $default  reduce using rule 228 (optNewLines)
+
+    optNewLines  go to state 391
+    newLines     go to state 21
+
+
+State 371
+
+  122 funcDeclaration: FUN optNewLines ID optNewLines '(' optNewLines optFormalParams optNewLines ')' . optNewLines ':' optNewLines type
+
+    NEW_LINE  shift, and go to state 1
+
+    $default  reduce using rule 228 (optNewLines)
+
+    optNewLines  go to state 392
+    newLines     go to state 21
+
+
+State 372
+
+   49 formalParams: formalParams optNewLines ',' . optNewLines ID optNewLines ':' optNewLines type
+
+    NEW_LINE  shift, and go to state 1
+
+    $default  reduce using rule 228 (optNewLines)
+
     optNewLines  go to state 393
     newLines     go to state 21
 
 
 State 373
 
-   48 formalParams: ID optNewLines ':' . optNewLines type
+  129 varDeclaration: VAR optNewLines ID optNewLines '(' optNewLines formalParams optNewLines ')' . optNewLines '=' optNewLines expr
 
     NEW_LINE  shift, and go to state 1
 
@@ -6527,7 +6521,8 @@ State 373
 
 State 374
 
-  122 funcDeclaration: FUN optNewLines ID optNewLines '(' optNewLines optFormalParams optNewLines ')' . optNewLines ':' optNewLines type
+  135 templateType: ID optNewLines '<' . optNewLines type_seq optNewLines '>'
+  136             | ID optNewLines '<' . optNewLines templateType optNewLines '>'
 
     NEW_LINE  shift, and go to state 1
 
@@ -6539,7 +6534,7 @@ State 374
 
 State 375
 
-   49 formalParams: formalParams optNewLines ',' . optNewLines ID optNewLines ':' optNewLines type
+  128 varDeclaration: VAR optNewLines ID optNewLines ':' optNewLines type optNewLines '=' . optNewLines expr
 
     NEW_LINE  shift, and go to state 1
 
@@ -6551,7 +6546,7 @@ State 375
 
 State 376
 
-  129 varDeclaration: VAR optNewLines ID optNewLines '(' optNewLines formalParams optNewLines ')' . optNewLines '=' optNewLines expr
+  132 valDeclaration: VAL optNewLines ID optNewLines '(' optNewLines formalParams optNewLines ')' . optNewLines '=' optNewLines expr
 
     NEW_LINE  shift, and go to state 1
 
@@ -6563,8 +6558,7 @@ State 376
 
 State 377
 
-  135 templateType: ID optNewLines '<' . optNewLines type_seq optNewLines '>'
-  136             | ID optNewLines '<' . optNewLines templateType optNewLines '>'
+  131 valDeclaration: VAL optNewLines ID optNewLines ':' optNewLines type optNewLines '=' . optNewLines expr
 
     NEW_LINE  shift, and go to state 1
 
@@ -6576,55 +6570,19 @@ State 377
 
 State 378
 
-  128 varDeclaration: VAR optNewLines ID optNewLines ':' optNewLines type optNewLines '=' . optNewLines expr
+  165 expr: ID '(' optNewLines optFactParams optNewLines . ')'
 
-    NEW_LINE  shift, and go to state 1
-
-    $default  reduce using rule 228 (optNewLines)
-
-    optNewLines  go to state 399
-    newLines     go to state 21
+    ')'  shift, and go to state 399
 
 
 State 379
 
-  132 valDeclaration: VAL optNewLines ID optNewLines '(' optNewLines formalParams optNewLines ')' . optNewLines '=' optNewLines expr
+  200 factParams: factParams optNewLines . ',' optNewLines expr
 
-    NEW_LINE  shift, and go to state 1
-
-    $default  reduce using rule 228 (optNewLines)
-
-    optNewLines  go to state 400
-    newLines     go to state 21
+    ','  shift, and go to state 400
 
 
 State 380
-
-  131 valDeclaration: VAL optNewLines ID optNewLines ':' optNewLines type optNewLines '=' . optNewLines expr
-
-    NEW_LINE  shift, and go to state 1
-
-    $default  reduce using rule 228 (optNewLines)
-
-    optNewLines  go to state 401
-    newLines     go to state 21
-
-
-State 381
-
-  165 expr: ID '(' optNewLines optFactParams optNewLines . ')'
-
-    ')'  shift, and go to state 402
-
-
-State 382
-
-  200 factParams: factParams optNewLines . ',' optNewLines expr
-
-    ','  shift, and go to state 403
-
-
-State 383
 
   195 expr: SUPER '.' ID '(' optNewLines . optFactParams optNewLines ')'
 
@@ -6645,11 +6603,11 @@ State 383
     $default  reduce using rule 197 (optFactParams)
 
     expr           go to state 347
-    optFactParams  go to state 404
+    optFactParams  go to state 401
     factParams     go to state 349
 
 
-State 384
+State 381
 
   176 expr: expr . '+' expr
   177     | expr . '-' expr
@@ -6705,25 +6663,25 @@ State 384
 
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 405
+    optNewLines  go to state 402
     newLines     go to state 21
 
 
-State 385
+State 382
 
   211 doWhileLoop: DO optNewLines block optNewLines WHILE . '(' expr ')'
 
-    '('  shift, and go to state 406
+    '('  shift, and go to state 403
 
 
-State 386
+State 383
 
   210 doWhileLoop: DO optNewLines stmt optNewLines WHILE . '(' expr ')'
 
-    '('  shift, and go to state 407
+    '('  shift, and go to state 404
 
 
-State 387
+State 384
 
   176 expr: expr . '+' expr
   177     | expr . '-' expr
@@ -6770,11 +6728,11 @@ State 387
 
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 408
+    optNewLines  go to state 405
     newLines     go to state 21
 
 
-State 388
+State 385
 
   212 forLoop: FOR optNewLines '(' optNewLines ID . optNewLines ':' optNewLines type optNewLines IN optNewLines expr optNewLines ')' optNewLines stmt
   213        | FOR optNewLines '(' optNewLines ID . optNewLines ':' optNewLines type optNewLines IN optNewLines expr optNewLines ')' optNewLines block
@@ -6783,11 +6741,11 @@ State 388
 
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 409
+    optNewLines  go to state 406
     newLines     go to state 21
 
 
-State 389
+State 386
 
   214 forLoop: FOR optNewLines '(' optNewLines '(' . optNewLines formalParams optNewLines ')' optNewLines IN optNewLines expr optNewLines ')' optNewLines stmt
   215        | FOR optNewLines '(' optNewLines '(' . optNewLines formalParams optNewLines ')' optNewLines IN optNewLines expr optNewLines ')' optNewLines block
@@ -6796,11 +6754,11 @@ State 389
 
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 410
+    optNewLines  go to state 407
     newLines     go to state 21
 
 
-State 390
+State 387
 
   192 expr: expr '.' ID '(' optNewLines . optFactParams optNewLines ')'
 
@@ -6821,11 +6779,11 @@ State 390
     $default  reduce using rule 197 (optFactParams)
 
     expr           go to state 347
-    optFactParams  go to state 411
+    optFactParams  go to state 408
     factParams     go to state 349
 
 
-State 391
+State 388
 
    13 class: modifiers optNewLines CLASS optNewLines ID optNewLines ':' optNewLines ID optNewLines '{' optNewLines . classBody '}'
 
@@ -6842,7 +6800,7 @@ State 391
     FINAL        shift, and go to state 9
     ';'          shift, and go to state 10
 
-    classBody            go to state 412
+    classBody            go to state 409
     property             go to state 273
     method               go to state 274
     initializer          go to state 275
@@ -6854,7 +6812,7 @@ State 391
     semis                go to state 280
 
 
-State 392
+State 389
 
    40 constructor: CONSTRUCTOR optNewLines '(' optNewLines . optFormalParams optNewLines ')' optNewLines block
    41            | CONSTRUCTOR optNewLines '(' optNewLines . optFormalParams optNewLines ')'
@@ -6867,11 +6825,11 @@ State 392
 
     $default  reduce using rule 46 (optFormalParams)
 
-    optFormalParams  go to state 413
+    optFormalParams  go to state 410
     formalParams     go to state 283
 
 
-State 393
+State 390
 
    34 constructor: visibilityModifier optNewLines CONSTRUCTOR optNewLines . '(' optNewLines optFormalParams optNewLines ')' optNewLines block
    35            | visibilityModifier optNewLines CONSTRUCTOR optNewLines . '(' optNewLines optFormalParams optNewLines ')'
@@ -6880,52 +6838,52 @@ State 393
    38            | visibilityModifier optNewLines CONSTRUCTOR optNewLines . '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines SUPER optNewLines '(' optNewLines optFactParams optNewLines ')' optNewLines block
    39            | visibilityModifier optNewLines CONSTRUCTOR optNewLines . '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines THIS optNewLines '(' optNewLines optFactParams optNewLines ')' optNewLines block
 
-    '('  shift, and go to state 414
+    '('  shift, and go to state 411
 
 
-State 394
+State 391
 
    48 formalParams: ID optNewLines ':' optNewLines . type
 
     ID  shift, and go to state 285
 
-    type          go to state 415
+    type          go to state 412
     templateType  go to state 287
+
+
+State 392
+
+  122 funcDeclaration: FUN optNewLines ID optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines . ':' optNewLines type
+
+    ':'  shift, and go to state 413
+
+
+State 393
+
+   49 formalParams: formalParams optNewLines ',' optNewLines . ID optNewLines ':' optNewLines type
+
+    ID  shift, and go to state 414
+
+
+State 394
+
+  129 varDeclaration: VAR optNewLines ID optNewLines '(' optNewLines formalParams optNewLines ')' optNewLines . '=' optNewLines expr
+
+    '='  shift, and go to state 415
 
 
 State 395
 
-  122 funcDeclaration: FUN optNewLines ID optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines . ':' optNewLines type
-
-    ':'  shift, and go to state 416
-
-
-State 396
-
-   49 formalParams: formalParams optNewLines ',' optNewLines . ID optNewLines ':' optNewLines type
-
-    ID  shift, and go to state 417
-
-
-State 397
-
-  129 varDeclaration: VAR optNewLines ID optNewLines '(' optNewLines formalParams optNewLines ')' optNewLines . '=' optNewLines expr
-
-    '='  shift, and go to state 418
-
-
-State 398
-
   135 templateType: ID optNewLines '<' optNewLines . type_seq optNewLines '>'
   136             | ID optNewLines '<' optNewLines . templateType optNewLines '>'
 
-    ID  shift, and go to state 419
+    ID  shift, and go to state 416
 
-    templateType  go to state 420
-    type_seq      go to state 421
+    templateType  go to state 417
+    type_seq      go to state 418
 
 
-State 399
+State 396
 
   128 varDeclaration: VAR optNewLines ID optNewLines ':' optNewLines type optNewLines '=' optNewLines . expr
 
@@ -6943,17 +6901,17 @@ State 399
     '!'      shift, and go to state 175
     '('      shift, and go to state 176
 
-    expr  go to state 422
+    expr  go to state 419
 
 
-State 400
+State 397
 
   132 valDeclaration: VAL optNewLines ID optNewLines '(' optNewLines formalParams optNewLines ')' optNewLines . '=' optNewLines expr
 
-    '='  shift, and go to state 423
+    '='  shift, and go to state 420
 
 
-State 401
+State 398
 
   131 valDeclaration: VAL optNewLines ID optNewLines ':' optNewLines type optNewLines '=' optNewLines . expr
 
@@ -6971,17 +6929,17 @@ State 401
     '!'      shift, and go to state 175
     '('      shift, and go to state 176
 
-    expr  go to state 424
+    expr  go to state 421
 
 
-State 402
+State 399
 
   165 expr: ID '(' optNewLines optFactParams optNewLines ')' .
 
     $default  reduce using rule 165 (expr)
 
 
-State 403
+State 400
 
   200 factParams: factParams optNewLines ',' . optNewLines expr
 
@@ -6989,11 +6947,11 @@ State 403
 
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 425
+    optNewLines  go to state 422
     newLines     go to state 21
 
 
-State 404
+State 401
 
   195 expr: SUPER '.' ID '(' optNewLines optFactParams . optNewLines ')'
 
@@ -7001,11 +6959,11 @@ State 404
 
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 426
+    optNewLines  go to state 423
     newLines     go to state 21
 
 
-State 405
+State 402
 
   216 ifStmt: IF optNewLines '(' optNewLines expr optNewLines . ')' optNewLines stmt
   217       | IF optNewLines '(' optNewLines expr optNewLines . ')' optNewLines block
@@ -7020,10 +6978,10 @@ State 405
   226       | IF optNewLines '(' optNewLines expr optNewLines . ')' optNewLines block optNewLines ELSE optNewLines semis
   227       | IF optNewLines '(' optNewLines expr optNewLines . ')' optNewLines semis optNewLines ELSE optNewLines semis
 
-    ')'  shift, and go to state 427
+    ')'  shift, and go to state 424
 
 
-State 406
+State 403
 
   211 doWhileLoop: DO optNewLines block optNewLines WHILE '(' . expr ')'
 
@@ -7041,10 +6999,10 @@ State 406
     '!'      shift, and go to state 175
     '('      shift, and go to state 176
 
-    expr  go to state 428
+    expr  go to state 425
 
 
-State 407
+State 404
 
   210 doWhileLoop: DO optNewLines stmt optNewLines WHILE '(' . expr ')'
 
@@ -7062,37 +7020,37 @@ State 407
     '!'      shift, and go to state 175
     '('      shift, and go to state 176
 
-    expr  go to state 429
+    expr  go to state 426
 
 
-State 408
+State 405
 
   207 whileLoop: WHILE optNewLines '(' optNewLines expr optNewLines . ')' optNewLines stmt
   208          | WHILE optNewLines '(' optNewLines expr optNewLines . ')' optNewLines block
   209          | WHILE optNewLines '(' optNewLines expr optNewLines . ')' optNewLines ';'
 
-    ')'  shift, and go to state 430
+    ')'  shift, and go to state 427
 
 
-State 409
+State 406
 
   212 forLoop: FOR optNewLines '(' optNewLines ID optNewLines . ':' optNewLines type optNewLines IN optNewLines expr optNewLines ')' optNewLines stmt
   213        | FOR optNewLines '(' optNewLines ID optNewLines . ':' optNewLines type optNewLines IN optNewLines expr optNewLines ')' optNewLines block
 
-    ':'  shift, and go to state 431
+    ':'  shift, and go to state 428
 
 
-State 410
+State 407
 
   214 forLoop: FOR optNewLines '(' optNewLines '(' optNewLines . formalParams optNewLines ')' optNewLines IN optNewLines expr optNewLines ')' optNewLines stmt
   215        | FOR optNewLines '(' optNewLines '(' optNewLines . formalParams optNewLines ')' optNewLines IN optNewLines expr optNewLines ')' optNewLines block
 
     ID  shift, and go to state 281
 
-    formalParams  go to state 432
+    formalParams  go to state 429
 
 
-State 411
+State 408
 
   192 expr: expr '.' ID '(' optNewLines optFactParams . optNewLines ')'
 
@@ -7100,19 +7058,19 @@ State 411
 
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 433
+    optNewLines  go to state 430
     newLines     go to state 21
 
 
-State 412
+State 409
 
    13 class: modifiers optNewLines CLASS optNewLines ID optNewLines ':' optNewLines ID optNewLines '{' optNewLines classBody . '}'
-   22 classBody: classBody . method optNewLines
+   22 classBody: classBody . method
    23          | classBody . property semis
    24          | classBody . property newLines
    25          | classBody . newLines
-   26          | classBody . constructor optNewLines
-   27          | classBody . initializer optNewLines
+   26          | classBody . constructor
+   27          | classBody . initializer
    28          | classBody . semis
 
     NEW_LINE     shift, and go to state 1
@@ -7126,7 +7084,7 @@ State 412
     ABSTRACT     shift, and go to state 7
     OPEN         shift, and go to state 8
     FINAL        shift, and go to state 9
-    '}'          shift, and go to state 434
+    '}'          shift, and go to state 431
     ';'          shift, and go to state 10
 
     property             go to state 329
@@ -7140,7 +7098,7 @@ State 412
     semis                go to state 334
 
 
-State 413
+State 410
 
    40 constructor: CONSTRUCTOR optNewLines '(' optNewLines optFormalParams . optNewLines ')' optNewLines block
    41            | CONSTRUCTOR optNewLines '(' optNewLines optFormalParams . optNewLines ')'
@@ -7153,11 +7111,11 @@ State 413
 
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 435
+    optNewLines  go to state 432
     newLines     go to state 21
 
 
-State 414
+State 411
 
    34 constructor: visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' . optNewLines optFormalParams optNewLines ')' optNewLines block
    35            | visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' . optNewLines optFormalParams optNewLines ')'
@@ -7171,18 +7129,18 @@ State 414
     NEW_LINE  [reduce using rule 228 (optNewLines)]
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 436
+    optNewLines  go to state 433
     newLines     go to state 21
 
 
-State 415
+State 412
 
    48 formalParams: ID optNewLines ':' optNewLines type .
 
     $default  reduce using rule 48 (formalParams)
 
 
-State 416
+State 413
 
   122 funcDeclaration: FUN optNewLines ID optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' . optNewLines type
 
@@ -7190,11 +7148,11 @@ State 416
 
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 437
+    optNewLines  go to state 434
     newLines     go to state 21
 
 
-State 417
+State 414
 
    49 formalParams: formalParams optNewLines ',' optNewLines ID . optNewLines ':' optNewLines type
 
@@ -7202,11 +7160,11 @@ State 417
 
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 438
+    optNewLines  go to state 435
     newLines     go to state 21
 
 
-State 418
+State 415
 
   129 varDeclaration: VAR optNewLines ID optNewLines '(' optNewLines formalParams optNewLines ')' optNewLines '=' . optNewLines expr
 
@@ -7214,11 +7172,11 @@ State 418
 
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 439
+    optNewLines  go to state 436
     newLines     go to state 21
 
 
-State 419
+State 416
 
   135 templateType: ID . optNewLines '<' optNewLines type_seq optNewLines '>'
   136             | ID . optNewLines '<' optNewLines templateType optNewLines '>'
@@ -7234,7 +7192,7 @@ State 419
     newLines     go to state 21
 
 
-State 420
+State 417
 
   136 templateType: ID optNewLines '<' optNewLines templateType . optNewLines '>'
 
@@ -7242,11 +7200,11 @@ State 420
 
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 440
+    optNewLines  go to state 437
     newLines     go to state 21
 
 
-State 421
+State 418
 
   135 templateType: ID optNewLines '<' optNewLines type_seq . optNewLines '>'
   138 type_seq: type_seq . optNewLines ',' optNewLines ID
@@ -7255,11 +7213,11 @@ State 421
 
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 441
+    optNewLines  go to state 438
     newLines     go to state 21
 
 
-State 422
+State 419
 
   128 varDeclaration: VAR optNewLines ID optNewLines ':' optNewLines type optNewLines '=' optNewLines expr .
   176 expr: expr . '+' expr
@@ -7304,7 +7262,7 @@ State 422
     $default  reduce using rule 128 (varDeclaration)
 
 
-State 423
+State 420
 
   132 valDeclaration: VAL optNewLines ID optNewLines '(' optNewLines formalParams optNewLines ')' optNewLines '=' . optNewLines expr
 
@@ -7312,11 +7270,11 @@ State 423
 
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 442
+    optNewLines  go to state 439
     newLines     go to state 21
 
 
-State 424
+State 421
 
   131 valDeclaration: VAL optNewLines ID optNewLines ':' optNewLines type optNewLines '=' optNewLines expr .
   176 expr: expr . '+' expr
@@ -7361,7 +7319,7 @@ State 424
     $default  reduce using rule 131 (valDeclaration)
 
 
-State 425
+State 422
 
   200 factParams: factParams optNewLines ',' optNewLines . expr
 
@@ -7379,17 +7337,17 @@ State 425
     '!'      shift, and go to state 175
     '('      shift, and go to state 176
 
-    expr  go to state 443
+    expr  go to state 440
 
 
-State 426
+State 423
 
   195 expr: SUPER '.' ID '(' optNewLines optFactParams optNewLines . ')'
 
-    ')'  shift, and go to state 444
+    ')'  shift, and go to state 441
 
 
-State 427
+State 424
 
   216 ifStmt: IF optNewLines '(' optNewLines expr optNewLines ')' . optNewLines stmt
   217       | IF optNewLines '(' optNewLines expr optNewLines ')' . optNewLines block
@@ -7408,11 +7366,11 @@ State 427
 
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 445
+    optNewLines  go to state 442
     newLines     go to state 21
 
 
-State 428
+State 425
 
   176 expr: expr . '+' expr
   177     | expr . '-' expr
@@ -7452,11 +7410,11 @@ State 428
     '*'    shift, and go to state 251
     '%'    shift, and go to state 252
     '.'    shift, and go to state 253
-    ')'    shift, and go to state 446
+    ')'    shift, and go to state 443
     '['    shift, and go to state 254
 
 
-State 429
+State 426
 
   176 expr: expr . '+' expr
   177     | expr . '-' expr
@@ -7496,11 +7454,11 @@ State 429
     '*'    shift, and go to state 251
     '%'    shift, and go to state 252
     '.'    shift, and go to state 253
-    ')'    shift, and go to state 447
+    ')'    shift, and go to state 444
     '['    shift, and go to state 254
 
 
-State 430
+State 427
 
   207 whileLoop: WHILE optNewLines '(' optNewLines expr optNewLines ')' . optNewLines stmt
   208          | WHILE optNewLines '(' optNewLines expr optNewLines ')' . optNewLines block
@@ -7510,11 +7468,11 @@ State 430
 
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 448
+    optNewLines  go to state 445
     newLines     go to state 21
 
 
-State 431
+State 428
 
   212 forLoop: FOR optNewLines '(' optNewLines ID optNewLines ':' . optNewLines type optNewLines IN optNewLines expr optNewLines ')' optNewLines stmt
   213        | FOR optNewLines '(' optNewLines ID optNewLines ':' . optNewLines type optNewLines IN optNewLines expr optNewLines ')' optNewLines block
@@ -7523,11 +7481,11 @@ State 431
 
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 449
+    optNewLines  go to state 446
     newLines     go to state 21
 
 
-State 432
+State 429
 
    49 formalParams: formalParams . optNewLines ',' optNewLines ID optNewLines ':' optNewLines type
   214 forLoop: FOR optNewLines '(' optNewLines '(' optNewLines formalParams . optNewLines ')' optNewLines IN optNewLines expr optNewLines ')' optNewLines stmt
@@ -7537,25 +7495,25 @@ State 432
 
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 450
+    optNewLines  go to state 447
     newLines     go to state 21
 
 
-State 433
+State 430
 
   192 expr: expr '.' ID '(' optNewLines optFactParams optNewLines . ')'
 
-    ')'  shift, and go to state 451
+    ')'  shift, and go to state 448
 
 
-State 434
+State 431
 
    13 class: modifiers optNewLines CLASS optNewLines ID optNewLines ':' optNewLines ID optNewLines '{' optNewLines classBody '}' .
 
     $default  reduce using rule 13 (class)
 
 
-State 435
+State 432
 
    40 constructor: CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines . ')' optNewLines block
    41            | CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines . ')'
@@ -7564,10 +7522,10 @@ State 435
    44            | CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines . ')' optNewLines ':' optNewLines SUPER optNewLines '(' optNewLines optFactParams optNewLines ')' optNewLines block
    45            | CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines . ')' optNewLines ':' optNewLines THIS optNewLines '(' optNewLines optFactParams optNewLines ')' optNewLines block
 
-    ')'  shift, and go to state 452
+    ')'  shift, and go to state 449
 
 
-State 436
+State 433
 
    34 constructor: visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines . optFormalParams optNewLines ')' optNewLines block
    35            | visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines . optFormalParams optNewLines ')'
@@ -7580,28 +7538,28 @@ State 436
 
     $default  reduce using rule 46 (optFormalParams)
 
-    optFormalParams  go to state 453
+    optFormalParams  go to state 450
     formalParams     go to state 283
 
 
-State 437
+State 434
 
   122 funcDeclaration: FUN optNewLines ID optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines . type
 
     ID  shift, and go to state 285
 
-    type          go to state 454
+    type          go to state 451
     templateType  go to state 287
 
 
-State 438
+State 435
 
    49 formalParams: formalParams optNewLines ',' optNewLines ID optNewLines . ':' optNewLines type
 
-    ':'  shift, and go to state 455
+    ':'  shift, and go to state 452
 
 
-State 439
+State 436
 
   129 varDeclaration: VAR optNewLines ID optNewLines '(' optNewLines formalParams optNewLines ')' optNewLines '=' optNewLines . expr
 
@@ -7619,26 +7577,26 @@ State 439
     '!'      shift, and go to state 175
     '('      shift, and go to state 176
 
-    expr  go to state 456
+    expr  go to state 453
 
 
-State 440
+State 437
 
   136 templateType: ID optNewLines '<' optNewLines templateType optNewLines . '>'
 
-    '>'  shift, and go to state 457
+    '>'  shift, and go to state 454
 
 
-State 441
+State 438
 
   135 templateType: ID optNewLines '<' optNewLines type_seq optNewLines . '>'
   138 type_seq: type_seq optNewLines . ',' optNewLines ID
 
-    '>'  shift, and go to state 458
-    ','  shift, and go to state 459
+    '>'  shift, and go to state 455
+    ','  shift, and go to state 456
 
 
-State 442
+State 439
 
   132 valDeclaration: VAL optNewLines ID optNewLines '(' optNewLines formalParams optNewLines ')' optNewLines '=' optNewLines . expr
 
@@ -7656,10 +7614,10 @@ State 442
     '!'      shift, and go to state 175
     '('      shift, and go to state 176
 
-    expr  go to state 460
+    expr  go to state 457
 
 
-State 443
+State 440
 
   176 expr: expr . '+' expr
   177     | expr . '-' expr
@@ -7704,14 +7662,14 @@ State 443
     $default  reduce using rule 200 (factParams)
 
 
-State 444
+State 441
 
   195 expr: SUPER '.' ID '(' optNewLines optFactParams optNewLines ')' .
 
     $default  reduce using rule 195 (expr)
 
 
-State 445
+State 442
 
   216 ifStmt: IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines . stmt
   217       | IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines . block
@@ -7761,32 +7719,32 @@ State 445
     modifiers            go to state 179
     visibilityModifier   go to state 16
     inheritanceModifier  go to state 17
-    block                go to state 461
-    stmt                 go to state 462
+    block                go to state 458
+    stmt                 go to state 459
     expr                 go to state 182
     assignment           go to state 183
     whileLoop            go to state 184
     doWhileLoop          go to state 185
     forLoop              go to state 186
     ifStmt               go to state 187
-    semis                go to state 463
+    semis                go to state 460
 
 
-State 446
+State 443
 
   211 doWhileLoop: DO optNewLines block optNewLines WHILE '(' expr ')' .
 
     $default  reduce using rule 211 (doWhileLoop)
 
 
-State 447
+State 444
 
   210 doWhileLoop: DO optNewLines stmt optNewLines WHILE '(' expr ')' .
 
     $default  reduce using rule 210 (doWhileLoop)
 
 
-State 448
+State 445
 
   207 whileLoop: WHILE optNewLines '(' optNewLines expr optNewLines ')' optNewLines . stmt
   208          | WHILE optNewLines '(' optNewLines expr optNewLines ')' optNewLines . block
@@ -7821,14 +7779,14 @@ State 448
     '!'        shift, and go to state 175
     '('        shift, and go to state 176
     '{'        shift, and go to state 92
-    ';'        shift, and go to state 464
+    ';'        shift, and go to state 461
 
     property             go to state 178
     modifiers            go to state 179
     visibilityModifier   go to state 16
     inheritanceModifier  go to state 17
-    block                go to state 465
-    stmt                 go to state 466
+    block                go to state 462
+    stmt                 go to state 463
     expr                 go to state 182
     assignment           go to state 183
     whileLoop            go to state 184
@@ -7837,35 +7795,35 @@ State 448
     ifStmt               go to state 187
 
 
-State 449
+State 446
 
   212 forLoop: FOR optNewLines '(' optNewLines ID optNewLines ':' optNewLines . type optNewLines IN optNewLines expr optNewLines ')' optNewLines stmt
   213        | FOR optNewLines '(' optNewLines ID optNewLines ':' optNewLines . type optNewLines IN optNewLines expr optNewLines ')' optNewLines block
 
     ID  shift, and go to state 285
 
-    type          go to state 467
+    type          go to state 464
     templateType  go to state 287
 
 
-State 450
+State 447
 
    49 formalParams: formalParams optNewLines . ',' optNewLines ID optNewLines ':' optNewLines type
   214 forLoop: FOR optNewLines '(' optNewLines '(' optNewLines formalParams optNewLines . ')' optNewLines IN optNewLines expr optNewLines ')' optNewLines stmt
   215        | FOR optNewLines '(' optNewLines '(' optNewLines formalParams optNewLines . ')' optNewLines IN optNewLines expr optNewLines ')' optNewLines block
 
-    ')'  shift, and go to state 468
-    ','  shift, and go to state 375
+    ')'  shift, and go to state 465
+    ','  shift, and go to state 372
 
 
-State 451
+State 448
 
   192 expr: expr '.' ID '(' optNewLines optFactParams optNewLines ')' .
 
     $default  reduce using rule 192 (expr)
 
 
-State 452
+State 449
 
    40 constructor: CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' . optNewLines block
    41            | CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' .
@@ -7881,11 +7839,11 @@ State 452
     '{'       reduce using rule 228 (optNewLines)
     $default  reduce using rule 41 (constructor)
 
-    optNewLines  go to state 469
+    optNewLines  go to state 466
     newLines     go to state 21
 
 
-State 453
+State 450
 
    34 constructor: visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams . optNewLines ')' optNewLines block
    35            | visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams . optNewLines ')'
@@ -7898,18 +7856,18 @@ State 453
 
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 470
+    optNewLines  go to state 467
     newLines     go to state 21
 
 
-State 454
+State 451
 
   122 funcDeclaration: FUN optNewLines ID optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines type .
 
     $default  reduce using rule 122 (funcDeclaration)
 
 
-State 455
+State 452
 
    49 formalParams: formalParams optNewLines ',' optNewLines ID optNewLines ':' . optNewLines type
 
@@ -7917,11 +7875,11 @@ State 455
 
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 471
+    optNewLines  go to state 468
     newLines     go to state 21
 
 
-State 456
+State 453
 
   129 varDeclaration: VAR optNewLines ID optNewLines '(' optNewLines formalParams optNewLines ')' optNewLines '=' optNewLines expr .
   176 expr: expr . '+' expr
@@ -7966,21 +7924,21 @@ State 456
     $default  reduce using rule 129 (varDeclaration)
 
 
-State 457
+State 454
 
   136 templateType: ID optNewLines '<' optNewLines templateType optNewLines '>' .
 
     $default  reduce using rule 136 (templateType)
 
 
-State 458
+State 455
 
   135 templateType: ID optNewLines '<' optNewLines type_seq optNewLines '>' .
 
     $default  reduce using rule 135 (templateType)
 
 
-State 459
+State 456
 
   138 type_seq: type_seq optNewLines ',' . optNewLines ID
 
@@ -7988,11 +7946,11 @@ State 459
 
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 472
+    optNewLines  go to state 469
     newLines     go to state 21
 
 
-State 460
+State 457
 
   132 valDeclaration: VAL optNewLines ID optNewLines '(' optNewLines formalParams optNewLines ')' optNewLines '=' optNewLines expr .
   176 expr: expr . '+' expr
@@ -8037,7 +7995,7 @@ State 460
     $default  reduce using rule 132 (valDeclaration)
 
 
-State 461
+State 458
 
   217 ifStmt: IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines block .
   220       | IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines block . optNewLines ELSE optNewLines stmt
@@ -8050,11 +8008,11 @@ State 461
     ELSE      reduce using rule 228 (optNewLines)
     $default  reduce using rule 217 (ifStmt)
 
-    optNewLines  go to state 473
+    optNewLines  go to state 470
     newLines     go to state 21
 
 
-State 462
+State 459
 
   216 ifStmt: IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines stmt .
   219       | IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines stmt . optNewLines ELSE optNewLines stmt
@@ -8067,11 +8025,11 @@ State 462
     ELSE      reduce using rule 228 (optNewLines)
     $default  reduce using rule 216 (ifStmt)
 
-    optNewLines  go to state 474
+    optNewLines  go to state 471
     newLines     go to state 21
 
 
-State 463
+State 460
 
   218 ifStmt: IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines semis .
   221       | IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines semis . optNewLines ELSE optNewLines stmt
@@ -8086,32 +8044,32 @@ State 463
     ';'       [reduce using rule 218 (ifStmt)]
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 475
+    optNewLines  go to state 472
     newLines     go to state 21
 
 
-State 464
+State 461
 
   209 whileLoop: WHILE optNewLines '(' optNewLines expr optNewLines ')' optNewLines ';' .
 
     $default  reduce using rule 209 (whileLoop)
 
 
-State 465
+State 462
 
   208 whileLoop: WHILE optNewLines '(' optNewLines expr optNewLines ')' optNewLines block .
 
     $default  reduce using rule 208 (whileLoop)
 
 
-State 466
+State 463
 
   207 whileLoop: WHILE optNewLines '(' optNewLines expr optNewLines ')' optNewLines stmt .
 
     $default  reduce using rule 207 (whileLoop)
 
 
-State 467
+State 464
 
   212 forLoop: FOR optNewLines '(' optNewLines ID optNewLines ':' optNewLines type . optNewLines IN optNewLines expr optNewLines ')' optNewLines stmt
   213        | FOR optNewLines '(' optNewLines ID optNewLines ':' optNewLines type . optNewLines IN optNewLines expr optNewLines ')' optNewLines block
@@ -8120,11 +8078,11 @@ State 467
 
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 476
+    optNewLines  go to state 473
     newLines     go to state 21
 
 
-State 468
+State 465
 
   214 forLoop: FOR optNewLines '(' optNewLines '(' optNewLines formalParams optNewLines ')' . optNewLines IN optNewLines expr optNewLines ')' optNewLines stmt
   215        | FOR optNewLines '(' optNewLines '(' optNewLines formalParams optNewLines ')' . optNewLines IN optNewLines expr optNewLines ')' optNewLines block
@@ -8133,11 +8091,11 @@ State 468
 
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 477
+    optNewLines  go to state 474
     newLines     go to state 21
 
 
-State 469
+State 466
 
    40 constructor: CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines . block
    42            | CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines . ':' optNewLines SUPER optNewLines '(' optNewLines optFactParams optNewLines ')'
@@ -8145,13 +8103,13 @@ State 469
    44            | CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines . ':' optNewLines SUPER optNewLines '(' optNewLines optFactParams optNewLines ')' optNewLines block
    45            | CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines . ':' optNewLines THIS optNewLines '(' optNewLines optFactParams optNewLines ')' optNewLines block
 
-    ':'  shift, and go to state 478
+    ':'  shift, and go to state 475
     '{'  shift, and go to state 92
 
-    block  go to state 479
+    block  go to state 476
 
 
-State 470
+State 467
 
    34 constructor: visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines . ')' optNewLines block
    35            | visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines . ')'
@@ -8160,70 +8118,70 @@ State 470
    38            | visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines . ')' optNewLines ':' optNewLines SUPER optNewLines '(' optNewLines optFactParams optNewLines ')' optNewLines block
    39            | visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines . ')' optNewLines ':' optNewLines THIS optNewLines '(' optNewLines optFactParams optNewLines ')' optNewLines block
 
-    ')'  shift, and go to state 480
+    ')'  shift, and go to state 477
 
 
-State 471
+State 468
 
    49 formalParams: formalParams optNewLines ',' optNewLines ID optNewLines ':' optNewLines . type
 
     ID  shift, and go to state 285
 
-    type          go to state 481
+    type          go to state 478
     templateType  go to state 287
 
 
-State 472
+State 469
 
   138 type_seq: type_seq optNewLines ',' optNewLines . ID
 
-    ID  shift, and go to state 482
+    ID  shift, and go to state 479
 
 
-State 473
+State 470
 
   220 ifStmt: IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines block optNewLines . ELSE optNewLines stmt
   223       | IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines block optNewLines . ELSE optNewLines block
   226       | IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines block optNewLines . ELSE optNewLines semis
 
-    ELSE  shift, and go to state 483
+    ELSE  shift, and go to state 480
 
 
-State 474
+State 471
 
   219 ifStmt: IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines stmt optNewLines . ELSE optNewLines stmt
   222       | IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines stmt optNewLines . ELSE optNewLines block
   225       | IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines stmt optNewLines . ELSE optNewLines semis
 
-    ELSE  shift, and go to state 484
+    ELSE  shift, and go to state 481
 
 
-State 475
+State 472
 
   221 ifStmt: IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines semis optNewLines . ELSE optNewLines stmt
   224       | IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines semis optNewLines . ELSE optNewLines block
   227       | IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines semis optNewLines . ELSE optNewLines semis
 
-    ELSE  shift, and go to state 485
+    ELSE  shift, and go to state 482
 
 
-State 476
+State 473
 
   212 forLoop: FOR optNewLines '(' optNewLines ID optNewLines ':' optNewLines type optNewLines . IN optNewLines expr optNewLines ')' optNewLines stmt
   213        | FOR optNewLines '(' optNewLines ID optNewLines ':' optNewLines type optNewLines . IN optNewLines expr optNewLines ')' optNewLines block
 
-    IN  shift, and go to state 486
+    IN  shift, and go to state 483
 
 
-State 477
+State 474
 
   214 forLoop: FOR optNewLines '(' optNewLines '(' optNewLines formalParams optNewLines ')' optNewLines . IN optNewLines expr optNewLines ')' optNewLines stmt
   215        | FOR optNewLines '(' optNewLines '(' optNewLines formalParams optNewLines ')' optNewLines . IN optNewLines expr optNewLines ')' optNewLines block
 
-    IN  shift, and go to state 487
+    IN  shift, and go to state 484
 
 
-State 478
+State 475
 
    42 constructor: CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' . optNewLines SUPER optNewLines '(' optNewLines optFactParams optNewLines ')'
    43            | CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' . optNewLines THIS optNewLines '(' optNewLines optFactParams optNewLines ')'
@@ -8234,18 +8192,18 @@ State 478
 
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 488
+    optNewLines  go to state 485
     newLines     go to state 21
 
 
-State 479
+State 476
 
    40 constructor: CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines block .
 
     $default  reduce using rule 40 (constructor)
 
 
-State 480
+State 477
 
    34 constructor: visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' . optNewLines block
    35            | visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' .
@@ -8261,29 +8219,70 @@ State 480
     '{'       reduce using rule 228 (optNewLines)
     $default  reduce using rule 35 (constructor)
 
-    optNewLines  go to state 489
+    optNewLines  go to state 486
     newLines     go to state 21
 
 
-State 481
+State 478
 
    49 formalParams: formalParams optNewLines ',' optNewLines ID optNewLines ':' optNewLines type .
 
     $default  reduce using rule 49 (formalParams)
 
 
-State 482
+State 479
 
   138 type_seq: type_seq optNewLines ',' optNewLines ID .
 
     $default  reduce using rule 138 (type_seq)
 
 
-State 483
+State 480
 
   220 ifStmt: IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines block optNewLines ELSE . optNewLines stmt
   223       | IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines block optNewLines ELSE . optNewLines block
   226       | IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines block optNewLines ELSE . optNewLines semis
+
+    NEW_LINE  shift, and go to state 1
+
+    $default  reduce using rule 228 (optNewLines)
+
+    optNewLines  go to state 487
+    newLines     go to state 21
+
+
+State 481
+
+  219 ifStmt: IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines stmt optNewLines ELSE . optNewLines stmt
+  222       | IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines stmt optNewLines ELSE . optNewLines block
+  225       | IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines stmt optNewLines ELSE . optNewLines semis
+
+    NEW_LINE  shift, and go to state 1
+
+    $default  reduce using rule 228 (optNewLines)
+
+    optNewLines  go to state 488
+    newLines     go to state 21
+
+
+State 482
+
+  221 ifStmt: IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines semis optNewLines ELSE . optNewLines stmt
+  224       | IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines semis optNewLines ELSE . optNewLines block
+  227       | IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines semis optNewLines ELSE . optNewLines semis
+
+    NEW_LINE  shift, and go to state 1
+
+    $default  reduce using rule 228 (optNewLines)
+
+    optNewLines  go to state 489
+    newLines     go to state 21
+
+
+State 483
+
+  212 forLoop: FOR optNewLines '(' optNewLines ID optNewLines ':' optNewLines type optNewLines IN . optNewLines expr optNewLines ')' optNewLines stmt
+  213        | FOR optNewLines '(' optNewLines ID optNewLines ':' optNewLines type optNewLines IN . optNewLines expr optNewLines ')' optNewLines block
 
     NEW_LINE  shift, and go to state 1
 
@@ -8295,9 +8294,8 @@ State 483
 
 State 484
 
-  219 ifStmt: IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines stmt optNewLines ELSE . optNewLines stmt
-  222       | IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines stmt optNewLines ELSE . optNewLines block
-  225       | IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines stmt optNewLines ELSE . optNewLines semis
+  214 forLoop: FOR optNewLines '(' optNewLines '(' optNewLines formalParams optNewLines ')' optNewLines IN . optNewLines expr optNewLines ')' optNewLines stmt
+  215        | FOR optNewLines '(' optNewLines '(' optNewLines formalParams optNewLines ')' optNewLines IN . optNewLines expr optNewLines ')' optNewLines block
 
     NEW_LINE  shift, and go to state 1
 
@@ -8309,56 +8307,16 @@ State 484
 
 State 485
 
-  221 ifStmt: IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines semis optNewLines ELSE . optNewLines stmt
-  224       | IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines semis optNewLines ELSE . optNewLines block
-  227       | IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines semis optNewLines ELSE . optNewLines semis
-
-    NEW_LINE  shift, and go to state 1
-
-    $default  reduce using rule 228 (optNewLines)
-
-    optNewLines  go to state 492
-    newLines     go to state 21
-
-
-State 486
-
-  212 forLoop: FOR optNewLines '(' optNewLines ID optNewLines ':' optNewLines type optNewLines IN . optNewLines expr optNewLines ')' optNewLines stmt
-  213        | FOR optNewLines '(' optNewLines ID optNewLines ':' optNewLines type optNewLines IN . optNewLines expr optNewLines ')' optNewLines block
-
-    NEW_LINE  shift, and go to state 1
-
-    $default  reduce using rule 228 (optNewLines)
-
-    optNewLines  go to state 493
-    newLines     go to state 21
-
-
-State 487
-
-  214 forLoop: FOR optNewLines '(' optNewLines '(' optNewLines formalParams optNewLines ')' optNewLines IN . optNewLines expr optNewLines ')' optNewLines stmt
-  215        | FOR optNewLines '(' optNewLines '(' optNewLines formalParams optNewLines ')' optNewLines IN . optNewLines expr optNewLines ')' optNewLines block
-
-    NEW_LINE  shift, and go to state 1
-
-    $default  reduce using rule 228 (optNewLines)
-
-    optNewLines  go to state 494
-    newLines     go to state 21
-
-
-State 488
-
    42 constructor: CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines . SUPER optNewLines '(' optNewLines optFactParams optNewLines ')'
    43            | CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines . THIS optNewLines '(' optNewLines optFactParams optNewLines ')'
    44            | CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines . SUPER optNewLines '(' optNewLines optFactParams optNewLines ')' optNewLines block
    45            | CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines . THIS optNewLines '(' optNewLines optFactParams optNewLines ')' optNewLines block
 
-    THIS   shift, and go to state 495
-    SUPER  shift, and go to state 496
+    THIS   shift, and go to state 492
+    SUPER  shift, and go to state 493
 
 
-State 489
+State 486
 
    34 constructor: visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines . block
    36            | visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines . ':' optNewLines SUPER optNewLines '(' optNewLines optFactParams optNewLines ')'
@@ -8366,17 +8324,69 @@ State 489
    38            | visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines . ':' optNewLines SUPER optNewLines '(' optNewLines optFactParams optNewLines ')' optNewLines block
    39            | visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines . ':' optNewLines THIS optNewLines '(' optNewLines optFactParams optNewLines ')' optNewLines block
 
-    ':'  shift, and go to state 497
+    ':'  shift, and go to state 494
     '{'  shift, and go to state 92
 
-    block  go to state 498
+    block  go to state 495
 
 
-State 490
+State 487
 
   220 ifStmt: IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines block optNewLines ELSE optNewLines . stmt
   223       | IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines block optNewLines ELSE optNewLines . block
   226       | IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines block optNewLines ELSE optNewLines . semis
+
+    ID         shift, and go to state 157
+    PUBLIC     shift, and go to state 2
+    PRIVATE    shift, and go to state 3
+    PROTECTED  shift, and go to state 4
+    THIS       shift, and go to state 158
+    SUPER      shift, and go to state 159
+    INTERNAL   shift, and go to state 5
+    OVERRIDE   shift, and go to state 6
+    ABSTRACT   shift, and go to state 7
+    IF         shift, and go to state 160
+    DO         shift, and go to state 161
+    WHILE      shift, and go to state 162
+    FOR        shift, and go to state 163
+    BREAK      shift, and go to state 164
+    CONTINUE   shift, and go to state 165
+    RETURN     shift, and go to state 166
+    OPEN       shift, and go to state 8
+    FINAL      shift, and go to state 9
+    INT        shift, and go to state 167
+    FLOAT      shift, and go to state 168
+    DOUBLE     shift, and go to state 169
+    STRING     shift, and go to state 170
+    CHAR       shift, and go to state 171
+    BOOLEAN    shift, and go to state 172
+    '+'        shift, and go to state 173
+    '-'        shift, and go to state 174
+    '!'        shift, and go to state 175
+    '('        shift, and go to state 176
+    '{'        shift, and go to state 92
+    ';'        shift, and go to state 10
+
+    property             go to state 178
+    modifiers            go to state 179
+    visibilityModifier   go to state 16
+    inheritanceModifier  go to state 17
+    block                go to state 496
+    stmt                 go to state 497
+    expr                 go to state 182
+    assignment           go to state 183
+    whileLoop            go to state 184
+    doWhileLoop          go to state 185
+    forLoop              go to state 186
+    ifStmt               go to state 187
+    semis                go to state 498
+
+
+State 488
+
+  219 ifStmt: IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines stmt optNewLines ELSE optNewLines . stmt
+  222       | IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines stmt optNewLines ELSE optNewLines . block
+  225       | IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines stmt optNewLines ELSE optNewLines . semis
 
     ID         shift, and go to state 157
     PUBLIC     shift, and go to state 2
@@ -8424,11 +8434,11 @@ State 490
     semis                go to state 501
 
 
-State 491
+State 489
 
-  219 ifStmt: IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines stmt optNewLines ELSE optNewLines . stmt
-  222       | IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines stmt optNewLines ELSE optNewLines . block
-  225       | IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines stmt optNewLines ELSE optNewLines . semis
+  221 ifStmt: IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines semis optNewLines ELSE optNewLines . stmt
+  224       | IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines semis optNewLines ELSE optNewLines . block
+  227       | IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines semis optNewLines ELSE optNewLines . semis
 
     ID         shift, and go to state 157
     PUBLIC     shift, and go to state 2
@@ -8476,59 +8486,7 @@ State 491
     semis                go to state 504
 
 
-State 492
-
-  221 ifStmt: IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines semis optNewLines ELSE optNewLines . stmt
-  224       | IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines semis optNewLines ELSE optNewLines . block
-  227       | IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines semis optNewLines ELSE optNewLines . semis
-
-    ID         shift, and go to state 157
-    PUBLIC     shift, and go to state 2
-    PRIVATE    shift, and go to state 3
-    PROTECTED  shift, and go to state 4
-    THIS       shift, and go to state 158
-    SUPER      shift, and go to state 159
-    INTERNAL   shift, and go to state 5
-    OVERRIDE   shift, and go to state 6
-    ABSTRACT   shift, and go to state 7
-    IF         shift, and go to state 160
-    DO         shift, and go to state 161
-    WHILE      shift, and go to state 162
-    FOR        shift, and go to state 163
-    BREAK      shift, and go to state 164
-    CONTINUE   shift, and go to state 165
-    RETURN     shift, and go to state 166
-    OPEN       shift, and go to state 8
-    FINAL      shift, and go to state 9
-    INT        shift, and go to state 167
-    FLOAT      shift, and go to state 168
-    DOUBLE     shift, and go to state 169
-    STRING     shift, and go to state 170
-    CHAR       shift, and go to state 171
-    BOOLEAN    shift, and go to state 172
-    '+'        shift, and go to state 173
-    '-'        shift, and go to state 174
-    '!'        shift, and go to state 175
-    '('        shift, and go to state 176
-    '{'        shift, and go to state 92
-    ';'        shift, and go to state 10
-
-    property             go to state 178
-    modifiers            go to state 179
-    visibilityModifier   go to state 16
-    inheritanceModifier  go to state 17
-    block                go to state 505
-    stmt                 go to state 506
-    expr                 go to state 182
-    assignment           go to state 183
-    whileLoop            go to state 184
-    doWhileLoop          go to state 185
-    forLoop              go to state 186
-    ifStmt               go to state 187
-    semis                go to state 507
-
-
-State 493
+State 490
 
   212 forLoop: FOR optNewLines '(' optNewLines ID optNewLines ':' optNewLines type optNewLines IN optNewLines . expr optNewLines ')' optNewLines stmt
   213        | FOR optNewLines '(' optNewLines ID optNewLines ':' optNewLines type optNewLines IN optNewLines . expr optNewLines ')' optNewLines block
@@ -8547,10 +8505,10 @@ State 493
     '!'      shift, and go to state 175
     '('      shift, and go to state 176
 
-    expr  go to state 508
+    expr  go to state 505
 
 
-State 494
+State 491
 
   214 forLoop: FOR optNewLines '(' optNewLines '(' optNewLines formalParams optNewLines ')' optNewLines IN optNewLines . expr optNewLines ')' optNewLines stmt
   215        | FOR optNewLines '(' optNewLines '(' optNewLines formalParams optNewLines ')' optNewLines IN optNewLines . expr optNewLines ')' optNewLines block
@@ -8569,10 +8527,10 @@ State 494
     '!'      shift, and go to state 175
     '('      shift, and go to state 176
 
-    expr  go to state 509
+    expr  go to state 506
 
 
-State 495
+State 492
 
    43 constructor: CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines THIS . optNewLines '(' optNewLines optFactParams optNewLines ')'
    45            | CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines THIS . optNewLines '(' optNewLines optFactParams optNewLines ')' optNewLines block
@@ -8581,11 +8539,11 @@ State 495
 
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 510
+    optNewLines  go to state 507
     newLines     go to state 21
 
 
-State 496
+State 493
 
    42 constructor: CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines SUPER . optNewLines '(' optNewLines optFactParams optNewLines ')'
    44            | CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines SUPER . optNewLines '(' optNewLines optFactParams optNewLines ')' optNewLines block
@@ -8594,11 +8552,11 @@ State 496
 
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 511
+    optNewLines  go to state 508
     newLines     go to state 21
 
 
-State 497
+State 494
 
    36 constructor: visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' . optNewLines SUPER optNewLines '(' optNewLines optFactParams optNewLines ')'
    37            | visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' . optNewLines THIS optNewLines '(' optNewLines optFactParams optNewLines ')'
@@ -8609,32 +8567,32 @@ State 497
 
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 512
+    optNewLines  go to state 509
     newLines     go to state 21
 
 
-State 498
+State 495
 
    34 constructor: visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines block .
 
     $default  reduce using rule 34 (constructor)
 
 
-State 499
+State 496
 
   223 ifStmt: IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines block optNewLines ELSE optNewLines block .
 
     $default  reduce using rule 223 (ifStmt)
 
 
-State 500
+State 497
 
   220 ifStmt: IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines block optNewLines ELSE optNewLines stmt .
 
     $default  reduce using rule 220 (ifStmt)
 
 
-State 501
+State 498
 
   226 ifStmt: IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines block optNewLines ELSE optNewLines semis .
   233 semis: semis . ';'
@@ -8645,21 +8603,21 @@ State 501
     $default  reduce using rule 226 (ifStmt)
 
 
-State 502
+State 499
 
   222 ifStmt: IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines stmt optNewLines ELSE optNewLines block .
 
     $default  reduce using rule 222 (ifStmt)
 
 
-State 503
+State 500
 
   219 ifStmt: IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines stmt optNewLines ELSE optNewLines stmt .
 
     $default  reduce using rule 219 (ifStmt)
 
 
-State 504
+State 501
 
   225 ifStmt: IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines stmt optNewLines ELSE optNewLines semis .
   233 semis: semis . ';'
@@ -8670,21 +8628,21 @@ State 504
     $default  reduce using rule 225 (ifStmt)
 
 
-State 505
+State 502
 
   224 ifStmt: IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines semis optNewLines ELSE optNewLines block .
 
     $default  reduce using rule 224 (ifStmt)
 
 
-State 506
+State 503
 
   221 ifStmt: IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines semis optNewLines ELSE optNewLines stmt .
 
     $default  reduce using rule 221 (ifStmt)
 
 
-State 507
+State 504
 
   227 ifStmt: IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines semis optNewLines ELSE optNewLines semis .
   233 semis: semis . ';'
@@ -8695,7 +8653,7 @@ State 507
     $default  reduce using rule 227 (ifStmt)
 
 
-State 508
+State 505
 
   176 expr: expr . '+' expr
   177     | expr . '-' expr
@@ -8741,11 +8699,11 @@ State 508
 
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 513
+    optNewLines  go to state 510
     newLines     go to state 21
 
 
-State 509
+State 506
 
   176 expr: expr . '+' expr
   177     | expr . '-' expr
@@ -8791,54 +8749,54 @@ State 509
 
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 514
+    optNewLines  go to state 511
     newLines     go to state 21
 
 
-State 510
+State 507
 
    43 constructor: CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines THIS optNewLines . '(' optNewLines optFactParams optNewLines ')'
    45            | CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines THIS optNewLines . '(' optNewLines optFactParams optNewLines ')' optNewLines block
 
-    '('  shift, and go to state 515
+    '('  shift, and go to state 512
 
 
-State 511
+State 508
 
    42 constructor: CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines SUPER optNewLines . '(' optNewLines optFactParams optNewLines ')'
    44            | CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines SUPER optNewLines . '(' optNewLines optFactParams optNewLines ')' optNewLines block
 
-    '('  shift, and go to state 516
+    '('  shift, and go to state 513
 
 
-State 512
+State 509
 
    36 constructor: visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines . SUPER optNewLines '(' optNewLines optFactParams optNewLines ')'
    37            | visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines . THIS optNewLines '(' optNewLines optFactParams optNewLines ')'
    38            | visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines . SUPER optNewLines '(' optNewLines optFactParams optNewLines ')' optNewLines block
    39            | visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines . THIS optNewLines '(' optNewLines optFactParams optNewLines ')' optNewLines block
 
-    THIS   shift, and go to state 517
-    SUPER  shift, and go to state 518
+    THIS   shift, and go to state 514
+    SUPER  shift, and go to state 515
 
 
-State 513
+State 510
 
   212 forLoop: FOR optNewLines '(' optNewLines ID optNewLines ':' optNewLines type optNewLines IN optNewLines expr optNewLines . ')' optNewLines stmt
   213        | FOR optNewLines '(' optNewLines ID optNewLines ':' optNewLines type optNewLines IN optNewLines expr optNewLines . ')' optNewLines block
 
-    ')'  shift, and go to state 519
+    ')'  shift, and go to state 516
 
 
-State 514
+State 511
 
   214 forLoop: FOR optNewLines '(' optNewLines '(' optNewLines formalParams optNewLines ')' optNewLines IN optNewLines expr optNewLines . ')' optNewLines stmt
   215        | FOR optNewLines '(' optNewLines '(' optNewLines formalParams optNewLines ')' optNewLines IN optNewLines expr optNewLines . ')' optNewLines block
 
-    ')'  shift, and go to state 520
+    ')'  shift, and go to state 517
 
 
-State 515
+State 512
 
    43 constructor: CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines THIS optNewLines '(' . optNewLines optFactParams optNewLines ')'
    45            | CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines THIS optNewLines '(' . optNewLines optFactParams optNewLines ')' optNewLines block
@@ -8848,11 +8806,11 @@ State 515
     NEW_LINE  [reduce using rule 228 (optNewLines)]
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 521
+    optNewLines  go to state 518
     newLines     go to state 21
 
 
-State 516
+State 513
 
    42 constructor: CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines SUPER optNewLines '(' . optNewLines optFactParams optNewLines ')'
    44            | CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines SUPER optNewLines '(' . optNewLines optFactParams optNewLines ')' optNewLines block
@@ -8862,14 +8820,53 @@ State 516
     NEW_LINE  [reduce using rule 228 (optNewLines)]
     $default  reduce using rule 228 (optNewLines)
 
+    optNewLines  go to state 519
+    newLines     go to state 21
+
+
+State 514
+
+   37 constructor: visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines THIS . optNewLines '(' optNewLines optFactParams optNewLines ')'
+   39            | visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines THIS . optNewLines '(' optNewLines optFactParams optNewLines ')' optNewLines block
+
+    NEW_LINE  shift, and go to state 1
+
+    $default  reduce using rule 228 (optNewLines)
+
+    optNewLines  go to state 520
+    newLines     go to state 21
+
+
+State 515
+
+   36 constructor: visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines SUPER . optNewLines '(' optNewLines optFactParams optNewLines ')'
+   38            | visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines SUPER . optNewLines '(' optNewLines optFactParams optNewLines ')' optNewLines block
+
+    NEW_LINE  shift, and go to state 1
+
+    $default  reduce using rule 228 (optNewLines)
+
+    optNewLines  go to state 521
+    newLines     go to state 21
+
+
+State 516
+
+  212 forLoop: FOR optNewLines '(' optNewLines ID optNewLines ':' optNewLines type optNewLines IN optNewLines expr optNewLines ')' . optNewLines stmt
+  213        | FOR optNewLines '(' optNewLines ID optNewLines ':' optNewLines type optNewLines IN optNewLines expr optNewLines ')' . optNewLines block
+
+    NEW_LINE  shift, and go to state 1
+
+    $default  reduce using rule 228 (optNewLines)
+
     optNewLines  go to state 522
     newLines     go to state 21
 
 
 State 517
 
-   37 constructor: visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines THIS . optNewLines '(' optNewLines optFactParams optNewLines ')'
-   39            | visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines THIS . optNewLines '(' optNewLines optFactParams optNewLines ')' optNewLines block
+  214 forLoop: FOR optNewLines '(' optNewLines '(' optNewLines formalParams optNewLines ')' optNewLines IN optNewLines expr optNewLines ')' . optNewLines stmt
+  215        | FOR optNewLines '(' optNewLines '(' optNewLines formalParams optNewLines ')' optNewLines IN optNewLines expr optNewLines ')' . optNewLines block
 
     NEW_LINE  shift, and go to state 1
 
@@ -8880,45 +8877,6 @@ State 517
 
 
 State 518
-
-   36 constructor: visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines SUPER . optNewLines '(' optNewLines optFactParams optNewLines ')'
-   38            | visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines SUPER . optNewLines '(' optNewLines optFactParams optNewLines ')' optNewLines block
-
-    NEW_LINE  shift, and go to state 1
-
-    $default  reduce using rule 228 (optNewLines)
-
-    optNewLines  go to state 524
-    newLines     go to state 21
-
-
-State 519
-
-  212 forLoop: FOR optNewLines '(' optNewLines ID optNewLines ':' optNewLines type optNewLines IN optNewLines expr optNewLines ')' . optNewLines stmt
-  213        | FOR optNewLines '(' optNewLines ID optNewLines ':' optNewLines type optNewLines IN optNewLines expr optNewLines ')' . optNewLines block
-
-    NEW_LINE  shift, and go to state 1
-
-    $default  reduce using rule 228 (optNewLines)
-
-    optNewLines  go to state 525
-    newLines     go to state 21
-
-
-State 520
-
-  214 forLoop: FOR optNewLines '(' optNewLines '(' optNewLines formalParams optNewLines ')' optNewLines IN optNewLines expr optNewLines ')' . optNewLines stmt
-  215        | FOR optNewLines '(' optNewLines '(' optNewLines formalParams optNewLines ')' optNewLines IN optNewLines expr optNewLines ')' . optNewLines block
-
-    NEW_LINE  shift, and go to state 1
-
-    $default  reduce using rule 228 (optNewLines)
-
-    optNewLines  go to state 526
-    newLines     go to state 21
-
-
-State 521
 
    43 constructor: CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines THIS optNewLines '(' optNewLines . optFactParams optNewLines ')'
    45            | CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines THIS optNewLines '(' optNewLines . optFactParams optNewLines ')' optNewLines block
@@ -8940,11 +8898,11 @@ State 521
     $default  reduce using rule 197 (optFactParams)
 
     expr           go to state 347
-    optFactParams  go to state 527
+    optFactParams  go to state 524
     factParams     go to state 349
 
 
-State 522
+State 519
 
    42 constructor: CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines SUPER optNewLines '(' optNewLines . optFactParams optNewLines ')'
    44            | CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines SUPER optNewLines '(' optNewLines . optFactParams optNewLines ')' optNewLines block
@@ -8966,27 +8924,27 @@ State 522
     $default  reduce using rule 197 (optFactParams)
 
     expr           go to state 347
-    optFactParams  go to state 528
+    optFactParams  go to state 525
     factParams     go to state 349
 
 
-State 523
+State 520
 
    37 constructor: visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines THIS optNewLines . '(' optNewLines optFactParams optNewLines ')'
    39            | visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines THIS optNewLines . '(' optNewLines optFactParams optNewLines ')' optNewLines block
 
-    '('  shift, and go to state 529
+    '('  shift, and go to state 526
 
 
-State 524
+State 521
 
    36 constructor: visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines SUPER optNewLines . '(' optNewLines optFactParams optNewLines ')'
    38            | visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines SUPER optNewLines . '(' optNewLines optFactParams optNewLines ')' optNewLines block
 
-    '('  shift, and go to state 530
+    '('  shift, and go to state 527
 
 
-State 525
+State 522
 
   212 forLoop: FOR optNewLines '(' optNewLines ID optNewLines ':' optNewLines type optNewLines IN optNewLines expr optNewLines ')' optNewLines . stmt
   213        | FOR optNewLines '(' optNewLines ID optNewLines ':' optNewLines type optNewLines IN optNewLines expr optNewLines ')' optNewLines . block
@@ -9025,8 +8983,8 @@ State 525
     modifiers            go to state 179
     visibilityModifier   go to state 16
     inheritanceModifier  go to state 17
-    block                go to state 531
-    stmt                 go to state 532
+    block                go to state 528
+    stmt                 go to state 529
     expr                 go to state 182
     assignment           go to state 183
     whileLoop            go to state 184
@@ -9035,7 +8993,7 @@ State 525
     ifStmt               go to state 187
 
 
-State 526
+State 523
 
   214 forLoop: FOR optNewLines '(' optNewLines '(' optNewLines formalParams optNewLines ')' optNewLines IN optNewLines expr optNewLines ')' optNewLines . stmt
   215        | FOR optNewLines '(' optNewLines '(' optNewLines formalParams optNewLines ')' optNewLines IN optNewLines expr optNewLines ')' optNewLines . block
@@ -9074,8 +9032,8 @@ State 526
     modifiers            go to state 179
     visibilityModifier   go to state 16
     inheritanceModifier  go to state 17
-    block                go to state 533
-    stmt                 go to state 534
+    block                go to state 530
+    stmt                 go to state 531
     expr                 go to state 182
     assignment           go to state 183
     whileLoop            go to state 184
@@ -9084,7 +9042,7 @@ State 526
     ifStmt               go to state 187
 
 
-State 527
+State 524
 
    43 constructor: CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines THIS optNewLines '(' optNewLines optFactParams . optNewLines ')'
    45            | CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines THIS optNewLines '(' optNewLines optFactParams . optNewLines ')' optNewLines block
@@ -9093,11 +9051,11 @@ State 527
 
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 535
+    optNewLines  go to state 532
     newLines     go to state 21
 
 
-State 528
+State 525
 
    42 constructor: CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines SUPER optNewLines '(' optNewLines optFactParams . optNewLines ')'
    44            | CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines SUPER optNewLines '(' optNewLines optFactParams . optNewLines ')' optNewLines block
@@ -9106,11 +9064,11 @@ State 528
 
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 536
+    optNewLines  go to state 533
     newLines     go to state 21
 
 
-State 529
+State 526
 
    37 constructor: visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines THIS optNewLines '(' . optNewLines optFactParams optNewLines ')'
    39            | visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines THIS optNewLines '(' . optNewLines optFactParams optNewLines ')' optNewLines block
@@ -9120,11 +9078,11 @@ State 529
     NEW_LINE  [reduce using rule 228 (optNewLines)]
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 537
+    optNewLines  go to state 534
     newLines     go to state 21
 
 
-State 530
+State 527
 
    36 constructor: visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines SUPER optNewLines '(' . optNewLines optFactParams optNewLines ')'
    38            | visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines SUPER optNewLines '(' . optNewLines optFactParams optNewLines ')' optNewLines block
@@ -9134,55 +9092,55 @@ State 530
     NEW_LINE  [reduce using rule 228 (optNewLines)]
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 538
+    optNewLines  go to state 535
     newLines     go to state 21
 
 
-State 531
+State 528
 
   213 forLoop: FOR optNewLines '(' optNewLines ID optNewLines ':' optNewLines type optNewLines IN optNewLines expr optNewLines ')' optNewLines block .
 
     $default  reduce using rule 213 (forLoop)
 
 
-State 532
+State 529
 
   212 forLoop: FOR optNewLines '(' optNewLines ID optNewLines ':' optNewLines type optNewLines IN optNewLines expr optNewLines ')' optNewLines stmt .
 
     $default  reduce using rule 212 (forLoop)
 
 
-State 533
+State 530
 
   215 forLoop: FOR optNewLines '(' optNewLines '(' optNewLines formalParams optNewLines ')' optNewLines IN optNewLines expr optNewLines ')' optNewLines block .
 
     $default  reduce using rule 215 (forLoop)
 
 
-State 534
+State 531
 
   214 forLoop: FOR optNewLines '(' optNewLines '(' optNewLines formalParams optNewLines ')' optNewLines IN optNewLines expr optNewLines ')' optNewLines stmt .
 
     $default  reduce using rule 214 (forLoop)
 
 
-State 535
+State 532
 
    43 constructor: CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines THIS optNewLines '(' optNewLines optFactParams optNewLines . ')'
    45            | CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines THIS optNewLines '(' optNewLines optFactParams optNewLines . ')' optNewLines block
 
-    ')'  shift, and go to state 539
+    ')'  shift, and go to state 536
 
 
-State 536
+State 533
 
    42 constructor: CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines SUPER optNewLines '(' optNewLines optFactParams optNewLines . ')'
    44            | CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines SUPER optNewLines '(' optNewLines optFactParams optNewLines . ')' optNewLines block
 
-    ')'  shift, and go to state 540
+    ')'  shift, and go to state 537
 
 
-State 537
+State 534
 
    37 constructor: visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines THIS optNewLines '(' optNewLines . optFactParams optNewLines ')'
    39            | visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines THIS optNewLines '(' optNewLines . optFactParams optNewLines ')' optNewLines block
@@ -9204,11 +9162,11 @@ State 537
     $default  reduce using rule 197 (optFactParams)
 
     expr           go to state 347
-    optFactParams  go to state 541
+    optFactParams  go to state 538
     factParams     go to state 349
 
 
-State 538
+State 535
 
    36 constructor: visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines SUPER optNewLines '(' optNewLines . optFactParams optNewLines ')'
    38            | visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines SUPER optNewLines '(' optNewLines . optFactParams optNewLines ')' optNewLines block
@@ -9230,11 +9188,11 @@ State 538
     $default  reduce using rule 197 (optFactParams)
 
     expr           go to state 347
-    optFactParams  go to state 542
+    optFactParams  go to state 539
     factParams     go to state 349
 
 
-State 539
+State 536
 
    43 constructor: CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines THIS optNewLines '(' optNewLines optFactParams optNewLines ')' .
    45            | CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines THIS optNewLines '(' optNewLines optFactParams optNewLines ')' . optNewLines block
@@ -9245,11 +9203,11 @@ State 539
     '{'       reduce using rule 228 (optNewLines)
     $default  reduce using rule 43 (constructor)
 
-    optNewLines  go to state 543
+    optNewLines  go to state 540
     newLines     go to state 21
 
 
-State 540
+State 537
 
    42 constructor: CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines SUPER optNewLines '(' optNewLines optFactParams optNewLines ')' .
    44            | CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines SUPER optNewLines '(' optNewLines optFactParams optNewLines ')' . optNewLines block
@@ -9260,11 +9218,11 @@ State 540
     '{'       reduce using rule 228 (optNewLines)
     $default  reduce using rule 42 (constructor)
 
-    optNewLines  go to state 544
+    optNewLines  go to state 541
     newLines     go to state 21
 
 
-State 541
+State 538
 
    37 constructor: visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines THIS optNewLines '(' optNewLines optFactParams . optNewLines ')'
    39            | visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines THIS optNewLines '(' optNewLines optFactParams . optNewLines ')' optNewLines block
@@ -9273,11 +9231,11 @@ State 541
 
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 545
+    optNewLines  go to state 542
     newLines     go to state 21
 
 
-State 542
+State 539
 
    36 constructor: visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines SUPER optNewLines '(' optNewLines optFactParams . optNewLines ')'
    38            | visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines SUPER optNewLines '(' optNewLines optFactParams . optNewLines ')' optNewLines block
@@ -9286,59 +9244,59 @@ State 542
 
     $default  reduce using rule 228 (optNewLines)
 
-    optNewLines  go to state 546
+    optNewLines  go to state 543
     newLines     go to state 21
 
 
-State 543
+State 540
 
    45 constructor: CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines THIS optNewLines '(' optNewLines optFactParams optNewLines ')' optNewLines . block
 
     '{'  shift, and go to state 92
 
-    block  go to state 547
+    block  go to state 544
 
 
-State 544
+State 541
 
    44 constructor: CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines SUPER optNewLines '(' optNewLines optFactParams optNewLines ')' optNewLines . block
 
     '{'  shift, and go to state 92
 
-    block  go to state 548
+    block  go to state 545
 
 
-State 545
+State 542
 
    37 constructor: visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines THIS optNewLines '(' optNewLines optFactParams optNewLines . ')'
    39            | visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines THIS optNewLines '(' optNewLines optFactParams optNewLines . ')' optNewLines block
 
-    ')'  shift, and go to state 549
+    ')'  shift, and go to state 546
 
 
-State 546
+State 543
 
    36 constructor: visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines SUPER optNewLines '(' optNewLines optFactParams optNewLines . ')'
    38            | visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines SUPER optNewLines '(' optNewLines optFactParams optNewLines . ')' optNewLines block
 
-    ')'  shift, and go to state 550
+    ')'  shift, and go to state 547
 
 
-State 547
+State 544
 
    45 constructor: CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines THIS optNewLines '(' optNewLines optFactParams optNewLines ')' optNewLines block .
 
     $default  reduce using rule 45 (constructor)
 
 
-State 548
+State 545
 
    44 constructor: CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines SUPER optNewLines '(' optNewLines optFactParams optNewLines ')' optNewLines block .
 
     $default  reduce using rule 44 (constructor)
 
 
-State 549
+State 546
 
    37 constructor: visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines THIS optNewLines '(' optNewLines optFactParams optNewLines ')' .
    39            | visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines THIS optNewLines '(' optNewLines optFactParams optNewLines ')' . optNewLines block
@@ -9349,11 +9307,11 @@ State 549
     '{'       reduce using rule 228 (optNewLines)
     $default  reduce using rule 37 (constructor)
 
-    optNewLines  go to state 551
+    optNewLines  go to state 548
     newLines     go to state 21
 
 
-State 550
+State 547
 
    36 constructor: visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines SUPER optNewLines '(' optNewLines optFactParams optNewLines ')' .
    38            | visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines SUPER optNewLines '(' optNewLines optFactParams optNewLines ')' . optNewLines block
@@ -9364,36 +9322,36 @@ State 550
     '{'       reduce using rule 228 (optNewLines)
     $default  reduce using rule 36 (constructor)
 
-    optNewLines  go to state 552
+    optNewLines  go to state 549
     newLines     go to state 21
 
 
-State 551
+State 548
 
    39 constructor: visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines THIS optNewLines '(' optNewLines optFactParams optNewLines ')' optNewLines . block
 
     '{'  shift, and go to state 92
 
-    block  go to state 553
+    block  go to state 550
 
 
-State 552
+State 549
 
    38 constructor: visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines SUPER optNewLines '(' optNewLines optFactParams optNewLines ')' optNewLines . block
 
     '{'  shift, and go to state 92
 
-    block  go to state 554
+    block  go to state 551
 
 
-State 553
+State 550
 
    39 constructor: visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines THIS optNewLines '(' optNewLines optFactParams optNewLines ')' optNewLines block .
 
     $default  reduce using rule 39 (constructor)
 
 
-State 554
+State 551
 
    38 constructor: visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines SUPER optNewLines '(' optNewLines optFactParams optNewLines ')' optNewLines block .
 
