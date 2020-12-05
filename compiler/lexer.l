@@ -8,6 +8,26 @@
     void remove_all_inputs_of_symbol(const char * str, char * result, char deleted_symbol);
     int bin_from_str_to_dec(const char * str);
     bool isNotKeyword(const char* str);
+    enum InterpolElemType 
+    {
+        _STRING,
+        _ID,
+        _PLUS
+    };
+    struct InterpolationElement 
+    {
+        char * stringOrId;
+        enum InterpolElemType type;
+        struct InterpolationElement * next;
+        struct InterpolationElement * previous;
+    };
+    struct InterpolElementsLinkedList 
+    {
+        struct InterpolationElement * first;
+        struct InterpolationElement * last;    
+    };
+    bool addToList(struct InterpolElementsLinkedList * list, struct InterpolationElement * newElement);
+    bool removeLastFromList(struct InterpolElementsLinkedList * list);
 %}
 
 %x MLCOMMENT SLCOMMENT STRING CHAR IDENTIFICATOR MLSTRING
@@ -28,7 +48,33 @@ char * tmp = 0;
 char forNum[100];
 static int complexTemplateNestingLevel = 0; //Уровень вложенности для сложных шаблонов ${}
 static bool isMLString = false;    //Встретилась ли интерполяция в многострочной строковой константе
+static struct InterpolElementsLinkedList * list = (InterpolElementsLinkedList *)malloc(sizeof(InterpolElementsLinkedList));
+static int elementToRemoveFromStack = 0;
+struct InterpolationElement * el;
 
+if (elementToRemoveFromStack > 0) {
+    while (elementToRemoveFromStack > 0)
+    {
+        if (list->last->type == _PLUS)
+        {
+            removeLastFromList(list);
+            return '+';
+        }
+        else if (list->last->type == _ID)
+        {
+            yylval.Id = list->last->stringOrId;
+            removeLastFromList(list);
+            return ID;
+        }
+        else
+        {
+            yylval.String_v = list->last->stringOrId;
+            removeLastFromList(list);
+            return STRING;
+        }
+        --elementToRemoveFromStack;
+    }
+}
 %}
 
 field			{ return FIELD; }
@@ -120,7 +166,7 @@ actual			{ return ACTUAL;}
                 }
                 else 
                 {
-				return '}';                
+				    return '}';                
                 }                
             }
 \*			{return '*';}
@@ -307,39 +353,78 @@ false 	{	yylval.Bool_v = false;
 <STRING><<EOF>>     { printf("ERROR! End of file found after \"%s\", but \" expected\n", str); }
 <STRING>\\\n        {;//Делать ничего не нужно
                     }
-<STRING>\$[a-zA-Z_][a-zA-Z_0-9]*  {
+
+<STRING,MLSTRING>\$[a-zA-Z_][a-zA-Z_0-9]*  {
                             if (!isNotKeyword(yytext + 1))
                             {
                                 printf("ERROR! Found keyword \"%s\", but expected identificator\n", yytext + 1);
                             }
                             else 
                             {
-                                printf("Found string literal \"%s\"\n", str);
-                                printf("Found operator - \+ ADD\n");
-                                printf("Found identificator - \"%s\"\n", yytext + 1);
-                                printf("Found operator - \+ ADD\n");
+                                strcpy(yylval.String_v, str);
                                 str[0] = 0;
-                            }                            
+
+                                el = (InterpolationElement *)malloc(sizeof(InterpolationElement));
+                                el->type = _PLUS;
+                                addToList(list, el);
+                                ++elementToRemoveFromStack;
+
+                                el = (InterpolationElement *)malloc(sizeof(InterpolationElement));
+                                el->type = _ID;
+                                strcpy(el->stringOrId, yytext + 1);
+                                addToList(list, el);
+                                ++elementToRemoveFromStack;
+
+                                el = (InterpolationElement *)malloc(sizeof(InterpolationElement));
+                                el->type = _PLUS;
+                                addToList(list, el);
+                                ++elementToRemoveFromStack;
+                                str[0] = 0;
+
+                                return STRING;
+                            }                               
                         }
 
-<STRING>\$`[^\n\\`\[\]]+` {
-                               printf("Found string literal \"%s\"\n", str);
-                               printf("Found operator - \+ ADD\n");
-                               str[0] = 0;
-                               strcpy(str, yytext + 2);
-                               str[yyleng - 2 - 1] = 0;
-                               printf("Found identificator - \"%s\"\n", str);
-                               printf("Found operator - \+ ADD\n");
-                               str[0] = 0;                            
+<STRING,MLSTRING>\$`[^\n\\`\[\]]+` {
+                                strcpy(yylval.String_v, str);
+                                str[0] = 0;
+
+                                el = (InterpolationElement *)malloc(sizeof(InterpolationElement));
+                                el->type = _PLUS;
+                                addToList(list, el);
+                                ++elementToRemoveFromStack;
+
+                                el = (InterpolationElement *)malloc(sizeof(InterpolationElement));
+                                el->type = _ID;
+                                strcpy(str, yytext + 2);
+                                str[yyleng - 2 - 1] = 0;
+                                strcpy(el->stringOrId, str);
+                                addToList(list, el);
+                                ++elementToRemoveFromStack;
+
+                                el = (InterpolationElement *)malloc(sizeof(InterpolationElement));
+                                el->type = _PLUS;
+                                addToList(list, el);
+                                ++elementToRemoveFromStack;
+                                str[0] = 0; 
+
+                                return STRING;                   
                           }
 
 <STRING,MLSTRING>\$`[^`\n]*[\\\[\]][^`\n]*` { printf("ERROR! Found invalid identificator in template %s\n", yytext + 1); }
 
 <STRING>\$\{                    {
-                                    printf("Found string literal \"%s\"\n", str);
-                                    printf("Found operator - \+ ADD\n");
+                                    strcpy(yylval.String_v, str);
+
+                                    el = (InterpolationElement *)malloc(sizeof(InterpolationElement));
+                                    el->type = _PLUS;
+                                    addToList(list, el);
+                                    ++elementToRemoveFromStack;
+
                                     ++complexTemplateNestingLevel;
                                     BEGIN(INITIAL);
+
+                                    return STRING;
                                 }
 <STRING,MLSTRING>\$\{\}         { printf("ERROR! Found empty complex template\n"); }
 <STRING,MLSTRING>\$             { strcat(str, yytext); }
@@ -355,39 +440,24 @@ false 	{	yylval.Bool_v = false;
                         str[strlen(str) - 3] = 0;
                         yylval.String_v = str;
                         BEGIN(INITIAL);
+
 						return STRING;
                     }
-<MLSTRING>\$[a-zA-Z_][a-zA-Z_0-9]* {
-                            if (!isNotKeyword(yytext + 1))
-                            {
-                                printf("ERROR! Found keyword \"%s\", but expected identificator\n", yytext + 1);
-                            }
-                            else 
-                            {
-                                printf("Found multi line string literal \"%s\"\n", str);
-                                printf("Found operator - \+ ADD\n");
-                                printf("Found identificator - \"%s\"\n", yytext + 1);
-                                printf("Found operator - \+ ADD\n");
-                                str[0] = 0;
-                            }                            
-                         }
-
-<MLSTRING>\$`[^\n\\`\[\]]+` {
-                               printf("Found multi line string literal \"%s\"\n", str);
-                               printf("Found operator - \+ ADD\n");
-                               str[0] = 0;
-                               strcpy(str, yytext + 2);
-                               str[yyleng - 2 - 1] = 0;
-                               printf("Found identificator - \"%s\"\n", str);
-                               printf("Found operator - \+ ADD\n");
-                               str[0] = 0;                            
-                            }                    
+                    
 <MLSTRING>\$\{      {
-                        printf("Found multi line string literal \"%s\"\n", str);
-                        printf("Found operator - \+ ADD\n");
+                        strcpy(yylval.String_v, str);
+
+                        el = (InterpolationElement *)malloc(sizeof(InterpolationElement));
+                        el->type = _PLUS;
+                        addToList(list, el);
+                        ++elementToRemoveFromStack;
+
                         ++complexTemplateNestingLevel;
                         isMLString = true;
+                        
                         BEGIN(INITIAL);
+
+                        return STRING;
                     }
 <MLSTRING><<EOF>>   { printf("ERROR! Found end of file, but expected \"\"\"\n"); }
 
@@ -418,11 +488,15 @@ false 	{	yylval.Bool_v = false;
             if (complexTemplateNestingLevel > 0) 
             {
                 printf("ERROR! Found end of file, but expected }\n");
+                if (list != 0) 
+                    free(list);
                 return 0;
             }
             else 
             {
                 printf("Found end of file\n");
+                if (list != 0) 
+                    free(list);
                 return 0;
             }
         }
@@ -482,65 +556,38 @@ int bin_from_str_to_dec(const char * str) {
     return value;
 }
 
+bool addToList(InterpolElementsLinkedList * list, InterpolationElement * newElement)
+{
+    if (list == 0) 
+    {
+        return false;
+    }
+    if (list->first == 0) 
+    {
+        list->first = newElement;
+        list->last = newElement;
+        return true;
+    }
+    list->last->next = newElement;
+    newElement->previous = list->last;
+    list->last = newElement;
+    return true;
+}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+bool removeLastFromList(InterpolElementsLinkedList * list) 
+{
+    if (list == 0) 
+    {
+        return false;
+    }
+    if (list->first == 0) 
+    {
+        return true;
+    }
+    InterpolationElement * tmp = list->last;
+    list->last = list->last->previous;
+    list->last->next = 0;
+    tmp->previous = 0;
+    return true;
+}
