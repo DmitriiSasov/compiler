@@ -186,8 +186,8 @@ program: semis
 | program semis
 ; 
 
-class: classDeclaration optNewLines '{' optNewLines classBody '}'
-| classDeclarationWithoutInheritance optNewLines '{' optNewLines classBody '}'
+class: modifiers optNewLines CLASS optNewLines ID optNewLines ':' optNewLines ID optNewLines '{' optNewLines classBody '}'
+| modifiers optNewLines CLASS optNewLines ID optNewLines '{' optNewLines classBody '}'
 ;
 
 classBody: semis
@@ -204,12 +204,6 @@ classBody: semis
 | classBody constructor optNewLines
 | classBody initializer optNewLines
 | classBody semis
-;
-
-classDeclarationWithoutInheritance: modifiers optNewLines CLASS optNewLines ID
-;
-
-classDeclaration: classDeclarationWithoutInheritance optNewLines ':' optNewLines ID
 ;
 
 property: modifiers optNewLines valDeclaration
