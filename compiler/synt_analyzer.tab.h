@@ -148,7 +148,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 15 "synt_analyzer.y"
+#line 133 "synt_analyzer.y"
 
 	int Int_v;
 	float Float_v;
@@ -157,6 +157,7 @@ union YYSTYPE
 	char * String_v;
 	char * Id;
 	bool Bool_v;
+	
 	enum visibilityMod visibilityModU;
 	enum inheritanceMod inheritanceModU;
 	
@@ -188,7 +189,7 @@ union YYSTYPE
 	struct programElementS * programElementU;
 	struct programS * programU;
 
-#line 192 "synt_analyzer.tab.h"
+#line 193 "synt_analyzer.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
