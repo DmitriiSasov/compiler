@@ -157,8 +157,38 @@ union YYSTYPE
 	char * String_v;
 	char * Id;
 	bool Bool_v;
+	enum visibilityMod visibilityModU;
+	enum inheritanceMod inheritanceModU;
+	
+	struct modifiersS * modifiersU;
+	struct exprS * exprU;
+	struct factParamsList * factParamsListU;
+	struct stmtS * stmtU;
+	struct stmtList * stmtListU;
+	struct ifStmtS * ifStmtU;
+	struct forLoopS * forLoopU;
+	struct whileLoopS * whileLoopU;
+	struct assignmentS * assignmentU;
+	struct propertyS * propertyU;
+	struct varOrValDeclS * varOrValDeclU;
+	struct typeS * typeU;
+	struct templateTypeS * templateTypeU;
+	struct typesList * typesListU;
+	struct idS * idU;
+	struct formalParamS * formalParamU;
+	struct formalParamsList * formalParamsListU;
+	struct funcDeclS * funcDeclU;
+	struct funcS * funcU;
+	struct constructorS * constructorU;
+	struct methodS * methodU;
+	struct initializerS * initializerU;
+	struct classS * classU;
+	struct classBodyElementS * classBodyElementU;
+	struct classBodyS * classBodyU;
+	struct programElementS * programElementU;
+	struct programS * programU;
 
-#line 162 "synt_analyzer.tab.h"
+#line 192 "synt_analyzer.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

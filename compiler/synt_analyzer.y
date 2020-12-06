@@ -20,54 +20,68 @@
 	char * String_v;
 	char * Id;
 	bool Bool_v;
+	enum visibilityMod visibilityModU;
+	enum inheritanceMod inheritanceModU;
+	
+	struct modifiersS * modifiersU;
+	struct exprS * exprU;
+	struct factParamsList * factParamsListU;
+	struct stmtS * stmtU;
+	struct stmtList * stmtListU;
+	struct ifStmtS * ifStmtU;
+	struct forLoopS * forLoopU;
+	struct whileLoopS * whileLoopU;
+	struct assignmentS * assignmentU;
+	struct propertyS * propertyU;
+	struct varOrValDeclS * varOrValDeclU;
+	struct typeS * typeU;
+	struct templateTypeS * templateTypeU;
+	struct typesList * typesListU;
+	struct idS * idU;
+	struct formalParamS * formalParamU;
+	struct formalParamsList * formalParamsListU;
+	struct funcDeclS * funcDeclU;
+	struct funcS * funcU;
+	struct constructorS * constructorU;
+	struct methodS * methodU;
+	struct initializerS * initializerU;
+	struct classS * classU;
+	struct classBodyElementS * classBodyElementU;
+	struct classBodyS * classBodyU;
+	struct programElementS * programElementU;
+	struct programS * programU;
 }
 
-
-/*
-%type <> 
-%type <> 
-%type <> 
-%type <> 
-%type <> 
-%type <> 
-%type <> 
-%type <> 
-%type <> 
-%type <> 
-%type <> 
-%type <> 
-%type <> 
-%type <> 
-%type <> 
-%type <> 
-%type <> 
-%type <> 
-%type <> 
-%type <> 
-%type <> 
-%type <> 
-%type <> 
-%type <> 
-%type <> 
-%type <> 
-%type <> 
-%type <> 
-%type <> 
-%type <> 
-%type <> 
-%type <> 
-%type <> 
-%type <> 
-%type <> 
-%type <> 
-%type <> 
-%type <> 
-*/
-
-
-
-
-
+%type <programU> program
+%type <classU> class
+%type <classBodyU> classBody
+%type <propertyU> property
+%type <methodU> method
+%type <initializerU> initializer
+%type <constructorU> constructor
+%type <formalParamsListU> optFormalParams
+%type <formalParamsListU> formalParams
+%type <modifiersU> modifiers
+%type <visibilityModU> visibilityModifier
+%type <inheritanceModU> inheritanceModifier
+%type <funcU> func
+%type <funcDeclU> funcDeclaration
+%type <stmtListU> block
+%type <varOrValDeclU> varDeclaration
+%type <varOrValDeclU> valDeclaration
+%type <typeU> type
+%type <templateTypeU> templateType
+%type <typesListU> type_seq
+%type <stmtListU> stmts
+%type <stmtU> stmt
+%type <exprU> expr
+%type <factParamsListU> optFactParams
+%type <factParamsListU> factParams
+%type <assignmentU> assignment
+%type <whileLoopU> whileLoop
+%type <whileLoopU> doWhileLoop
+%type <forLoopU> forLoop
+%type <ifStmtU> ifStmt
 
 
 %token NEW_LINE
@@ -209,10 +223,14 @@ classBody: semis
 
 property: modifiers optNewLines valDeclaration
 | modifiers optNewLines varDeclaration
+| valDeclaration
+| varDeclaration
 ;
 
 method: modifiers optNewLines funcDeclaration ';'
 | modifiers optNewLines func
+| funcDeclaration ';'
+| func
 ;
 
 initializer: INIT optNewLines block
