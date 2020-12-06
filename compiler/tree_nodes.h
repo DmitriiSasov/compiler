@@ -116,9 +116,15 @@ struct stmtS
 	struct assignmentS * assignment;
 	struct whileLoopS * whileLoop;
 	struct forLoopS * forLoop;
-	struct doWhileLoopS * doWhileLoop;
 	struct ifStmtS * ifStmt;	
 	struct exprS * expr;	
+	struct stmtS * next;
+};
+
+struct stmtList 
+{
+	struct stmtS * first;
+	struct stmtS * last;
 };
 
 struct ifStmtS 
@@ -164,13 +170,13 @@ struct varOrValDeclS
 
 struct typeS 
 {
-	struct idS * easyType;
+	char * easyType;
 	struct templateTypeS * complexType;
 };
 
 struct templateTypeS 
 {
-	struct idS * type;
+	char * type;
 	struct typesList * list;
 	struct templateTypeS * templ;	
 };
@@ -190,7 +196,7 @@ struct idS
 struct formalParamS 
 {
 	struct typeS * type;
-	struct idS * name;
+	char * name;
 	struct formalParamS * next;
 };	
 
@@ -202,7 +208,7 @@ struct formalParamsList
 
 struct funcDeclS
 {
-	struct idS * name;
+	char * name;
 	struct formalParamsList * params;
 	struct typeS * type;
 };
@@ -235,8 +241,8 @@ struct initializerS
 struct classS
 {
 	struct modifiersS * mods;
-	struct idS * name;
-	struct idS * parentClassName;
+	char * name;
+	char * parentClassName;
 	struct classBodyS * body;
 };
 
@@ -263,7 +269,7 @@ struct programElementS
 	struct programElementS * next;
 };
 
-struct program
+struct programS
 {
 	struct programElementS * first;
 	struct programElementS * last;
