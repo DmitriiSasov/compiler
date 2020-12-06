@@ -29,8 +29,10 @@ enum exprType
 	Loeq,
 	Moeq,
 	FieldCalcExpr,
+	MethodCalcExpr,
 	ArrayElementCall,
-	ParentElementCall,
+	ParentFieldCall,
+	ParentMethodCall,
 	Range
 };
 
@@ -225,6 +227,8 @@ struct constructorS
 	enum visibilityMod mod;
 	struct formalParamsList * params;
 	struct stmtList * stmts;
+	char * anotherConstructorId;
+	struct formalParamsList* anotherParams;
 };
 
 struct methodS
