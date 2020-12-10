@@ -166,6 +166,8 @@ struct propertyS
 struct varOrValDeclS 
 {
 	bool isVal;
+	char * id;
+	struct typeS * type;
 	struct formalParamsList * namesAndTypes;
 	struct exprS * initValue;
 };
@@ -228,13 +230,14 @@ struct constructorS
 	struct formalParamsList * params;
 	struct stmtList * stmts;
 	char * anotherConstructorId;
-	struct formalParamsList* anotherParams;
+	struct factParamsList * anotherConstrParams;
 };
 
 struct methodS
 {
 	struct modifiersS * mods;
 	struct funcS * func;
+	struct funcDeclS * funcDecl;
 };
 
 struct initializerS
