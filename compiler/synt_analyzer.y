@@ -22,7 +22,9 @@
 	struct programS * addToProgram(struct programS * prog, struct propertyS * prop);
 	
 	struct classS * createClass(struct modifiersS * mods, char * id, char * parentId, struct classBodyS * body);
-	struct classS * createClass(struct modifiersS * mods, char * id, struct classBodyS * body);
+	struct classS * createClass(struct modifiersS * mods, char * id, struct classBodyS * body);	
+	struct classS * createClass(char * id, char * parentId, struct classBodyS * body);
+	struct classS * createClass(char * id, struct classBodyS * body);
 	
 	struct classBodyS * createClassBody();
 	struct classBodyS * createClassBody(struct methodS * meth);
@@ -322,6 +324,8 @@ program: semis	{root = createProgram();}
 
 class: modifiers optNewLines CLASS optNewLines ID optNewLines ':' optNewLines ID optNewLines '{' optNewLines classBody '}'	{$$ = createClass($1, $5, $9, $13);}
 | modifiers optNewLines CLASS optNewLines ID optNewLines '{' optNewLines classBody '}'	{$$ = createClass($1, $5, $9);}
+| CLASS optNewLines ID optNewLines ':' optNewLines ID optNewLines '{' optNewLines classBody '}'	{$$ = createClass($3, $7, $11);}
+| CLASS optNewLines ID optNewLines '{' optNewLines classBody '}'	{$$ = createClass($3, $7);}
 ;
 
 classBody: semis 	{$$ = createClassBody();}
@@ -736,6 +740,16 @@ struct classS * createClass(struct modifiersS * mods, char * id, char * parentId
 struct classS * createClass(struct modifiersS * mods, char * id, struct classBodyS * body)
 {
 	return createClass(mods, id, 0, body);
+}
+
+struct classS * createClass(char * id, char * parentId, struct classBodyS * body)
+{
+	return createClass(0, id, parentId, body);
+}
+
+struct classS * createClass(char * id, struct classBodyS * body)
+{
+	return createClass(0, id, 0, body);
 }
 
 //Вспомогательные функции
