@@ -1194,7 +1194,7 @@ struct exprS * createExpr(char * idOrString, int iVal, struct factParamsList * p
 	e->left = exprL;
 	e->right = exprR;
 	e->factParams = params;
-	e->stringOrVarName = idOrString;
+	e->stringOrId = idOrString;
 	e->charV = cVar;
 	e->intV = iVal;
 	e->floatV = fVal;

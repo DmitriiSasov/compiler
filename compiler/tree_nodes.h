@@ -94,7 +94,7 @@ struct exprS
 	struct exprS * right;
 	struct factParamsList * factParams;
 	
-	char * stringOrVarName;
+	char * stringOrId;
 	char charV;
 	int intV;
 	float floatV;
