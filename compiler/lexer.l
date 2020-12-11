@@ -52,29 +52,29 @@ static struct InterpolElementsLinkedList * list = (InterpolElementsLinkedList *)
 static int elementToRemoveFromStack = 0;
 struct InterpolationElement * el;
 
-if (elementToRemoveFromStack > 0) {
-    while (elementToRemoveFromStack > 0)
+
+while (elementToRemoveFromStack > 0)
+{
+    if (list->last->type == _PLUS)
     {
-        if (list->last->type == _PLUS)
-        {
-            removeLastFromList(list);
-            return '+';
-        }
-        else if (list->last->type == _ID)
-        {
-            yylval.Id = list->last->stringOrId;
-            removeLastFromList(list);
-            return ID;
-        }
-        else
-        {
-            yylval.String_v = list->last->stringOrId;
-            removeLastFromList(list);
-            return STRING;
-        }
-        --elementToRemoveFromStack;
+        removeLastFromList(list);
+        return '+';
     }
+    else if (list->last->type == _ID)
+    {
+        yylval.Id = list->last->stringOrId;
+        removeLastFromList(list);
+        return ID;
+    }
+    else
+    {
+        yylval.String_v = list->last->stringOrId;
+        removeLastFromList(list);
+        return STRING;
+    }
+    --elementToRemoveFromStack;
 }
+
 %}
 
 field			{ return FIELD; }
