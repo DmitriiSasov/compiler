@@ -344,7 +344,8 @@ false 	{	yylval.Bool_v = false;
 <STRING>\\$         { strcat(str, "\$"); }
 <STRING>\\\'        { strcat(str, "\'"); }
 <STRING>\"          { 
-                        yylval.String_v = str;
+                        yylval.String_v = (char *)malloc(strlen(str) + 1);
+                        strcpy(yylval.String_v, str);
                         BEGIN(INITIAL);
 						return STRING;
                     }
@@ -361,6 +362,7 @@ false 	{	yylval.Bool_v = false;
                             }
                             else 
                             {
+                                yylval.String_v = (char *)malloc(strlen(str) + 1);
                                 strcpy(yylval.String_v, str);
                                 str[0] = 0;
 
@@ -371,6 +373,7 @@ false 	{	yylval.Bool_v = false;
 
                                 el = (InterpolationElement *)malloc(sizeof(InterpolationElement));
                                 el->type = _ID;
+                                el->stringOrId = (char *)malloc(strlen(yytext + 1) + 1);
                                 strcpy(el->stringOrId, yytext + 1);
                                 addToList(list, el);
                                 ++elementToRemoveFromStack;
@@ -386,6 +389,7 @@ false 	{	yylval.Bool_v = false;
                         }
 
 <STRING,MLSTRING>\$`[^\n\\`\[\]]+` {
+                                yylval.String_v = (char *)malloc(strlen(str) + 1);
                                 strcpy(yylval.String_v, str);
                                 str[0] = 0;
 
@@ -398,6 +402,7 @@ false 	{	yylval.Bool_v = false;
                                 el->type = _ID;
                                 strcpy(str, yytext + 2);
                                 str[yyleng - 2 - 1] = 0;
+                                el->stringOrId = (char *)malloc(strlen(str + 1) + 1);
                                 strcpy(el->stringOrId, str);
                                 addToList(list, el);
                                 ++elementToRemoveFromStack;
@@ -414,6 +419,7 @@ false 	{	yylval.Bool_v = false;
 <STRING,MLSTRING>\$`[^`\n]*[\\\[\]][^`\n]*` { printf("ERROR! Found invalid identificator in template %s\n", yytext + 1); }
 
 <STRING>\$\{                    {
+                                    yylval.String_v = (char *)malloc(strlen(str) + 1);
                                     strcpy(yylval.String_v, str);
 
                                     el = (InterpolationElement *)malloc(sizeof(InterpolationElement));
@@ -438,13 +444,15 @@ false 	{	yylval.Bool_v = false;
 <MLSTRING>\"{3,}    {
                         strcat(str, yytext);
                         str[strlen(str) - 3] = 0;
-                        yylval.String_v = str;
+                        yylval.String_v = (char *)malloc(strlen(str) + 1);
+                        strcpy(yylval.String_v, str);
                         BEGIN(INITIAL);
 
 						return STRING;
                     }
                     
 <MLSTRING>\$\{      {
+                        yylval.String_v = (char *)malloc(strlen(str) + 1);
                         strcpy(yylval.String_v, str);
 
                         el = (InterpolationElement *)malloc(sizeof(InterpolationElement));
@@ -465,7 +473,8 @@ false 	{	yylval.Bool_v = false;
 \n { printf("Found new line\n"); }
 
 [a-zA-Z_][a-zA-Z_0-9]* 	{ 
-							strcpy(yylval.Id, yytext);
+							yylval.Id = (char *)malloc(strlen(yytext) + 1);
+                            strcpy(yylval.Id, yytext);
 							return ID;						
 						}
 
@@ -479,7 +488,8 @@ false 	{	yylval.Bool_v = false;
 <IDENTIFICATOR>[\\\[\]]         { printf("ERROR! There is an illegal character \'%s\' in identificator \"%s\" \n", yytext, str); }
 <IDENTIFICATOR><<EOF>>               { printf("ERROR! In string \"%s\" expected `\n", str); }
 <IDENTIFICATOR>`                {
-                                    yylval.Id = str;
+                                    yylval.Id = (char *)malloc(strlen(str) + 1);
+                                    strcpy(yylval.Id, str);
                                     BEGIN(INITIAL);
 									return ID;
                                 }

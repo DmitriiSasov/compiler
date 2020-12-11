@@ -4,6 +4,8 @@
 
 	#include <stdio.h>
 	#include "tree_nodes.h"
+	#include <malloc.h>
+	#include <string.h>
 	void yyerror(const char* message) {
 		fprintf(stderr, message);
 	}
@@ -917,7 +919,15 @@ struct constructorS * createConstructor(enum visibilityMod mod, struct formalPar
 	c->mod = mod;
 	c->params = params;
 	c->stmts = stmts;
-	c->anotherConstructorId = (char *)parentOrAnotherConstr;
+	if (parentOrAnotherConstr != 0)
+	{
+		c->anotherConstructorId = (char *)malloc(strlen(parentOrAnotherConstr));
+		strcpy(c->anotherConstructorId, parentOrAnotherConstr);
+	}
+	else
+	{
+		c->anotherConstructorId = 0;
+	}
 	c->anotherConstrParams = anotherConstrParams;
 	return c;
 }

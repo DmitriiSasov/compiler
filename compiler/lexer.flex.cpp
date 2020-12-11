@@ -2483,7 +2483,8 @@ case 161:
 YY_RULE_SETUP
 #line 347 "lexer.l"
 { 
-                        yylval.String_v = str;
+                        yylval.String_v = (char *)malloc(strlen(str) + 1);
+                        strcpy(yylval.String_v, str);
                         BEGIN(INITIAL);
 						return STRING;
                     }
@@ -2491,29 +2492,29 @@ YY_RULE_SETUP
 case 162:
 /* rule 162 can match eol */
 YY_RULE_SETUP
-#line 352 "lexer.l"
+#line 353 "lexer.l"
 { printf("ERROR! Found illegal escape \"%s\"\n", yytext); }
 	YY_BREAK
 case 163:
 /* rule 163 can match eol */
 YY_RULE_SETUP
-#line 353 "lexer.l"
+#line 354 "lexer.l"
 { printf("ERROR! New line found after \"%s\", but \" expected\n", str); }
 	YY_BREAK
 case YY_STATE_EOF(STRING):
-#line 354 "lexer.l"
+#line 355 "lexer.l"
 { printf("ERROR! End of file found after \"%s\", but \" expected\n", str); }
 	YY_BREAK
 case 164:
 /* rule 164 can match eol */
 YY_RULE_SETUP
-#line 355 "lexer.l"
+#line 356 "lexer.l"
 {;//Делать ничего не нужно
                     }
 	YY_BREAK
 case 165:
 YY_RULE_SETUP
-#line 358 "lexer.l"
+#line 359 "lexer.l"
 {
                             if (!isNotKeyword(yytext + 1))
                             {
@@ -2521,6 +2522,7 @@ YY_RULE_SETUP
                             }
                             else 
                             {
+                                yylval.String_v = (char *)malloc(strlen(str) + 1);
                                 strcpy(yylval.String_v, str);
                                 str[0] = 0;
 
@@ -2531,6 +2533,7 @@ YY_RULE_SETUP
 
                                 el = (InterpolationElement *)malloc(sizeof(InterpolationElement));
                                 el->type = _ID;
+                                el->stringOrId = (char *)malloc(strlen(yytext + 1) + 1);
                                 strcpy(el->stringOrId, yytext + 1);
                                 addToList(list, el);
                                 ++elementToRemoveFromStack;
@@ -2547,8 +2550,9 @@ YY_RULE_SETUP
 	YY_BREAK
 case 166:
 YY_RULE_SETUP
-#line 389 "lexer.l"
+#line 392 "lexer.l"
 {
+                                yylval.String_v = (char *)malloc(strlen(str) + 1);
                                 strcpy(yylval.String_v, str);
                                 str[0] = 0;
 
@@ -2561,6 +2565,7 @@ YY_RULE_SETUP
                                 el->type = _ID;
                                 strcpy(str, yytext + 2);
                                 str[yyleng - 2 - 1] = 0;
+                                el->stringOrId = (char *)malloc(strlen(str + 1) + 1);
                                 strcpy(el->stringOrId, str);
                                 addToList(list, el);
                                 ++elementToRemoveFromStack;
@@ -2576,13 +2581,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 167:
 YY_RULE_SETUP
-#line 415 "lexer.l"
+#line 420 "lexer.l"
 { printf("ERROR! Found invalid identificator in template %s\n", yytext + 1); }
 	YY_BREAK
 case 168:
 YY_RULE_SETUP
-#line 417 "lexer.l"
+#line 422 "lexer.l"
 {
+                                    yylval.String_v = (char *)malloc(strlen(str) + 1);
                                     strcpy(yylval.String_v, str);
 
                                     el = (InterpolationElement *)malloc(sizeof(InterpolationElement));
@@ -2598,17 +2604,17 @@ YY_RULE_SETUP
 	YY_BREAK
 case 169:
 YY_RULE_SETUP
-#line 430 "lexer.l"
+#line 436 "lexer.l"
 { printf("ERROR! Found empty complex template\n"); }
 	YY_BREAK
 case 170:
 YY_RULE_SETUP
-#line 431 "lexer.l"
+#line 437 "lexer.l"
 { strcat(str, yytext); }
 	YY_BREAK
 case 171:
 YY_RULE_SETUP
-#line 433 "lexer.l"
+#line 439 "lexer.l"
 {
                         str[0] = 0;
                         BEGIN(MLSTRING);
@@ -2617,21 +2623,22 @@ YY_RULE_SETUP
 case 172:
 /* rule 172 can match eol */
 YY_RULE_SETUP
-#line 437 "lexer.l"
+#line 443 "lexer.l"
 { strcat(str, yytext); }
 	YY_BREAK
 case 173:
 YY_RULE_SETUP
-#line 438 "lexer.l"
+#line 444 "lexer.l"
 { strcat(str, yytext); }
 	YY_BREAK
 case 174:
 YY_RULE_SETUP
-#line 439 "lexer.l"
+#line 445 "lexer.l"
 {
                         strcat(str, yytext);
                         str[strlen(str) - 3] = 0;
-                        yylval.String_v = str;
+                        yylval.String_v = (char *)malloc(strlen(str) + 1);
+                        strcpy(yylval.String_v, str);
                         BEGIN(INITIAL);
 
 						return STRING;
@@ -2639,8 +2646,9 @@ YY_RULE_SETUP
 	YY_BREAK
 case 175:
 YY_RULE_SETUP
-#line 448 "lexer.l"
+#line 455 "lexer.l"
 {
+                        yylval.String_v = (char *)malloc(strlen(str) + 1);
                         strcpy(yylval.String_v, str);
 
                         el = (InterpolationElement *)malloc(sizeof(InterpolationElement));
@@ -2657,31 +2665,32 @@ YY_RULE_SETUP
                     }
 	YY_BREAK
 case YY_STATE_EOF(MLSTRING):
-#line 463 "lexer.l"
+#line 471 "lexer.l"
 { printf("ERROR! Found end of file, but expected \"\"\"\n"); }
 	YY_BREAK
 case 176:
 /* rule 176 can match eol */
 YY_RULE_SETUP
-#line 466 "lexer.l"
+#line 474 "lexer.l"
 { printf("Found new line\n"); }
 	YY_BREAK
 case 177:
 YY_RULE_SETUP
-#line 468 "lexer.l"
+#line 476 "lexer.l"
 { 
-							strcpy(yylval.Id, yytext);
+							yylval.Id = (char *)malloc(strlen(yytext) + 1);
+                            strcpy(yylval.Id, yytext);
 							return ID;						
 						}
 	YY_BREAK
 case 178:
 YY_RULE_SETUP
-#line 473 "lexer.l"
+#line 482 "lexer.l"
 { printf("ERROR! Found empty identificator name\n"); }
 	YY_BREAK
 case 179:
 YY_RULE_SETUP
-#line 474 "lexer.l"
+#line 483 "lexer.l"
 {
                                     str[0] = 0;
                                     BEGIN(IDENTIFICATOR);
@@ -2689,36 +2698,37 @@ YY_RULE_SETUP
 	YY_BREAK
 case 180:
 YY_RULE_SETUP
-#line 478 "lexer.l"
+#line 487 "lexer.l"
 { strcat(str, yytext); }
 	YY_BREAK
 case 181:
 /* rule 181 can match eol */
 YY_RULE_SETUP
-#line 479 "lexer.l"
+#line 488 "lexer.l"
 { printf("ERROR! In string %s expected `\n", str); }
 	YY_BREAK
 case 182:
 YY_RULE_SETUP
-#line 480 "lexer.l"
+#line 489 "lexer.l"
 { printf("ERROR! There is an illegal character \'%s\' in identificator \"%s\" \n", yytext, str); }
 	YY_BREAK
 case YY_STATE_EOF(IDENTIFICATOR):
-#line 481 "lexer.l"
+#line 490 "lexer.l"
 { printf("ERROR! In string \"%s\" expected `\n", str); }
 	YY_BREAK
 case 183:
 YY_RULE_SETUP
-#line 482 "lexer.l"
+#line 491 "lexer.l"
 {
-                                    yylval.Id = str;
+                                    yylval.Id = (char *)malloc(strlen(str) + 1);
+                                    strcpy(yylval.Id, str);
                                     BEGIN(INITIAL);
 									return ID;
                                 }
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(SLCOMMENT):
-#line 488 "lexer.l"
+#line 498 "lexer.l"
 {
             if (complexTemplateNestingLevel > 0) 
             {
@@ -2738,20 +2748,20 @@ case YY_STATE_EOF(SLCOMMENT):
 	YY_BREAK
 case 184:
 YY_RULE_SETUP
-#line 505 "lexer.l"
+#line 515 "lexer.l"
 {;}
 	YY_BREAK
 case 185:
 YY_RULE_SETUP
-#line 506 "lexer.l"
+#line 516 "lexer.l"
 {printf("Found unidentified symbol \'%s\'\n", yytext);}
 	YY_BREAK
 case 186:
 YY_RULE_SETUP
-#line 508 "lexer.l"
+#line 518 "lexer.l"
 ECHO;
 	YY_BREAK
-#line 2754 "lexer.flex.cpp"
+#line 2764 "lexer.flex.cpp"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -3767,7 +3777,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 508 "lexer.l"
+#line 518 "lexer.l"
 
 
 bool isNotKeyword(const char* str)
