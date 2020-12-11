@@ -3068,25 +3068,25 @@ yyreduce:
 
   case 149: /* stmt: valDeclaration semis  */
 #line 514 "synt_analyzer.y"
-                                {(yyval.stmtU) = createStmt((yyvsp[-1].varOrValDeclU), Property);}
+                                {(yyval.stmtU) = createStmt((yyvsp[-1].varOrValDeclU), VarOrVal);}
 #line 3073 "synt_analyzer.tab.cpp"
     break;
 
   case 150: /* stmt: valDeclaration newLines  */
 #line 515 "synt_analyzer.y"
-                                {(yyval.stmtU) = createStmt((yyvsp[-1].varOrValDeclU), Property);}
+                                {(yyval.stmtU) = createStmt((yyvsp[-1].varOrValDeclU), VarOrVal);}
 #line 3079 "synt_analyzer.tab.cpp"
     break;
 
   case 151: /* stmt: varDeclaration semis  */
 #line 516 "synt_analyzer.y"
-                        {(yyval.stmtU) = createStmt((yyvsp[-1].varOrValDeclU), Property);}
+                        {(yyval.stmtU) = createStmt((yyvsp[-1].varOrValDeclU), VarOrVal);}
 #line 3085 "synt_analyzer.tab.cpp"
     break;
 
   case 152: /* stmt: varDeclaration newLines  */
 #line 517 "synt_analyzer.y"
-                                {(yyval.stmtU) = createStmt((yyvsp[-1].varOrValDeclU), Property);}
+                                {(yyval.stmtU) = createStmt((yyvsp[-1].varOrValDeclU), VarOrVal);}
 #line 3091 "synt_analyzer.tab.cpp"
     break;
 

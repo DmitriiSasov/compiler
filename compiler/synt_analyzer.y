@@ -511,10 +511,10 @@ stmts : stmt	{$$ = createStmtList($1);}
 | stmts stmt	{$$ = addToStmtList($1, $2);}
 ;
 
-stmt : valDeclaration semis	{$$ = createStmt($1, Property);}
-| valDeclaration newLines	{$$ = createStmt($1, Property);}
-| varDeclaration semis	{$$ = createStmt($1, Property);}
-| varDeclaration newLines	{$$ = createStmt($1, Property);}
+stmt : valDeclaration semis	{$$ = createStmt($1, VarOrVal);}
+| valDeclaration newLines	{$$ = createStmt($1, VarOrVal);}
+| varDeclaration semis	{$$ = createStmt($1, VarOrVal);}
+| varDeclaration newLines	{$$ = createStmt($1, VarOrVal);}
 | assignment semis	{$$ = createStmt($1, Assignment);}
 | assignment newLines	{$$ = createStmt($1, Assignment);}
 | whileLoop semis	{$$ = createStmt($1, WhileLoop);}

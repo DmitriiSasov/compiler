@@ -48,7 +48,7 @@ enum assignmentType
 
 enum stmtType 
 {
-	Property,
+	VarOrVal,
 	Assignment,
 	WhileLoop,
 	ForLoop,
