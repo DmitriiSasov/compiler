@@ -84,7 +84,7 @@
 	struct typesList * addToTypesList(struct typesList * list, char * id);
 	struct typesList * addToTypesList(struct typesList * list, struct templateTypeS * tt);
 	
-	struct stmtS * createStmt(struct propertyS * prop, enum stmtType type);
+	struct stmtS * createStmt(struct varOrValDeclS * v, enum stmtType type);
 	struct stmtS * createStmt(struct assignmentS * assign, enum stmtType type);
 	struct stmtS * createStmt(struct whileLoopS * loop, enum stmtType type);
 	struct stmtS * createStmt(struct forLoopS * loop, enum stmtType type);
@@ -318,7 +318,7 @@ program: semis	{root = createProgram();}
 | program method	{$$ = addToProgram($1, $2);}
 | program property semis	{$$ = addToProgram($1, $2);}
 | program property newLines	{$$ = addToProgram($1, $2);}
-| program newLines
+| program newLines 
 | program semis
 ; 
 
@@ -511,8 +511,10 @@ stmts : stmt	{$$ = createStmtList($1);}
 | stmts stmt	{$$ = addToStmtList($1, $2);}
 ;
 
-stmt : property semis	{$$ = createStmt($1, Property);}
-| property newLines	{$$ = createStmt($1, Property);}
+stmt : valDeclaration semis	{$$ = createStmt($1, Property);}
+| valDeclaration newLines	{$$ = createStmt($1, Property);}
+| varDeclaration semis	{$$ = createStmt($1, Property);}
+| varDeclaration newLines	{$$ = createStmt($1, Property);}
 | assignment semis	{$$ = createStmt($1, Assignment);}
 | assignment newLines	{$$ = createStmt($1, Assignment);}
 | whileLoop semis	{$$ = createStmt($1, WhileLoop);}
@@ -1135,10 +1137,10 @@ struct typesList * addToTypesList(struct typesList * list, struct templateTypeS 
 
 
 
-struct stmtS * createStmt(struct propertyS * prop, struct assignmentS * assign, struct whileLoopS * wLoop, forLoopS * fLoop, struct ifStmtS * ifStmt, struct exprS * expr, enum stmtType type)
+struct stmtS * createStmt(struct varOrValDeclS * v, struct assignmentS * assign, struct whileLoopS * wLoop, forLoopS * fLoop, struct ifStmtS * ifStmt, struct exprS * expr, enum stmtType type)
 {
 	struct stmtS * s = (struct stmtS *)malloc(sizeof(struct stmtS));
-	s->property = prop;
+	s->varOrVal = v;
 	s->assignment = assign;
 	s->whileLoop = wLoop;
 	s->forLoop = fLoop;
@@ -1149,10 +1151,9 @@ struct stmtS * createStmt(struct propertyS * prop, struct assignmentS * assign, 
 	return s;
 }
 
-
-struct stmtS * createStmt(struct propertyS * prop, enum stmtType type)
+struct stmtS * createStmt(struct varOrValDeclS * v, enum stmtType type)
 {
-	return createStmt(prop, 0, 0, 0, 0, 0, type);
+	return createStmt(v, 0, 0, 0, 0, 0, type);
 }
 
 struct stmtS * createStmt(struct assignmentS * assign, enum stmtType type)
@@ -1184,6 +1185,7 @@ struct stmtS * createStmt(enum stmtType type)
 {
 	return createStmt(0, 0, 0, 0, 0, 0, type);
 }
+
 
 struct exprS * createExpr(char * idOrString, int iVal, struct factParamsList * params, float fVal, double dVal, char cVar, bool bVar, struct exprS * exprL, struct exprS * exprR,  enum exprType type)
 {

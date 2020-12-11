@@ -115,7 +115,7 @@ struct factParamsList
 struct stmtS 
 {
 	enum stmtType type;
-	struct propertyS * property;
+	struct varOrValDeclS * varOrVal;
 	struct assignmentS * assignment;
 	struct whileLoopS * whileLoop;
 	struct forLoopS * forLoop;
