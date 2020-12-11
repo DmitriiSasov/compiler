@@ -2551,7 +2551,7 @@ yyreduce:
 
   case 57: /* modifiers: OVERRIDE  */
 #line 385 "synt_analyzer.y"
-                        {(yyval.modifiersU) = createModifiers(0, 1, Local, None);}
+                        {(yyval.modifiersU) = createModifiers(0, 1, Unknown, None);}
 #line 2556 "synt_analyzer.tab.cpp"
     break;
 
@@ -2563,13 +2563,13 @@ yyreduce:
 
   case 59: /* modifiers: inheritanceModifier  */
 #line 387 "synt_analyzer.y"
-                        {(yyval.modifiersU) = createModifiers(0, 1, Local, (yyvsp[0].inheritanceModU));}
+                        {(yyval.modifiersU) = createModifiers(0, 1, Unknown, (yyvsp[0].inheritanceModU));}
 #line 2568 "synt_analyzer.tab.cpp"
     break;
 
   case 60: /* modifiers: ABSTRACT  */
 #line 388 "synt_analyzer.y"
-                {(yyval.modifiersU) = createModifiers(1, 0, Local, None);}
+                {(yyval.modifiersU) = createModifiers(1, 0, Unknown, None);}
 #line 2574 "synt_analyzer.tab.cpp"
     break;
 
@@ -2581,13 +2581,13 @@ yyreduce:
 
   case 62: /* modifiers: OVERRIDE optNewLines inheritanceModifier  */
 #line 390 "synt_analyzer.y"
-                                                {(yyval.modifiersU) = createModifiers(0, 1, Local, (yyvsp[0].inheritanceModU));}
+                                                {(yyval.modifiersU) = createModifiers(0, 1, Unknown, (yyvsp[0].inheritanceModU));}
 #line 2586 "synt_analyzer.tab.cpp"
     break;
 
   case 63: /* modifiers: OVERRIDE optNewLines ABSTRACT  */
 #line 391 "synt_analyzer.y"
-                                {(yyval.modifiersU) = createModifiers(1, 1, Local, None);}
+                                {(yyval.modifiersU) = createModifiers(1, 1, Unknown, None);}
 #line 2592 "synt_analyzer.tab.cpp"
     break;
 
@@ -2611,7 +2611,7 @@ yyreduce:
 
   case 67: /* modifiers: inheritanceModifier optNewLines OVERRIDE  */
 #line 395 "synt_analyzer.y"
-                                                {(yyval.modifiersU) = createModifiers(0, 1, Local, (yyvsp[-2].inheritanceModU));}
+                                                {(yyval.modifiersU) = createModifiers(0, 1, Unknown, (yyvsp[-2].inheritanceModU));}
 #line 2616 "synt_analyzer.tab.cpp"
     break;
 
@@ -2623,13 +2623,13 @@ yyreduce:
 
   case 69: /* modifiers: inheritanceModifier optNewLines ABSTRACT  */
 #line 397 "synt_analyzer.y"
-                                                {(yyval.modifiersU) = createModifiers(1, 0, Local, (yyvsp[-2].inheritanceModU));}
+                                                {(yyval.modifiersU) = createModifiers(1, 0, Unknown, (yyvsp[-2].inheritanceModU));}
 #line 2628 "synt_analyzer.tab.cpp"
     break;
 
   case 70: /* modifiers: ABSTRACT optNewLines OVERRIDE  */
 #line 398 "synt_analyzer.y"
-                                {(yyval.modifiersU) = createModifiers(1, 1, Local, None);}
+                                {(yyval.modifiersU) = createModifiers(1, 1, Unknown, None);}
 #line 2634 "synt_analyzer.tab.cpp"
     break;
 
@@ -2641,7 +2641,7 @@ yyreduce:
 
   case 72: /* modifiers: ABSTRACT optNewLines inheritanceModifier  */
 #line 400 "synt_analyzer.y"
-                                                {(yyval.modifiersU) = createModifiers(1, 0, Local, (yyvsp[0].inheritanceModU));}
+                                                {(yyval.modifiersU) = createModifiers(1, 0, Unknown, (yyvsp[0].inheritanceModU));}
 #line 2646 "synt_analyzer.tab.cpp"
     break;
 
@@ -2665,7 +2665,7 @@ yyreduce:
 
   case 76: /* modifiers: OVERRIDE optNewLines inheritanceModifier optNewLines ABSTRACT  */
 #line 404 "synt_analyzer.y"
-                                                                {(yyval.modifiersU) = createModifiers(1, 1, Local, (yyvsp[-2].inheritanceModU));}
+                                                                {(yyval.modifiersU) = createModifiers(1, 1, Unknown, (yyvsp[-2].inheritanceModU));}
 #line 2670 "synt_analyzer.tab.cpp"
     break;
 
@@ -2677,7 +2677,7 @@ yyreduce:
 
   case 78: /* modifiers: OVERRIDE optNewLines ABSTRACT optNewLines inheritanceModifier  */
 #line 406 "synt_analyzer.y"
-                                                                {(yyval.modifiersU) = createModifiers(1, 1, Local, (yyvsp[0].inheritanceModU));}
+                                                                {(yyval.modifiersU) = createModifiers(1, 1, Unknown, (yyvsp[0].inheritanceModU));}
 #line 2682 "synt_analyzer.tab.cpp"
     break;
 
@@ -2725,7 +2725,7 @@ yyreduce:
 
   case 86: /* modifiers: inheritanceModifier optNewLines OVERRIDE optNewLines ABSTRACT  */
 #line 414 "synt_analyzer.y"
-                                                                {(yyval.modifiersU) = createModifiers(1, 1, Local, (yyvsp[-4].inheritanceModU));}
+                                                                {(yyval.modifiersU) = createModifiers(1, 1, Unknown, (yyvsp[-4].inheritanceModU));}
 #line 2730 "synt_analyzer.tab.cpp"
     break;
 
@@ -2749,13 +2749,13 @@ yyreduce:
 
   case 90: /* modifiers: inheritanceModifier optNewLines ABSTRACT optNewLines OVERRIDE  */
 #line 418 "synt_analyzer.y"
-                                                                {(yyval.modifiersU) = createModifiers(1, 1, Local, (yyvsp[-4].inheritanceModU));}
+                                                                {(yyval.modifiersU) = createModifiers(1, 1, Unknown, (yyvsp[-4].inheritanceModU));}
 #line 2754 "synt_analyzer.tab.cpp"
     break;
 
   case 91: /* modifiers: ABSTRACT optNewLines OVERRIDE optNewLines inheritanceModifier  */
 #line 419 "synt_analyzer.y"
-                                                                {(yyval.modifiersU) = createModifiers(1, 1, Local, (yyvsp[0].inheritanceModU));}
+                                                                {(yyval.modifiersU) = createModifiers(1, 1, Unknown, (yyvsp[0].inheritanceModU));}
 #line 2760 "synt_analyzer.tab.cpp"
     break;
 
@@ -2779,7 +2779,7 @@ yyreduce:
 
   case 95: /* modifiers: ABSTRACT optNewLines inheritanceModifier optNewLines OVERRIDE  */
 #line 423 "synt_analyzer.y"
-                                                                {(yyval.modifiersU) = createModifiers(1, 1, Local, (yyvsp[-2].inheritanceModU));}
+                                                                {(yyval.modifiersU) = createModifiers(1, 1, Unknown, (yyvsp[-2].inheritanceModU));}
 #line 2784 "synt_analyzer.tab.cpp"
     break;
 

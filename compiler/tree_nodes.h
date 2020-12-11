@@ -75,7 +75,8 @@ enum visibilityMod
 	Private,
 	Protected,
 	Internal,
-	Local
+	Local,
+	Unknown
 };	
 
 enum inheritanceMod
