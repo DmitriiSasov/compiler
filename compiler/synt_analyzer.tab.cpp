@@ -71,9 +71,9 @@
 
 
 	#include <stdio.h>
-	#include "tree_nodes.h"
 	#include <malloc.h>
 	#include <string.h>
+	#include "print_funcs.h"
 	void yyerror(const char* message) {
 		fprintf(stderr, message);
 	}
@@ -4675,7 +4675,10 @@ void main(int argc, char **argv ){
 	
     yyparse();
 	
+	print(root, file);
 	
+	fclose(file);
+
     return;
 }
 

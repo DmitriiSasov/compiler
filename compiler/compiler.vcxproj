@@ -23,6 +23,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="lexer.flex.cpp" />
+    <ClCompile Include="print_funcs.cpp" />
     <ClCompile Include="synt_analyzer.tab.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -34,6 +35,7 @@
     </Bison>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="print_funcs.h" />
     <ClInclude Include="synt_analyzer.tab.h" />
     <ClInclude Include="tree_nodes.h" />
   </ItemGroup>

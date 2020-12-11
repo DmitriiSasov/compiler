@@ -26,6 +26,9 @@
     <ClCompile Include="synt_analyzer.tab.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="print_funcs.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Bison Include="synt_analyzer.y">
@@ -37,6 +40,9 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="tree_nodes.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="print_funcs.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
