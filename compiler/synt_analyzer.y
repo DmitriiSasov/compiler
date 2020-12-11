@@ -78,10 +78,11 @@
 	struct typeS * createType(struct templateTypeS * type);
 	
 	struct templateTypeS * createTemplateType(char * id, struct typesList * templateTypes);
-	struct templateTypeS * createTemplateType(char * id, struct templateTypeS * type);
 	
 	struct typesList * createTypesList(char * id);
+	struct typesList * createTypesList(struct templateTypeS * tt);
 	struct typesList * addToTypesList(struct typesList * list, char * id);
+	struct typesList * addToTypesList(struct typesList * list, struct templateTypeS * tt);
 	
 	struct stmtS * createStmt(struct propertyS * prop, enum stmtType type);
 	struct stmtS * createStmt(struct assignmentS * assign, enum stmtType type);
@@ -158,7 +159,6 @@
 	struct typeS * typeU;
 	struct templateTypeS * templateTypeU;
 	struct typesList * typesListU;
-	struct idS * idU;
 	struct formalParamS * formalParamU;
 	struct formalParamsList * formalParamsListU;
 	struct funcDeclS * funcDeclU;
@@ -499,11 +499,12 @@ type: ID	{$$ = createType($1);}
 ;
 
 templateType: ID optNewLines '<' optNewLines type_seq optNewLines '>'	{$$ = createTemplateType($1, $5);}
-| ID optNewLines '<' optNewLines templateType optNewLines '>' 	{$$ = createTemplateType($1, $5);}
 ;
 
 type_seq: ID	{$$ = createTypesList($1);}
+| templateType	{$$ = createTypesList($1);}
 | type_seq optNewLines ',' optNewLines ID	{$$ = addToTypesList($1, $5); }
+| type_seq optNewLines ',' optNewLines templateType	{$$ = addToTypesList($1, $5); }
 ;
 
 stmts : stmt	{$$ = createStmtList($1);}
@@ -1069,48 +1070,69 @@ struct typeS * createType(struct templateTypeS * type)
 }
 
 
-struct templateTypeS * createTemplateType(char * id, struct typesList * templateTypes, struct templateTypeS * type)
+struct templateTypeS * createTemplateType(char * id, struct typesList * templateTypes)
 {
 	struct templateTypeS * tt = (struct templateTypeS *)malloc(sizeof(struct templateTypeS));
 	tt->type = id;
 	tt->list = templateTypes;
-	tt->templ = type;
 	return tt;
 }
 
-struct templateTypeS * createTemplateType(char * id, struct typesList * templateTypes)
-{
-	return createTemplateType(id, templateTypes, 0);
-}
 
-struct templateTypeS * createTemplateType(char * id, struct templateTypeS * type)
+struct typesList * createTypesList(char * id, struct templateTypeS * type)
 {
-	return createTemplateType(id, 0, type);
-}
-
-
-struct idS * createId(char * id)
-{
-	struct idS * i = (struct idS *)malloc(sizeof(struct idS));
-	i->name = id;
-	i->next = 0;
-	return i;
+	struct typesList * tl = (struct typesList *)malloc(sizeof(struct typesList));
+	struct typeS * listElement = 0;
+	if (id != 0)
+	{
+		listElement = createType(id, 0);
+	}
+	else
+	{
+		listElement = createType(0, type);
+	}
+	tl->first = listElement;
+	tl->last = listElement;
+	return tl;
 }
 
 struct typesList * createTypesList(char * id)
 {
-	struct typesList * tl = (struct typesList *)malloc(sizeof(struct typesList));
-	tl->first = createId(id);
-	tl->last = tl->first;
-	return tl;
+	return createTypesList(id, 0);
+}
+
+struct typesList * createTypesList(struct templateTypeS * type)
+{
+	return createTypesList(0, type);
+}
+
+struct typesList * addToTypesList(struct typesList * list, char * id, struct templateTypeS * type)
+{
+	struct typeS * newListElement = 0;
+	if (id != 0)
+	{
+		newListElement = createType(id);
+	}
+	else
+	{
+		newListElement = createType(type);
+	}
+	list->last->next = newListElement;
+	list->last = newListElement;
+	return list;
 }
 
 struct typesList * addToTypesList(struct typesList * list, char * id)
 {
-	list->last->next = createId(id);
-	list->last = list->last->next ;
-	return list;
+	return addToTypesList(list, id, 0);
 }
+
+struct typesList * addToTypesList(struct typesList * list, struct templateTypeS * type)
+{
+	return addToTypesList(list, 0, type);
+}
+
+
 
 
 struct stmtS * createStmt(struct propertyS * prop, struct assignmentS * assign, struct whileLoopS * wLoop, forLoopS * fLoop, struct ifStmtS * ifStmt, struct exprS * expr, enum stmtType type)

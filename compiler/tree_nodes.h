@@ -177,26 +177,21 @@ struct typeS
 {
 	char * easyType;
 	struct templateTypeS * complexType;
+	struct typeS * next;
 };
 
 struct templateTypeS 
 {
 	char * type;
 	struct typesList * list;
-	struct templateTypeS * templ;	
 };
 
 struct typesList
 {
-	struct idS * first;
-	struct idS * last;
+	struct typeS * first;
+	struct typeS * last;
 };
 
-struct idS 
-{
-	char * name;
-	struct idS * next;
-};	
 
 struct formalParamS 
 {

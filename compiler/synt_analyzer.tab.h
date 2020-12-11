@@ -148,7 +148,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 135 "synt_analyzer.y"
+#line 136 "synt_analyzer.y"
 
 	int Int_v;
 	float Float_v;
@@ -175,7 +175,6 @@ union YYSTYPE
 	struct typeS * typeU;
 	struct templateTypeS * templateTypeU;
 	struct typesList * typesListU;
-	struct idS * idU;
 	struct formalParamS * formalParamU;
 	struct formalParamsList * formalParamsListU;
 	struct funcDeclS * funcDeclU;
@@ -189,7 +188,7 @@ union YYSTYPE
 	struct programElementS * programElementU;
 	struct programS * programU;
 
-#line 193 "synt_analyzer.tab.h"
+#line 192 "synt_analyzer.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
