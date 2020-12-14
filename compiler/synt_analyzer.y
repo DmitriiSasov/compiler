@@ -317,7 +317,7 @@ program: semis	{root = createProgram(); puts("program created");}
 | program class	{$$ = addToProgram($1, $2);puts("class added to prog");}
 | program method	{$$ = addToProgram($1, $2);puts("meth added to prog");}
 | program property semis	{$$ = addToProgram($1, $2);puts("prop added to prog");}
-| program semis {$$ = $1;puts("semis added to prog");}
+| program semis
 ; 
 
 class: modifiers CLASS ID ':' ID  '{' classBody '}'	{$$ = createClass($1, $3, $5, $7);puts("class created");}
@@ -640,6 +640,7 @@ struct programS * addToProgram(struct programS * prog, struct programElementS * 
 		prog->first = pe;
 		prog->last = pe;
 	}
+	
 	return prog;
 }
 
@@ -1438,7 +1439,8 @@ struct ifStmtS * createIfStmt(struct exprS * cond, int action, struct stmtList *
 
 
 void main(int argc, char **argv ){
-	yyin = fopen(argv[1], "r");
+	//yyin = fopen(argv[1], "r");
+	yyin = fopen("2_funcs.txt", "r");
 	FILE * file = fopen("tree.dot", "w");
 	
     yyparse();
