@@ -324,10 +324,14 @@ program: semis	{root = createProgram();}
 | program semis {$$ = $1;}
 ; 
 
-class: modifiers optNewLines CLASS optNewLines ID optNewLines ':' optNewLines ID optNewLines '{' optNewLines classBody '}'	{$$ = createClass($1, $5, $9, $13);}
-| modifiers optNewLines CLASS optNewLines ID optNewLines '{' optNewLines classBody '}'	{$$ = createClass($1, $5, $9);}
-| CLASS optNewLines ID optNewLines ':' optNewLines ID optNewLines '{' optNewLines classBody '}'	{$$ = createClass($3, $7, $11);}
-| CLASS optNewLines ID optNewLines '{' optNewLines classBody '}'	{$$ = createClass($3, $7);}
+class: modifiers optNewLines CLASS optNewLines ID optNewLines ':' optNewLines ID optNewLines '{' classBody '}'	{$$ = createClass($1, $5, $9, $12);}
+| modifiers optNewLines CLASS optNewLines ID optNewLines '{' classBody '}'	{$$ = createClass($1, $5, $8);}
+| CLASS optNewLines ID optNewLines ':' optNewLines ID optNewLines '{' classBody '}'	{$$ = createClass($3, $7, $10);}
+| CLASS optNewLines ID optNewLines '{' classBody '}'	{$$ = createClass($3, $6);}
+| modifiers optNewLines CLASS optNewLines ID optNewLines ':' optNewLines ID optNewLines '{' '}'	{$$ = createClass($1, $5, $9, createClassBody());}
+| modifiers optNewLines CLASS optNewLines ID optNewLines '{' '}'	{$$ = createClass($1, $5, createClassBody());}
+| CLASS optNewLines ID optNewLines ':' optNewLines ID optNewLines '{' '}'	{$$ = createClass($3, $7, createClassBody());}
+| CLASS optNewLines ID optNewLines '{' '}'	{$$ = createClass($3, createClassBody());}
 ;
 
 classBody: semis 	{$$ = createClassBody();}
