@@ -1509,13 +1509,13 @@ while (elementToRemoveFromStack > 0)
     }
     else if (list->last->type == _ID)
     {
-        yylval.Id = list->last->stringOrId;
+        yylval.IdOrString = list->last->stringOrId;
         removeLastFromList(list);
         return ID;
     }
     else
     {
-        yylval.String_v = list->last->stringOrId;
+        yylval.IdOrString = list->last->stringOrId;
         removeLastFromList(list);
         return STRING;
     }
@@ -2483,8 +2483,8 @@ case 161:
 YY_RULE_SETUP
 #line 347 "lexer.l"
 { 
-                        yylval.String_v = (char *)malloc(strlen(str) + 1);
-                        strcpy(yylval.String_v, str);
+                        yylval.IdOrString = (char *)malloc(strlen(str) + 1);
+                        strcpy(yylval.IdOrString, str);
                         BEGIN(INITIAL);
 						return STRING;
                     }
@@ -2522,8 +2522,8 @@ YY_RULE_SETUP
                             }
                             else 
                             {
-                                yylval.String_v = (char *)malloc(strlen(str) + 1);
-                                strcpy(yylval.String_v, str);
+                                yylval.IdOrString = (char *)malloc(strlen(str) + 1);
+                                strcpy(yylval.IdOrString, str);
                                 str[0] = 0;
 
                                 el = (InterpolationElement *)malloc(sizeof(InterpolationElement));
@@ -2552,8 +2552,8 @@ case 166:
 YY_RULE_SETUP
 #line 392 "lexer.l"
 {
-                                yylval.String_v = (char *)malloc(strlen(str) + 1);
-                                strcpy(yylval.String_v, str);
+                                yylval.IdOrString = (char *)malloc(strlen(str) + 1);
+                                strcpy(yylval.IdOrString, str);
                                 str[0] = 0;
 
                                 el = (InterpolationElement *)malloc(sizeof(InterpolationElement));
@@ -2588,8 +2588,8 @@ case 168:
 YY_RULE_SETUP
 #line 422 "lexer.l"
 {
-                                    yylval.String_v = (char *)malloc(strlen(str) + 1);
-                                    strcpy(yylval.String_v, str);
+                                    yylval.IdOrString = (char *)malloc(strlen(str) + 1);
+                                    strcpy(yylval.IdOrString, str);
 
                                     el = (InterpolationElement *)malloc(sizeof(InterpolationElement));
                                     el->type = _PLUS;
@@ -2637,8 +2637,8 @@ YY_RULE_SETUP
 {
                         strcat(str, yytext);
                         str[strlen(str) - 3] = 0;
-                        yylval.String_v = (char *)malloc(strlen(str) + 1);
-                        strcpy(yylval.String_v, str);
+                        yylval.IdOrString = (char *)malloc(strlen(str) + 1);
+                        strcpy(yylval.IdOrString, str);
                         BEGIN(INITIAL);
 
 						return STRING;
@@ -2648,8 +2648,8 @@ case 175:
 YY_RULE_SETUP
 #line 455 "lexer.l"
 {
-                        yylval.String_v = (char *)malloc(strlen(str) + 1);
-                        strcpy(yylval.String_v, str);
+                        yylval.IdOrString = (char *)malloc(strlen(str) + 1);
+                        strcpy(yylval.IdOrString, str);
 
                         el = (InterpolationElement *)malloc(sizeof(InterpolationElement));
                         el->type = _PLUS;
@@ -2678,8 +2678,8 @@ case 177:
 YY_RULE_SETUP
 #line 476 "lexer.l"
 { 
-							yylval.Id = (char *)malloc(strlen(yytext) + 1);
-                            strcpy(yylval.Id, yytext);
+							yylval.IdOrString = (char *)malloc(strlen(yytext) + 1);
+                            strcpy(yylval.IdOrString, yytext);
 							return ID;						
 						}
 	YY_BREAK
@@ -2720,8 +2720,8 @@ case 183:
 YY_RULE_SETUP
 #line 491 "lexer.l"
 {
-                                    yylval.Id = (char *)malloc(strlen(str) + 1);
-                                    strcpy(yylval.Id, str);
+                                    yylval.IdOrString = (char *)malloc(strlen(str) + 1);
+                                    strcpy(yylval.IdOrString, str);
                                     BEGIN(INITIAL);
 									return ID;
                                 }
@@ -2733,33 +2733,32 @@ case YY_STATE_EOF(SLCOMMENT):
             if (complexTemplateNestingLevel > 0) 
             {
                 printf("ERROR! Found end of file, but expected }\n");
-                if (list != 0) 
-                    free(list);
+                
             }
             else 
             {
                 printf("Found end of file\n");
-                if (list != 0) 
-                    free(list);
             }
+
+            return 0;
         }
 	YY_BREAK
 case 184:
 YY_RULE_SETUP
-#line 513 "lexer.l"
+#line 512 "lexer.l"
 {;}
 	YY_BREAK
 case 185:
 YY_RULE_SETUP
-#line 514 "lexer.l"
+#line 513 "lexer.l"
 {printf("Found unidentified symbol \'%s\'\n", yytext);}
 	YY_BREAK
 case 186:
 YY_RULE_SETUP
-#line 516 "lexer.l"
+#line 515 "lexer.l"
 ECHO;
 	YY_BREAK
-#line 2762 "lexer.flex.cpp"
+#line 2761 "lexer.flex.cpp"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -3775,7 +3774,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 516 "lexer.l"
+#line 515 "lexer.l"
 
 
 bool isNotKeyword(const char* str)
@@ -3861,6 +3860,7 @@ bool removeLastFromList(InterpolElementsLinkedList * list)
     list->last = list->last->previous;
     list->last->next = 0;
     tmp->previous = 0;
+    free(tmp);
     return true;
 }
 

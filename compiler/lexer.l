@@ -62,13 +62,13 @@ while (elementToRemoveFromStack > 0)
     }
     else if (list->last->type == _ID)
     {
-        yylval.Id = list->last->stringOrId;
+        yylval.IdOrString = list->last->stringOrId;
         removeLastFromList(list);
         return ID;
     }
     else
     {
-        yylval.String_v = list->last->stringOrId;
+        yylval.IdOrString = list->last->stringOrId;
         removeLastFromList(list);
         return STRING;
     }
@@ -344,8 +344,8 @@ false 	{	yylval.Bool_v = false;
 <STRING>\\$         { strcat(str, "\$"); }
 <STRING>\\\'        { strcat(str, "\'"); }
 <STRING>\"          { 
-                        yylval.String_v = (char *)malloc(strlen(str) + 1);
-                        strcpy(yylval.String_v, str);
+                        yylval.IdOrString = (char *)malloc(strlen(str) + 1);
+                        strcpy(yylval.IdOrString, str);
                         BEGIN(INITIAL);
 						return STRING;
                     }
@@ -362,8 +362,8 @@ false 	{	yylval.Bool_v = false;
                             }
                             else 
                             {
-                                yylval.String_v = (char *)malloc(strlen(str) + 1);
-                                strcpy(yylval.String_v, str);
+                                yylval.IdOrString = (char *)malloc(strlen(str) + 1);
+                                strcpy(yylval.IdOrString, str);
                                 str[0] = 0;
 
                                 el = (InterpolationElement *)malloc(sizeof(InterpolationElement));
@@ -389,8 +389,8 @@ false 	{	yylval.Bool_v = false;
                         }
 
 <STRING,MLSTRING>\$`[^\n\\`\[\]]+` {
-                                yylval.String_v = (char *)malloc(strlen(str) + 1);
-                                strcpy(yylval.String_v, str);
+                                yylval.IdOrString = (char *)malloc(strlen(str) + 1);
+                                strcpy(yylval.IdOrString, str);
                                 str[0] = 0;
 
                                 el = (InterpolationElement *)malloc(sizeof(InterpolationElement));
@@ -419,8 +419,8 @@ false 	{	yylval.Bool_v = false;
 <STRING,MLSTRING>\$`[^`\n]*[\\\[\]][^`\n]*` { printf("ERROR! Found invalid identificator in template %s\n", yytext + 1); }
 
 <STRING>\$\{                    {
-                                    yylval.String_v = (char *)malloc(strlen(str) + 1);
-                                    strcpy(yylval.String_v, str);
+                                    yylval.IdOrString = (char *)malloc(strlen(str) + 1);
+                                    strcpy(yylval.IdOrString, str);
 
                                     el = (InterpolationElement *)malloc(sizeof(InterpolationElement));
                                     el->type = _PLUS;
@@ -444,16 +444,16 @@ false 	{	yylval.Bool_v = false;
 <MLSTRING>\"{3,}    {
                         strcat(str, yytext);
                         str[strlen(str) - 3] = 0;
-                        yylval.String_v = (char *)malloc(strlen(str) + 1);
-                        strcpy(yylval.String_v, str);
+                        yylval.IdOrString = (char *)malloc(strlen(str) + 1);
+                        strcpy(yylval.IdOrString, str);
                         BEGIN(INITIAL);
 
 						return STRING;
                     }
                     
 <MLSTRING>\$\{      {
-                        yylval.String_v = (char *)malloc(strlen(str) + 1);
-                        strcpy(yylval.String_v, str);
+                        yylval.IdOrString = (char *)malloc(strlen(str) + 1);
+                        strcpy(yylval.IdOrString, str);
 
                         el = (InterpolationElement *)malloc(sizeof(InterpolationElement));
                         el->type = _PLUS;
@@ -473,8 +473,8 @@ false 	{	yylval.Bool_v = false;
 \n { return NEW_LINE; }
 
 [a-zA-Z_][a-zA-Z_0-9]* 	{ 
-							yylval.Id = (char *)malloc(strlen(yytext) + 1);
-                            strcpy(yylval.Id, yytext);
+							yylval.IdOrString = (char *)malloc(strlen(yytext) + 1);
+                            strcpy(yylval.IdOrString, yytext);
 							return ID;						
 						}
 
@@ -488,8 +488,8 @@ false 	{	yylval.Bool_v = false;
 <IDENTIFICATOR>[\\\[\]]         { printf("ERROR! There is an illegal character \'%s\' in identificator \"%s\" \n", yytext, str); }
 <IDENTIFICATOR><<EOF>>               { printf("ERROR! In string \"%s\" expected `\n", str); }
 <IDENTIFICATOR>`                {
-                                    yylval.Id = (char *)malloc(strlen(str) + 1);
-                                    strcpy(yylval.Id, str);
+                                    yylval.IdOrString = (char *)malloc(strlen(str) + 1);
+                                    strcpy(yylval.IdOrString, str);
                                     BEGIN(INITIAL);
 									return ID;
                                 }
@@ -498,15 +498,14 @@ false 	{	yylval.Bool_v = false;
             if (complexTemplateNestingLevel > 0) 
             {
                 printf("ERROR! Found end of file, but expected }\n");
-                if (list != 0) 
-                    free(list);
+                
             }
             else 
             {
                 printf("Found end of file\n");
-                if (list != 0) 
-                    free(list);
             }
+
+            return 0;
         }
 
 [\r\t\f\v ]+ {;}
@@ -597,5 +596,6 @@ bool removeLastFromList(InterpolElementsLinkedList * list)
     list->last = list->last->previous;
     list->last->next = 0;
     tmp->previous = 0;
+    free(tmp);
     return true;
 }

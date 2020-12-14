@@ -21,8 +21,7 @@
 	float Float_v;
 	double Double_v;
 	char Char_v;
-	char * String_v;
-	char * Id;
+	char * IdOrString;
 	bool Bool_v;
 	
 	enum visibilityMod visibilityModU;
@@ -89,7 +88,8 @@
 
 
 %token NEW_LINE
-%token <Id> ID
+%token <IdOrString> ID
+%token <IdOrString> STRING
 %token CLASS
 %token PUBLIC
 %token PRIVATE
@@ -155,7 +155,6 @@
 %token <Int_v> INT
 %token <Float_v> FLOAT
 %token <Double_v> DOUBLE
-%token <String_v> STRING
 %token <Char_v> CHAR
 %token <Bool_v> BOOLEAN
 %token ASUM
@@ -191,14 +190,15 @@
  
 %%
 
+
 program: semis	{root = createProgram(); puts("program created");}
 | class	{root = createProgram($1);puts("program created");}
 | method	{root = createProgram($1);puts("program created");}
 | property semis	{root = createProgram($1);puts("program created");}
-| program class	{$$ = addToProgram($1, $2);puts("class added to prog");}
-| program method	{$$ = addToProgram($1, $2);puts("meth added to prog");}
-| program property semis	{$$ = addToProgram($1, $2);puts("prop added to prog");}
-| program semis
+| program class	{root = addToProgram(root, $2);puts("class added to prog");}
+| program method	{root = addToProgram(root, $2);puts("meth added to prog");}
+| program property semis	{root = addToProgram(root, $2);puts("prop added to prog");}
+| program semis {root = root;}
 ; 
 
 class: modifiers CLASS ID ':' ID  '{' classBody '}'	{$$ = createClass($1, $3, $5, $7);puts("class created");}
@@ -404,12 +404,12 @@ stmt : valDeclaration semis	{$$ = createStmt($1, VarOrVal);  puts("stmt created"
 | RETURN expr semis	{$$ = createStmt($2, ReturnValue);  puts("stmt created"); }
 ;
 
-expr: ID	{$$ = createExpr($1, Identificator);  puts("expr created"); }
+expr: STRING 	{$$ = createExpr($1, String);  puts("expr created"); }
+| ID	{$$ = createExpr($1, Identificator);  puts("expr created"); }
 | THIS 	{$$ = createExpr(0, This);  puts("expr created"); }
 | ID '(' optFactParams ')'	{$$ = createExpr($1, $3, MethodCall);  puts("expr created"); }
 | INT 	{$$ = createExpr($1, Int);  puts("expr created"); }
 | FLOAT 	{$$ = createExpr($1, Float);  puts("expr created"); }
-| STRING 	{$$ = createExpr($1, String);  puts("expr created"); }
 | CHAR 	{$$ = createExpr($1, Char);  puts("expr created"); }
 | DOUBLE 	{$$ = createExpr($1, Double);  puts("expr created"); }
 | BOOLEAN	{$$ = createExpr($1, Boolean);  puts("expr created"); }
@@ -505,7 +505,7 @@ void main(int argc, char **argv ){
 	//yyin = fopen(argv[1], "r");
 	yyin = fopen("2_funcs.txt", "r");
 	FILE * file = fopen("tree.dot", "w");
-	
+	root = 0;
     yyparse();
 
 	fprintf(file, "digraph G {\n");
@@ -516,22 +516,3 @@ void main(int argc, char **argv ){
 
     return;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

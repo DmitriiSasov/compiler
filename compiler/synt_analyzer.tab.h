@@ -56,72 +56,72 @@ extern int yydebug;
     YYUNDEF = 257,                 /* "invalid token"  */
     NEW_LINE = 258,                /* NEW_LINE  */
     ID = 259,                      /* ID  */
-    CLASS = 260,                   /* CLASS  */
-    PUBLIC = 261,                  /* PUBLIC  */
-    PRIVATE = 262,                 /* PRIVATE  */
-    PROTECTED = 263,               /* PROTECTED  */
-    FIELD = 264,                   /* FIELD  */
-    PARAM = 265,                   /* PARAM  */
-    SETPARAM = 266,                /* SETPARAM  */
-    DELEGATE = 267,                /* DELEGATE  */
-    INTERFACE = 268,               /* INTERFACE  */
-    OBJECT = 269,                  /* OBJECT  */
-    PROPERTY = 270,                /* PROPERTY  */
-    DYNAMIC = 271,                 /* DYNAMIC  */
-    ENUM = 272,                    /* ENUM  */
-    SEALED = 273,                  /* SEALED  */
-    SUSPEND = 274,                 /* SUSPEND  */
-    INNER = 275,                   /* INNER  */
-    EXTERNAL = 276,                /* EXTERNAL  */
-    ACTUAL = 277,                  /* ACTUAL  */
-    ANNOTATION = 278,              /* ANNOTATION  */
-    GET = 279,                     /* GET  */
-    SET = 280,                     /* SET  */
-    RECEIVER = 281,                /* RECEIVER  */
-    CONSTRUCTOR = 282,             /* CONSTRUCTOR  */
-    BY = 283,                      /* BY  */
-    COMPANION = 284,               /* COMPANION  */
-    INIT = 285,                    /* INIT  */
-    LATEINIT = 286,                /* LATEINIT  */
-    VARARG = 287,                  /* VARARG  */
-    THIS = 288,                    /* THIS  */
-    SUPER = 289,                   /* SUPER  */
-    INTERNAL = 290,                /* INTERNAL  */
-    OVERRIDE = 291,                /* OVERRIDE  */
-    ABSTRACT = 292,                /* ABSTRACT  */
-    FUN = 293,                     /* FUN  */
-    VAR = 294,                     /* VAR  */
-    VAL = 295,                     /* VAL  */
-    TYPEOF = 296,                  /* TYPEOF  */
-    IF = 297,                      /* IF  */
-    ELSE = 298,                    /* ELSE  */
-    WHERE = 299,                   /* WHERE  */
-    WHEN = 300,                    /* WHEN  */
-    DO = 301,                      /* DO  */
-    WHILE = 302,                   /* WHILE  */
-    FOR = 303,                     /* FOR  */
-    BREAK = 304,                   /* BREAK  */
-    CONTINUE = 305,                /* CONTINUE  */
-    AS = 306,                      /* AS  */
-    IN = 307,                      /* IN  */
-    OUT = 308,                     /* OUT  */
-    DATA = 309,                    /* DATA  */
-    RETURN = 310,                  /* RETURN  */
-    TAILREC = 311,                 /* TAILREC  */
-    OPERATOR = 312,                /* OPERATOR  */
-    INLINE = 313,                  /* INLINE  */
-    NOINLINE = 314,                /* NOINLINE  */
-    CROSSINLINE = 315,             /* CROSSINLINE  */
-    REIFIED = 316,                 /* REIFIED  */
-    EXPECT = 317,                  /* EXPECT  */
-    INFIX = 318,                   /* INFIX  */
-    OPEN = 319,                    /* OPEN  */
-    FINAL = 320,                   /* FINAL  */
-    CONST = 321,                   /* CONST  */
-    INT = 322,                     /* INT  */
-    FLOAT = 323,                   /* FLOAT  */
-    DOUBLE = 324,                  /* DOUBLE  */
-    STRING = 325,                  /* STRING  */
+    STRING = 260,                  /* STRING  */
+    CLASS = 261,                   /* CLASS  */
+    PUBLIC = 262,                  /* PUBLIC  */
+    PRIVATE = 263,                 /* PRIVATE  */
+    PROTECTED = 264,               /* PROTECTED  */
+    FIELD = 265,                   /* FIELD  */
+    PARAM = 266,                   /* PARAM  */
+    SETPARAM = 267,                /* SETPARAM  */
+    DELEGATE = 268,                /* DELEGATE  */
+    INTERFACE = 269,               /* INTERFACE  */
+    OBJECT = 270,                  /* OBJECT  */
+    PROPERTY = 271,                /* PROPERTY  */
+    DYNAMIC = 272,                 /* DYNAMIC  */
+    ENUM = 273,                    /* ENUM  */
+    SEALED = 274,                  /* SEALED  */
+    SUSPEND = 275,                 /* SUSPEND  */
+    INNER = 276,                   /* INNER  */
+    EXTERNAL = 277,                /* EXTERNAL  */
+    ACTUAL = 278,                  /* ACTUAL  */
+    ANNOTATION = 279,              /* ANNOTATION  */
+    GET = 280,                     /* GET  */
+    SET = 281,                     /* SET  */
+    RECEIVER = 282,                /* RECEIVER  */
+    CONSTRUCTOR = 283,             /* CONSTRUCTOR  */
+    BY = 284,                      /* BY  */
+    COMPANION = 285,               /* COMPANION  */
+    INIT = 286,                    /* INIT  */
+    LATEINIT = 287,                /* LATEINIT  */
+    VARARG = 288,                  /* VARARG  */
+    THIS = 289,                    /* THIS  */
+    SUPER = 290,                   /* SUPER  */
+    INTERNAL = 291,                /* INTERNAL  */
+    OVERRIDE = 292,                /* OVERRIDE  */
+    ABSTRACT = 293,                /* ABSTRACT  */
+    FUN = 294,                     /* FUN  */
+    VAR = 295,                     /* VAR  */
+    VAL = 296,                     /* VAL  */
+    TYPEOF = 297,                  /* TYPEOF  */
+    IF = 298,                      /* IF  */
+    ELSE = 299,                    /* ELSE  */
+    WHERE = 300,                   /* WHERE  */
+    WHEN = 301,                    /* WHEN  */
+    DO = 302,                      /* DO  */
+    WHILE = 303,                   /* WHILE  */
+    FOR = 304,                     /* FOR  */
+    BREAK = 305,                   /* BREAK  */
+    CONTINUE = 306,                /* CONTINUE  */
+    AS = 307,                      /* AS  */
+    IN = 308,                      /* IN  */
+    OUT = 309,                     /* OUT  */
+    DATA = 310,                    /* DATA  */
+    RETURN = 311,                  /* RETURN  */
+    TAILREC = 312,                 /* TAILREC  */
+    OPERATOR = 313,                /* OPERATOR  */
+    INLINE = 314,                  /* INLINE  */
+    NOINLINE = 315,                /* NOINLINE  */
+    CROSSINLINE = 316,             /* CROSSINLINE  */
+    REIFIED = 317,                 /* REIFIED  */
+    EXPECT = 318,                  /* EXPECT  */
+    INFIX = 319,                   /* INFIX  */
+    OPEN = 320,                    /* OPEN  */
+    FINAL = 321,                   /* FINAL  */
+    CONST = 322,                   /* CONST  */
+    INT = 323,                     /* INT  */
+    FLOAT = 324,                   /* FLOAT  */
+    DOUBLE = 325,                  /* DOUBLE  */
     CHAR = 326,                    /* CHAR  */
     BOOLEAN = 327,                 /* BOOLEAN  */
     ASUM = 328,                    /* ASUM  */
@@ -154,8 +154,7 @@ union YYSTYPE
 	float Float_v;
 	double Double_v;
 	char Char_v;
-	char * String_v;
-	char * Id;
+	char * IdOrString;
 	bool Bool_v;
 	
 	enum visibilityMod visibilityModU;
@@ -188,7 +187,7 @@ union YYSTYPE
 	struct programElementS * programElementU;
 	struct programS * programU;
 
-#line 192 "synt_analyzer.tab.h"
+#line 191 "synt_analyzer.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
