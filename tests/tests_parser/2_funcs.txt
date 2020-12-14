@@ -1,0 +1,13 @@
+
+fun a():Int {
+	return 5 + 3 * 5;
+}
+
+
+fun b () : Unit {
+	print();
+
+	print();
+
+
+}

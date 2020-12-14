@@ -470,7 +470,7 @@ false 	{	yylval.Bool_v = false;
 <MLSTRING><<EOF>>   { printf("ERROR! Found end of file, but expected \"\"\"\n"); }
 
 
-\n { printf("Found new line\n"); }
+\n { /*printf("Found new line\n"); */}
 
 [a-zA-Z_][a-zA-Z_0-9]* 	{ 
 							yylval.Id = (char *)malloc(strlen(yytext) + 1);

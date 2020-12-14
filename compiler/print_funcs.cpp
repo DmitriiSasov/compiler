@@ -712,7 +712,7 @@ void print(struct programElementS * pe, FILE* file)
 	}
 	else
 	{
-		fprintf(file, "Id%\n", pe->property);
+		fprintf(file, "Id%p\n", pe->property);
 		print(pe->property, file);
 	}
 }

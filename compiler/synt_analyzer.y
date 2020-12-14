@@ -311,16 +311,12 @@
 %%
 
 program: semis	{root = createProgram(); puts("program created");}
-| newLines	{root = createProgram();puts("program created");}
 | class	{root = createProgram($1);puts("program created");}
 | method	{root = createProgram($1);puts("program created");}
 | property semis	{root = createProgram($1);puts("program created");}
-| property newLines	{root = createProgram($1);puts("program created");}
 | program class	{$$ = addToProgram($1, $2);puts("class added to prog");}
 | program method	{$$ = addToProgram($1, $2);puts("meth added to prog");}
 | program property semis	{$$ = addToProgram($1, $2);puts("prop added to prog");}
-| program property newLines	{$$ = addToProgram($1, $2);puts("prop added to prog");}
-| program newLines {$$ = $1;puts("new lines added to prog");}
 | program semis {$$ = $1;puts("semis added to prog");}
 ; 
 
@@ -335,16 +331,12 @@ class: modifiers CLASS ID ':' ID  '{' classBody '}'	{$$ = createClass($1, $3, $5
 ;
 
 classBody: semis 	{$$ = createClassBody(); puts("class body created");}
-| newLines	{$$ = createClassBody();  puts("class body created");}
 | method	{$$ = createClassBody($1);  puts("class body created");}
 | property semis	{$$ = createClassBody($1);  puts("class body created");}
-| property newLines	{$$ = createClassBody($1);  puts("class body created");}
 | constructor	{$$ = createClassBody($1);  puts("class body created");}
 | initializer	{$$ = createClassBody($1);  puts("class body created");}
 | classBody method	{$$ = addToClassBody($1, $2);  puts("meth added to class body");}
 | classBody property semis	{$$ = addToClassBody($1, $2); puts("prop added to class body");}
-| classBody property newLines	{$$ = addToClassBody($1, $2); puts("prop added to class body");}
-| classBody newLines	 {$$ = $1; puts("new lines added to class body");}
 | classBody constructor	{$$ = addToClassBody($1, $2); puts("constr added to class body");}
 | classBody initializer	{$$ = addToClassBody($1, $2); puts("init added to class body");}
 | classBody semis	{$$ = $1; puts("semis added to class body");}
@@ -482,10 +474,10 @@ funcDeclaration: FUN ID '(' optFormalParams ')' ':' type	{$$ = createFuncDecl($2
 ;
 
 
-block : '{' optNewLines stmts optNewLines '}'	{$$ = $3;  puts("block created");}
-| '{' semis stmts optNewLines '}'	{$$ = $3;  puts("block created");}
+block : '{' semis stmts '}'	{$$ = $3;  puts("block created");}
 | '{' semis '}'	{$$ = 0;  puts("block created");}
-| '{' optNewLines '}'	{$$ = 0;  puts("block created");}
+| '{' stmts '}'	{$$ = $2;  puts("block created");}
+| '{' '}'	{$$ = 0;  puts("block created");}
 ;
 
 
@@ -514,32 +506,20 @@ type_seq: ID	{$$ = createTypesList($1); puts("type seq created"); }
 ;
 
 stmts : stmt	{$$ = createStmtList($1);  puts("stmts created"); }
-| stmts optNewLines stmt	{$$ = addToStmtList($1, $3);  puts("stmts created"); }
+| stmts stmt	{$$ = addToStmtList($1, $2);  puts("stmts created"); }
 ;
 
 stmt : valDeclaration semis	{$$ = createStmt($1, VarOrVal);  puts("stmt created"); }
-| valDeclaration newLines	{$$ = createStmt($1, VarOrVal);  puts("stmt created"); }
 | varDeclaration semis	{$$ = createStmt($1, VarOrVal);  puts("stmt created"); }
-| varDeclaration newLines	{$$ = createStmt($1, VarOrVal);  puts("stmt created"); }
 | assignment semis	{$$ = createStmt($1, Assignment);  puts("stmt created"); }
-| assignment newLines	{$$ = createStmt($1, Assignment);  puts("stmt created"); }
 | whileLoop semis	{$$ = createStmt($1, WhileLoop);  puts("stmt created"); }
-| whileLoop newLines	{$$ = createStmt($1, WhileLoop);  puts("stmt created"); }
 | forLoop semis	{$$ = createStmt($1, ForLoop);  puts("stmt created"); }
-| forLoop newLines	{$$ = createStmt($1, ForLoop);  puts("stmt created"); }
 | doWhileLoop semis	{$$ = createStmt($1, DoWhileLoop);  puts("stmt created"); }
-| doWhileLoop newLines	{$$ = createStmt($1, DoWhileLoop);  puts("stmt created"); }
 | ifStmt semis	{$$ = createStmt($1, IfStmt);  puts("stmt created"); }
-| ifStmt newLines	{$$ = createStmt($1, IfStmt);  puts("stmt created"); }
-| expr newLines	{$$ = createStmt($1, Expr);  puts("stmt created"); }
 | expr semis	{$$ = createStmt($1, Expr);  puts("stmt created"); }
 | BREAK semis	{$$ = createStmt(Break);  puts("stmt created"); }
-| BREAK newLines	{$$ = createStmt(Break);  puts("stmt created"); }
 | CONTINUE semis	{$$ = createStmt(Continue);  puts("stmt created"); }
-| CONTINUE newLines	{$$ = createStmt(Continue);  puts("stmt created"); }
 | RETURN semis	{$$ = createStmt(Return);  puts("stmt created"); }
-| RETURN newLines	{$$ = createStmt(Return);  puts("stmt created"); }
-| RETURN expr newLines	{$$ = createStmt($2, ReturnValue);  puts("stmt created"); }
 | RETURN expr semis	{$$ = createStmt($2, ReturnValue);  puts("stmt created"); }
 ;
 
@@ -602,7 +582,7 @@ whileLoop: WHILE '(' expr ')' stmt	{$$ = createWhileLoop($3, $5, 0); puts("while
 
 doWhileLoop: DO stmt WHILE '(' expr ')'	{$$ = createWhileLoop($5, $2, 1); puts("doWhileLoop created"); }
 | DO block WHILE '(' expr ')'	{$$ = createWhileLoop($5, $2, 1); puts("doWhileLoop created"); }
-| DO WHILE '(' expr ')' optNewLines	{$$ = createWhileLoop($4, 1); puts("doWhileLoop created"); }
+| DO WHILE '(' expr ')' {$$ = createWhileLoop($4, 1); puts("doWhileLoop created"); }
 ;
 
 forLoop: FOR '(' ID ':' type IN expr ')' stmt	{$$ = createForLoop($3, $5, $7, $9); puts("forLoop created"); }
@@ -628,16 +608,10 @@ ifStmt: IF '(' expr ')' stmt	{$$ = createIfStmt($3, $5); puts("ifStmt created");
 ;
 
 
-optNewLines: /*empty*/ { puts("opt new lines created"); }
-| newLines { puts("opt new lines created"); }
-;
-
-newLines: NEW_LINE	{ puts("new lines created"); }
-| newLines NEW_LINE		{ puts("new lines created"); }
-;
-
 semis: ';'	{ puts("semis created"); }
+| NEW_LINE	{ puts("semis created"); }
 | semis ';'	{ puts("semis created"); }
+| semis NEW_LINE	{ puts("semis created"); }
 ;
 
 

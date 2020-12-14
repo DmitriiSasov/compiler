@@ -2672,7 +2672,7 @@ case 176:
 /* rule 176 can match eol */
 YY_RULE_SETUP
 #line 474 "lexer.l"
-{ printf("Found new line\n"); }
+{ /*printf("Found new line\n"); */}
 	YY_BREAK
 case 177:
 YY_RULE_SETUP
