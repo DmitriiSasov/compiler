@@ -71,9 +71,7 @@
 
 
 	#include <stdio.h>
-	#include <malloc.h>
-	#include <string.h>
-	#include "print_funcs.h"
+	#include "create_tree.h"
 	void yyerror(const char* message) {
 		fprintf(stderr, message);
 	}
@@ -83,126 +81,9 @@
 	
 	struct programS * root;
 	
-	struct programS * createProgram();
-	struct programS * createProgram(struct classS * clas);
-	struct programS * createProgram(struct methodS * meth);
-	struct programS * createProgram(struct propertyS * prop);
-	struct programS * addToProgram(struct programS * prog, struct classS * clas);
-	struct programS * addToProgram(struct programS * prog, struct methodS * meth);
-	struct programS * addToProgram(struct programS * prog, struct propertyS * prop);
-	
-	struct classS * createClass(struct modifiersS * mods, char * id, char * parentId, struct classBodyS * body);
-	struct classS * createClass(struct modifiersS * mods, char * id, struct classBodyS * body);	
-	struct classS * createClass(char * id, char * parentId, struct classBodyS * body);
-	struct classS * createClass(char * id, struct classBodyS * body);
-	
-	struct classBodyS * createClassBody();
-	struct classBodyS * createClassBody(struct methodS * meth);
-	struct classBodyS * createClassBody(struct initializerS * initializer);
-	struct classBodyS * createClassBody(struct propertyS * prop);
-	struct classBodyS * createClassBody(struct constructorS * constr);
-	struct classBodyS * addToClassBody(struct classBodyS * body, struct methodS * meth);
-	struct classBodyS * addToClassBody(struct classBodyS * body, struct initializerS * initializer);
-	struct classBodyS * addToClassBody(struct classBodyS * body, struct propertyS * prop);
-	struct classBodyS * addToClassBody(struct classBodyS * body, struct constructorS * constr);
-	
-	struct propertyS * createProperty(struct modifiersS * mods, struct varOrValDeclS * decl);
-	struct propertyS * createProperty(struct varOrValDeclS * decl);
-	
-	struct methodS * createMethod(struct modifiersS * mods, struct funcDeclS * funcDecl);
-	struct methodS * createMethod(struct modifiersS * mods, struct funcS * func);
-	struct methodS * createMethod(struct funcDeclS * funcDecl);
-	struct methodS * createMethod(struct funcS * func);
-	
-	struct initializerS * createInit(struct stmtList * stmts);
-	
-	struct constructorS * createConstructor(enum visibilityMod mod, struct formalParamsList * params, struct stmtList * stmts);
-	struct constructorS * createConstructor(enum visibilityMod mod, struct formalParamsList * params);
-	struct constructorS * createConstructor(enum visibilityMod mod, struct formalParamsList * params, const char * parentOrAnotherConstr, struct factParamsList * anotherConstrParams);
-	struct constructorS * createConstructor(enum visibilityMod mod, struct formalParamsList * params, const char * parentOrAnotherConstr, struct factParamsList * anotherConstrParams, struct stmtList * stmts);
-	struct constructorS * createConstructor(struct formalParamsList * params, struct stmtList * stmts);
-	struct constructorS * createConstructor(struct formalParamsList * params);
-	struct constructorS * createConstructor(struct formalParamsList * params, const char * parentOrAnotherConstr, struct factParamsList * anotherConstrParams);
-	struct constructorS * createConstructor(struct formalParamsList * params, const char * parentOrAnotherConstr, struct factParamsList * anotherConstrParams, struct stmtList * stmts);
-	
-	struct formalParamsList * createFormalParamsList();
-	struct formalParamsList * createFormalParamsList(char * id, struct typeS * type);
-	struct formalParamsList * addToFormalParamsList(struct formalParamsList * list, char * id, struct typeS * type);
-	
-	struct modifiersS * createModifiers(int isAbstruct, int isOverride, enum visibilityMod vMod, enum inheritanceMod iMod);
-	
-	struct funcS * createFunc(struct funcDeclS * decl, struct stmtList * stmts);
-	struct funcS * createFunc(struct funcDeclS * decl, struct exprS * expr);
-	
-	struct funcDeclS * createFuncDecl(char * id, struct formalParamsList * params, struct typeS * type);
-	
-	struct stmtList * createStmtList();
-	struct stmtList * createStmtList(struct stmtS * stmt);
-	struct stmtList * addToStmtList(struct stmtList * list, struct stmtS * stmt);
-	
-	struct varOrValDeclS * createVarOrValDecl(char * id, struct typeS * type, int isVal);
-	struct varOrValDeclS * createVarOrValDecl(char * id, struct typeS * type, struct exprS * initValue, int isVal);
-	struct varOrValDeclS * createVarOrValDecl(struct formalParamsList * idsAndTypes, struct exprS * initValue, int isVal);
-	
-	struct typeS * createType(char * id);
-	struct typeS * createType(struct templateTypeS * type);
-	
-	struct templateTypeS * createTemplateType(char * id, struct typesList * templateTypes);
-	
-	struct typesList * createTypesList(char * id);
-	struct typesList * createTypesList(struct templateTypeS * tt);
-	struct typesList * addToTypesList(struct typesList * list, char * id);
-	struct typesList * addToTypesList(struct typesList * list, struct templateTypeS * tt);
-	
-	struct stmtS * createStmt(struct varOrValDeclS * v, enum stmtType type);
-	struct stmtS * createStmt(struct assignmentS * assign, enum stmtType type);
-	struct stmtS * createStmt(struct whileLoopS * loop, enum stmtType type);
-	struct stmtS * createStmt(struct forLoopS * loop, enum stmtType type);
-	struct stmtS * createStmt(struct ifStmtS * ifStmt, enum stmtType type);
-	struct stmtS * createStmt(struct exprS * expr, enum stmtType type);
-	struct stmtS * createStmt(enum stmtType type);
-	
-	struct exprS * createExpr(char * idOrString, enum exprType type);
-	struct exprS * createExpr(int val, enum exprType type);
-	struct exprS * createExpr(char * idOrString, struct factParamsList * params, enum exprType type);
-	struct exprS * createExpr(float val, enum exprType type);
-	struct exprS * createExpr(double val, enum exprType type);
-	struct exprS * createExpr(char val, enum exprType type);
-	struct exprS * createExpr(bool val, enum exprType type);
-	struct exprS * createExpr(struct exprS * expr, enum exprType type);
-	struct exprS * createExpr(struct exprS * left, struct exprS * right, enum exprType type);
-	struct exprS * createExpr(struct exprS * left, char * right, enum exprType type);
-	struct exprS * createExpr(struct exprS * left, char * right, struct factParamsList * params, enum exprType type);
-	
-	struct factParamsList * createFactParamsList();
-	struct factParamsList * createFactParamsList(struct exprS * expr);
-	struct factParamsList * addToFactParamsList(struct factParamsList * list, struct exprS * expr);
-	
-	struct assignmentS * createAssignment(struct exprS * left, struct exprS * right, enum assignmentType type); 
-	
-	struct whileLoopS * createWhileLoop(struct exprS * cond, struct stmtS * stmt, int isDoWhile);
-	struct whileLoopS * createWhileLoop(struct exprS * cond, struct stmtList * stmts, int isDoWhile);
-	struct whileLoopS * createWhileLoop(struct exprS * cond, int isDoWhile);
-	
-	struct forLoopS * createForLoop(char * id, struct typeS * type, struct exprS * iterableExpr, struct stmtS * stmt);
-	struct forLoopS * createForLoop(char * id, struct typeS * type, struct exprS * iterableExpr, struct stmtList * stmts);
-	struct forLoopS * createForLoop(struct formalParamsList * idsAndTypes, struct exprS * iterableExpr, struct stmtList * stmts);
-	struct forLoopS * createForLoop(struct formalParamsList * idsAndTypes, struct exprS * iterableExpr, struct stmtS * stmt);
-	struct forLoopS * createForLoop(char * id, struct typeS * type, struct exprS * iterableExpr);
-	struct forLoopS * createForLoop(struct formalParamsList * idsAndTypes, struct exprS * iterableExpr);
-	
-	struct ifStmtS * createIfStmt(struct exprS * cond, struct stmtS * action);
-	struct ifStmtS * createIfStmt(struct exprS * cond, struct stmtList * actions);
-	struct ifStmtS * createIfStmt(struct exprS * cond);
-	struct ifStmtS * createIfStmt(struct exprS * cond, struct stmtS * action, struct stmtS * altAction);
-	struct ifStmtS * createIfStmt(struct exprS * cond, struct stmtS * action, struct stmtList * altActions);
-	struct ifStmtS * createIfStmt(struct exprS * cond, struct stmtList * actions, struct stmtS * altAction);
-	struct ifStmtS * createIfStmt(struct exprS * cond, struct stmtList * actions, struct stmtList * altActions);
-	struct ifStmtS * createIfStmt(struct exprS * cond, int action, struct stmtS * altAction);
-	struct ifStmtS * createIfStmt(struct exprS * cond, int action, struct stmtList * altActions);
 	
 
-#line 206 "synt_analyzer.tab.cpp"
+#line 87 "synt_analyzer.tab.cpp"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -746,29 +627,29 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,   313,   313,   314,   315,   316,   317,   318,   319,   320,
-     323,   324,   325,   326,   327,   328,   329,   330,   333,   334,
-     335,   336,   337,   338,   339,   340,   341,   342,   345,   346,
-     347,   348,   351,   352,   353,   354,   357,   361,   362,   363,
-     364,   365,   366,   367,   368,   369,   370,   371,   372,   375,
-     376,   379,   380,   383,   384,   385,   386,   387,   388,   389,
-     390,   391,   392,   393,   394,   395,   396,   397,   398,   399,
-     400,   401,   402,   403,   404,   405,   406,   407,   408,   409,
+       0,   194,   194,   195,   196,   197,   198,   199,   200,   201,
+     204,   205,   206,   207,   208,   209,   210,   211,   214,   215,
+     216,   217,   218,   219,   220,   221,   222,   223,   226,   227,
+     228,   229,   232,   233,   234,   235,   238,   242,   243,   244,
+     245,   246,   247,   248,   249,   250,   251,   252,   253,   256,
+     257,   260,   261,   264,   265,   266,   267,   268,   269,   270,
+     271,   272,   273,   274,   275,   276,   277,   278,   279,   280,
+     281,   282,   283,   284,   285,   286,   287,   288,   289,   290,
+     291,   292,   293,   294,   295,   296,   297,   298,   299,   300,
+     301,   302,   303,   304,   305,   306,   307,   308,   309,   310,
+     311,   312,   313,   314,   315,   316,   317,   318,   320,   322,
+     324,   326,   328,   330,   331,   332,   334,   338,   339,   340,
+     341,   345,   346,   349,   350,   354,   358,   359,   360,   361,
+     365,   366,   367,   371,   372,   373,   376,   377,   380,   383,
+     384,   385,   386,   389,   390,   393,   394,   395,   396,   397,
+     398,   399,   400,   401,   402,   403,   404,   407,   408,   409,
      410,   411,   412,   413,   414,   415,   416,   417,   418,   419,
      420,   421,   422,   423,   424,   425,   426,   427,   428,   429,
-     430,   431,   432,   433,   434,   435,   436,   437,   439,   441,
-     443,   445,   447,   449,   450,   451,   453,   457,   458,   459,
-     460,   464,   465,   468,   469,   473,   477,   478,   479,   480,
-     484,   485,   486,   490,   491,   492,   495,   496,   499,   502,
-     503,   504,   505,   508,   509,   512,   513,   514,   515,   516,
-     517,   518,   519,   520,   521,   522,   523,   526,   527,   528,
-     529,   530,   531,   532,   533,   534,   535,   536,   537,   538,
-     539,   540,   541,   542,   543,   544,   545,   546,   547,   548,
-     549,   550,   551,   552,   553,   554,   555,   556,   557,   558,
-     559,   562,   563,   566,   567,   570,   571,   572,   573,   574,
-     575,   578,   579,   580,   583,   584,   585,   588,   589,   590,
-     591,   592,   593,   596,   597,   598,   599,   600,   601,   602,
-     603,   604,   605,   606,   607,   611,   612,   613,   614
+     430,   431,   432,   433,   434,   435,   436,   437,   438,   439,
+     440,   443,   444,   447,   448,   451,   452,   453,   454,   455,
+     456,   459,   460,   461,   464,   465,   466,   469,   470,   471,
+     472,   473,   474,   477,   478,   479,   480,   481,   482,   483,
+     484,   485,   486,   487,   488,   492,   493,   494,   495
 };
 #endif
 
@@ -2136,1363 +2017,1363 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* program: semis  */
-#line 313 "synt_analyzer.y"
+#line 194 "synt_analyzer.y"
                 {root = createProgram(); puts("program created");}
-#line 2142 "synt_analyzer.tab.cpp"
+#line 2023 "synt_analyzer.tab.cpp"
     break;
 
   case 3: /* program: class  */
-#line 314 "synt_analyzer.y"
+#line 195 "synt_analyzer.y"
         {root = createProgram((yyvsp[0].classU));puts("program created");}
-#line 2148 "synt_analyzer.tab.cpp"
+#line 2029 "synt_analyzer.tab.cpp"
     break;
 
   case 4: /* program: method  */
-#line 315 "synt_analyzer.y"
+#line 196 "synt_analyzer.y"
                 {root = createProgram((yyvsp[0].methodU));puts("program created");}
-#line 2154 "synt_analyzer.tab.cpp"
+#line 2035 "synt_analyzer.tab.cpp"
     break;
 
   case 5: /* program: property semis  */
-#line 316 "synt_analyzer.y"
+#line 197 "synt_analyzer.y"
                         {root = createProgram((yyvsp[-1].propertyU));puts("program created");}
-#line 2160 "synt_analyzer.tab.cpp"
+#line 2041 "synt_analyzer.tab.cpp"
     break;
 
   case 6: /* program: program class  */
-#line 317 "synt_analyzer.y"
+#line 198 "synt_analyzer.y"
                 {(yyval.programU) = addToProgram((yyvsp[-1].programU), (yyvsp[0].classU));puts("class added to prog");}
-#line 2166 "synt_analyzer.tab.cpp"
+#line 2047 "synt_analyzer.tab.cpp"
     break;
 
   case 7: /* program: program method  */
-#line 318 "synt_analyzer.y"
+#line 199 "synt_analyzer.y"
                         {(yyval.programU) = addToProgram((yyvsp[-1].programU), (yyvsp[0].methodU));puts("meth added to prog");}
-#line 2172 "synt_analyzer.tab.cpp"
+#line 2053 "synt_analyzer.tab.cpp"
     break;
 
   case 8: /* program: program property semis  */
-#line 319 "synt_analyzer.y"
+#line 200 "synt_analyzer.y"
                                 {(yyval.programU) = addToProgram((yyvsp[-2].programU), (yyvsp[-1].propertyU));puts("prop added to prog");}
-#line 2178 "synt_analyzer.tab.cpp"
+#line 2059 "synt_analyzer.tab.cpp"
     break;
 
   case 10: /* class: modifiers CLASS ID ':' ID '{' classBody '}'  */
-#line 323 "synt_analyzer.y"
+#line 204 "synt_analyzer.y"
                                                         {(yyval.classU) = createClass((yyvsp[-7].modifiersU), (yyvsp[-5].Id), (yyvsp[-3].Id), (yyvsp[-1].classBodyU));puts("class created");}
-#line 2184 "synt_analyzer.tab.cpp"
+#line 2065 "synt_analyzer.tab.cpp"
     break;
 
   case 11: /* class: modifiers CLASS ID '{' classBody '}'  */
-#line 324 "synt_analyzer.y"
+#line 205 "synt_analyzer.y"
                                         {(yyval.classU) = createClass((yyvsp[-5].modifiersU), (yyvsp[-3].Id), (yyvsp[-1].classBodyU)); puts("class created");}
-#line 2190 "synt_analyzer.tab.cpp"
+#line 2071 "synt_analyzer.tab.cpp"
     break;
 
   case 12: /* class: CLASS ID ':' ID '{' classBody '}'  */
-#line 325 "synt_analyzer.y"
+#line 206 "synt_analyzer.y"
                                         {(yyval.classU) = createClass((yyvsp[-5].Id), (yyvsp[-3].Id), (yyvsp[-1].classBodyU)); puts("class created");}
-#line 2196 "synt_analyzer.tab.cpp"
+#line 2077 "synt_analyzer.tab.cpp"
     break;
 
   case 13: /* class: CLASS ID '{' classBody '}'  */
-#line 326 "synt_analyzer.y"
+#line 207 "synt_analyzer.y"
                                 {(yyval.classU) = createClass((yyvsp[-3].Id), (yyvsp[-1].classBodyU)); puts("class created");}
-#line 2202 "synt_analyzer.tab.cpp"
+#line 2083 "synt_analyzer.tab.cpp"
     break;
 
   case 14: /* class: modifiers CLASS ID ':' ID '{' '}'  */
-#line 327 "synt_analyzer.y"
+#line 208 "synt_analyzer.y"
                                         {(yyval.classU) = createClass((yyvsp[-6].modifiersU), (yyvsp[-4].Id), (yyvsp[-2].Id), createClassBody()); puts("class created");}
-#line 2208 "synt_analyzer.tab.cpp"
+#line 2089 "synt_analyzer.tab.cpp"
     break;
 
   case 15: /* class: modifiers CLASS ID '{' '}'  */
-#line 328 "synt_analyzer.y"
+#line 209 "synt_analyzer.y"
                                 {(yyval.classU) = createClass((yyvsp[-4].modifiersU), (yyvsp[-2].Id), createClassBody()); puts("class created");}
-#line 2214 "synt_analyzer.tab.cpp"
+#line 2095 "synt_analyzer.tab.cpp"
     break;
 
   case 16: /* class: CLASS ID ':' ID '{' '}'  */
-#line 329 "synt_analyzer.y"
+#line 210 "synt_analyzer.y"
                                 {(yyval.classU) = createClass((yyvsp[-4].Id), (yyvsp[-2].Id), createClassBody()); puts("class created");}
-#line 2220 "synt_analyzer.tab.cpp"
+#line 2101 "synt_analyzer.tab.cpp"
     break;
 
   case 17: /* class: CLASS ID '{' '}'  */
-#line 330 "synt_analyzer.y"
+#line 211 "synt_analyzer.y"
                         {(yyval.classU) = createClass((yyvsp[-2].Id), createClassBody()); puts("class created");}
-#line 2226 "synt_analyzer.tab.cpp"
+#line 2107 "synt_analyzer.tab.cpp"
     break;
 
   case 18: /* classBody: semis  */
-#line 333 "synt_analyzer.y"
+#line 214 "synt_analyzer.y"
                         {(yyval.classBodyU) = createClassBody(); puts("class body created");}
-#line 2232 "synt_analyzer.tab.cpp"
+#line 2113 "synt_analyzer.tab.cpp"
     break;
 
   case 19: /* classBody: method  */
-#line 334 "synt_analyzer.y"
+#line 215 "synt_analyzer.y"
                 {(yyval.classBodyU) = createClassBody((yyvsp[0].methodU));  puts("class body created");}
-#line 2238 "synt_analyzer.tab.cpp"
+#line 2119 "synt_analyzer.tab.cpp"
     break;
 
   case 20: /* classBody: property semis  */
-#line 335 "synt_analyzer.y"
+#line 216 "synt_analyzer.y"
                         {(yyval.classBodyU) = createClassBody((yyvsp[-1].propertyU));  puts("class body created");}
-#line 2244 "synt_analyzer.tab.cpp"
+#line 2125 "synt_analyzer.tab.cpp"
     break;
 
   case 21: /* classBody: constructor  */
-#line 336 "synt_analyzer.y"
+#line 217 "synt_analyzer.y"
                 {(yyval.classBodyU) = createClassBody((yyvsp[0].constructorU));  puts("class body created");}
-#line 2250 "synt_analyzer.tab.cpp"
+#line 2131 "synt_analyzer.tab.cpp"
     break;
 
   case 22: /* classBody: initializer  */
-#line 337 "synt_analyzer.y"
+#line 218 "synt_analyzer.y"
                 {(yyval.classBodyU) = createClassBody((yyvsp[0].initializerU));  puts("class body created");}
-#line 2256 "synt_analyzer.tab.cpp"
+#line 2137 "synt_analyzer.tab.cpp"
     break;
 
   case 23: /* classBody: classBody method  */
-#line 338 "synt_analyzer.y"
+#line 219 "synt_analyzer.y"
                         {(yyval.classBodyU) = addToClassBody((yyvsp[-1].classBodyU), (yyvsp[0].methodU));  puts("meth added to class body");}
-#line 2262 "synt_analyzer.tab.cpp"
+#line 2143 "synt_analyzer.tab.cpp"
     break;
 
   case 24: /* classBody: classBody property semis  */
-#line 339 "synt_analyzer.y"
+#line 220 "synt_analyzer.y"
                                 {(yyval.classBodyU) = addToClassBody((yyvsp[-2].classBodyU), (yyvsp[-1].propertyU)); puts("prop added to class body");}
-#line 2268 "synt_analyzer.tab.cpp"
+#line 2149 "synt_analyzer.tab.cpp"
     break;
 
   case 25: /* classBody: classBody constructor  */
-#line 340 "synt_analyzer.y"
+#line 221 "synt_analyzer.y"
                         {(yyval.classBodyU) = addToClassBody((yyvsp[-1].classBodyU), (yyvsp[0].constructorU)); puts("constr added to class body");}
-#line 2274 "synt_analyzer.tab.cpp"
+#line 2155 "synt_analyzer.tab.cpp"
     break;
 
   case 26: /* classBody: classBody initializer  */
-#line 341 "synt_analyzer.y"
+#line 222 "synt_analyzer.y"
                         {(yyval.classBodyU) = addToClassBody((yyvsp[-1].classBodyU), (yyvsp[0].initializerU)); puts("init added to class body");}
-#line 2280 "synt_analyzer.tab.cpp"
+#line 2161 "synt_analyzer.tab.cpp"
     break;
 
   case 27: /* classBody: classBody semis  */
-#line 342 "synt_analyzer.y"
+#line 223 "synt_analyzer.y"
                         {(yyval.classBodyU) = (yyvsp[-1].classBodyU); puts("semis added to class body");}
-#line 2286 "synt_analyzer.tab.cpp"
+#line 2167 "synt_analyzer.tab.cpp"
     break;
 
   case 28: /* property: modifiers valDeclaration  */
-#line 345 "synt_analyzer.y"
+#line 226 "synt_analyzer.y"
                                         {(yyval.propertyU) = createProperty((yyvsp[-1].modifiersU), (yyvsp[0].varOrValDeclU)); puts("prop created");}
-#line 2292 "synt_analyzer.tab.cpp"
+#line 2173 "synt_analyzer.tab.cpp"
     break;
 
   case 29: /* property: modifiers varDeclaration  */
-#line 346 "synt_analyzer.y"
+#line 227 "synt_analyzer.y"
                                 {(yyval.propertyU) = createProperty((yyvsp[-1].modifiersU), (yyvsp[0].varOrValDeclU)); puts("prop created");}
-#line 2298 "synt_analyzer.tab.cpp"
+#line 2179 "synt_analyzer.tab.cpp"
     break;
 
   case 30: /* property: valDeclaration  */
-#line 347 "synt_analyzer.y"
+#line 228 "synt_analyzer.y"
                         {(yyval.propertyU) = createProperty((yyvsp[0].varOrValDeclU)); puts("prop created");}
-#line 2304 "synt_analyzer.tab.cpp"
+#line 2185 "synt_analyzer.tab.cpp"
     break;
 
   case 31: /* property: varDeclaration  */
-#line 348 "synt_analyzer.y"
+#line 229 "synt_analyzer.y"
                         {(yyval.propertyU) = createProperty((yyvsp[0].varOrValDeclU)); puts("prop created");}
-#line 2310 "synt_analyzer.tab.cpp"
+#line 2191 "synt_analyzer.tab.cpp"
     break;
 
   case 32: /* method: modifiers funcDeclaration ';'  */
-#line 351 "synt_analyzer.y"
+#line 232 "synt_analyzer.y"
                                         {(yyval.methodU) = createMethod((yyvsp[-2].modifiersU), (yyvsp[-1].funcDeclU)); puts("meth created");}
-#line 2316 "synt_analyzer.tab.cpp"
+#line 2197 "synt_analyzer.tab.cpp"
     break;
 
   case 33: /* method: modifiers func  */
-#line 352 "synt_analyzer.y"
+#line 233 "synt_analyzer.y"
                         {(yyval.methodU) = createMethod((yyvsp[-1].modifiersU), (yyvsp[0].funcU)); puts("meth created");}
-#line 2322 "synt_analyzer.tab.cpp"
+#line 2203 "synt_analyzer.tab.cpp"
     break;
 
   case 34: /* method: funcDeclaration ';'  */
-#line 353 "synt_analyzer.y"
+#line 234 "synt_analyzer.y"
                         {(yyval.methodU) = createMethod((yyvsp[-1].funcDeclU)); puts("meth created");}
-#line 2328 "synt_analyzer.tab.cpp"
+#line 2209 "synt_analyzer.tab.cpp"
     break;
 
   case 35: /* method: func  */
-#line 354 "synt_analyzer.y"
+#line 235 "synt_analyzer.y"
         {(yyval.methodU) = createMethod((yyvsp[0].funcU)); puts("meth created");}
-#line 2334 "synt_analyzer.tab.cpp"
+#line 2215 "synt_analyzer.tab.cpp"
     break;
 
   case 36: /* initializer: INIT block  */
-#line 357 "synt_analyzer.y"
+#line 238 "synt_analyzer.y"
                         {(yyval.initializerU) = createInit((yyvsp[0].stmtListU)); puts("init created");}
-#line 2340 "synt_analyzer.tab.cpp"
+#line 2221 "synt_analyzer.tab.cpp"
     break;
 
   case 37: /* constructor: visibilityModifier CONSTRUCTOR '(' optFormalParams ')' block  */
-#line 361 "synt_analyzer.y"
+#line 242 "synt_analyzer.y"
                                                                                 {(yyval.constructorU) = createConstructor((yyvsp[-5].visibilityModU), (yyvsp[-2].formalParamsListU), (yyvsp[0].stmtListU)); puts("constr created");}
-#line 2346 "synt_analyzer.tab.cpp"
+#line 2227 "synt_analyzer.tab.cpp"
     break;
 
   case 38: /* constructor: visibilityModifier CONSTRUCTOR '(' optFormalParams ')'  */
-#line 362 "synt_analyzer.y"
+#line 243 "synt_analyzer.y"
                                                                 {(yyval.constructorU) = createConstructor((yyvsp[-4].visibilityModU), (yyvsp[-1].formalParamsListU)); puts("constr created");}
-#line 2352 "synt_analyzer.tab.cpp"
+#line 2233 "synt_analyzer.tab.cpp"
     break;
 
   case 39: /* constructor: visibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' SUPER '(' optFactParams ')'  */
-#line 363 "synt_analyzer.y"
+#line 244 "synt_analyzer.y"
                                                                                                 {(yyval.constructorU) = createConstructor((yyvsp[-9].visibilityModU), (yyvsp[-6].formalParamsListU), "super", (yyvsp[-1].factParamsListU)); puts("constr created");}
-#line 2358 "synt_analyzer.tab.cpp"
+#line 2239 "synt_analyzer.tab.cpp"
     break;
 
   case 40: /* constructor: visibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' THIS '(' optFactParams ')'  */
-#line 364 "synt_analyzer.y"
+#line 245 "synt_analyzer.y"
                                                                                                 {(yyval.constructorU) = createConstructor((yyvsp[-9].visibilityModU), (yyvsp[-6].formalParamsListU), "this", (yyvsp[-1].factParamsListU)); puts("constr created");}
-#line 2364 "synt_analyzer.tab.cpp"
+#line 2245 "synt_analyzer.tab.cpp"
     break;
 
   case 41: /* constructor: visibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' SUPER '(' optFactParams ')' block  */
-#line 365 "synt_analyzer.y"
+#line 246 "synt_analyzer.y"
                                                                                                 {(yyval.constructorU) = createConstructor((yyvsp[-10].visibilityModU), (yyvsp[-7].formalParamsListU), "super", (yyvsp[-2].factParamsListU), (yyvsp[0].stmtListU)); puts("constr created");}
-#line 2370 "synt_analyzer.tab.cpp"
+#line 2251 "synt_analyzer.tab.cpp"
     break;
 
   case 42: /* constructor: visibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' THIS '(' optFactParams ')' block  */
-#line 366 "synt_analyzer.y"
+#line 247 "synt_analyzer.y"
                                                                                                 {(yyval.constructorU) = createConstructor((yyvsp[-10].visibilityModU), (yyvsp[-7].formalParamsListU), "this", (yyvsp[-2].factParamsListU), (yyvsp[0].stmtListU)); puts("constr created");}
-#line 2376 "synt_analyzer.tab.cpp"
+#line 2257 "synt_analyzer.tab.cpp"
     break;
 
   case 43: /* constructor: CONSTRUCTOR '(' optFormalParams ')' block  */
-#line 367 "synt_analyzer.y"
+#line 248 "synt_analyzer.y"
                                                 {(yyval.constructorU) = createConstructor((yyvsp[-2].formalParamsListU), (yyvsp[0].stmtListU)); puts("constr created");}
-#line 2382 "synt_analyzer.tab.cpp"
+#line 2263 "synt_analyzer.tab.cpp"
     break;
 
   case 44: /* constructor: CONSTRUCTOR '(' optFormalParams ')'  */
-#line 368 "synt_analyzer.y"
+#line 249 "synt_analyzer.y"
                                         {(yyval.constructorU) = createConstructor((yyvsp[-1].formalParamsListU)); puts("constr created");}
-#line 2388 "synt_analyzer.tab.cpp"
+#line 2269 "synt_analyzer.tab.cpp"
     break;
 
   case 45: /* constructor: CONSTRUCTOR '(' optFormalParams ')' ':' SUPER '(' optFactParams ')'  */
-#line 369 "synt_analyzer.y"
+#line 250 "synt_analyzer.y"
                                                                         {(yyval.constructorU) = createConstructor((yyvsp[-6].formalParamsListU), "super", (yyvsp[-1].factParamsListU)); puts("constr created");}
-#line 2394 "synt_analyzer.tab.cpp"
+#line 2275 "synt_analyzer.tab.cpp"
     break;
 
   case 46: /* constructor: CONSTRUCTOR '(' optFormalParams ')' ':' THIS '(' optFactParams ')'  */
-#line 370 "synt_analyzer.y"
+#line 251 "synt_analyzer.y"
                                                                         {(yyval.constructorU) = createConstructor((yyvsp[-6].formalParamsListU), "this", (yyvsp[-1].factParamsListU)); puts("constr created");}
-#line 2400 "synt_analyzer.tab.cpp"
+#line 2281 "synt_analyzer.tab.cpp"
     break;
 
   case 47: /* constructor: CONSTRUCTOR '(' optFormalParams ')' ':' SUPER '(' optFactParams ')' block  */
-#line 371 "synt_analyzer.y"
+#line 252 "synt_analyzer.y"
                                                                                 {(yyval.constructorU) = createConstructor((yyvsp[-7].formalParamsListU), "super", (yyvsp[-2].factParamsListU), (yyvsp[0].stmtListU)); puts("constr created");}
-#line 2406 "synt_analyzer.tab.cpp"
+#line 2287 "synt_analyzer.tab.cpp"
     break;
 
   case 48: /* constructor: CONSTRUCTOR '(' optFormalParams ')' ':' THIS '(' optFactParams ')' block  */
-#line 372 "synt_analyzer.y"
+#line 253 "synt_analyzer.y"
                                                                                 {(yyval.constructorU) = createConstructor((yyvsp[-7].formalParamsListU), "this", (yyvsp[-2].factParamsListU), (yyvsp[0].stmtListU)); puts("constr created");}
-#line 2412 "synt_analyzer.tab.cpp"
+#line 2293 "synt_analyzer.tab.cpp"
     break;
 
   case 49: /* optFormalParams: %empty  */
-#line 375 "synt_analyzer.y"
+#line 256 "synt_analyzer.y"
                                 {(yyval.formalParamsListU) = 0; puts("opt formal params created");}
-#line 2418 "synt_analyzer.tab.cpp"
+#line 2299 "synt_analyzer.tab.cpp"
     break;
 
   case 50: /* optFormalParams: formalParams  */
-#line 376 "synt_analyzer.y"
+#line 257 "synt_analyzer.y"
                 {(yyval.formalParamsListU) = (yyvsp[0].formalParamsListU); puts("opt formal params created");}
-#line 2424 "synt_analyzer.tab.cpp"
+#line 2305 "synt_analyzer.tab.cpp"
     break;
 
   case 51: /* formalParams: ID ':' type  */
-#line 379 "synt_analyzer.y"
+#line 260 "synt_analyzer.y"
                                 {(yyval.formalParamsListU) = createFormalParamsList((yyvsp[-2].Id), (yyvsp[0].typeU)); puts("formal params created");}
-#line 2430 "synt_analyzer.tab.cpp"
+#line 2311 "synt_analyzer.tab.cpp"
     break;
 
   case 52: /* formalParams: formalParams ',' ID ':' type  */
-#line 380 "synt_analyzer.y"
+#line 261 "synt_analyzer.y"
                                 {(yyval.formalParamsListU) = addToFormalParamsList((yyvsp[-4].formalParamsListU), (yyvsp[-2].Id), (yyvsp[0].typeU)); puts("formal params created");}
-#line 2436 "synt_analyzer.tab.cpp"
+#line 2317 "synt_analyzer.tab.cpp"
     break;
 
   case 53: /* modifiers: OVERRIDE  */
-#line 383 "synt_analyzer.y"
+#line 264 "synt_analyzer.y"
                         {(yyval.modifiersU) = createModifiers(0, 1, Unknown, None); puts("mods created");}
-#line 2442 "synt_analyzer.tab.cpp"
+#line 2323 "synt_analyzer.tab.cpp"
     break;
 
   case 54: /* modifiers: visibilityModifier  */
-#line 384 "synt_analyzer.y"
+#line 265 "synt_analyzer.y"
                         {(yyval.modifiersU) = createModifiers(0, 1, (yyvsp[0].visibilityModU), None); puts("mods created");}
-#line 2448 "synt_analyzer.tab.cpp"
+#line 2329 "synt_analyzer.tab.cpp"
     break;
 
   case 55: /* modifiers: inheritanceModifier  */
-#line 385 "synt_analyzer.y"
+#line 266 "synt_analyzer.y"
                         {(yyval.modifiersU) = createModifiers(0, 1, Unknown, (yyvsp[0].inheritanceModU)); puts("mods created");}
-#line 2454 "synt_analyzer.tab.cpp"
+#line 2335 "synt_analyzer.tab.cpp"
     break;
 
   case 56: /* modifiers: ABSTRACT  */
-#line 386 "synt_analyzer.y"
+#line 267 "synt_analyzer.y"
                 {(yyval.modifiersU) = createModifiers(1, 0, Unknown, None); puts("mods created");}
-#line 2460 "synt_analyzer.tab.cpp"
+#line 2341 "synt_analyzer.tab.cpp"
     break;
 
   case 57: /* modifiers: OVERRIDE visibilityModifier  */
-#line 387 "synt_analyzer.y"
+#line 268 "synt_analyzer.y"
                                 {(yyval.modifiersU) = createModifiers(0, 1, (yyvsp[0].visibilityModU), None); puts("mods created");}
-#line 2466 "synt_analyzer.tab.cpp"
+#line 2347 "synt_analyzer.tab.cpp"
     break;
 
   case 58: /* modifiers: OVERRIDE inheritanceModifier  */
-#line 388 "synt_analyzer.y"
+#line 269 "synt_analyzer.y"
                                 {(yyval.modifiersU) = createModifiers(0, 1, Unknown, (yyvsp[0].inheritanceModU)); puts("mods created");}
-#line 2472 "synt_analyzer.tab.cpp"
+#line 2353 "synt_analyzer.tab.cpp"
     break;
 
   case 59: /* modifiers: OVERRIDE ABSTRACT  */
-#line 389 "synt_analyzer.y"
+#line 270 "synt_analyzer.y"
                         {(yyval.modifiersU) = createModifiers(1, 1, Unknown, None); puts("mods created");}
-#line 2478 "synt_analyzer.tab.cpp"
+#line 2359 "synt_analyzer.tab.cpp"
     break;
 
   case 60: /* modifiers: visibilityModifier OVERRIDE  */
-#line 390 "synt_analyzer.y"
+#line 271 "synt_analyzer.y"
                                 {(yyval.modifiersU) = createModifiers(0, 1, (yyvsp[-1].visibilityModU), None); puts("mods created"); }
-#line 2484 "synt_analyzer.tab.cpp"
+#line 2365 "synt_analyzer.tab.cpp"
     break;
 
   case 61: /* modifiers: visibilityModifier inheritanceModifier  */
-#line 391 "synt_analyzer.y"
+#line 272 "synt_analyzer.y"
                                                 {(yyval.modifiersU) = createModifiers(0, 0, (yyvsp[-1].visibilityModU), (yyvsp[0].inheritanceModU)); puts("mods created");}
-#line 2490 "synt_analyzer.tab.cpp"
+#line 2371 "synt_analyzer.tab.cpp"
     break;
 
   case 62: /* modifiers: visibilityModifier ABSTRACT  */
-#line 392 "synt_analyzer.y"
+#line 273 "synt_analyzer.y"
                                 {(yyval.modifiersU) = createModifiers(1, 0, (yyvsp[-1].visibilityModU), None); puts("mods created"); }
-#line 2496 "synt_analyzer.tab.cpp"
+#line 2377 "synt_analyzer.tab.cpp"
     break;
 
   case 63: /* modifiers: inheritanceModifier OVERRIDE  */
-#line 393 "synt_analyzer.y"
+#line 274 "synt_analyzer.y"
                                 {(yyval.modifiersU) = createModifiers(0, 1, Unknown, (yyvsp[-1].inheritanceModU)); puts("mods created");}
-#line 2502 "synt_analyzer.tab.cpp"
+#line 2383 "synt_analyzer.tab.cpp"
     break;
 
   case 64: /* modifiers: inheritanceModifier visibilityModifier  */
-#line 394 "synt_analyzer.y"
+#line 275 "synt_analyzer.y"
                                                 {(yyval.modifiersU) = createModifiers(0, 0, (yyvsp[0].visibilityModU), (yyvsp[-1].inheritanceModU)); puts("mods created");}
-#line 2508 "synt_analyzer.tab.cpp"
+#line 2389 "synt_analyzer.tab.cpp"
     break;
 
   case 65: /* modifiers: inheritanceModifier ABSTRACT  */
-#line 395 "synt_analyzer.y"
+#line 276 "synt_analyzer.y"
                                 {(yyval.modifiersU) = createModifiers(1, 0, Unknown, (yyvsp[-1].inheritanceModU)); puts("mods created");}
-#line 2514 "synt_analyzer.tab.cpp"
+#line 2395 "synt_analyzer.tab.cpp"
     break;
 
   case 66: /* modifiers: ABSTRACT OVERRIDE  */
-#line 396 "synt_analyzer.y"
+#line 277 "synt_analyzer.y"
                         {(yyval.modifiersU) = createModifiers(1, 1, Unknown, None); puts("mods created");}
-#line 2520 "synt_analyzer.tab.cpp"
+#line 2401 "synt_analyzer.tab.cpp"
     break;
 
   case 67: /* modifiers: ABSTRACT visibilityModifier  */
-#line 397 "synt_analyzer.y"
+#line 278 "synt_analyzer.y"
                                 {(yyval.modifiersU) = createModifiers(1, 0, (yyvsp[0].visibilityModU), None); puts("mods created");}
-#line 2526 "synt_analyzer.tab.cpp"
+#line 2407 "synt_analyzer.tab.cpp"
     break;
 
   case 68: /* modifiers: ABSTRACT inheritanceModifier  */
-#line 398 "synt_analyzer.y"
+#line 279 "synt_analyzer.y"
                                 {(yyval.modifiersU) = createModifiers(1, 0, Unknown, (yyvsp[0].inheritanceModU)); puts("mods created");}
-#line 2532 "synt_analyzer.tab.cpp"
+#line 2413 "synt_analyzer.tab.cpp"
     break;
 
   case 69: /* modifiers: OVERRIDE visibilityModifier inheritanceModifier  */
-#line 399 "synt_analyzer.y"
+#line 280 "synt_analyzer.y"
                                                         {(yyval.modifiersU) = createModifiers(0, 1, (yyvsp[-1].visibilityModU), (yyvsp[0].inheritanceModU)); puts("mods created");}
-#line 2538 "synt_analyzer.tab.cpp"
+#line 2419 "synt_analyzer.tab.cpp"
     break;
 
   case 70: /* modifiers: OVERRIDE visibilityModifier ABSTRACT  */
-#line 400 "synt_analyzer.y"
+#line 281 "synt_analyzer.y"
                                         {(yyval.modifiersU) = createModifiers(1, 1, (yyvsp[-1].visibilityModU), None); puts("mods created");}
-#line 2544 "synt_analyzer.tab.cpp"
+#line 2425 "synt_analyzer.tab.cpp"
     break;
 
   case 71: /* modifiers: OVERRIDE inheritanceModifier visibilityModifier  */
-#line 401 "synt_analyzer.y"
+#line 282 "synt_analyzer.y"
                                                         {(yyval.modifiersU) = createModifiers(0, 1, (yyvsp[0].visibilityModU), (yyvsp[-1].inheritanceModU)); puts("mods created");}
-#line 2550 "synt_analyzer.tab.cpp"
+#line 2431 "synt_analyzer.tab.cpp"
     break;
 
   case 72: /* modifiers: OVERRIDE inheritanceModifier ABSTRACT  */
-#line 402 "synt_analyzer.y"
+#line 283 "synt_analyzer.y"
                                         {(yyval.modifiersU) = createModifiers(1, 1, Unknown, (yyvsp[-1].inheritanceModU)); puts("mods created");}
-#line 2556 "synt_analyzer.tab.cpp"
+#line 2437 "synt_analyzer.tab.cpp"
     break;
 
   case 73: /* modifiers: OVERRIDE ABSTRACT visibilityModifier  */
-#line 403 "synt_analyzer.y"
+#line 284 "synt_analyzer.y"
                                         {(yyval.modifiersU) = createModifiers(1, 1, (yyvsp[0].visibilityModU), None); puts("mods created");}
-#line 2562 "synt_analyzer.tab.cpp"
+#line 2443 "synt_analyzer.tab.cpp"
     break;
 
   case 74: /* modifiers: OVERRIDE ABSTRACT inheritanceModifier  */
-#line 404 "synt_analyzer.y"
+#line 285 "synt_analyzer.y"
                                         {(yyval.modifiersU) = createModifiers(1, 1, Unknown, (yyvsp[0].inheritanceModU)); puts("mods created");}
-#line 2568 "synt_analyzer.tab.cpp"
+#line 2449 "synt_analyzer.tab.cpp"
     break;
 
   case 75: /* modifiers: visibilityModifier OVERRIDE inheritanceModifier  */
-#line 405 "synt_analyzer.y"
+#line 286 "synt_analyzer.y"
                                                         {(yyval.modifiersU) = createModifiers(0, 1, (yyvsp[-2].visibilityModU), (yyvsp[0].inheritanceModU)); puts("mods created");}
-#line 2574 "synt_analyzer.tab.cpp"
+#line 2455 "synt_analyzer.tab.cpp"
     break;
 
   case 76: /* modifiers: visibilityModifier OVERRIDE ABSTRACT  */
-#line 406 "synt_analyzer.y"
+#line 287 "synt_analyzer.y"
                                         {(yyval.modifiersU) = createModifiers(1, 1, (yyvsp[-2].visibilityModU), None); puts("mods created");}
-#line 2580 "synt_analyzer.tab.cpp"
+#line 2461 "synt_analyzer.tab.cpp"
     break;
 
   case 77: /* modifiers: visibilityModifier inheritanceModifier OVERRIDE  */
-#line 407 "synt_analyzer.y"
+#line 288 "synt_analyzer.y"
                                                         {(yyval.modifiersU) = createModifiers(0, 1, (yyvsp[-2].visibilityModU), (yyvsp[-1].inheritanceModU)); puts("mods created");}
-#line 2586 "synt_analyzer.tab.cpp"
+#line 2467 "synt_analyzer.tab.cpp"
     break;
 
   case 78: /* modifiers: visibilityModifier inheritanceModifier ABSTRACT  */
-#line 408 "synt_analyzer.y"
+#line 289 "synt_analyzer.y"
                                                         {(yyval.modifiersU) = createModifiers(1, 0, (yyvsp[-2].visibilityModU), (yyvsp[-1].inheritanceModU)); puts("mods created");}
-#line 2592 "synt_analyzer.tab.cpp"
+#line 2473 "synt_analyzer.tab.cpp"
     break;
 
   case 79: /* modifiers: visibilityModifier ABSTRACT inheritanceModifier  */
-#line 409 "synt_analyzer.y"
+#line 290 "synt_analyzer.y"
                                                         {(yyval.modifiersU) = createModifiers(1, 0, (yyvsp[-2].visibilityModU), (yyvsp[0].inheritanceModU)); puts("mods created");}
-#line 2598 "synt_analyzer.tab.cpp"
+#line 2479 "synt_analyzer.tab.cpp"
     break;
 
   case 80: /* modifiers: visibilityModifier ABSTRACT OVERRIDE  */
-#line 410 "synt_analyzer.y"
+#line 291 "synt_analyzer.y"
                                         {(yyval.modifiersU) = createModifiers(1, 1, (yyvsp[-2].visibilityModU), None); puts("mods created");}
-#line 2604 "synt_analyzer.tab.cpp"
+#line 2485 "synt_analyzer.tab.cpp"
     break;
 
   case 81: /* modifiers: inheritanceModifier OVERRIDE visibilityModifier  */
-#line 411 "synt_analyzer.y"
+#line 292 "synt_analyzer.y"
                                                         {(yyval.modifiersU) = createModifiers(0, 1, (yyvsp[0].visibilityModU), (yyvsp[-2].inheritanceModU)); puts("mods created");}
-#line 2610 "synt_analyzer.tab.cpp"
+#line 2491 "synt_analyzer.tab.cpp"
     break;
 
   case 82: /* modifiers: inheritanceModifier OVERRIDE ABSTRACT  */
-#line 412 "synt_analyzer.y"
+#line 293 "synt_analyzer.y"
                                         {(yyval.modifiersU) = createModifiers(1, 1, Unknown, (yyvsp[-2].inheritanceModU)); puts("mods created");}
-#line 2616 "synt_analyzer.tab.cpp"
+#line 2497 "synt_analyzer.tab.cpp"
     break;
 
   case 83: /* modifiers: inheritanceModifier visibilityModifier ABSTRACT  */
-#line 413 "synt_analyzer.y"
+#line 294 "synt_analyzer.y"
                                                         {(yyval.modifiersU) = createModifiers(1, 0, (yyvsp[-1].visibilityModU), (yyvsp[-2].inheritanceModU)); puts("mods created");}
-#line 2622 "synt_analyzer.tab.cpp"
+#line 2503 "synt_analyzer.tab.cpp"
     break;
 
   case 84: /* modifiers: inheritanceModifier visibilityModifier OVERRIDE  */
-#line 414 "synt_analyzer.y"
+#line 295 "synt_analyzer.y"
                                                         {(yyval.modifiersU) = createModifiers(0, 1, (yyvsp[-1].visibilityModU), (yyvsp[-2].inheritanceModU)); puts("mods created");}
-#line 2628 "synt_analyzer.tab.cpp"
+#line 2509 "synt_analyzer.tab.cpp"
     break;
 
   case 85: /* modifiers: inheritanceModifier ABSTRACT visibilityModifier  */
-#line 415 "synt_analyzer.y"
+#line 296 "synt_analyzer.y"
                                                         {(yyval.modifiersU) = createModifiers(1, 0, (yyvsp[0].visibilityModU), (yyvsp[-2].inheritanceModU)); puts("mods created");}
-#line 2634 "synt_analyzer.tab.cpp"
+#line 2515 "synt_analyzer.tab.cpp"
     break;
 
   case 86: /* modifiers: inheritanceModifier ABSTRACT OVERRIDE  */
-#line 416 "synt_analyzer.y"
+#line 297 "synt_analyzer.y"
                                         {(yyval.modifiersU) = createModifiers(1, 1, Unknown, (yyvsp[-2].inheritanceModU)); puts("mods created");}
-#line 2640 "synt_analyzer.tab.cpp"
+#line 2521 "synt_analyzer.tab.cpp"
     break;
 
   case 87: /* modifiers: ABSTRACT OVERRIDE inheritanceModifier  */
-#line 417 "synt_analyzer.y"
+#line 298 "synt_analyzer.y"
                                         {(yyval.modifiersU) = createModifiers(1, 1, Unknown, (yyvsp[0].inheritanceModU)); puts("mods created");}
-#line 2646 "synt_analyzer.tab.cpp"
+#line 2527 "synt_analyzer.tab.cpp"
     break;
 
   case 88: /* modifiers: ABSTRACT OVERRIDE visibilityModifier  */
-#line 418 "synt_analyzer.y"
+#line 299 "synt_analyzer.y"
                                         {(yyval.modifiersU) = createModifiers(1, 1, (yyvsp[0].visibilityModU), None); puts("mods created");}
-#line 2652 "synt_analyzer.tab.cpp"
+#line 2533 "synt_analyzer.tab.cpp"
     break;
 
   case 89: /* modifiers: ABSTRACT visibilityModifier OVERRIDE  */
-#line 419 "synt_analyzer.y"
+#line 300 "synt_analyzer.y"
                                         {(yyval.modifiersU) = createModifiers(1, 1, (yyvsp[-1].visibilityModU), None); puts("mods created");}
-#line 2658 "synt_analyzer.tab.cpp"
+#line 2539 "synt_analyzer.tab.cpp"
     break;
 
   case 90: /* modifiers: ABSTRACT visibilityModifier inheritanceModifier  */
-#line 420 "synt_analyzer.y"
+#line 301 "synt_analyzer.y"
                                                         {(yyval.modifiersU) = createModifiers(1, 0, (yyvsp[-1].visibilityModU), (yyvsp[0].inheritanceModU)); puts("mods created");}
-#line 2664 "synt_analyzer.tab.cpp"
+#line 2545 "synt_analyzer.tab.cpp"
     break;
 
   case 91: /* modifiers: ABSTRACT inheritanceModifier OVERRIDE  */
-#line 421 "synt_analyzer.y"
+#line 302 "synt_analyzer.y"
                                         {(yyval.modifiersU) = createModifiers(1, 1, Unknown, (yyvsp[-1].inheritanceModU)); puts("mods created");}
-#line 2670 "synt_analyzer.tab.cpp"
+#line 2551 "synt_analyzer.tab.cpp"
     break;
 
   case 92: /* modifiers: ABSTRACT inheritanceModifier visibilityModifier  */
-#line 422 "synt_analyzer.y"
+#line 303 "synt_analyzer.y"
                                                         {(yyval.modifiersU) = createModifiers(1, 0, (yyvsp[0].visibilityModU), (yyvsp[-1].inheritanceModU)); puts("mods created");}
-#line 2676 "synt_analyzer.tab.cpp"
+#line 2557 "synt_analyzer.tab.cpp"
     break;
 
   case 93: /* modifiers: OVERRIDE visibilityModifier inheritanceModifier ABSTRACT  */
-#line 423 "synt_analyzer.y"
+#line 304 "synt_analyzer.y"
                                                                 {(yyval.modifiersU) = createModifiers(1, 1, (yyvsp[-2].visibilityModU), (yyvsp[-1].inheritanceModU)); puts("mods created");}
-#line 2682 "synt_analyzer.tab.cpp"
+#line 2563 "synt_analyzer.tab.cpp"
     break;
 
   case 94: /* modifiers: OVERRIDE visibilityModifier ABSTRACT inheritanceModifier  */
-#line 424 "synt_analyzer.y"
+#line 305 "synt_analyzer.y"
                                                                 {(yyval.modifiersU) = createModifiers(1, 1, (yyvsp[-2].visibilityModU), (yyvsp[0].inheritanceModU)); puts("mods created");}
-#line 2688 "synt_analyzer.tab.cpp"
+#line 2569 "synt_analyzer.tab.cpp"
     break;
 
   case 95: /* modifiers: OVERRIDE inheritanceModifier visibilityModifier ABSTRACT  */
-#line 425 "synt_analyzer.y"
+#line 306 "synt_analyzer.y"
                                                                 {(yyval.modifiersU) = createModifiers(1, 1, (yyvsp[-1].visibilityModU), (yyvsp[-2].inheritanceModU)); puts("mods created");}
-#line 2694 "synt_analyzer.tab.cpp"
+#line 2575 "synt_analyzer.tab.cpp"
     break;
 
   case 96: /* modifiers: OVERRIDE inheritanceModifier ABSTRACT visibilityModifier  */
-#line 426 "synt_analyzer.y"
+#line 307 "synt_analyzer.y"
                                                                 {(yyval.modifiersU) = createModifiers(1, 1, (yyvsp[0].visibilityModU), (yyvsp[-2].inheritanceModU)); puts("mods created");}
-#line 2700 "synt_analyzer.tab.cpp"
+#line 2581 "synt_analyzer.tab.cpp"
     break;
 
   case 97: /* modifiers: OVERRIDE ABSTRACT visibilityModifier inheritanceModifier  */
-#line 427 "synt_analyzer.y"
+#line 308 "synt_analyzer.y"
                                                                 {(yyval.modifiersU) = createModifiers(1, 1, (yyvsp[-1].visibilityModU), (yyvsp[0].inheritanceModU)); puts("mods created");}
-#line 2706 "synt_analyzer.tab.cpp"
+#line 2587 "synt_analyzer.tab.cpp"
     break;
 
   case 98: /* modifiers: OVERRIDE ABSTRACT inheritanceModifier visibilityModifier  */
-#line 428 "synt_analyzer.y"
+#line 309 "synt_analyzer.y"
                                                                 {(yyval.modifiersU) = createModifiers(1, 1, (yyvsp[0].visibilityModU), (yyvsp[-1].inheritanceModU)); puts("mods created");}
-#line 2712 "synt_analyzer.tab.cpp"
+#line 2593 "synt_analyzer.tab.cpp"
     break;
 
   case 99: /* modifiers: visibilityModifier OVERRIDE inheritanceModifier ABSTRACT  */
-#line 429 "synt_analyzer.y"
+#line 310 "synt_analyzer.y"
                                                                 {(yyval.modifiersU) = createModifiers(1, 1, (yyvsp[-3].visibilityModU), (yyvsp[-1].inheritanceModU)); puts("mods created");}
-#line 2718 "synt_analyzer.tab.cpp"
+#line 2599 "synt_analyzer.tab.cpp"
     break;
 
   case 100: /* modifiers: visibilityModifier OVERRIDE ABSTRACT inheritanceModifier  */
-#line 430 "synt_analyzer.y"
+#line 311 "synt_analyzer.y"
                                                                 {(yyval.modifiersU) = createModifiers(1, 1, (yyvsp[-3].visibilityModU), (yyvsp[0].inheritanceModU)); puts("mods created");}
-#line 2724 "synt_analyzer.tab.cpp"
+#line 2605 "synt_analyzer.tab.cpp"
     break;
 
   case 101: /* modifiers: visibilityModifier inheritanceModifier OVERRIDE ABSTRACT  */
-#line 431 "synt_analyzer.y"
+#line 312 "synt_analyzer.y"
                                                                 {(yyval.modifiersU) = createModifiers(1, 1, (yyvsp[-3].visibilityModU), (yyvsp[-2].inheritanceModU)); puts("mods created");}
-#line 2730 "synt_analyzer.tab.cpp"
+#line 2611 "synt_analyzer.tab.cpp"
     break;
 
   case 102: /* modifiers: visibilityModifier inheritanceModifier ABSTRACT OVERRIDE  */
-#line 432 "synt_analyzer.y"
+#line 313 "synt_analyzer.y"
                                                                 {(yyval.modifiersU) = createModifiers(1, 1, (yyvsp[-3].visibilityModU), (yyvsp[-2].inheritanceModU)); puts("mods created");}
-#line 2736 "synt_analyzer.tab.cpp"
+#line 2617 "synt_analyzer.tab.cpp"
     break;
 
   case 103: /* modifiers: visibilityModifier ABSTRACT inheritanceModifier OVERRIDE  */
-#line 433 "synt_analyzer.y"
+#line 314 "synt_analyzer.y"
                                                                 {(yyval.modifiersU) = createModifiers(1, 1, (yyvsp[-3].visibilityModU), (yyvsp[-1].inheritanceModU)); puts("mods created");}
-#line 2742 "synt_analyzer.tab.cpp"
+#line 2623 "synt_analyzer.tab.cpp"
     break;
 
   case 104: /* modifiers: visibilityModifier ABSTRACT OVERRIDE inheritanceModifier  */
-#line 434 "synt_analyzer.y"
+#line 315 "synt_analyzer.y"
                                                                 {(yyval.modifiersU) = createModifiers(1, 1, (yyvsp[-3].visibilityModU), (yyvsp[0].inheritanceModU)); puts("mods created");}
-#line 2748 "synt_analyzer.tab.cpp"
+#line 2629 "synt_analyzer.tab.cpp"
     break;
 
   case 105: /* modifiers: inheritanceModifier OVERRIDE visibilityModifier ABSTRACT  */
-#line 435 "synt_analyzer.y"
+#line 316 "synt_analyzer.y"
                                                                 {(yyval.modifiersU) = createModifiers(1, 1, (yyvsp[-1].visibilityModU), (yyvsp[-3].inheritanceModU)); puts("mods created");}
-#line 2754 "synt_analyzer.tab.cpp"
+#line 2635 "synt_analyzer.tab.cpp"
     break;
 
   case 106: /* modifiers: inheritanceModifier OVERRIDE ABSTRACT visibilityModifier  */
-#line 436 "synt_analyzer.y"
+#line 317 "synt_analyzer.y"
                                                                 {(yyval.modifiersU) = createModifiers(1, 1, (yyvsp[0].visibilityModU), (yyvsp[-3].inheritanceModU)); puts("mods created");}
-#line 2760 "synt_analyzer.tab.cpp"
+#line 2641 "synt_analyzer.tab.cpp"
     break;
 
   case 107: /* modifiers: inheritanceModifier visibilityModifier ABSTRACT OVERRIDE  */
-#line 438 "synt_analyzer.y"
+#line 319 "synt_analyzer.y"
         {(yyval.modifiersU) = createModifiers(1, 1, (yyvsp[-2].visibilityModU), (yyvsp[-3].inheritanceModU)); puts("mods created");}
-#line 2766 "synt_analyzer.tab.cpp"
+#line 2647 "synt_analyzer.tab.cpp"
     break;
 
   case 108: /* modifiers: inheritanceModifier visibilityModifier OVERRIDE ABSTRACT  */
-#line 440 "synt_analyzer.y"
+#line 321 "synt_analyzer.y"
         {(yyval.modifiersU) = createModifiers(1, 1, (yyvsp[-2].visibilityModU), (yyvsp[-3].inheritanceModU)); puts("mods created");}
-#line 2772 "synt_analyzer.tab.cpp"
+#line 2653 "synt_analyzer.tab.cpp"
     break;
 
   case 109: /* modifiers: inheritanceModifier ABSTRACT visibilityModifier OVERRIDE  */
-#line 442 "synt_analyzer.y"
+#line 323 "synt_analyzer.y"
         {(yyval.modifiersU) = createModifiers(1, 1, (yyvsp[-1].visibilityModU), (yyvsp[-3].inheritanceModU)); puts("mods created");}
-#line 2778 "synt_analyzer.tab.cpp"
+#line 2659 "synt_analyzer.tab.cpp"
     break;
 
   case 110: /* modifiers: inheritanceModifier ABSTRACT OVERRIDE visibilityModifier  */
-#line 444 "synt_analyzer.y"
+#line 325 "synt_analyzer.y"
         {(yyval.modifiersU) = createModifiers(1, 1, (yyvsp[0].visibilityModU), (yyvsp[-3].inheritanceModU)); puts("mods created");}
-#line 2784 "synt_analyzer.tab.cpp"
+#line 2665 "synt_analyzer.tab.cpp"
     break;
 
   case 111: /* modifiers: ABSTRACT OVERRIDE inheritanceModifier visibilityModifier  */
-#line 446 "synt_analyzer.y"
+#line 327 "synt_analyzer.y"
         {(yyval.modifiersU) = createModifiers(1, 1, (yyvsp[0].visibilityModU), (yyvsp[-1].inheritanceModU)); puts("mods created");}
-#line 2790 "synt_analyzer.tab.cpp"
+#line 2671 "synt_analyzer.tab.cpp"
     break;
 
   case 112: /* modifiers: ABSTRACT OVERRIDE visibilityModifier inheritanceModifier  */
-#line 448 "synt_analyzer.y"
+#line 329 "synt_analyzer.y"
         {(yyval.modifiersU) = createModifiers(1, 1, (yyvsp[-1].visibilityModU), (yyvsp[0].inheritanceModU)); puts("mods created");}
-#line 2796 "synt_analyzer.tab.cpp"
+#line 2677 "synt_analyzer.tab.cpp"
     break;
 
   case 113: /* modifiers: ABSTRACT visibilityModifier OVERRIDE inheritanceModifier  */
-#line 449 "synt_analyzer.y"
+#line 330 "synt_analyzer.y"
                                                                 {(yyval.modifiersU) = createModifiers(1, 1, (yyvsp[-2].visibilityModU), (yyvsp[0].inheritanceModU)); puts("mods created");}
-#line 2802 "synt_analyzer.tab.cpp"
+#line 2683 "synt_analyzer.tab.cpp"
     break;
 
   case 114: /* modifiers: ABSTRACT visibilityModifier inheritanceModifier OVERRIDE  */
-#line 450 "synt_analyzer.y"
+#line 331 "synt_analyzer.y"
                                                                 {(yyval.modifiersU) = createModifiers(1, 1, (yyvsp[-2].visibilityModU), (yyvsp[-1].inheritanceModU)); puts("mods created");}
-#line 2808 "synt_analyzer.tab.cpp"
+#line 2689 "synt_analyzer.tab.cpp"
     break;
 
   case 115: /* modifiers: ABSTRACT inheritanceModifier OVERRIDE visibilityModifier  */
-#line 452 "synt_analyzer.y"
+#line 333 "synt_analyzer.y"
         {(yyval.modifiersU) = createModifiers(1, 1, (yyvsp[0].visibilityModU), (yyvsp[-2].inheritanceModU)); puts("mods created");}
-#line 2814 "synt_analyzer.tab.cpp"
+#line 2695 "synt_analyzer.tab.cpp"
     break;
 
   case 116: /* modifiers: ABSTRACT inheritanceModifier visibilityModifier OVERRIDE  */
-#line 454 "synt_analyzer.y"
+#line 335 "synt_analyzer.y"
         {(yyval.modifiersU) = createModifiers(1, 1, (yyvsp[-1].visibilityModU), (yyvsp[-2].inheritanceModU)); puts("mods created");}
-#line 2820 "synt_analyzer.tab.cpp"
+#line 2701 "synt_analyzer.tab.cpp"
     break;
 
   case 117: /* visibilityModifier: PUBLIC  */
-#line 457 "synt_analyzer.y"
+#line 338 "synt_analyzer.y"
                                 {(yyval.visibilityModU) = Public;}
-#line 2826 "synt_analyzer.tab.cpp"
+#line 2707 "synt_analyzer.tab.cpp"
     break;
 
   case 118: /* visibilityModifier: PRIVATE  */
-#line 458 "synt_analyzer.y"
+#line 339 "synt_analyzer.y"
                 {(yyval.visibilityModU) = Private;}
-#line 2832 "synt_analyzer.tab.cpp"
+#line 2713 "synt_analyzer.tab.cpp"
     break;
 
   case 119: /* visibilityModifier: INTERNAL  */
-#line 459 "synt_analyzer.y"
+#line 340 "synt_analyzer.y"
                 {(yyval.visibilityModU) = Internal;}
-#line 2838 "synt_analyzer.tab.cpp"
+#line 2719 "synt_analyzer.tab.cpp"
     break;
 
   case 120: /* visibilityModifier: PROTECTED  */
-#line 460 "synt_analyzer.y"
+#line 341 "synt_analyzer.y"
                 {(yyval.visibilityModU) = Protected;}
-#line 2844 "synt_analyzer.tab.cpp"
+#line 2725 "synt_analyzer.tab.cpp"
     break;
 
   case 121: /* inheritanceModifier: FINAL  */
-#line 464 "synt_analyzer.y"
+#line 345 "synt_analyzer.y"
                            {(yyval.inheritanceModU) = Final;}
-#line 2850 "synt_analyzer.tab.cpp"
+#line 2731 "synt_analyzer.tab.cpp"
     break;
 
   case 122: /* inheritanceModifier: OPEN  */
-#line 465 "synt_analyzer.y"
+#line 346 "synt_analyzer.y"
        {(yyval.inheritanceModU) = Open;}
-#line 2856 "synt_analyzer.tab.cpp"
+#line 2737 "synt_analyzer.tab.cpp"
     break;
 
   case 123: /* func: funcDeclaration block  */
-#line 468 "synt_analyzer.y"
+#line 349 "synt_analyzer.y"
                                 {(yyval.funcU) = createFunc((yyvsp[-1].funcDeclU), (yyvsp[0].stmtListU)); puts("func created");}
-#line 2862 "synt_analyzer.tab.cpp"
+#line 2743 "synt_analyzer.tab.cpp"
     break;
 
   case 124: /* func: funcDeclaration '=' expr  */
-#line 469 "synt_analyzer.y"
+#line 350 "synt_analyzer.y"
                                 {(yyval.funcU) = createFunc((yyvsp[-2].funcDeclU), (yyvsp[0].exprU)); puts("func created");}
-#line 2868 "synt_analyzer.tab.cpp"
+#line 2749 "synt_analyzer.tab.cpp"
     break;
 
   case 125: /* funcDeclaration: FUN ID '(' optFormalParams ')' ':' type  */
-#line 473 "synt_analyzer.y"
+#line 354 "synt_analyzer.y"
                                                                 {(yyval.funcDeclU) = createFuncDecl((yyvsp[-5].Id), (yyvsp[-3].formalParamsListU), (yyvsp[0].typeU));  puts("func decl created");}
-#line 2874 "synt_analyzer.tab.cpp"
+#line 2755 "synt_analyzer.tab.cpp"
     break;
 
   case 126: /* block: '{' semis stmts '}'  */
-#line 477 "synt_analyzer.y"
+#line 358 "synt_analyzer.y"
                                 {(yyval.stmtListU) = (yyvsp[-1].stmtListU);  puts("block created");}
-#line 2880 "synt_analyzer.tab.cpp"
+#line 2761 "synt_analyzer.tab.cpp"
     break;
 
   case 127: /* block: '{' semis '}'  */
-#line 478 "synt_analyzer.y"
+#line 359 "synt_analyzer.y"
                 {(yyval.stmtListU) = 0;  puts("block created");}
-#line 2886 "synt_analyzer.tab.cpp"
+#line 2767 "synt_analyzer.tab.cpp"
     break;
 
   case 128: /* block: '{' stmts '}'  */
-#line 479 "synt_analyzer.y"
+#line 360 "synt_analyzer.y"
                 {(yyval.stmtListU) = (yyvsp[-1].stmtListU);  puts("block created");}
-#line 2892 "synt_analyzer.tab.cpp"
+#line 2773 "synt_analyzer.tab.cpp"
     break;
 
   case 129: /* block: '{' '}'  */
-#line 480 "synt_analyzer.y"
+#line 361 "synt_analyzer.y"
                 {(yyval.stmtListU) = 0;  puts("block created");}
-#line 2898 "synt_analyzer.tab.cpp"
+#line 2779 "synt_analyzer.tab.cpp"
     break;
 
   case 130: /* varDeclaration: VAR ID ':' type  */
-#line 484 "synt_analyzer.y"
+#line 365 "synt_analyzer.y"
                                 {(yyval.varOrValDeclU) = createVarOrValDecl((yyvsp[-2].Id), (yyvsp[0].typeU), 0); puts("val created");}
-#line 2904 "synt_analyzer.tab.cpp"
+#line 2785 "synt_analyzer.tab.cpp"
     break;
 
   case 131: /* varDeclaration: VAR ID ':' type '=' expr  */
-#line 485 "synt_analyzer.y"
+#line 366 "synt_analyzer.y"
                                 {(yyval.varOrValDeclU) = createVarOrValDecl((yyvsp[-4].Id), (yyvsp[-2].typeU), (yyvsp[0].exprU), 0); puts("val created");}
-#line 2910 "synt_analyzer.tab.cpp"
+#line 2791 "synt_analyzer.tab.cpp"
     break;
 
   case 132: /* varDeclaration: VAR '(' formalParams ')' '=' expr  */
-#line 486 "synt_analyzer.y"
+#line 367 "synt_analyzer.y"
                                         {(yyval.varOrValDeclU) = createVarOrValDecl((yyvsp[-3].formalParamsListU), (yyvsp[0].exprU), 0); puts("val created"); }
-#line 2916 "synt_analyzer.tab.cpp"
+#line 2797 "synt_analyzer.tab.cpp"
     break;
 
   case 133: /* valDeclaration: VAL ID ':' type  */
-#line 490 "synt_analyzer.y"
+#line 371 "synt_analyzer.y"
                                 {(yyval.varOrValDeclU) = createVarOrValDecl((yyvsp[-2].Id), (yyvsp[0].typeU), 1); puts("var created"); }
-#line 2922 "synt_analyzer.tab.cpp"
+#line 2803 "synt_analyzer.tab.cpp"
     break;
 
   case 134: /* valDeclaration: VAL ID ':' type '=' expr  */
-#line 491 "synt_analyzer.y"
+#line 372 "synt_analyzer.y"
                                 {(yyval.varOrValDeclU) = createVarOrValDecl((yyvsp[-4].Id), (yyvsp[-2].typeU), (yyvsp[0].exprU), 1); puts("var created"); }
-#line 2928 "synt_analyzer.tab.cpp"
+#line 2809 "synt_analyzer.tab.cpp"
     break;
 
   case 135: /* valDeclaration: VAL '(' formalParams ')' '=' expr  */
-#line 492 "synt_analyzer.y"
+#line 373 "synt_analyzer.y"
                                         {(yyval.varOrValDeclU) = createVarOrValDecl((yyvsp[-3].formalParamsListU), (yyvsp[0].exprU), 1); puts("var created"); }
-#line 2934 "synt_analyzer.tab.cpp"
+#line 2815 "synt_analyzer.tab.cpp"
     break;
 
   case 136: /* type: ID  */
-#line 495 "synt_analyzer.y"
+#line 376 "synt_analyzer.y"
                 {(yyval.typeU) = createType((yyvsp[0].Id)); puts("type created"); }
-#line 2940 "synt_analyzer.tab.cpp"
+#line 2821 "synt_analyzer.tab.cpp"
     break;
 
   case 137: /* type: templateType  */
-#line 496 "synt_analyzer.y"
+#line 377 "synt_analyzer.y"
                 {(yyval.typeU) = createType((yyvsp[0].templateTypeU)); puts("type created"); }
-#line 2946 "synt_analyzer.tab.cpp"
+#line 2827 "synt_analyzer.tab.cpp"
     break;
 
   case 138: /* templateType: ID '<' type_seq '>'  */
-#line 499 "synt_analyzer.y"
+#line 380 "synt_analyzer.y"
                                         {(yyval.templateTypeU) = createTemplateType((yyvsp[-3].Id), (yyvsp[-1].typesListU)); puts("template type created"); }
-#line 2952 "synt_analyzer.tab.cpp"
+#line 2833 "synt_analyzer.tab.cpp"
     break;
 
   case 139: /* type_seq: ID  */
-#line 502 "synt_analyzer.y"
+#line 383 "synt_analyzer.y"
                 {(yyval.typesListU) = createTypesList((yyvsp[0].Id)); puts("type seq created"); }
-#line 2958 "synt_analyzer.tab.cpp"
+#line 2839 "synt_analyzer.tab.cpp"
     break;
 
   case 140: /* type_seq: templateType  */
-#line 503 "synt_analyzer.y"
+#line 384 "synt_analyzer.y"
                 {(yyval.typesListU) = createTypesList((yyvsp[0].templateTypeU)); puts("type seq created"); }
-#line 2964 "synt_analyzer.tab.cpp"
+#line 2845 "synt_analyzer.tab.cpp"
     break;
 
   case 141: /* type_seq: type_seq ',' ID  */
-#line 504 "synt_analyzer.y"
+#line 385 "synt_analyzer.y"
                         {(yyval.typesListU) = addToTypesList((yyvsp[-2].typesListU), (yyvsp[0].Id));  puts("type seq created"); }
-#line 2970 "synt_analyzer.tab.cpp"
+#line 2851 "synt_analyzer.tab.cpp"
     break;
 
   case 142: /* type_seq: type_seq ',' templateType  */
-#line 505 "synt_analyzer.y"
+#line 386 "synt_analyzer.y"
                                 {(yyval.typesListU) = addToTypesList((yyvsp[-2].typesListU), (yyvsp[0].templateTypeU));  puts("type seq created"); }
-#line 2976 "synt_analyzer.tab.cpp"
+#line 2857 "synt_analyzer.tab.cpp"
     break;
 
   case 143: /* stmts: stmt  */
-#line 508 "synt_analyzer.y"
+#line 389 "synt_analyzer.y"
                 {(yyval.stmtListU) = createStmtList((yyvsp[0].stmtU));  puts("stmts created"); }
-#line 2982 "synt_analyzer.tab.cpp"
+#line 2863 "synt_analyzer.tab.cpp"
     break;
 
   case 144: /* stmts: stmts stmt  */
-#line 509 "synt_analyzer.y"
+#line 390 "synt_analyzer.y"
                 {(yyval.stmtListU) = addToStmtList((yyvsp[-1].stmtListU), (yyvsp[0].stmtU));  puts("stmts created"); }
-#line 2988 "synt_analyzer.tab.cpp"
+#line 2869 "synt_analyzer.tab.cpp"
     break;
 
   case 145: /* stmt: valDeclaration semis  */
-#line 512 "synt_analyzer.y"
+#line 393 "synt_analyzer.y"
                                 {(yyval.stmtU) = createStmt((yyvsp[-1].varOrValDeclU), VarOrVal);  puts("stmt created"); }
-#line 2994 "synt_analyzer.tab.cpp"
+#line 2875 "synt_analyzer.tab.cpp"
     break;
 
   case 146: /* stmt: varDeclaration semis  */
-#line 513 "synt_analyzer.y"
+#line 394 "synt_analyzer.y"
                         {(yyval.stmtU) = createStmt((yyvsp[-1].varOrValDeclU), VarOrVal);  puts("stmt created"); }
-#line 3000 "synt_analyzer.tab.cpp"
+#line 2881 "synt_analyzer.tab.cpp"
     break;
 
   case 147: /* stmt: assignment semis  */
-#line 514 "synt_analyzer.y"
+#line 395 "synt_analyzer.y"
                         {(yyval.stmtU) = createStmt((yyvsp[-1].assignmentU), Assignment);  puts("stmt created"); }
-#line 3006 "synt_analyzer.tab.cpp"
+#line 2887 "synt_analyzer.tab.cpp"
     break;
 
   case 148: /* stmt: whileLoop semis  */
-#line 515 "synt_analyzer.y"
+#line 396 "synt_analyzer.y"
                         {(yyval.stmtU) = createStmt((yyvsp[-1].whileLoopU), WhileLoop);  puts("stmt created"); }
-#line 3012 "synt_analyzer.tab.cpp"
+#line 2893 "synt_analyzer.tab.cpp"
     break;
 
   case 149: /* stmt: forLoop semis  */
-#line 516 "synt_analyzer.y"
+#line 397 "synt_analyzer.y"
                 {(yyval.stmtU) = createStmt((yyvsp[-1].forLoopU), ForLoop);  puts("stmt created"); }
-#line 3018 "synt_analyzer.tab.cpp"
+#line 2899 "synt_analyzer.tab.cpp"
     break;
 
   case 150: /* stmt: doWhileLoop semis  */
-#line 517 "synt_analyzer.y"
+#line 398 "synt_analyzer.y"
                         {(yyval.stmtU) = createStmt((yyvsp[-1].whileLoopU), DoWhileLoop);  puts("stmt created"); }
-#line 3024 "synt_analyzer.tab.cpp"
+#line 2905 "synt_analyzer.tab.cpp"
     break;
 
   case 151: /* stmt: ifStmt semis  */
-#line 518 "synt_analyzer.y"
+#line 399 "synt_analyzer.y"
                 {(yyval.stmtU) = createStmt((yyvsp[-1].ifStmtU), IfStmt);  puts("stmt created"); }
-#line 3030 "synt_analyzer.tab.cpp"
+#line 2911 "synt_analyzer.tab.cpp"
     break;
 
   case 152: /* stmt: expr semis  */
-#line 519 "synt_analyzer.y"
+#line 400 "synt_analyzer.y"
                 {(yyval.stmtU) = createStmt((yyvsp[-1].exprU), Expr);  puts("stmt created"); }
-#line 3036 "synt_analyzer.tab.cpp"
+#line 2917 "synt_analyzer.tab.cpp"
     break;
 
   case 153: /* stmt: BREAK semis  */
-#line 520 "synt_analyzer.y"
+#line 401 "synt_analyzer.y"
                 {(yyval.stmtU) = createStmt(Break);  puts("stmt created"); }
-#line 3042 "synt_analyzer.tab.cpp"
+#line 2923 "synt_analyzer.tab.cpp"
     break;
 
   case 154: /* stmt: CONTINUE semis  */
-#line 521 "synt_analyzer.y"
+#line 402 "synt_analyzer.y"
                         {(yyval.stmtU) = createStmt(Continue);  puts("stmt created"); }
-#line 3048 "synt_analyzer.tab.cpp"
+#line 2929 "synt_analyzer.tab.cpp"
     break;
 
   case 155: /* stmt: RETURN semis  */
-#line 522 "synt_analyzer.y"
+#line 403 "synt_analyzer.y"
                 {(yyval.stmtU) = createStmt(Return);  puts("stmt created"); }
-#line 3054 "synt_analyzer.tab.cpp"
+#line 2935 "synt_analyzer.tab.cpp"
     break;
 
   case 156: /* stmt: RETURN expr semis  */
-#line 523 "synt_analyzer.y"
+#line 404 "synt_analyzer.y"
                         {(yyval.stmtU) = createStmt((yyvsp[-1].exprU), ReturnValue);  puts("stmt created"); }
-#line 3060 "synt_analyzer.tab.cpp"
+#line 2941 "synt_analyzer.tab.cpp"
     break;
 
   case 157: /* expr: ID  */
-#line 526 "synt_analyzer.y"
+#line 407 "synt_analyzer.y"
                 {(yyval.exprU) = createExpr((yyvsp[0].Id), Identificator);  puts("expr created"); }
-#line 3066 "synt_analyzer.tab.cpp"
+#line 2947 "synt_analyzer.tab.cpp"
     break;
 
   case 158: /* expr: THIS  */
-#line 527 "synt_analyzer.y"
+#line 408 "synt_analyzer.y"
         {(yyval.exprU) = createExpr(0, This);  puts("expr created"); }
-#line 3072 "synt_analyzer.tab.cpp"
+#line 2953 "synt_analyzer.tab.cpp"
     break;
 
   case 159: /* expr: ID '(' optFactParams ')'  */
-#line 528 "synt_analyzer.y"
+#line 409 "synt_analyzer.y"
                                 {(yyval.exprU) = createExpr((yyvsp[-3].Id), (yyvsp[-1].factParamsListU), MethodCall);  puts("expr created"); }
-#line 3078 "synt_analyzer.tab.cpp"
+#line 2959 "synt_analyzer.tab.cpp"
     break;
 
   case 160: /* expr: INT  */
-#line 529 "synt_analyzer.y"
+#line 410 "synt_analyzer.y"
         {(yyval.exprU) = createExpr((yyvsp[0].Int_v), Int);  puts("expr created"); }
-#line 3084 "synt_analyzer.tab.cpp"
+#line 2965 "synt_analyzer.tab.cpp"
     break;
 
   case 161: /* expr: FLOAT  */
-#line 530 "synt_analyzer.y"
+#line 411 "synt_analyzer.y"
                 {(yyval.exprU) = createExpr((yyvsp[0].Float_v), Float);  puts("expr created"); }
-#line 3090 "synt_analyzer.tab.cpp"
+#line 2971 "synt_analyzer.tab.cpp"
     break;
 
   case 162: /* expr: STRING  */
-#line 531 "synt_analyzer.y"
+#line 412 "synt_analyzer.y"
                 {(yyval.exprU) = createExpr((yyvsp[0].String_v), String);  puts("expr created"); }
-#line 3096 "synt_analyzer.tab.cpp"
+#line 2977 "synt_analyzer.tab.cpp"
     break;
 
   case 163: /* expr: CHAR  */
-#line 532 "synt_analyzer.y"
+#line 413 "synt_analyzer.y"
         {(yyval.exprU) = createExpr((yyvsp[0].Char_v), Char);  puts("expr created"); }
-#line 3102 "synt_analyzer.tab.cpp"
+#line 2983 "synt_analyzer.tab.cpp"
     break;
 
   case 164: /* expr: DOUBLE  */
-#line 533 "synt_analyzer.y"
+#line 414 "synt_analyzer.y"
                 {(yyval.exprU) = createExpr((yyvsp[0].Double_v), Double);  puts("expr created"); }
-#line 3108 "synt_analyzer.tab.cpp"
+#line 2989 "synt_analyzer.tab.cpp"
     break;
 
   case 165: /* expr: BOOLEAN  */
-#line 534 "synt_analyzer.y"
+#line 415 "synt_analyzer.y"
                 {(yyval.exprU) = createExpr((yyvsp[0].Bool_v), Boolean);  puts("expr created"); }
-#line 3114 "synt_analyzer.tab.cpp"
+#line 2995 "synt_analyzer.tab.cpp"
     break;
 
   case 166: /* expr: '(' expr ')'  */
-#line 535 "synt_analyzer.y"
+#line 416 "synt_analyzer.y"
                 {(yyval.exprU) = createExpr((yyvsp[-1].exprU), ExprInBrackets);  puts("expr created"); }
-#line 3120 "synt_analyzer.tab.cpp"
+#line 3001 "synt_analyzer.tab.cpp"
     break;
 
   case 167: /* expr: '!' expr  */
-#line 536 "synt_analyzer.y"
+#line 417 "synt_analyzer.y"
                 {(yyval.exprU) = createExpr((yyvsp[0].exprU), LogicalNot);}
-#line 3126 "synt_analyzer.tab.cpp"
+#line 3007 "synt_analyzer.tab.cpp"
     break;
 
   case 168: /* expr: '+' expr  */
-#line 537 "synt_analyzer.y"
+#line 418 "synt_analyzer.y"
                         {(yyval.exprU) = createExpr((yyvsp[0].exprU), UnaryPlusExpr);  puts("expr created"); }
-#line 3132 "synt_analyzer.tab.cpp"
+#line 3013 "synt_analyzer.tab.cpp"
     break;
 
   case 169: /* expr: '-' expr  */
-#line 538 "synt_analyzer.y"
+#line 419 "synt_analyzer.y"
                         {(yyval.exprU) = createExpr((yyvsp[0].exprU), UnaryMinusExpr);  puts("expr created"); }
-#line 3138 "synt_analyzer.tab.cpp"
+#line 3019 "synt_analyzer.tab.cpp"
     break;
 
   case 170: /* expr: expr '+' expr  */
-#line 539 "synt_analyzer.y"
+#line 420 "synt_analyzer.y"
                         {(yyval.exprU) = createExpr((yyvsp[-2].exprU), (yyvsp[0].exprU), Sum);  puts("expr created"); }
-#line 3144 "synt_analyzer.tab.cpp"
+#line 3025 "synt_analyzer.tab.cpp"
     break;
 
   case 171: /* expr: expr '-' expr  */
-#line 540 "synt_analyzer.y"
+#line 421 "synt_analyzer.y"
                         {(yyval.exprU) = createExpr((yyvsp[-2].exprU), (yyvsp[0].exprU), Sub);  puts("expr created"); }
-#line 3150 "synt_analyzer.tab.cpp"
+#line 3031 "synt_analyzer.tab.cpp"
     break;
 
   case 172: /* expr: expr '*' expr  */
-#line 541 "synt_analyzer.y"
+#line 422 "synt_analyzer.y"
                         {(yyval.exprU) = createExpr((yyvsp[-2].exprU), (yyvsp[0].exprU), Mul);  puts("expr created"); }
-#line 3156 "synt_analyzer.tab.cpp"
+#line 3037 "synt_analyzer.tab.cpp"
     break;
 
   case 173: /* expr: expr '/' expr  */
-#line 542 "synt_analyzer.y"
+#line 423 "synt_analyzer.y"
                         {(yyval.exprU) = createExpr((yyvsp[-2].exprU), (yyvsp[0].exprU), Div);  puts("expr created"); }
-#line 3162 "synt_analyzer.tab.cpp"
+#line 3043 "synt_analyzer.tab.cpp"
     break;
 
   case 174: /* expr: expr '%' expr  */
-#line 543 "synt_analyzer.y"
+#line 424 "synt_analyzer.y"
                         {(yyval.exprU) = createExpr((yyvsp[-2].exprU), (yyvsp[0].exprU), Mod);  puts("expr created"); }
-#line 3168 "synt_analyzer.tab.cpp"
+#line 3049 "synt_analyzer.tab.cpp"
     break;
 
   case 175: /* expr: expr '<' expr  */
-#line 544 "synt_analyzer.y"
+#line 425 "synt_analyzer.y"
                         {(yyval.exprU) = createExpr((yyvsp[-2].exprU), (yyvsp[0].exprU), Less);  puts("expr created"); }
-#line 3174 "synt_analyzer.tab.cpp"
+#line 3055 "synt_analyzer.tab.cpp"
     break;
 
   case 176: /* expr: expr '>' expr  */
-#line 545 "synt_analyzer.y"
+#line 426 "synt_analyzer.y"
                         {(yyval.exprU) = createExpr((yyvsp[-2].exprU), (yyvsp[0].exprU), More);  puts("expr created"); }
-#line 3180 "synt_analyzer.tab.cpp"
+#line 3061 "synt_analyzer.tab.cpp"
     break;
 
   case 177: /* expr: expr OR expr  */
-#line 546 "synt_analyzer.y"
+#line 427 "synt_analyzer.y"
                 {(yyval.exprU) = createExpr((yyvsp[-2].exprU), (yyvsp[0].exprU), Or);  puts("expr created"); }
-#line 3186 "synt_analyzer.tab.cpp"
+#line 3067 "synt_analyzer.tab.cpp"
     break;
 
   case 178: /* expr: expr AND expr  */
-#line 547 "synt_analyzer.y"
+#line 428 "synt_analyzer.y"
                         {(yyval.exprU) = createExpr((yyvsp[-2].exprU), (yyvsp[0].exprU), And);  puts("expr created"); }
-#line 3192 "synt_analyzer.tab.cpp"
+#line 3073 "synt_analyzer.tab.cpp"
     break;
 
   case 179: /* expr: expr EQ expr  */
-#line 548 "synt_analyzer.y"
+#line 429 "synt_analyzer.y"
                 {(yyval.exprU) = createExpr((yyvsp[-2].exprU), (yyvsp[0].exprU), Eq);  puts("expr created"); }
-#line 3198 "synt_analyzer.tab.cpp"
+#line 3079 "synt_analyzer.tab.cpp"
     break;
 
   case 180: /* expr: expr AEQ expr  */
-#line 549 "synt_analyzer.y"
+#line 430 "synt_analyzer.y"
                         {(yyval.exprU) = createExpr((yyvsp[-2].exprU), (yyvsp[0].exprU), Aeq);}
-#line 3204 "synt_analyzer.tab.cpp"
+#line 3085 "synt_analyzer.tab.cpp"
     break;
 
   case 181: /* expr: expr NEQ expr  */
-#line 550 "synt_analyzer.y"
+#line 431 "synt_analyzer.y"
                         {(yyval.exprU) = createExpr((yyvsp[-2].exprU), (yyvsp[0].exprU), Neq);  puts("expr created"); }
-#line 3210 "synt_analyzer.tab.cpp"
+#line 3091 "synt_analyzer.tab.cpp"
     break;
 
   case 182: /* expr: expr NAEQ expr  */
-#line 551 "synt_analyzer.y"
+#line 432 "synt_analyzer.y"
                         {(yyval.exprU) = createExpr((yyvsp[-2].exprU), (yyvsp[0].exprU), Naeq);  puts("expr created"); }
-#line 3216 "synt_analyzer.tab.cpp"
+#line 3097 "synt_analyzer.tab.cpp"
     break;
 
   case 183: /* expr: expr LOEQ expr  */
-#line 552 "synt_analyzer.y"
+#line 433 "synt_analyzer.y"
                         {(yyval.exprU) = createExpr((yyvsp[-2].exprU), (yyvsp[0].exprU), Loeq);  puts("expr created"); }
-#line 3222 "synt_analyzer.tab.cpp"
+#line 3103 "synt_analyzer.tab.cpp"
     break;
 
   case 184: /* expr: expr MOEQ expr  */
-#line 553 "synt_analyzer.y"
+#line 434 "synt_analyzer.y"
                         {(yyval.exprU) = createExpr((yyvsp[-2].exprU), (yyvsp[0].exprU), Moeq);  puts("expr created"); }
-#line 3228 "synt_analyzer.tab.cpp"
+#line 3109 "synt_analyzer.tab.cpp"
     break;
 
   case 185: /* expr: expr '.' ID  */
-#line 554 "synt_analyzer.y"
+#line 435 "synt_analyzer.y"
                 {(yyval.exprU) = createExpr((yyvsp[-2].exprU), (yyvsp[0].Id), FieldCalcExpr);  puts("expr created"); }
-#line 3234 "synt_analyzer.tab.cpp"
+#line 3115 "synt_analyzer.tab.cpp"
     break;
 
   case 186: /* expr: expr '.' ID '(' optFactParams ')'  */
-#line 555 "synt_analyzer.y"
+#line 436 "synt_analyzer.y"
                                         {(yyval.exprU) = createExpr((yyvsp[-5].exprU), (yyvsp[-3].Id), (yyvsp[-1].factParamsListU), MethodCalcExpr);  puts("expr created"); }
-#line 3240 "synt_analyzer.tab.cpp"
+#line 3121 "synt_analyzer.tab.cpp"
     break;
 
   case 187: /* expr: expr '[' expr ']'  */
-#line 556 "synt_analyzer.y"
+#line 437 "synt_analyzer.y"
                         {(yyval.exprU) = createExpr((yyvsp[-3].exprU), (yyvsp[-1].exprU), ArrayElementCall);  puts("expr created"); }
-#line 3246 "synt_analyzer.tab.cpp"
+#line 3127 "synt_analyzer.tab.cpp"
     break;
 
   case 188: /* expr: SUPER '.' ID  */
-#line 557 "synt_analyzer.y"
+#line 438 "synt_analyzer.y"
                 {(yyval.exprU) = createExpr(0, (yyvsp[0].Id), ParentFieldCall);  puts("expr created"); }
-#line 3252 "synt_analyzer.tab.cpp"
+#line 3133 "synt_analyzer.tab.cpp"
     break;
 
   case 189: /* expr: SUPER '.' ID '(' optFactParams ')'  */
-#line 558 "synt_analyzer.y"
+#line 439 "synt_analyzer.y"
                                         {(yyval.exprU) = createExpr(0, (yyvsp[-3].Id), (yyvsp[-1].factParamsListU), ParentMethodCall);  puts("expr created"); }
-#line 3258 "synt_analyzer.tab.cpp"
+#line 3139 "synt_analyzer.tab.cpp"
     break;
 
   case 190: /* expr: expr RANGE expr  */
-#line 559 "synt_analyzer.y"
+#line 440 "synt_analyzer.y"
                         {(yyval.exprU) = createExpr((yyvsp[-2].exprU), (yyvsp[0].exprU), Range);  puts("expr created"); }
-#line 3264 "synt_analyzer.tab.cpp"
+#line 3145 "synt_analyzer.tab.cpp"
     break;
 
   case 191: /* optFactParams: %empty  */
-#line 562 "synt_analyzer.y"
+#line 443 "synt_analyzer.y"
                                 {(yyval.factParamsListU) = 0;   puts("opt fact params created"); }
-#line 3270 "synt_analyzer.tab.cpp"
+#line 3151 "synt_analyzer.tab.cpp"
     break;
 
   case 192: /* optFactParams: factParams  */
-#line 563 "synt_analyzer.y"
+#line 444 "synt_analyzer.y"
                 {(yyval.factParamsListU) = (yyvsp[0].factParamsListU);   puts("opt fact params created"); }
-#line 3276 "synt_analyzer.tab.cpp"
+#line 3157 "synt_analyzer.tab.cpp"
     break;
 
   case 193: /* factParams: expr  */
-#line 566 "synt_analyzer.y"
+#line 447 "synt_analyzer.y"
                         {(yyval.factParamsListU) = createFactParamsList((yyvsp[0].exprU));   puts("fact params created"); }
-#line 3282 "synt_analyzer.tab.cpp"
+#line 3163 "synt_analyzer.tab.cpp"
     break;
 
   case 194: /* factParams: factParams ',' expr  */
-#line 567 "synt_analyzer.y"
+#line 448 "synt_analyzer.y"
                         {(yyval.factParamsListU) = addToFactParamsList((yyvsp[-2].factParamsListU), (yyvsp[0].exprU));   puts("fact params created"); }
-#line 3288 "synt_analyzer.tab.cpp"
+#line 3169 "synt_analyzer.tab.cpp"
     break;
 
   case 195: /* assignment: expr '=' expr  */
-#line 570 "synt_analyzer.y"
+#line 451 "synt_analyzer.y"
                                 {(yyval.assignmentU) = createAssignment((yyvsp[-2].exprU), (yyvsp[0].exprU), Assign); puts("assignment created"); }
-#line 3294 "synt_analyzer.tab.cpp"
+#line 3175 "synt_analyzer.tab.cpp"
     break;
 
   case 196: /* assignment: expr ASUM expr  */
-#line 571 "synt_analyzer.y"
+#line 452 "synt_analyzer.y"
                         {(yyval.assignmentU) = createAssignment((yyvsp[-2].exprU), (yyvsp[0].exprU), Asum); puts("assignment created"); }
-#line 3300 "synt_analyzer.tab.cpp"
+#line 3181 "synt_analyzer.tab.cpp"
     break;
 
   case 197: /* assignment: expr ASUB expr  */
-#line 572 "synt_analyzer.y"
+#line 453 "synt_analyzer.y"
                         {(yyval.assignmentU) = createAssignment((yyvsp[-2].exprU), (yyvsp[0].exprU), Asub); puts("assignment created"); }
-#line 3306 "synt_analyzer.tab.cpp"
+#line 3187 "synt_analyzer.tab.cpp"
     break;
 
   case 198: /* assignment: expr ADIV expr  */
-#line 573 "synt_analyzer.y"
+#line 454 "synt_analyzer.y"
                         {(yyval.assignmentU) = createAssignment((yyvsp[-2].exprU), (yyvsp[0].exprU), Adiv); puts("assignment created"); }
-#line 3312 "synt_analyzer.tab.cpp"
+#line 3193 "synt_analyzer.tab.cpp"
     break;
 
   case 199: /* assignment: expr AMUL expr  */
-#line 574 "synt_analyzer.y"
+#line 455 "synt_analyzer.y"
                         {(yyval.assignmentU) = createAssignment((yyvsp[-2].exprU), (yyvsp[0].exprU), Amul); puts("assignment created"); }
-#line 3318 "synt_analyzer.tab.cpp"
+#line 3199 "synt_analyzer.tab.cpp"
     break;
 
   case 200: /* assignment: expr AMOD expr  */
-#line 575 "synt_analyzer.y"
+#line 456 "synt_analyzer.y"
                         {(yyval.assignmentU) = createAssignment((yyvsp[-2].exprU), (yyvsp[0].exprU), Amod); puts("assignment created"); }
-#line 3324 "synt_analyzer.tab.cpp"
+#line 3205 "synt_analyzer.tab.cpp"
     break;
 
   case 201: /* whileLoop: WHILE '(' expr ')' stmt  */
-#line 578 "synt_analyzer.y"
+#line 459 "synt_analyzer.y"
                                         {(yyval.whileLoopU) = createWhileLoop((yyvsp[-2].exprU), (yyvsp[0].stmtU), 0); puts("whileLoop created"); }
-#line 3330 "synt_analyzer.tab.cpp"
+#line 3211 "synt_analyzer.tab.cpp"
     break;
 
   case 202: /* whileLoop: WHILE '(' expr ')' block  */
-#line 579 "synt_analyzer.y"
+#line 460 "synt_analyzer.y"
                                 {(yyval.whileLoopU) = createWhileLoop((yyvsp[-2].exprU), (yyvsp[0].stmtListU), 0); puts("whileLoop created"); }
-#line 3336 "synt_analyzer.tab.cpp"
+#line 3217 "synt_analyzer.tab.cpp"
     break;
 
   case 203: /* whileLoop: WHILE '(' expr ')' ';'  */
-#line 580 "synt_analyzer.y"
+#line 461 "synt_analyzer.y"
                                 {(yyval.whileLoopU) = createWhileLoop((yyvsp[-2].exprU), 0); puts("whileLoop created"); }
-#line 3342 "synt_analyzer.tab.cpp"
+#line 3223 "synt_analyzer.tab.cpp"
     break;
 
   case 204: /* doWhileLoop: DO stmt WHILE '(' expr ')'  */
-#line 583 "synt_analyzer.y"
+#line 464 "synt_analyzer.y"
                                         {(yyval.whileLoopU) = createWhileLoop((yyvsp[-1].exprU), (yyvsp[-4].stmtU), 1); puts("doWhileLoop created"); }
-#line 3348 "synt_analyzer.tab.cpp"
+#line 3229 "synt_analyzer.tab.cpp"
     break;
 
   case 205: /* doWhileLoop: DO block WHILE '(' expr ')'  */
-#line 584 "synt_analyzer.y"
+#line 465 "synt_analyzer.y"
                                 {(yyval.whileLoopU) = createWhileLoop((yyvsp[-1].exprU), (yyvsp[-4].stmtListU), 1); puts("doWhileLoop created"); }
-#line 3354 "synt_analyzer.tab.cpp"
+#line 3235 "synt_analyzer.tab.cpp"
     break;
 
   case 206: /* doWhileLoop: DO WHILE '(' expr ')'  */
-#line 585 "synt_analyzer.y"
+#line 466 "synt_analyzer.y"
                         {(yyval.whileLoopU) = createWhileLoop((yyvsp[-1].exprU), 1); puts("doWhileLoop created"); }
-#line 3360 "synt_analyzer.tab.cpp"
+#line 3241 "synt_analyzer.tab.cpp"
     break;
 
   case 207: /* forLoop: FOR '(' ID ':' type IN expr ')' stmt  */
-#line 588 "synt_analyzer.y"
+#line 469 "synt_analyzer.y"
                                                 {(yyval.forLoopU) = createForLoop((yyvsp[-6].Id), (yyvsp[-4].typeU), (yyvsp[-2].exprU), (yyvsp[0].stmtU)); puts("forLoop created"); }
-#line 3366 "synt_analyzer.tab.cpp"
+#line 3247 "synt_analyzer.tab.cpp"
     break;
 
   case 208: /* forLoop: FOR '(' ID ':' type IN expr ')' block  */
-#line 589 "synt_analyzer.y"
+#line 470 "synt_analyzer.y"
                                         {(yyval.forLoopU) = createForLoop((yyvsp[-6].Id), (yyvsp[-4].typeU), (yyvsp[-2].exprU), (yyvsp[0].stmtListU)); puts("forLoop created"); }
-#line 3372 "synt_analyzer.tab.cpp"
+#line 3253 "synt_analyzer.tab.cpp"
     break;
 
   case 209: /* forLoop: FOR '(' ID ':' type IN expr ')' ';'  */
-#line 590 "synt_analyzer.y"
+#line 471 "synt_analyzer.y"
                                         {(yyval.forLoopU) = createForLoop((yyvsp[-6].Id), (yyvsp[-4].typeU), (yyvsp[-2].exprU)); puts("forLoop created"); }
-#line 3378 "synt_analyzer.tab.cpp"
+#line 3259 "synt_analyzer.tab.cpp"
     break;
 
   case 210: /* forLoop: FOR '(' '(' formalParams ')' IN expr ')' stmt  */
-#line 591 "synt_analyzer.y"
+#line 472 "synt_analyzer.y"
                                                 {(yyval.forLoopU) = createForLoop((yyvsp[-5].formalParamsListU), (yyvsp[-2].exprU), (yyvsp[0].stmtU)); puts("forLoop created"); }
-#line 3384 "synt_analyzer.tab.cpp"
+#line 3265 "synt_analyzer.tab.cpp"
     break;
 
   case 211: /* forLoop: FOR '(' '(' formalParams ')' IN expr ')' block  */
-#line 592 "synt_analyzer.y"
+#line 473 "synt_analyzer.y"
                                                         {(yyval.forLoopU) = createForLoop((yyvsp[-5].formalParamsListU), (yyvsp[-2].exprU), (yyvsp[0].stmtListU)); puts("forLoop created"); }
-#line 3390 "synt_analyzer.tab.cpp"
+#line 3271 "synt_analyzer.tab.cpp"
     break;
 
   case 212: /* forLoop: FOR '(' '(' formalParams ')' IN expr ')' ';'  */
-#line 593 "synt_analyzer.y"
+#line 474 "synt_analyzer.y"
                                                 {(yyval.forLoopU) = createForLoop((yyvsp[-5].formalParamsListU), (yyvsp[-2].exprU)); puts("forLoop created"); }
-#line 3396 "synt_analyzer.tab.cpp"
+#line 3277 "synt_analyzer.tab.cpp"
     break;
 
   case 213: /* ifStmt: IF '(' expr ')' stmt  */
-#line 596 "synt_analyzer.y"
+#line 477 "synt_analyzer.y"
                                 {(yyval.ifStmtU) = createIfStmt((yyvsp[-2].exprU), (yyvsp[0].stmtU)); puts("ifStmt created"); }
-#line 3402 "synt_analyzer.tab.cpp"
+#line 3283 "synt_analyzer.tab.cpp"
     break;
 
   case 214: /* ifStmt: IF '(' expr ')' block  */
-#line 597 "synt_analyzer.y"
+#line 478 "synt_analyzer.y"
                         {(yyval.ifStmtU) = createIfStmt((yyvsp[-2].exprU), (yyvsp[0].stmtListU)); puts("ifStmt created"); }
-#line 3408 "synt_analyzer.tab.cpp"
+#line 3289 "synt_analyzer.tab.cpp"
     break;
 
   case 215: /* ifStmt: IF '(' expr ')' semis  */
-#line 598 "synt_analyzer.y"
+#line 479 "synt_analyzer.y"
                                 {(yyval.ifStmtU) = createIfStmt((yyvsp[-2].exprU)); puts("ifStmt created"); }
-#line 3414 "synt_analyzer.tab.cpp"
+#line 3295 "synt_analyzer.tab.cpp"
     break;
 
   case 216: /* ifStmt: IF '(' expr ')' stmt ELSE stmt  */
-#line 599 "synt_analyzer.y"
+#line 480 "synt_analyzer.y"
                                         {(yyval.ifStmtU) = createIfStmt((yyvsp[-4].exprU), (yyvsp[-2].stmtU), (yyvsp[0].stmtU)); puts("ifStmt created"); }
-#line 3420 "synt_analyzer.tab.cpp"
+#line 3301 "synt_analyzer.tab.cpp"
     break;
 
   case 217: /* ifStmt: IF '(' expr ')' block ELSE stmt  */
-#line 600 "synt_analyzer.y"
+#line 481 "synt_analyzer.y"
                                         {(yyval.ifStmtU) = createIfStmt((yyvsp[-4].exprU), (yyvsp[-2].stmtListU), (yyvsp[0].stmtU)); puts("ifStmt created"); }
-#line 3426 "synt_analyzer.tab.cpp"
+#line 3307 "synt_analyzer.tab.cpp"
     break;
 
   case 218: /* ifStmt: IF '(' expr ')' semis ELSE stmt  */
-#line 601 "synt_analyzer.y"
+#line 482 "synt_analyzer.y"
                                         {(yyval.ifStmtU) = createIfStmt((yyvsp[-4].exprU), 0, (yyvsp[0].stmtU)); puts("ifStmt created"); }
-#line 3432 "synt_analyzer.tab.cpp"
+#line 3313 "synt_analyzer.tab.cpp"
     break;
 
   case 219: /* ifStmt: IF '(' expr ')' stmt ELSE block  */
-#line 602 "synt_analyzer.y"
+#line 483 "synt_analyzer.y"
                                         {(yyval.ifStmtU) = createIfStmt((yyvsp[-4].exprU), (yyvsp[-2].stmtU), (yyvsp[0].stmtListU)); puts("ifStmt created"); }
-#line 3438 "synt_analyzer.tab.cpp"
+#line 3319 "synt_analyzer.tab.cpp"
     break;
 
   case 220: /* ifStmt: IF '(' expr ')' block ELSE block  */
-#line 603 "synt_analyzer.y"
+#line 484 "synt_analyzer.y"
                                         {(yyval.ifStmtU) = createIfStmt((yyvsp[-4].exprU), (yyvsp[-2].stmtListU), (yyvsp[0].stmtListU)); puts("ifStmt created"); }
-#line 3444 "synt_analyzer.tab.cpp"
+#line 3325 "synt_analyzer.tab.cpp"
     break;
 
   case 221: /* ifStmt: IF '(' expr ')' semis ELSE block  */
-#line 604 "synt_analyzer.y"
+#line 485 "synt_analyzer.y"
                                         {(yyval.ifStmtU) = createIfStmt((yyvsp[-4].exprU), 0, (yyvsp[0].stmtListU)); puts("ifStmt created"); }
-#line 3450 "synt_analyzer.tab.cpp"
+#line 3331 "synt_analyzer.tab.cpp"
     break;
 
   case 222: /* ifStmt: IF '(' expr ')' stmt ELSE semis  */
-#line 605 "synt_analyzer.y"
+#line 486 "synt_analyzer.y"
                                         {(yyval.ifStmtU) = createIfStmt((yyvsp[-4].exprU), (yyvsp[-2].stmtU)); puts("ifStmt created"); }
-#line 3456 "synt_analyzer.tab.cpp"
+#line 3337 "synt_analyzer.tab.cpp"
     break;
 
   case 223: /* ifStmt: IF '(' expr ')' block ELSE semis  */
-#line 606 "synt_analyzer.y"
+#line 487 "synt_analyzer.y"
                                         {(yyval.ifStmtU) = createIfStmt((yyvsp[-4].exprU), (yyvsp[-2].stmtListU)); puts("ifStmt created"); }
-#line 3462 "synt_analyzer.tab.cpp"
+#line 3343 "synt_analyzer.tab.cpp"
     break;
 
   case 224: /* ifStmt: IF '(' expr ')' semis ELSE semis  */
-#line 607 "synt_analyzer.y"
+#line 488 "synt_analyzer.y"
                                         {(yyval.ifStmtU) = createIfStmt((yyvsp[-4].exprU)); puts("ifStmt created"); }
-#line 3468 "synt_analyzer.tab.cpp"
+#line 3349 "synt_analyzer.tab.cpp"
     break;
 
   case 225: /* semis: ';'  */
-#line 611 "synt_analyzer.y"
+#line 492 "synt_analyzer.y"
                 { puts("semis created"); }
-#line 3474 "synt_analyzer.tab.cpp"
+#line 3355 "synt_analyzer.tab.cpp"
     break;
 
   case 226: /* semis: NEW_LINE  */
-#line 612 "synt_analyzer.y"
+#line 493 "synt_analyzer.y"
                 { puts("semis created"); }
-#line 3480 "synt_analyzer.tab.cpp"
+#line 3361 "synt_analyzer.tab.cpp"
     break;
 
   case 227: /* semis: semis ';'  */
-#line 613 "synt_analyzer.y"
+#line 494 "synt_analyzer.y"
                 { puts("semis created"); }
-#line 3486 "synt_analyzer.tab.cpp"
+#line 3367 "synt_analyzer.tab.cpp"
     break;
 
   case 228: /* semis: semis NEW_LINE  */
-#line 614 "synt_analyzer.y"
+#line 495 "synt_analyzer.y"
                         { puts("semis created"); }
-#line 3492 "synt_analyzer.tab.cpp"
+#line 3373 "synt_analyzer.tab.cpp"
     break;
 
 
-#line 3496 "synt_analyzer.tab.cpp"
+#line 3377 "synt_analyzer.tab.cpp"
 
       default: break;
     }
@@ -3717,827 +3598,9 @@ yyreturn:
   return yyresult;
 }
 
-#line 618 "synt_analyzer.y"
+#line 499 "synt_analyzer.y"
 
 //Секция пользовательского кода
-
-
-//Вспомогательные функция
-struct programS * createProgram(struct programElementS * pe)
-{
-	struct programS * prog = (struct programS * ) malloc(sizeof(struct programS));
-	prog->first = pe;
-	prog->last = pe;
-	return prog;
-}
-
-struct programS * addToProgram(struct programS * prog, struct programElementS * pe)
-{
-	if (prog->last != 0)
-	{
-		prog->last->next = pe;
-		prog->last = pe;			
-	}
-	else
-	{
-		prog->first = pe;
-		prog->last = pe;
-	}
-	
-	return prog;
-}
-
-struct programElementS * createProgramElement(struct classS * clas, struct methodS * meth, struct propertyS * prop, struct programElementS * next)
-{
-	struct programElementS * pe = (struct programElementS *) malloc(sizeof(struct programElementS));
-	pe->clas = clas;
-	pe->method = meth;
-	pe->property = prop;
-	pe->next = next;
-	return pe;
-}
-
-struct programElementS * createProgramElement(struct classS * clas)
-{
-	return createProgramElement(clas, 0, 0, 0);
-}
-
-struct programElementS * createProgramElement(struct methodS * meth)
-{
-	return createProgramElement(0, meth, 0, 0);
-}
-
-struct programElementS * createProgramElement(struct propertyS * prop)
-{
-	return createProgramElement(0, 0, prop, 0);
-}
-
-//Нужные функции
-struct programS * createProgram()
-{
-	struct programS * prog = (struct programS * ) malloc(sizeof(struct programS));
-	prog->first = 0;
-	prog->last = 0;
-	return prog;	
-}
-
-struct programS * createProgram(struct classS * clas)
-{	
-	return createProgram(createProgramElement(clas));
-}
-
-struct programS * createProgram(struct methodS * meth)
-{
-	return createProgram(createProgramElement(meth));
-}
-
-struct programS * createProgram(struct propertyS * prop)
-{
-	return createProgram(createProgramElement(prop));
-}
-
-struct programS * addToProgram(struct programS * prog, struct classS * clas)
-{
-	return addToProgram(prog, createProgramElement(clas));
-}
-
-struct programS * addToProgram(struct programS * prog, struct methodS * meth)
-{
-	return addToProgram(prog, createProgramElement(meth));
-}
-
-struct programS * addToProgram(struct programS * prog, struct propertyS * prop)
-{
-	return addToProgram(prog, createProgramElement(prop));
-}
-
-
-
-struct classS * createClass(struct modifiersS * mods, char * id, char * parentId, struct classBodyS * body)
-{
-	struct classS * clas = (struct classS *)malloc(sizeof(struct classS));
-	clas->mods = mods;
-	clas->name = id;
-	clas->parentClassName = parentId;
-	clas->body = body;
-	return clas;
-	
-}
-
-struct classS * createClass(struct modifiersS * mods, char * id, struct classBodyS * body)
-{
-	return createClass(mods, id, 0, body);
-}
-
-struct classS * createClass(char * id, char * parentId, struct classBodyS * body)
-{
-	return createClass(0, id, parentId, body);
-}
-
-struct classS * createClass(char * id, struct classBodyS * body)
-{
-	return createClass(0, id, 0, body);
-}
-
-//Вспомогательные функции
-struct classBodyElementS * createClassBodyElement(struct methodS * meth, struct initializerS * initializer, struct propertyS * prop, struct constructorS * constr, struct classBodyElementS * next)
-{
-	struct classBodyElementS * cbe = (struct classBodyElementS * )malloc(sizeof(struct classBodyElementS));
-	cbe->method = meth;
-	cbe->property = prop;
-	cbe->constructor = constr;
-	cbe->init = initializer;
-	cbe->next = next;
-	return cbe;
-}
-
-struct classBodyS * createClassBody(struct classBodyElementS * cbe)
-{
-	struct classBodyS * cb = (struct classBodyS *)malloc(sizeof(struct classBodyS));
-	cb->first = cbe;
-	cb->last = cbe;
-	return cb;
-}
-
-struct classBodyS * addToClassBody(struct classBodyS * body, struct classBodyElementS * cbe)
-{
-	if (body->last != 0)
-	{
-		body->last->next = cbe;
-		body->last = cbe;
-	}
-	else
-	{
-		body->first = cbe;
-		body->last = cbe;
-	}
-	
-	return body;
-}
-
-//Нужные функции
-struct classBodyS * createClassBody()
-{
-	struct classBodyS * cb = (struct classBodyS *)malloc(sizeof(struct classBodyS));
-	cb->first = 0;
-	cb->last = 0;
-	return cb;
-}
-
-struct classBodyS * createClassBody(struct methodS * meth)
-{
-	return createClassBody(createClassBodyElement(meth, 0, 0, 0, 0));
-}
-
-struct classBodyS * createClassBody(struct initializerS * initializer)
-{
-	return createClassBody(createClassBodyElement(0, initializer, 0, 0, 0));
-}
-
-struct classBodyS * createClassBody(struct propertyS * prop)
-{
-	return createClassBody(createClassBodyElement(0, 0, prop, 0, 0));
-}
-
-struct classBodyS * createClassBody(struct constructorS * constr)
-{
-	return createClassBody(createClassBodyElement(0, 0, 0, constr, 0));
-}
-
-struct classBodyS * addToClassBody(struct classBodyS * body, struct methodS * meth)
-{
-	return addToClassBody(body, createClassBodyElement(meth, 0, 0, 0, 0));
-}
-
-struct classBodyS * addToClassBody(struct classBodyS * body, struct initializerS * initializer)
-{
-	return addToClassBody(body, createClassBodyElement(0, initializer, 0, 0, 0));
-}
-
-struct classBodyS * addToClassBody(struct classBodyS * body, struct propertyS * prop)
-{
-	return addToClassBody(body, createClassBodyElement(0, 0, prop, 0, 0));
-}
-
-struct classBodyS * addToClassBody(struct classBodyS * body, struct constructorS * constr)
-{
-	return addToClassBody(body, createClassBodyElement(0, 0, 0, constr, 0));
-}
-
-
-
-struct propertyS * createProperty(struct modifiersS * mods, struct varOrValDeclS * decl)
-{
-	struct propertyS * p = (struct propertyS *)malloc(sizeof(struct propertyS));
-	p->mods = mods;
-	p->varOrVal = decl;
-	return p;
-}
-
-struct propertyS * createProperty(struct varOrValDeclS * decl)
-{
-	return createProperty(0, decl);
-}
-
-
-struct methodS * createMethod(struct modifiersS * mods, struct funcDeclS * funcDecl, struct funcS * func)
-{
-	struct methodS * m = (struct methodS *)malloc(sizeof(struct methodS));
-	m->mods = mods;
-	m->func = func;
-	m->funcDecl = funcDecl;
-	return m;
-}
-
-struct methodS * createMethod(struct modifiersS * mods, struct funcDeclS * funcDecl)
-{
-	return createMethod(mods, funcDecl, 0);
-}
-
-struct methodS * createMethod(struct modifiersS * mods, struct funcS * func)
-{
-	return createMethod(mods, 0, func);
-}
-
-struct methodS * createMethod(struct funcDeclS * funcDecl)
-{
-	return createMethod(0, funcDecl, 0);
-}
-
-struct methodS * createMethod(struct funcS * func)
-{
-	return createMethod(0, 0, func);
-}
-
-
-struct initializerS * createInit(struct stmtList * stmts)
-{
-	struct initializerS * i = (struct initializerS *)malloc(sizeof(struct initializerS * ));
-	i->stmts = stmts;
-	return i;
-}
-
-
-
-
-struct constructorS * createConstructor(enum visibilityMod mod, struct formalParamsList * params, struct stmtList * stmts)
-{
-	return createConstructor(mod, params, 0, 0, stmts);
-}
-
-struct constructorS * createConstructor(enum visibilityMod mod, struct formalParamsList * params)
-{
-	return createConstructor(mod, params, 0, 0, 0);
-}
-
-struct constructorS * createConstructor(enum visibilityMod mod, struct formalParamsList * params, const char * parentOrAnotherConstr, struct factParamsList * anotherConstrParams)
-{
-	return createConstructor(mod, params, parentOrAnotherConstr, anotherConstrParams, 0);
-}
-
-struct constructorS * createConstructor(enum visibilityMod mod, struct formalParamsList * params, const char * parentOrAnotherConstr, struct factParamsList * anotherConstrParams, struct stmtList * stmts)
-{
-	struct constructorS * c = (struct constructorS *)malloc(sizeof(struct constructorS));
-	c->mod = mod;
-	c->params = params;
-	c->stmts = stmts;
-	if (parentOrAnotherConstr != 0)
-	{
-		c->anotherConstructorId = (char *)malloc(strlen(parentOrAnotherConstr));
-		strcpy(c->anotherConstructorId, parentOrAnotherConstr);
-	}
-	else
-	{
-		c->anotherConstructorId = 0;
-	}
-	c->anotherConstrParams = anotherConstrParams;
-	return c;
-}
-
-struct constructorS * createConstructor(struct formalParamsList * params, struct stmtList * stmts)
-{
-	return createConstructor(Public, params, 0, 0, stmts);
-}
-
-struct constructorS * createConstructor(struct formalParamsList * params)
-{
-	return createConstructor(Public, params, 0, 0, 0);
-}
-
-struct constructorS * createConstructor(struct formalParamsList * params, const char * parentOrAnotherConstr, struct factParamsList * anotherConstrParams)
-{
-	return createConstructor(Public, params, parentOrAnotherConstr, anotherConstrParams, 0);
-}
-
-struct constructorS * createConstructor(struct formalParamsList * params, const char * parentOrAnotherConstr, struct factParamsList * anotherConstrParams, struct stmtList * stmts)
-{
-	return createConstructor(Public, params, parentOrAnotherConstr, anotherConstrParams, stmts);
-}
-
-
-struct formalParamS * createFormalParam(char * id, struct typeS * type)
-{
-	struct formalParamS * fp = (struct formalParamS *)malloc(sizeof(struct formalParamS));
-	fp->type = type;
-	fp->name = id;
-	fp-> next = 0;
-	return fp;
-}
-
-struct formalParamsList * createFormalParamsList(char * id, struct typeS * type)
-{
-	struct formalParamsList * fpl = (struct formalParamsList *)malloc(sizeof(struct formalParamsList));
-	fpl->first = createFormalParam(id, type);
-	fpl->last = fpl->first;
-	return fpl;
-}
-
-struct formalParamsList * addToFormalParamsList(struct formalParamsList * list, char * id, struct typeS * type)
-{
-	list->last->next = createFormalParam(id, type);
-	list->last = list->last->next;
-	return list;
-}
-
-
-
-struct modifiersS * createModifiers(int isAbstruct, int isOverride, enum visibilityMod vMod, enum inheritanceMod iMod)
-{
-	struct modifiersS * m = (struct modifiersS * )malloc(sizeof(struct modifiersS));
-	m->isAbstract = isAbstruct;
-	m->isOverride = isOverride;
-	m->vMod = vMod;
-	m->iMod = iMod;
-	return m;
-}
-	
-	
-struct funcS * createFunc(struct funcDeclS * decl, struct stmtList * stmts, struct exprS * expr)
-{
-	struct funcS * f = (struct funcS *)malloc(sizeof(struct funcS));
-	f->delc = decl;
-	f->stmts = stmts;
-	f->expr = expr;
-	return f;
-}	
-
-struct funcS * createFunc(struct funcDeclS * decl, struct stmtList * stmts)
-{
-	return createFunc(decl, stmts, 0);
-}
-
-struct funcS * createFunc(struct funcDeclS * decl, struct exprS * expr)
-{
-	return createFunc(decl, 0, expr);
-}
-
-
-struct funcDeclS * createFuncDecl(char * id, struct formalParamsList * params, struct typeS * type)
-{
-	struct funcDeclS * fd = (struct funcDeclS *)malloc(sizeof(struct funcDeclS));
-	fd->name = id;
-	fd->params = params;
-	fd->type = type;
-	return fd;
-}
-
-
-struct stmtList * createStmtList(struct stmtS * stmt)
-{
-	struct stmtList * sl = (struct stmtList *)malloc(sizeof(struct stmtList));
-	sl->first = stmt;
-	sl->last = stmt;
-	return sl;
-}
-
-struct stmtList * addToStmtList(struct stmtList * list, struct stmtS * stmt)
-{
-	list->last->next = stmt;
-	list->last = stmt;
-	return list;
-}
-
-
-struct varOrValDeclS * createVarOrValDecl(char * id, struct typeS * type, struct formalParamsList * idsAndTypes, struct exprS * initValue, int isVal)
-{
-	struct varOrValDeclS * v = (struct varOrValDeclS *)malloc(sizeof(struct varOrValDeclS));
-	v->isVal = isVal;
-	v->id = id;
-	v->type = type;
-	v->namesAndTypes = idsAndTypes;
-	v->initValue = initValue;
-	return v;
-}
-
-struct varOrValDeclS * createVarOrValDecl(char * id, struct typeS * type, int isVal)
-{
-	return createVarOrValDecl(id, type, 0, 0, isVal);
-}
-
-struct varOrValDeclS * createVarOrValDecl(char * id, struct typeS * type, struct exprS * initValue, int isVal)
-{
-	return createVarOrValDecl(id, type, 0, initValue, isVal);
-}
-
-struct varOrValDeclS * createVarOrValDecl(struct formalParamsList * idsAndTypes, struct exprS * initValue, int isVal)
-{
-	return createVarOrValDecl(0, 0, idsAndTypes, initValue, isVal);
-}
-
-
-struct typeS * createType(char * id, struct templateTypeS * type)
-{
-	struct typeS * t = (struct typeS * )malloc(sizeof(struct typeS));
-	t->easyType = id;
-	t->complexType = type;
-	return t;
-}
-
-struct typeS * createType(char * id)
-{
-	return createType(id, 0);
-}
-
-struct typeS * createType(struct templateTypeS * type)
-{
-	return createType(0, type);
-}
-
-
-struct templateTypeS * createTemplateType(char * id, struct typesList * templateTypes)
-{
-	struct templateTypeS * tt = (struct templateTypeS *)malloc(sizeof(struct templateTypeS));
-	tt->type = id;
-	tt->list = templateTypes;
-	return tt;
-}
-
-
-struct typesList * createTypesList(char * id, struct templateTypeS * type)
-{
-	struct typesList * tl = (struct typesList *)malloc(sizeof(struct typesList));
-	struct typeS * listElement = 0;
-	if (id != 0)
-	{
-		listElement = createType(id, 0);
-	}
-	else
-	{
-		listElement = createType(0, type);
-	}
-	tl->first = listElement;
-	tl->last = listElement;
-	return tl;
-}
-
-struct typesList * createTypesList(char * id)
-{
-	return createTypesList(id, 0);
-}
-
-struct typesList * createTypesList(struct templateTypeS * type)
-{
-	return createTypesList(0, type);
-}
-
-struct typesList * addToTypesList(struct typesList * list, char * id, struct templateTypeS * type)
-{
-	struct typeS * newListElement = 0;
-	if (id != 0)
-	{
-		newListElement = createType(id);
-	}
-	else
-	{
-		newListElement = createType(type);
-	}
-	list->last->next = newListElement;
-	list->last = newListElement;
-	return list;
-}
-
-struct typesList * addToTypesList(struct typesList * list, char * id)
-{
-	return addToTypesList(list, id, 0);
-}
-
-struct typesList * addToTypesList(struct typesList * list, struct templateTypeS * type)
-{
-	return addToTypesList(list, 0, type);
-}
-
-
-
-
-struct stmtS * createStmt(struct varOrValDeclS * v, struct assignmentS * assign, struct whileLoopS * wLoop, forLoopS * fLoop, struct ifStmtS * ifStmt, struct exprS * expr, enum stmtType type)
-{
-	struct stmtS * s = (struct stmtS *)malloc(sizeof(struct stmtS));
-	s->varOrVal = v;
-	s->assignment = assign;
-	s->whileLoop = wLoop;
-	s->forLoop = fLoop;
-	s->ifStmt = ifStmt;
-	s->expr = expr;
-	s->type = type;
-	s->next = 0;
-	return s;
-}
-
-struct stmtS * createStmt(struct varOrValDeclS * v, enum stmtType type)
-{
-	return createStmt(v, 0, 0, 0, 0, 0, type);
-}
-
-struct stmtS * createStmt(struct assignmentS * assign, enum stmtType type)
-{
-	return createStmt(0, assign, 0, 0, 0, 0, type);
-}
-
-struct stmtS * createStmt(struct whileLoopS * loop, enum stmtType type)
-{
-	return createStmt(0, 0, loop, 0, 0, 0, type);
-}
-
-struct stmtS * createStmt(struct forLoopS * loop, enum stmtType type)
-{
-	return createStmt(0, 0, 0, loop, 0, 0, type);
-}
-
-struct stmtS * createStmt(struct ifStmtS * ifStmt, enum stmtType type)
-{
-	return createStmt(0, 0, 0, 0, ifStmt, 0, type);
-}
-
-struct stmtS * createStmt(struct exprS * expr, enum stmtType type)
-{
-	return createStmt(0, 0, 0, 0, 0, expr, type);
-}
-
-struct stmtS * createStmt(enum stmtType type)
-{
-	return createStmt(0, 0, 0, 0, 0, 0, type);
-}
-
-
-struct exprS * createExpr(char * idOrString, int iVal, struct factParamsList * params, float fVal, double dVal, char cVar, bool bVar, struct exprS * exprL, struct exprS * exprR,  enum exprType type)
-{
-	struct exprS * e = (struct exprS *)malloc(sizeof(struct exprS));
-	e->type = type;
-	e->left = exprL;
-	e->right = exprR;
-	e->factParams = params;
-	e->stringOrId = idOrString;
-	e->charV = cVar;
-	e->intV = iVal;
-	e->floatV = fVal;
-	e->doubleV = dVal;
-	e->booleanV = bVar;
-	e->next = 0;
-	return e;
-	
-}
-
-struct exprS * createExpr(char * idOrString, enum exprType type)
-{
-	return createExpr(idOrString, 0, 0, 0, 0, 0, 0, 0, 0, type);
-}
-
-struct exprS * createExpr(int val, enum exprType type)
-{
-	return createExpr(0, val, 0, 0, 0, 0, 0, 0, 0, type);
-}
-
-struct exprS * createExpr(char * idOrString, struct factParamsList * params, enum exprType type)
-{
-	return createExpr(idOrString, 0, params, 0, 0, 0, 0, 0, 0, type);
-}
-
-struct exprS * createExpr(float val, enum exprType type)
-{
-	return createExpr(0, 0, 0, val, 0, 0, 0, 0, 0, type);
-}
-
-struct exprS * createExpr(double val, enum exprType type)
-{
-	return createExpr(0, 0, 0, 0, val, 0, 0, 0, 0, type);
-}
-
-struct exprS * createExpr(char val, enum exprType type)
-{
-	return createExpr(0, 0, 0, 0, 0, val, 0, 0, 0, type);
-}
-
-struct exprS * createExpr(bool val, enum exprType type)
-{
-	return createExpr(0, 0, 0, 0, 0, 0, val, 0, 0, type);
-}
-
-struct exprS * createExpr(struct exprS * expr, enum exprType type)
-{
-	return createExpr(0, 0, 0, 0, 0, 0, 0, expr, 0, type);
-}
-
-struct exprS * createExpr(struct exprS * left, struct exprS * right, enum exprType type)
-{
-	return createExpr(0, 0, 0, 0, 0, 0, 0, left, right, type);
-}
-
-struct exprS * createExpr(struct exprS * left, char * right, enum exprType type)
-{
-	return createExpr(right, 0, 0, 0, 0, 0, 0, left, 0, type);
-}
-
-struct exprS * createExpr(struct exprS * left, char * right, struct factParamsList * params, enum exprType type)
-{
-	return createExpr(right, 0, params, 0, 0, 0, 0, left, 0, type);
-}
-
-
-
-struct factParamsList * createFactParamsList(struct exprS * expr)
-{
-	struct factParamsList * l = (struct factParamsList *)malloc(sizeof(struct factParamsList));
-	l->first = expr;
-	l->last = expr;
-	return l;
-}
-
-struct factParamsList * addToFactParamsList(struct factParamsList * list, struct exprS * expr)
-{
-	list->last->next = expr;
-	list->last = expr;
-	return list;
-}
-
-
-
-struct assignmentS * createAssignment(struct exprS * left, struct exprS * right, enum assignmentType type)
-{
-	struct assignmentS * a = (struct assignmentS *)malloc(sizeof(struct assignmentS));
-	a->type = type;
-	a->left = left;
-	a->right = right;
-	return a;
-}
-
-struct whileLoopS * createWhileLoop(struct exprS * cond, struct stmtS * stmt, struct stmtList * stmts, int isDoWhile)
-{
-	struct whileLoopS * l = (struct whileLoopS *)malloc(sizeof(struct whileLoopS));
-	l->isDoWhile = isDoWhile;
-	l->cond = cond;
-	if (stmt == 0) 
-	{
-		l->stmts = stmts;		
-	}
-	else
-	{
-		stmts = createStmtList(stmt);
-	}
-	return l;
-}
-
-struct whileLoopS * createWhileLoop(struct exprS * cond, struct stmtS * stmt, int isDoWhile)
-{
-	return createWhileLoop(cond, stmt, 0, isDoWhile);
-}
-
-struct whileLoopS * createWhileLoop(struct exprS * cond, struct stmtList * stmts, int isDoWhile)
-{
-	return createWhileLoop(cond, 0, stmts, isDoWhile);
-}
-
-struct whileLoopS * createWhileLoop(struct exprS * cond, int isDoWhile)
-{
-	return createWhileLoop(cond, 0, 0, isDoWhile);
-}
-
-
-
-struct forLoopS * createForLoop(char * id, struct typeS * type, struct exprS * iterableExpr, struct stmtS * stmt, struct stmtList * stmts, struct formalParamsList * idsAndTypes)
-{
-	struct forLoopS * l = (struct forLoopS *)malloc(sizeof(struct forLoopS));
-	
-	if (id == 0)
-	{
-		l->params = idsAndTypes;
-	}
-	else
-	{
-		l->params = createFormalParamsList(id, type);
-	}
-	l->iterableExpr = iterableExpr;
-	if (stmt == 0)
-	{
-		l->stmts = stmts;
-	}
-	else
-	{
-		l->stmts = createStmtList(stmt);
-	}
-	
-	return l;
-}
-
-struct forLoopS * createForLoop(char * id, struct typeS * type, struct exprS * iterableExpr, struct stmtS * stmt)
-{
-	return createForLoop(id, type, iterableExpr, stmt, 0, 0);
-}
-
-struct forLoopS * createForLoop(char * id, struct typeS * type, struct exprS * iterableExpr, struct stmtList * stmts)
-{
-	return createForLoop(id, type, iterableExpr, 0, stmts, 0);
-}
-
-struct forLoopS * createForLoop(struct formalParamsList * idsAndTypes, struct exprS * iterableExpr, struct stmtList * stmts)
-{
-	return createForLoop(0, 0, iterableExpr, 0, stmts, idsAndTypes);
-}
-
-struct forLoopS * createForLoop(struct formalParamsList * idsAndTypes, struct exprS * iterableExpr, struct stmtS * stmt)
-{
-	return createForLoop(0, 0, iterableExpr, stmt, 0, idsAndTypes);
-}
-
-struct forLoopS * createForLoop(char * id, struct typeS * type, struct exprS * iterableExpr)
-{
-	return createForLoop(id, type, iterableExpr, 0, 0, 0);
-}
-
-struct forLoopS * createForLoop(struct formalParamsList * idsAndTypes, struct exprS * iterableExpr)
-{
-	return createForLoop(0, 0, iterableExpr, 0, 0, idsAndTypes);
-}
-
-
-struct ifStmtS * createIfStmt(struct exprS * cond, struct stmtList * actions, struct stmtList * altActions, struct stmtS * action, struct stmtS * altAction)
-{
-	struct ifStmtS * i = (struct ifStmtS *)malloc(sizeof(struct ifStmtS));
-	i->condition = cond;
-	if (action == 0)
-	{
-		i->actions = actions;
-	}
-	else
-	{
-		i->actions = createStmtList(action);
-	}
-	if (altAction == 0)
-	{
-		i->altActions = altActions;
-	}
-	else
-	{
-		i->altActions = createStmtList(altAction);
-	}
-	return i;
-}
-
-
-struct ifStmtS * createIfStmt(struct exprS * cond, struct stmtS * action)
-{
-	return createIfStmt(cond, 0, 0, action, 0);
-}
-
-struct ifStmtS * createIfStmt(struct exprS * cond, struct stmtList * actions)
-{
-	return createIfStmt(cond, actions, 0, 0, 0);
-}
-
-struct ifStmtS * createIfStmt(struct exprS * cond)
-{
-	return createIfStmt(cond, 0, 0, 0, 0);
-}
-
-struct ifStmtS * createIfStmt(struct exprS * cond, struct stmtS * action, struct stmtS * altAction)
-{
-	return createIfStmt(cond, 0, 0, action, altAction);
-}
-
-struct ifStmtS * createIfStmt(struct exprS * cond, struct stmtS * action, struct stmtList * altActions)
-{
-	return createIfStmt(cond, 0, altActions, action, 0);
-}
-
-struct ifStmtS * createIfStmt(struct exprS * cond, struct stmtList * actions, struct stmtS * altAction)
-{
-	return createIfStmt(cond, actions, 0, 0, altAction);
-}
-
-struct ifStmtS * createIfStmt(struct exprS * cond, struct stmtList * actions, struct stmtList * altActions)
-{
-	return createIfStmt(cond, actions, altActions, 0, 0);
-}
-
-struct ifStmtS * createIfStmt(struct exprS * cond, int action, struct stmtS * altAction)
-{
-	return createIfStmt(cond, 0, 0, 0, altAction);
-}
-
-struct ifStmtS * createIfStmt(struct exprS * cond, int action, struct stmtList * altActions)
-{
-	return createIfStmt(cond, 0, altActions, 0, 0);
-}
-
 
 
 
