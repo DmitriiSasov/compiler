@@ -324,14 +324,14 @@ program: semis	{root = createProgram();}
 | program semis {$$ = $1;}
 ; 
 
-class: modifiers optNewLines CLASS optNewLines ID optNewLines ':' optNewLines ID optNewLines '{' classBody '}'	{$$ = createClass($1, $5, $9, $12);}
-| modifiers optNewLines CLASS optNewLines ID optNewLines '{' classBody '}'	{$$ = createClass($1, $5, $8);}
-| CLASS optNewLines ID optNewLines ':' optNewLines ID optNewLines '{' classBody '}'	{$$ = createClass($3, $7, $10);}
-| CLASS optNewLines ID optNewLines '{' classBody '}'	{$$ = createClass($3, $6);}
-| modifiers optNewLines CLASS optNewLines ID optNewLines ':' optNewLines ID optNewLines '{' '}'	{$$ = createClass($1, $5, $9, createClassBody());}
-| modifiers optNewLines CLASS optNewLines ID optNewLines '{' '}'	{$$ = createClass($1, $5, createClassBody());}
-| CLASS optNewLines ID optNewLines ':' optNewLines ID optNewLines '{' '}'	{$$ = createClass($3, $7, createClassBody());}
-| CLASS optNewLines ID optNewLines '{' '}'	{$$ = createClass($3, createClassBody());}
+class: modifiers CLASS ID ':' ID  '{' classBody '}'	{$$ = createClass($1, $3, $5, $7);}
+| modifiers CLASS ID '{' classBody '}'	{$$ = createClass($1, $3, $5);}
+| CLASS ID ':' ID '{' classBody '}'	{$$ = createClass($2, $4, $6);}
+| CLASS ID '{' classBody '}'	{$$ = createClass($2, $4);}
+| modifiers CLASS ID ':' ID '{' '}'	{$$ = createClass($1, $3, $5, createClassBody());}
+| modifiers CLASS  ID  '{' '}'	{$$ = createClass($1, $3, createClassBody());}
+| CLASS  ID  ':'  ID '{' '}'	{$$ = createClass($2, $4, createClassBody());}
+| CLASS ID '{' '}'	{$$ = createClass($2, createClassBody());}
 ;
 
 classBody: semis 	{$$ = createClassBody();}
@@ -350,116 +350,116 @@ classBody: semis 	{$$ = createClassBody();}
 | classBody semis
 ;
 
-property: modifiers optNewLines valDeclaration	{$$ = createProperty($1, $3);}
-| modifiers optNewLines varDeclaration	{$$ = createProperty($1, $3);}
+property: modifiers valDeclaration	{$$ = createProperty($1, $2);}
+| modifiers varDeclaration	{$$ = createProperty($1, $2);}
 | valDeclaration	{$$ = createProperty($1);}
 | varDeclaration	{$$ = createProperty($1);}
 ;
 
-method: modifiers optNewLines funcDeclaration ';'	{$$ = createMethod($1, $3);}
-| modifiers optNewLines func	{$$ = createMethod($1, $3);}
+method: modifiers funcDeclaration ';'	{$$ = createMethod($1, $2);}
+| modifiers func	{$$ = createMethod($1, $2);}
 | funcDeclaration ';'	{$$ = createMethod($1);}
 | func	{$$ = createMethod($1);}
 ;
 
-initializer: INIT optNewLines block	{$$ = createInit($3);}
+initializer: INIT block	{$$ = createInit($2);}
 ;
 
 
-constructor: visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines block	{$$ = createConstructor($1, $7, $11);}
-| visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')'	{$$ = createConstructor($1, $7);}
-| visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines SUPER optNewLines '(' optNewLines optFactParams optNewLines ')'	{$$ = createConstructor($1, $7, "super", $17);}
-| visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')'  optNewLines ':' optNewLines THIS optNewLines '(' optNewLines optFactParams optNewLines ')' 	{$$ = createConstructor($1, $7, "this", $17);}
-| visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')'  optNewLines ':' optNewLines SUPER optNewLines '(' optNewLines optFactParams optNewLines ')' optNewLines block	{$$ = createConstructor($1, $7, "super", $17, $21);}
-| visibilityModifier optNewLines CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines THIS optNewLines '(' optNewLines optFactParams optNewLines ')' optNewLines block	{$$ = createConstructor($1, $7, "this", $17, $21);}
-| CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines block 	{$$ = createConstructor($5, $9);}
-| CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' 	{$$ = createConstructor($5);}
-| CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines SUPER optNewLines '(' optNewLines optFactParams optNewLines ')'	{$$ = createConstructor($5, "super", $15);}
-| CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')'  optNewLines ':' optNewLines THIS optNewLines '(' optNewLines optFactParams optNewLines ')' 	{$$ = createConstructor($5, "this", $15);}
-| CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')'  optNewLines ':' optNewLines SUPER optNewLines '(' optNewLines optFactParams optNewLines ')' optNewLines block	{$$ = createConstructor($5, "super", $15, $19);}
-| CONSTRUCTOR optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines THIS optNewLines '(' optNewLines optFactParams optNewLines ')' optNewLines block	{$$ = createConstructor($5, "this", $15, $19);}
+constructor: visibilityModifier CONSTRUCTOR '(' optFormalParams ')' block	{$$ = createConstructor($1, $4, $6);}
+| visibilityModifier CONSTRUCTOR '(' optFormalParams ')'	{$$ = createConstructor($1, $4);}
+| visibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' SUPER '(' optFactParams ')'	{$$ = createConstructor($1, $4, "super", $9);}
+| visibilityModifier CONSTRUCTOR '(' optFormalParams ')'  ':' THIS '(' optFactParams ')' 	{$$ = createConstructor($1, $4, "this", $9);}
+| visibilityModifier CONSTRUCTOR '(' optFormalParams ')'  ':' SUPER '(' optFactParams ')' block	{$$ = createConstructor($1, $4, "super", $9, $11);}
+| visibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' THIS '(' optFactParams ')' block	{$$ = createConstructor($1, $4, "this", $9, $11);}
+| CONSTRUCTOR '(' optFormalParams ')' block 	{$$ = createConstructor($3, $5);}
+| CONSTRUCTOR '(' optFormalParams ')' 	{$$ = createConstructor($3);}
+| CONSTRUCTOR '(' optFormalParams ')' ':' SUPER '(' optFactParams ')'	{$$ = createConstructor($3, "super", $8);}
+| CONSTRUCTOR '(' optFormalParams ')'  ':' THIS '(' optFactParams ')' 	{$$ = createConstructor($3, "this", $8);}
+| CONSTRUCTOR '(' optFormalParams ')'  ':' SUPER '(' optFactParams ')' block	{$$ = createConstructor($3, "super", $8, $10);}
+| CONSTRUCTOR '(' optFormalParams ')' ':' THIS '(' optFactParams ')' block	{$$ = createConstructor($3, "this", $8, $10);}
 ;
 
 optFormalParams: /*empty*/	{$$ = 0;}
 | formalParams	{$$ = $1;}
 ;
 
-formalParams: ID optNewLines ':' optNewLines type	{$$ = createFormalParamsList($1, $5);}
-| formalParams optNewLines ',' optNewLines ID optNewLines ':' optNewLines type	{$$ = addToFormalParamsList($1, $5, $9);}
+formalParams: ID ':' type	{$$ = createFormalParamsList($1, $3);}
+| formalParams ',' ID ':' type	{$$ = addToFormalParamsList($1, $3, $5);}
 ;
 
 modifiers: OVERRIDE	{$$ = createModifiers(0, 1, Unknown, None);}
 | visibilityModifier	{$$ = createModifiers(0, 1, $1, None);}
 | inheritanceModifier	{$$ = createModifiers(0, 1, Unknown, $1);}
 | ABSTRACT	{$$ = createModifiers(1, 0, Unknown, None);}
-| OVERRIDE optNewLines visibilityModifier	{$$ = createModifiers(0, 1, $3, None);}
-| OVERRIDE optNewLines inheritanceModifier	{$$ = createModifiers(0, 1, Unknown, $3);}
-| OVERRIDE optNewLines ABSTRACT	{$$ = createModifiers(1, 1, Unknown, None);}
-| visibilityModifier optNewLines OVERRIDE	{$$ = createModifiers(0, 1, $1, None);}
-| visibilityModifier optNewLines inheritanceModifier	{$$ = createModifiers(0, 0, $1, $3);}
-| visibilityModifier optNewLines ABSTRACT	{$$ = createModifiers(1, 0, $1, None);}
-| inheritanceModifier optNewLines OVERRIDE	{$$ = createModifiers(0, 1, Unknown, $1);}
-| inheritanceModifier optNewLines visibilityModifier	{$$ = createModifiers(0, 0, $3, $1);}
-| inheritanceModifier optNewLines ABSTRACT 	{$$ = createModifiers(1, 0, Unknown, $1);}
-| ABSTRACT optNewLines OVERRIDE	{$$ = createModifiers(1, 1, Unknown, None);}
-| ABSTRACT optNewLines visibilityModifier 	{$$ = createModifiers(1, 0, $3, None);}
-| ABSTRACT optNewLines inheritanceModifier	{$$ = createModifiers(1, 0, Unknown, $3);}
-| OVERRIDE optNewLines visibilityModifier optNewLines inheritanceModifier	{$$ = createModifiers(0, 1, $3, $5);}
-| OVERRIDE optNewLines visibilityModifier optNewLines ABSTRACT	{$$ = createModifiers(1, 1, $3, None);}
-| OVERRIDE optNewLines inheritanceModifier optNewLines visibilityModifier	{$$ = createModifiers(0, 1, $5, $3);}
-| OVERRIDE optNewLines inheritanceModifier optNewLines ABSTRACT	{$$ = createModifiers(1, 1, Unknown, $3);}
-| OVERRIDE optNewLines ABSTRACT optNewLines visibilityModifier	{$$ = createModifiers(1, 1, $5, None);}
-| OVERRIDE optNewLines ABSTRACT optNewLines inheritanceModifier	{$$ = createModifiers(1, 1, Unknown, $5);}
-| visibilityModifier optNewLines OVERRIDE optNewLines inheritanceModifier	{$$ = createModifiers(0, 1, $1, $5);}
-| visibilityModifier optNewLines OVERRIDE optNewLines ABSTRACT	{$$ = createModifiers(1, 1, $1, None);}
-| visibilityModifier optNewLines inheritanceModifier optNewLines OVERRIDE 	{$$ = createModifiers(0, 1, $1, $3);}
-| visibilityModifier optNewLines inheritanceModifier optNewLines ABSTRACT	{$$ = createModifiers(1, 0, $1, $3);}
-| visibilityModifier optNewLines ABSTRACT optNewLines inheritanceModifier	{$$ = createModifiers(1, 0, $1, $5);}
-| visibilityModifier optNewLines ABSTRACT optNewLines OVERRIDE	{$$ = createModifiers(1, 1, $1, None);}
-| inheritanceModifier optNewLines OVERRIDE optNewLines visibilityModifier 	{$$ = createModifiers(0, 1, $5, $1);}
-| inheritanceModifier optNewLines OVERRIDE optNewLines ABSTRACT	{$$ = createModifiers(1, 1, Unknown, $1);}
-| inheritanceModifier optNewLines visibilityModifier optNewLines ABSTRACT	{$$ = createModifiers(1, 0, $3, $1);}
-| inheritanceModifier optNewLines visibilityModifier optNewLines OVERRIDE	{$$ = createModifiers(0, 1, $3, $1);}
-| inheritanceModifier optNewLines ABSTRACT optNewLines visibilityModifier 	{$$ = createModifiers(1, 0, $5, $1);}
-| inheritanceModifier optNewLines ABSTRACT optNewLines OVERRIDE	{$$ = createModifiers(1, 1, Unknown, $1);}
-| ABSTRACT optNewLines OVERRIDE optNewLines inheritanceModifier	{$$ = createModifiers(1, 1, Unknown, $5);}
-| ABSTRACT optNewLines OVERRIDE optNewLines visibilityModifier	{$$ = createModifiers(1, 1, $5, None);}
-| ABSTRACT optNewLines visibilityModifier optNewLines OVERRIDE	{$$ = createModifiers(1, 1, $3, None);}
-| ABSTRACT optNewLines visibilityModifier optNewLines inheritanceModifier	{$$ = createModifiers(1, 0, $3, $5);}
-| ABSTRACT optNewLines inheritanceModifier optNewLines OVERRIDE	{$$ = createModifiers(1, 1, Unknown, $3);}
-| ABSTRACT optNewLines inheritanceModifier optNewLines visibilityModifier	{$$ = createModifiers(1, 0, $5, $3);}
-| OVERRIDE optNewLines visibilityModifier optNewLines inheritanceModifier optNewLines ABSTRACT	{$$ = createModifiers(1, 1, $3, $5);}
-| OVERRIDE optNewLines visibilityModifier optNewLines ABSTRACT optNewLines inheritanceModifier	{$$ = createModifiers(1, 1, $3, $7);}
-| OVERRIDE optNewLines inheritanceModifier optNewLines visibilityModifier optNewLines ABSTRACT	{$$ = createModifiers(1, 1, $5, $3);}
-| OVERRIDE optNewLines inheritanceModifier optNewLines ABSTRACT optNewLines visibilityModifier	{$$ = createModifiers(1, 1, $7, $3);}
-| OVERRIDE optNewLines ABSTRACT optNewLines visibilityModifier optNewLines inheritanceModifier	{$$ = createModifiers(1, 1, $5, $7);}
-| OVERRIDE optNewLines ABSTRACT optNewLines inheritanceModifier optNewLines visibilityModifier	{$$ = createModifiers(1, 1, $7, $5);}
-| visibilityModifier optNewLines OVERRIDE optNewLines inheritanceModifier optNewLines ABSTRACT	{$$ = createModifiers(1, 1, $1, $5);}
-| visibilityModifier optNewLines OVERRIDE optNewLines ABSTRACT optNewLines inheritanceModifier	{$$ = createModifiers(1, 1, $1, $7);}
-| visibilityModifier optNewLines inheritanceModifier optNewLines OVERRIDE optNewLines ABSTRACT	{$$ = createModifiers(1, 1, $1, $3);}
-| visibilityModifier optNewLines inheritanceModifier optNewLines ABSTRACT optNewLines OVERRIDE	{$$ = createModifiers(1, 1, $1, $3);}
-| visibilityModifier optNewLines ABSTRACT optNewLines inheritanceModifier optNewLines OVERRIDE	{$$ = createModifiers(1, 1, $1, $5);}
-| visibilityModifier optNewLines ABSTRACT optNewLines OVERRIDE optNewLines inheritanceModifier	{$$ = createModifiers(1, 1, $1, $7);}
-| inheritanceModifier optNewLines OVERRIDE optNewLines visibilityModifier optNewLines ABSTRACT	{$$ = createModifiers(1, 1, $5, $1);}
-| inheritanceModifier optNewLines OVERRIDE optNewLines ABSTRACT optNewLines visibilityModifier	{$$ = createModifiers(1, 1, $7, $1);}
-| inheritanceModifier optNewLines visibilityModifier optNewLines ABSTRACT optNewLines OVERRIDE
+| OVERRIDE visibilityModifier	{$$ = createModifiers(0, 1, $2, None);}
+| OVERRIDE inheritanceModifier	{$$ = createModifiers(0, 1, Unknown, $2);}
+| OVERRIDE ABSTRACT	{$$ = createModifiers(1, 1, Unknown, None);}
+| visibilityModifier OVERRIDE	{$$ = createModifiers(0, 1, $1, None);}
+| visibilityModifier inheritanceModifier	{$$ = createModifiers(0, 0, $1, $2);}
+| visibilityModifier ABSTRACT	{$$ = createModifiers(1, 0, $1, None);}
+| inheritanceModifier OVERRIDE	{$$ = createModifiers(0, 1, Unknown, $1);}
+| inheritanceModifier visibilityModifier	{$$ = createModifiers(0, 0, $2, $1);}
+| inheritanceModifier ABSTRACT 	{$$ = createModifiers(1, 0, Unknown, $1);}
+| ABSTRACT OVERRIDE	{$$ = createModifiers(1, 1, Unknown, None);}
+| ABSTRACT visibilityModifier 	{$$ = createModifiers(1, 0, $2, None);}
+| ABSTRACT inheritanceModifier	{$$ = createModifiers(1, 0, Unknown, $2);}
+| OVERRIDE visibilityModifier inheritanceModifier	{$$ = createModifiers(0, 1, $2, $3);}
+| OVERRIDE visibilityModifier ABSTRACT	{$$ = createModifiers(1, 1, $2, None);}
+| OVERRIDE inheritanceModifier visibilityModifier	{$$ = createModifiers(0, 1, $3, $2);}
+| OVERRIDE inheritanceModifier ABSTRACT	{$$ = createModifiers(1, 1, Unknown, $2);}
+| OVERRIDE ABSTRACT visibilityModifier	{$$ = createModifiers(1, 1, $3, None);}
+| OVERRIDE ABSTRACT inheritanceModifier	{$$ = createModifiers(1, 1, Unknown, $3);}
+| visibilityModifier OVERRIDE inheritanceModifier	{$$ = createModifiers(0, 1, $1, $3);}
+| visibilityModifier OVERRIDE ABSTRACT	{$$ = createModifiers(1, 1, $1, None);}
+| visibilityModifier inheritanceModifier OVERRIDE 	{$$ = createModifiers(0, 1, $1, $2);}
+| visibilityModifier inheritanceModifier ABSTRACT	{$$ = createModifiers(1, 0, $1, $2);}
+| visibilityModifier ABSTRACT inheritanceModifier	{$$ = createModifiers(1, 0, $1, $3);}
+| visibilityModifier ABSTRACT OVERRIDE	{$$ = createModifiers(1, 1, $1, None);}
+| inheritanceModifier OVERRIDE visibilityModifier 	{$$ = createModifiers(0, 1, $3, $1);}
+| inheritanceModifier OVERRIDE ABSTRACT	{$$ = createModifiers(1, 1, Unknown, $1);}
+| inheritanceModifier visibilityModifier ABSTRACT	{$$ = createModifiers(1, 0, $2, $1);}
+| inheritanceModifier visibilityModifier OVERRIDE	{$$ = createModifiers(0, 1, $2, $1);}
+| inheritanceModifier ABSTRACT visibilityModifier 	{$$ = createModifiers(1, 0, $3, $1);}
+| inheritanceModifier ABSTRACT OVERRIDE	{$$ = createModifiers(1, 1, Unknown, $1);}
+| ABSTRACT OVERRIDE inheritanceModifier	{$$ = createModifiers(1, 1, Unknown, $3);}
+| ABSTRACT OVERRIDE visibilityModifier	{$$ = createModifiers(1, 1, $3, None);}
+| ABSTRACT visibilityModifier OVERRIDE	{$$ = createModifiers(1, 1, $2, None);}
+| ABSTRACT visibilityModifier inheritanceModifier	{$$ = createModifiers(1, 0, $2, $3);}
+| ABSTRACT inheritanceModifier OVERRIDE	{$$ = createModifiers(1, 1, Unknown, $2);}
+| ABSTRACT inheritanceModifier visibilityModifier	{$$ = createModifiers(1, 0, $3, $2);}
+| OVERRIDE visibilityModifier inheritanceModifier ABSTRACT	{$$ = createModifiers(1, 1, $2, $3);}
+| OVERRIDE visibilityModifier ABSTRACT inheritanceModifier	{$$ = createModifiers(1, 1, $2, $4);}
+| OVERRIDE inheritanceModifier visibilityModifier ABSTRACT	{$$ = createModifiers(1, 1, $3, $2);}
+| OVERRIDE inheritanceModifier ABSTRACT visibilityModifier	{$$ = createModifiers(1, 1, $4, $2);}
+| OVERRIDE ABSTRACT visibilityModifier inheritanceModifier	{$$ = createModifiers(1, 1, $3, $4);}
+| OVERRIDE ABSTRACT inheritanceModifier visibilityModifier	{$$ = createModifiers(1, 1, $4, $3);}
+| visibilityModifier OVERRIDE inheritanceModifier ABSTRACT	{$$ = createModifiers(1, 1, $1, $3);}
+| visibilityModifier OVERRIDE ABSTRACT inheritanceModifier	{$$ = createModifiers(1, 1, $1, $4);}
+| visibilityModifier inheritanceModifier OVERRIDE ABSTRACT	{$$ = createModifiers(1, 1, $1, $2);}
+| visibilityModifier inheritanceModifier ABSTRACT OVERRIDE	{$$ = createModifiers(1, 1, $1, $2);}
+| visibilityModifier ABSTRACT inheritanceModifier OVERRIDE	{$$ = createModifiers(1, 1, $1, $3);}
+| visibilityModifier ABSTRACT OVERRIDE inheritanceModifier	{$$ = createModifiers(1, 1, $1, $4);}
+| inheritanceModifier OVERRIDE visibilityModifier ABSTRACT	{$$ = createModifiers(1, 1, $3, $1);}
+| inheritanceModifier OVERRIDE ABSTRACT visibilityModifier	{$$ = createModifiers(1, 1, $4, $1);}
+| inheritanceModifier visibilityModifier ABSTRACT OVERRIDE
+	{$$ = createModifiers(1, 1, $2, $1);}
+| inheritanceModifier visibilityModifier OVERRIDE ABSTRACT
+	{$$ = createModifiers(1, 1, $2, $1);}
+| inheritanceModifier ABSTRACT visibilityModifier OVERRIDE
 	{$$ = createModifiers(1, 1, $3, $1);}
-| inheritanceModifier optNewLines visibilityModifier optNewLines OVERRIDE optNewLines ABSTRACT
-	{$$ = createModifiers(1, 1, $3, $1);}
-| inheritanceModifier optNewLines ABSTRACT optNewLines visibilityModifier optNewLines OVERRIDE
-	{$$ = createModifiers(1, 1, $5, $1);}
-| inheritanceModifier optNewLines ABSTRACT optNewLines OVERRIDE optNewLines visibilityModifier
-	{$$ = createModifiers(1, 1, $7, $1);}
-| ABSTRACT optNewLines OVERRIDE optNewLines inheritanceModifier optNewLines visibilityModifier
-	{$$ = createModifiers(1, 1, $7, $5);}
-| ABSTRACT optNewLines OVERRIDE optNewLines visibilityModifier optNewLines inheritanceModifier
-	{$$ = createModifiers(1, 1, $5, $7);}
-| ABSTRACT optNewLines visibilityModifier optNewLines OVERRIDE optNewLines inheritanceModifier	{$$ = createModifiers(1, 1, $3, $7);}
-| ABSTRACT optNewLines visibilityModifier optNewLines inheritanceModifier optNewLines OVERRIDE	{$$ = createModifiers(1, 1, $3, $5);}
-| ABSTRACT optNewLines inheritanceModifier optNewLines OVERRIDE optNewLines visibilityModifier
-	{$$ = createModifiers(1, 1, $7, $3);}
-| ABSTRACT optNewLines inheritanceModifier optNewLines visibilityModifier optNewLines OVERRIDE
-	{$$ = createModifiers(1, 1, $5, $3);}
+| inheritanceModifier ABSTRACT OVERRIDE visibilityModifier
+	{$$ = createModifiers(1, 1, $4, $1);}
+| ABSTRACT OVERRIDE inheritanceModifier visibilityModifier
+	{$$ = createModifiers(1, 1, $4, $3);}
+| ABSTRACT OVERRIDE visibilityModifier inheritanceModifier
+	{$$ = createModifiers(1, 1, $3, $4);}
+| ABSTRACT visibilityModifier OVERRIDE inheritanceModifier	{$$ = createModifiers(1, 1, $2, $4);}
+| ABSTRACT visibilityModifier inheritanceModifier OVERRIDE	{$$ = createModifiers(1, 1, $2, $3);}
+| ABSTRACT inheritanceModifier OVERRIDE visibilityModifier
+	{$$ = createModifiers(1, 1, $4, $2);}
+| ABSTRACT inheritanceModifier visibilityModifier OVERRIDE
+	{$$ = createModifiers(1, 1, $3, $2);}
 ;
 
 visibilityModifier: PUBLIC	{$$ = Public;}
@@ -473,44 +473,44 @@ inheritanceModifier: FINAL {$$ = Final;}
 | OPEN {$$ = Open;}
 ;
 
-func : funcDeclaration optNewLines block	{$$ = createFunc($1, $3);}
-| funcDeclaration optNewLines '=' optNewLines expr	{$$ = createFunc($1, $5);}
+func : funcDeclaration block	{$$ = createFunc($1, $2);}
+| funcDeclaration '=' expr	{$$ = createFunc($1, $3);}
 ;
 
 
-funcDeclaration: FUN optNewLines ID optNewLines '(' optNewLines optFormalParams optNewLines ')' optNewLines ':' optNewLines type	{$$ = createFuncDecl($3, $7, $13);}
+funcDeclaration: FUN ID '(' optFormalParams ')' ':' type	{$$ = createFuncDecl($2, $4, $7);}
 ;
 
 
-block : '{' optNewLines stmts optNewLines'}'	{$$ = $3;}
+block : '{' stmts '}'	{$$ = $2;}
 | '{' semis stmts '}'	{$$ = $3;}
 | '{' semis '}'	{$$ = 0;}
-| '{' optNewLines '}'	{$$ = 0;}
+| '{' '}'	{$$ = 0;}
 ;
 
 
-varDeclaration: VAR optNewLines ID optNewLines ':' optNewLines type	{$$ = createVarOrValDecl($3, $7, 0);}
-| VAR optNewLines ID optNewLines ':' optNewLines type optNewLines '=' optNewLines expr	{$$ = createVarOrValDecl($3, $7, $11, 0);}
-| VAR optNewLines '(' optNewLines formalParams optNewLines ')' optNewLines '=' optNewLines expr	{$$ = createVarOrValDecl($5, $11, 0);}
+varDeclaration: VAR ID ':' type	{$$ = createVarOrValDecl($2, $4, 0);}
+| VAR ID ':' type '=' expr	{$$ = createVarOrValDecl($2, $4, $6, 0);}
+| VAR '(' formalParams ')' '=' expr	{$$ = createVarOrValDecl($3, $6, 0);}
 ;
 
 
-valDeclaration: VAL optNewLines ID optNewLines ':' optNewLines type	{$$ = createVarOrValDecl($3, $7, 1);}
-| VAL optNewLines ID optNewLines ':' optNewLines type optNewLines '=' optNewLines expr	{$$ = createVarOrValDecl($3, $7, $11, 1);}
-| VAL optNewLines '(' optNewLines formalParams optNewLines ')' optNewLines '=' optNewLines expr	{$$ = createVarOrValDecl($5, $11, 1);}
+valDeclaration: VAL ID ':' type	{$$ = createVarOrValDecl($2, $4, 1);}
+| VAL ID ':' type '=' expr	{$$ = createVarOrValDecl($2, $4, $6, 1);}
+| VAL '(' formalParams ')' '=' expr	{$$ = createVarOrValDecl($3, $6, 1);}
 ;
 
 type: ID	{$$ = createType($1);}
 | templateType	{$$ = createType($1);}
 ;
 
-templateType: ID optNewLines '<' optNewLines type_seq optNewLines '>'	{$$ = createTemplateType($1, $5);}
+templateType: ID '<' type_seq '>'	{$$ = createTemplateType($1, $3);}
 ;
 
 type_seq: ID	{$$ = createTypesList($1);}
 | templateType	{$$ = createTypesList($1);}
-| type_seq optNewLines ',' optNewLines ID	{$$ = addToTypesList($1, $5); }
-| type_seq optNewLines ',' optNewLines templateType	{$$ = addToTypesList($1, $5); }
+| type_seq ',' ID	{$$ = addToTypesList($1, $3); }
+| type_seq ',' templateType	{$$ = addToTypesList($1, $3); }
 ;
 
 stmts : stmt	{$$ = createStmtList($1);}
@@ -545,7 +545,7 @@ stmt : valDeclaration semis	{$$ = createStmt($1, VarOrVal);}
 
 expr: ID	{$$ = createExpr($1, Identificator);}
 | THIS 	{$$ = createExpr(0, This);}
-| ID '(' optNewLines optFactParams optNewLines ')'	{$$ = createExpr($1, $4, MethodCall);}
+| ID '(' optFactParams ')'	{$$ = createExpr($1, $3, MethodCall);}
 | INT 	{$$ = createExpr($1, Int);}
 | FLOAT 	{$$ = createExpr($1, Float);}
 | STRING 	{$$ = createExpr($1, String);}
@@ -572,10 +572,10 @@ expr: ID	{$$ = createExpr($1, Identificator);}
 | expr LOEQ expr	{$$ = createExpr($1, $3, Loeq);}
 | expr MOEQ expr	{$$ = createExpr($1, $3, Moeq);}
 | expr '.' ID 	{$$ = createExpr($1, $3, FieldCalcExpr);}
-| expr '.' ID '(' optNewLines optFactParams optNewLines ')'	{$$ = createExpr($1, $3, $6, MethodCalcExpr);}
+| expr '.' ID '(' optFactParams ')'	{$$ = createExpr($1, $3, $5, MethodCalcExpr);}
 | expr '[' expr ']'	{$$ = createExpr($1, $3, ArrayElementCall);} 
 | SUPER '.' ID	{$$ = createExpr(0, $3, ParentFieldCall);}
-| SUPER '.' ID '(' optNewLines optFactParams optNewLines ')'	{$$ = createExpr(0, $3, $6, ParentMethodCall);}
+| SUPER '.' ID '(' optFactParams ')'	{$$ = createExpr(0, $3, $5, ParentMethodCall);}
 | expr RANGE expr	{$$ = createExpr($1, $3, Range);}
 ;
 
@@ -584,47 +584,47 @@ optFactParams: /*empty*/	{$$ = 0;}
 ;
 
 factParams: expr	{$$ = createFactParamsList($1);}
-| factParams optNewLines ',' optNewLines expr	{$$ = addToFactParamsList($1, $5);}
+| factParams ',' expr	{$$ = addToFactParamsList($1, $3);}
 ;
 
-assignment: expr '=' optNewLines expr	{$$ = createAssignment($1, $4, Assign);}
-| expr ASUM optNewLines expr 	{$$ = createAssignment($1, $4, Asum);}
-| expr ASUB optNewLines expr 	{$$ = createAssignment($1, $4, Asub);}
-| expr ADIV optNewLines expr 	{$$ = createAssignment($1, $4, Adiv);}
-| expr AMUL optNewLines expr 	{$$ = createAssignment($1, $4, Amul);}
-| expr AMOD optNewLines expr	{$$ = createAssignment($1, $4, Amod);}
+assignment: expr '=' expr	{$$ = createAssignment($1, $3, Assign);}
+| expr ASUM expr 	{$$ = createAssignment($1, $3, Asum);}
+| expr ASUB expr 	{$$ = createAssignment($1, $3, Asub);}
+| expr ADIV expr 	{$$ = createAssignment($1, $3, Adiv);}
+| expr AMUL expr 	{$$ = createAssignment($1, $3, Amul);}
+| expr AMOD expr	{$$ = createAssignment($1, $3, Amod);}
 ;
 
-whileLoop: WHILE optNewLines '(' optNewLines expr optNewLines ')' optNewLines stmt	{$$ = createWhileLoop($5, $9, 0);}
-| WHILE optNewLines '(' optNewLines expr optNewLines ')' optNewLines block	{$$ = createWhileLoop($5, $9, 0);}
-| WHILE optNewLines '(' optNewLines expr optNewLines ')' optNewLines ';'	{$$ = createWhileLoop($5, 0);}
+whileLoop: WHILE '(' expr ')' stmt	{$$ = createWhileLoop($3, $5, 0);}
+| WHILE '(' expr ')' block	{$$ = createWhileLoop($3, $5, 0);}
+| WHILE '(' expr ')' ';'	{$$ = createWhileLoop($3, 0);}
 ;
 
-doWhileLoop: DO optNewLines stmt optNewLines WHILE optNewLines '(' optNewLines expr optNewLines ')'	{$$ = createWhileLoop($9, $3, 1);}
-| DO optNewLines block optNewLines WHILE optNewLines '(' optNewLines expr optNewLines ')'	{$$ = createWhileLoop($9, $3, 1);}
-| DO optNewLines WHILE optNewLines '(' optNewLines expr optNewLines ')' optNewLines	{$$ = createWhileLoop($7, 1);}
+doWhileLoop: DO stmt WHILE '(' expr ')'	{$$ = createWhileLoop($5, $2, 1);}
+| DO block WHILE '(' expr ')'	{$$ = createWhileLoop($5, $2, 1);}
+| DO WHILE '(' expr ')' optNewLines	{$$ = createWhileLoop($4, 1);}
 ;
 
-forLoop: FOR optNewLines '(' optNewLines ID optNewLines ':' optNewLines type optNewLines IN optNewLines expr optNewLines ')' optNewLines stmt	{$$ = createForLoop($5, $9, $13, $17);}
-| FOR optNewLines '(' optNewLines ID optNewLines ':' optNewLines type optNewLines IN optNewLines expr optNewLines ')' optNewLines block	{$$ = createForLoop($5, $9, $13, $17);}
-| FOR optNewLines '(' optNewLines ID optNewLines ':' optNewLines type optNewLines IN optNewLines expr optNewLines ')' optNewLines ';' 	{$$ = createForLoop($5, $9, $13);}
-| FOR optNewLines '(' optNewLines '(' optNewLines formalParams optNewLines ')' optNewLines IN optNewLines expr optNewLines ')' optNewLines stmt	{$$ = createForLoop($7, $13, $17);}
-| FOR optNewLines '(' optNewLines '(' optNewLines formalParams optNewLines ')' optNewLines IN optNewLines expr optNewLines ')' optNewLines block	{$$ = createForLoop($7, $13, $17);}
-| FOR optNewLines '(' optNewLines '(' optNewLines formalParams optNewLines ')' optNewLines IN optNewLines expr optNewLines ')' optNewLines ';'	{$$ = createForLoop($7, $13);}
+forLoop: FOR '(' ID ':' type IN expr ')' stmt	{$$ = createForLoop($3, $5, $7, $9);}
+| FOR '(' ID ':' type IN expr ')' block	{$$ = createForLoop($3, $5, $7, $9);}
+| FOR '(' ID ':' type IN expr ')' ';' 	{$$ = createForLoop($3, $5, $7);}
+| FOR '(' '(' formalParams ')' IN expr ')' stmt	{$$ = createForLoop($4, $7, $9);}
+| FOR '(' '(' formalParams ')' IN expr ')' block	{$$ = createForLoop($4, $7, $9);}
+| FOR '(' '(' formalParams ')' IN expr ')' ';'	{$$ = createForLoop($4, $7);}
 ;
 
-ifStmt: IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines stmt	{$$ = createIfStmt($5, $9);}
-| IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines block	{$$ = createIfStmt($5, $9);}
-| IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines semis 	{$$ = createIfStmt($5);}
-| IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines stmt optNewLines ELSE optNewLines stmt	{$$ = createIfStmt($5, $9, $13);}
-| IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines block optNewLines ELSE optNewLines stmt	{$$ = createIfStmt($5, $9, $13);}
-| IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines semis optNewLines ELSE optNewLines stmt	{$$ = createIfStmt($5, 0, $13);}
-| IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines stmt optNewLines ELSE optNewLines block	{$$ = createIfStmt($5, $9, $13);}
-| IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines block optNewLines ELSE optNewLines block	{$$ = createIfStmt($5, $9, $13);}
-| IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines semis optNewLines ELSE optNewLines block	{$$ = createIfStmt($5, 0, $13);}
-| IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines stmt optNewLines ELSE optNewLines semis	{$$ = createIfStmt($5, $9);}
-| IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines block optNewLines ELSE optNewLines semis	{$$ = createIfStmt($5, $9);}
-| IF optNewLines '(' optNewLines expr optNewLines ')' optNewLines semis optNewLines ELSE optNewLines semis	{$$ = createIfStmt($5);}
+ifStmt: IF '(' expr ')' stmt	{$$ = createIfStmt($3, $5);}
+| IF '(' expr ')' block	{$$ = createIfStmt($3, $5);}
+| IF '(' expr ')' semis 	{$$ = createIfStmt($3);}
+| IF '(' expr ')' stmt ELSE stmt	{$$ = createIfStmt($3, $5, $7);}
+| IF '(' expr ')' block ELSE stmt	{$$ = createIfStmt($3, $5, $7);}
+| IF '(' expr ')' semis ELSE stmt	{$$ = createIfStmt($3, 0, $7);}
+| IF '(' expr ')' stmt ELSE block	{$$ = createIfStmt($3, $5, $7);}
+| IF '(' expr ')' block ELSE block	{$$ = createIfStmt($3, $5, $7);}
+| IF '(' expr ')' semis ELSE block	{$$ = createIfStmt($3, 0, $7);}
+| IF '(' expr ')' stmt ELSE semis	{$$ = createIfStmt($3, $5);}
+| IF '(' expr ')' block ELSE semis	{$$ = createIfStmt($3, $5);}
+| IF '(' expr ')' semis ELSE semis	{$$ = createIfStmt($3);}
 ;
 
 
