@@ -2672,7 +2672,7 @@ case 176:
 /* rule 176 can match eol */
 YY_RULE_SETUP
 #line 474 "lexer.l"
-{ /*printf("Found new line\n"); */}
+{ return NEW_LINE; }
 	YY_BREAK
 case 177:
 YY_RULE_SETUP
@@ -2735,33 +2735,31 @@ case YY_STATE_EOF(SLCOMMENT):
                 printf("ERROR! Found end of file, but expected }\n");
                 if (list != 0) 
                     free(list);
-                return 0;
             }
             else 
             {
                 printf("Found end of file\n");
                 if (list != 0) 
                     free(list);
-                return 0;
             }
         }
 	YY_BREAK
 case 184:
 YY_RULE_SETUP
-#line 515 "lexer.l"
+#line 513 "lexer.l"
 {;}
 	YY_BREAK
 case 185:
 YY_RULE_SETUP
-#line 516 "lexer.l"
+#line 514 "lexer.l"
 {printf("Found unidentified symbol \'%s\'\n", yytext);}
 	YY_BREAK
 case 186:
 YY_RULE_SETUP
-#line 518 "lexer.l"
+#line 516 "lexer.l"
 ECHO;
 	YY_BREAK
-#line 2764 "lexer.flex.cpp"
+#line 2762 "lexer.flex.cpp"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -3777,7 +3775,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 518 "lexer.l"
+#line 516 "lexer.l"
 
 
 bool isNotKeyword(const char* str)
