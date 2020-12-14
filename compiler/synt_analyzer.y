@@ -320,8 +320,8 @@ program: semis	{root = createProgram();}
 | program method	{$$ = addToProgram($1, $2);}
 | program property semis	{$$ = addToProgram($1, $2);}
 | program property newLines	{$$ = addToProgram($1, $2);}
-| program newLines 
-| program semis
+| program newLines {$$ = $1;}
+| program semis {$$ = $1;}
 ; 
 
 class: modifiers optNewLines CLASS optNewLines ID optNewLines ':' optNewLines ID optNewLines '{' optNewLines classBody '}'	{$$ = createClass($1, $5, $9, $13);}
@@ -1460,13 +1460,15 @@ struct ifStmtS * createIfStmt(struct exprS * cond, int action, struct stmtList *
 
 
 void main(int argc, char **argv ){
-	yyin = fopen(argv[1], "r" );
+	yyin = fopen(argv[1], "r");
 	FILE * file = fopen("tree.dot", "w");
 	
     yyparse();
-	
+
+	fprintf(file, "digraph G {\n");
 	print(root, file);
-	
+	fprintf(file, "\n}");
+
 	fclose(file);
 
     return;
