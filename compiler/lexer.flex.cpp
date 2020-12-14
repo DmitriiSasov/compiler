@@ -1517,7 +1517,7 @@ while (elementToRemoveFromStack > 0)
     {
         yylval.IdOrString = list->last->stringOrId;
         removeLastFromList(list);
-        return STRING;
+        return STR;
     }
     --elementToRemoveFromStack;
 }
@@ -2486,7 +2486,7 @@ YY_RULE_SETUP
                         yylval.IdOrString = (char *)malloc(strlen(str) + 1);
                         strcpy(yylval.IdOrString, str);
                         BEGIN(INITIAL);
-						return STRING;
+						return STR;
                     }
 	YY_BREAK
 case 162:
@@ -2544,7 +2544,7 @@ YY_RULE_SETUP
                                 ++elementToRemoveFromStack;
                                 str[0] = 0;
 
-                                return STRING;
+                                return STR;
                             }                               
                         }
 	YY_BREAK
@@ -2576,7 +2576,7 @@ YY_RULE_SETUP
                                 ++elementToRemoveFromStack;
                                 str[0] = 0; 
 
-                                return STRING;                   
+                                return STR;                   
                           }
 	YY_BREAK
 case 167:
@@ -2599,7 +2599,7 @@ YY_RULE_SETUP
                                     ++complexTemplateNestingLevel;
                                     BEGIN(INITIAL);
 
-                                    return STRING;
+                                    return STR;
                                 }
 	YY_BREAK
 case 169:
@@ -2641,7 +2641,7 @@ YY_RULE_SETUP
                         strcpy(yylval.IdOrString, str);
                         BEGIN(INITIAL);
 
-						return STRING;
+						return STR;
                     }
 	YY_BREAK
 case 175:
@@ -2661,7 +2661,7 @@ YY_RULE_SETUP
                         
                         BEGIN(INITIAL);
 
-                        return STRING;
+                        return STR;
                     }
 	YY_BREAK
 case YY_STATE_EOF(MLSTRING):

@@ -56,7 +56,7 @@ extern int yydebug;
     YYUNDEF = 257,                 /* "invalid token"  */
     NEW_LINE = 258,                /* NEW_LINE  */
     ID = 259,                      /* ID  */
-    STRING = 260,                  /* STRING  */
+    STR = 260,                     /* STR  */
     CLASS = 261,                   /* CLASS  */
     PUBLIC = 262,                  /* PUBLIC  */
     PRIVATE = 263,                 /* PRIVATE  */

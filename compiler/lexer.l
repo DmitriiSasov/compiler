@@ -70,7 +70,7 @@ while (elementToRemoveFromStack > 0)
     {
         yylval.IdOrString = list->last->stringOrId;
         removeLastFromList(list);
-        return STRING;
+        return STR;
     }
     --elementToRemoveFromStack;
 }
@@ -347,7 +347,7 @@ false 	{	yylval.Bool_v = false;
                         yylval.IdOrString = (char *)malloc(strlen(str) + 1);
                         strcpy(yylval.IdOrString, str);
                         BEGIN(INITIAL);
-						return STRING;
+						return STR;
                     }
 <STRING>\\([^utbrn'"\\$]|(u{HEX_DIGIT}{0,3})) { printf("ERROR! Found illegal escape \"%s\"\n", yytext); }
 <STRING>\n          { printf("ERROR! New line found after \"%s\", but \" expected\n", str); }
@@ -384,7 +384,7 @@ false 	{	yylval.Bool_v = false;
                                 ++elementToRemoveFromStack;
                                 str[0] = 0;
 
-                                return STRING;
+                                return STR;
                             }                               
                         }
 
@@ -413,7 +413,7 @@ false 	{	yylval.Bool_v = false;
                                 ++elementToRemoveFromStack;
                                 str[0] = 0; 
 
-                                return STRING;                   
+                                return STR;                   
                           }
 
 <STRING,MLSTRING>\$`[^`\n]*[\\\[\]][^`\n]*` { printf("ERROR! Found invalid identificator in template %s\n", yytext + 1); }
@@ -430,7 +430,7 @@ false 	{	yylval.Bool_v = false;
                                     ++complexTemplateNestingLevel;
                                     BEGIN(INITIAL);
 
-                                    return STRING;
+                                    return STR;
                                 }
 <STRING,MLSTRING>\$\{\}         { printf("ERROR! Found empty complex template\n"); }
 <STRING,MLSTRING>\$             { strcat(str, yytext); }
@@ -448,7 +448,7 @@ false 	{	yylval.Bool_v = false;
                         strcpy(yylval.IdOrString, str);
                         BEGIN(INITIAL);
 
-						return STRING;
+						return STR;
                     }
                     
 <MLSTRING>\$\{      {
@@ -465,7 +465,7 @@ false 	{	yylval.Bool_v = false;
                         
                         BEGIN(INITIAL);
 
-                        return STRING;
+                        return STR;
                     }
 <MLSTRING><<EOF>>   { printf("ERROR! Found end of file, but expected \"\"\"\n"); }
 

@@ -116,7 +116,7 @@ enum yysymbol_kind_t
   YYSYMBOL_YYUNDEF = 2,                    /* "invalid token"  */
   YYSYMBOL_NEW_LINE = 3,                   /* NEW_LINE  */
   YYSYMBOL_ID = 4,                         /* ID  */
-  YYSYMBOL_STRING = 5,                     /* STRING  */
+  YYSYMBOL_STR = 5,                        /* STR  */
   YYSYMBOL_CLASS = 6,                      /* CLASS  */
   YYSYMBOL_PUBLIC = 7,                     /* PUBLIC  */
   YYSYMBOL_PRIVATE = 8,                    /* PRIVATE  */
@@ -666,7 +666,7 @@ static const char *yysymbol_name (yysymbol_kind_t yysymbol) YY_ATTRIBUTE_UNUSED;
 static const char *const yytname[] =
 {
   "\"end of file\"", "error", "\"invalid token\"", "NEW_LINE", "ID",
-  "STRING", "CLASS", "PUBLIC", "PRIVATE", "PROTECTED", "FIELD", "PARAM",
+  "STR", "CLASS", "PUBLIC", "PRIVATE", "PROTECTED", "FIELD", "PARAM",
   "SETPARAM", "DELEGATE", "INTERFACE", "OBJECT", "PROPERTY", "DYNAMIC",
   "ENUM", "SEALED", "SUSPEND", "INNER", "EXTERNAL", "ACTUAL", "ANNOTATION",
   "GET", "SET", "RECEIVER", "CONSTRUCTOR", "BY", "COMPANION", "INIT",
@@ -2918,7 +2918,7 @@ yyreduce:
 #line 2919 "synt_analyzer.tab.cpp"
     break;
 
-  case 157: /* expr: STRING  */
+  case 157: /* expr: STR  */
 #line 407 "synt_analyzer.y"
                 {(yyval.exprU) = createExpr((yyvsp[0].IdOrString), String);  puts("expr created"); }
 #line 2925 "synt_analyzer.tab.cpp"

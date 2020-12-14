@@ -1,4 +1,3 @@
-val a: String = " ";
 
 fun a():Int {
 	`name`;

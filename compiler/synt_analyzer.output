@@ -255,7 +255,7 @@ Grammar
   154     | RETURN semis
   155     | RETURN expr semis
 
-  156 expr: STRING
+  156 expr: STR
   157     | ID
   158     | THIS
   159     | ID '(' optFactParams ')'
@@ -362,7 +362,7 @@ Terminals, with rules where they appear
     error (256)
     NEW_LINE (258) 225 227
     ID <IdOrString> (259) 9 10 11 12 13 14 15 16 50 51 124 129 130 132 133 135 137 138 140 157 159 184 185 187 188 206 207 208
-    STRING <IdOrString> (260) 156
+    STR <IdOrString> (260) 156
     CLASS (261) 9 10 11 12 13 14 15 16
     PUBLIC (262) 116
     PRIVATE (263) 117
@@ -1308,7 +1308,7 @@ State 56
 
     NEW_LINE  shift, and go to state 1
     ID        shift, and go to state 97
-    STRING    shift, and go to state 98
+    STR       shift, and go to state 98
     THIS      shift, and go to state 99
     SUPER     shift, and go to state 100
     VAR       shift, and go to state 10
@@ -1357,7 +1357,7 @@ State 58
   123 func: funcDeclaration '=' . expr
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -1830,7 +1830,7 @@ State 97
 
 State 98
 
-  156 expr: STRING .
+  156 expr: STR .
 
     $default  reduce using rule 156 (expr)
 
@@ -1875,7 +1875,7 @@ State 102
   205            | DO . WHILE '(' expr ')'
 
     ID        shift, and go to state 97
-    STRING    shift, and go to state 98
+    STR       shift, and go to state 98
     THIS      shift, and go to state 99
     SUPER     shift, and go to state 100
     VAR       shift, and go to state 10
@@ -1958,7 +1958,7 @@ State 107
 
     NEW_LINE  shift, and go to state 1
     ID        shift, and go to state 97
-    STRING    shift, and go to state 98
+    STR       shift, and go to state 98
     THIS      shift, and go to state 99
     SUPER     shift, and go to state 100
     INT       shift, and go to state 108
@@ -2016,7 +2016,7 @@ State 113
   167 expr: '+' . expr
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -2037,7 +2037,7 @@ State 114
   168 expr: '-' . expr
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -2058,7 +2058,7 @@ State 115
   166 expr: '!' . expr
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -2079,7 +2079,7 @@ State 116
   165 expr: '(' . expr ')'
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -2128,7 +2128,7 @@ State 120
   143 stmts: stmts . stmt
 
     ID        shift, and go to state 97
-    STRING    shift, and go to state 98
+    STR       shift, and go to state 98
     THIS      shift, and go to state 99
     SUPER     shift, and go to state 100
     VAR       shift, and go to state 10
@@ -2287,7 +2287,7 @@ State 128
 
     NEW_LINE  shift, and go to state 60
     ID        shift, and go to state 97
-    STRING    shift, and go to state 98
+    STR       shift, and go to state 98
     THIS      shift, and go to state 99
     SUPER     shift, and go to state 100
     VAR       shift, and go to state 10
@@ -2845,7 +2845,7 @@ State 178
   159 expr: ID '(' . optFactParams ')'
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -2889,7 +2889,7 @@ State 180
   223       | IF '(' . expr ')' semis ELSE semis
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -2936,7 +2936,7 @@ State 184
   202          | WHILE '(' . expr ')' ';'
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -3232,7 +3232,7 @@ State 198
   195 assignment: expr ASUM . expr
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -3253,7 +3253,7 @@ State 199
   196 assignment: expr ASUB . expr
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -3274,7 +3274,7 @@ State 200
   197 assignment: expr ADIV . expr
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -3295,7 +3295,7 @@ State 201
   198 assignment: expr AMUL . expr
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -3316,7 +3316,7 @@ State 202
   199 assignment: expr AMOD . expr
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -3337,7 +3337,7 @@ State 203
   176 expr: expr OR . expr
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -3358,7 +3358,7 @@ State 204
   177 expr: expr AND . expr
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -3379,7 +3379,7 @@ State 205
   178 expr: expr EQ . expr
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -3400,7 +3400,7 @@ State 206
   179 expr: expr AEQ . expr
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -3421,7 +3421,7 @@ State 207
   180 expr: expr NEQ . expr
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -3442,7 +3442,7 @@ State 208
   181 expr: expr NAEQ . expr
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -3463,7 +3463,7 @@ State 209
   182 expr: expr LOEQ . expr
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -3484,7 +3484,7 @@ State 210
   183 expr: expr MOEQ . expr
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -3505,7 +3505,7 @@ State 211
   174 expr: expr '<' . expr
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -3526,7 +3526,7 @@ State 212
   175 expr: expr '>' . expr
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -3547,7 +3547,7 @@ State 213
   189 expr: expr RANGE . expr
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -3568,7 +3568,7 @@ State 214
   169 expr: expr '+' . expr
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -3589,7 +3589,7 @@ State 215
   170 expr: expr '-' . expr
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -3610,7 +3610,7 @@ State 216
   172 expr: expr '/' . expr
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -3631,7 +3631,7 @@ State 217
   171 expr: expr '*' . expr
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -3652,7 +3652,7 @@ State 218
   173 expr: expr '%' . expr
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -3681,7 +3681,7 @@ State 220
   186 expr: expr '[' . expr ']'
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -3702,7 +3702,7 @@ State 221
   194 assignment: expr '=' . expr
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -3815,7 +3815,7 @@ State 229
   143 stmts: stmts . stmt
 
     ID        shift, and go to state 97
-    STRING    shift, and go to state 98
+    STR       shift, and go to state 98
     THIS      shift, and go to state 99
     SUPER     shift, and go to state 100
     VAR       shift, and go to state 10
@@ -4010,7 +4010,7 @@ State 243
   130 varDeclaration: VAR ID ':' type '=' . expr
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -4038,7 +4038,7 @@ State 245
   131 varDeclaration: VAR '(' formalParams ')' '=' . expr
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -4066,7 +4066,7 @@ State 247
   133 valDeclaration: VAL ID ':' type '=' . expr
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -4087,7 +4087,7 @@ State 248
   134 valDeclaration: VAL '(' formalParams ')' '=' . expr
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -4293,7 +4293,7 @@ State 257
   205 doWhileLoop: DO WHILE '(' . expr ')'
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -5684,7 +5684,7 @@ State 307
   193 factParams: factParams ',' . expr
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -5705,7 +5705,7 @@ State 308
   188 expr: SUPER '.' ID '(' . optFactParams ')'
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -5742,7 +5742,7 @@ State 309
 
     NEW_LINE  shift, and go to state 1
     ID        shift, and go to state 97
-    STRING    shift, and go to state 98
+    STR       shift, and go to state 98
     THIS      shift, and go to state 99
     SUPER     shift, and go to state 100
     VAR       shift, and go to state 10
@@ -5831,7 +5831,7 @@ State 311
   204 doWhileLoop: DO block WHILE '(' . expr ')'
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -5852,7 +5852,7 @@ State 312
   203 doWhileLoop: DO stmt WHILE '(' . expr ')'
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -5875,7 +5875,7 @@ State 313
   202          | WHILE '(' expr ')' . ';'
 
     ID        shift, and go to state 97
-    STRING    shift, and go to state 98
+    STR       shift, and go to state 98
     THIS      shift, and go to state 99
     SUPER     shift, and go to state 100
     VAR       shift, and go to state 10
@@ -5939,7 +5939,7 @@ State 316
   185 expr: expr '.' ID '(' . optFactParams ')'
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -6181,7 +6181,7 @@ State 332
   205 doWhileLoop: DO WHILE '(' expr ')' .
 
     ID        shift, and go to state 97
-    STRING    shift, and go to state 98
+    STR       shift, and go to state 98
     THIS      shift, and go to state 99
     SUPER     shift, and go to state 100
     VAR       shift, and go to state 10
@@ -6428,7 +6428,7 @@ State 348
 
     NEW_LINE  shift, and go to state 1
     ID        shift, and go to state 97
-    STRING    shift, and go to state 98
+    STR       shift, and go to state 98
     THIS      shift, and go to state 99
     SUPER     shift, and go to state 100
     VAR       shift, and go to state 10
@@ -6473,7 +6473,7 @@ State 349
 
     NEW_LINE  shift, and go to state 1
     ID        shift, and go to state 97
-    STRING    shift, and go to state 98
+    STR       shift, and go to state 98
     THIS      shift, and go to state 99
     SUPER     shift, and go to state 100
     VAR       shift, and go to state 10
@@ -6518,7 +6518,7 @@ State 350
 
     NEW_LINE  shift, and go to state 1
     ID        shift, and go to state 97
-    STRING    shift, and go to state 98
+    STR       shift, and go to state 98
     THIS      shift, and go to state 99
     SUPER     shift, and go to state 100
     VAR       shift, and go to state 10
@@ -6576,7 +6576,7 @@ State 353
   208        | FOR '(' ID ':' type IN . expr ')' ';'
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -6599,7 +6599,7 @@ State 354
   211        | FOR '(' '(' formalParams ')' IN . expr ')' ';'
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -6835,7 +6835,7 @@ State 371
    47            | CONSTRUCTOR '(' optFormalParams ')' ':' THIS '(' . optFactParams ')' block
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -6861,7 +6861,7 @@ State 372
    46            | CONSTRUCTOR '(' optFormalParams ')' ':' SUPER '(' . optFactParams ')' block
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -6904,7 +6904,7 @@ State 375
   208        | FOR '(' ID ':' type IN expr ')' . ';'
 
     ID        shift, and go to state 97
-    STRING    shift, and go to state 98
+    STR       shift, and go to state 98
     THIS      shift, and go to state 99
     SUPER     shift, and go to state 100
     VAR       shift, and go to state 10
@@ -6947,7 +6947,7 @@ State 376
   211        | FOR '(' '(' formalParams ')' IN expr ')' . ';'
 
     ID        shift, and go to state 97
-    STRING    shift, and go to state 98
+    STR       shift, and go to state 98
     THIS      shift, and go to state 99
     SUPER     shift, and go to state 100
     VAR       shift, and go to state 10
@@ -7005,7 +7005,7 @@ State 379
    41            | visibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' THIS '(' . optFactParams ')' block
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108
@@ -7031,7 +7031,7 @@ State 380
    40            | visibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' SUPER '(' . optFactParams ')' block
 
     ID       shift, and go to state 97
-    STRING   shift, and go to state 98
+    STR      shift, and go to state 98
     THIS     shift, and go to state 99
     SUPER    shift, and go to state 100
     INT      shift, and go to state 108

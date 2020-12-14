@@ -89,7 +89,7 @@
 
 %token NEW_LINE
 %token <IdOrString> ID
-%token <IdOrString> STRING
+%token <IdOrString> STR
 %token CLASS
 %token PUBLIC
 %token PRIVATE
@@ -404,7 +404,7 @@ stmt : valDeclaration semis	{$$ = createStmt($1, VarOrVal);  puts("stmt created"
 | RETURN expr semis	{$$ = createStmt($2, ReturnValue);  puts("stmt created"); }
 ;
 
-expr: STRING 	{$$ = createExpr($1, String);  puts("expr created"); }
+expr: STR 	{$$ = createExpr($1, String);  puts("expr created"); }
 | ID	{$$ = createExpr($1, Identificator);  puts("expr created"); }
 | THIS 	{$$ = createExpr(0, This);  puts("expr created"); }
 | ID '(' optFactParams ')'	{$$ = createExpr($1, $3, MethodCall);  puts("expr created"); }
