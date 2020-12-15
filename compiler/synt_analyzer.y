@@ -193,10 +193,16 @@
 program: semis	{root = createProgram(); puts("program created");}
 | class	{root = createProgram($1);puts("program created");}
 | method	{root = createProgram($1);puts("program created");}
-| property semis	{root = createProgram($1);puts("program created");}
+| valDeclaration semis	{root = createProgram(createProperty($1));puts("program created");}
+| varDeclaration semis	{root = createProgram(createProperty($1));puts("program created");}
+| visibilityModifier valDeclaration semis	{root = createProgram(createProperty(createModifiers(0, 0, $1, None), $2));puts("program created");}
+| visibilityModifier varDeclaration semis	{root = createProgram(createProperty(createModifiers(0, 0, $1, None), $2));puts("program created");}
 | program class	{root = addToProgram(root, $2);puts("class added to prog");}
 | program method	{root = addToProgram(root, $2);puts("meth added to prog");}
-| program property semis	{root = addToProgram(root, $2);puts("prop added to prog");}
+| program valDeclaration semis	{root = addToProgram(root, createProperty($2));puts("prop added to prog");}
+| program varDeclaration semis	{root = addToProgram(root, createProperty($2));puts("prop added to prog");}
+| program visibilityModifier valDeclaration semis	{root = addToProgram(root, createProperty(createModifiers(0, 0, $2, None), $3));puts("prop added to prog");}
+| program visibilityModifier varDeclaration semis	{root = addToProgram(root, createProperty(createModifiers(0, 0, $2, None), $3));puts("prop added to prog");}
 | program semis {root = root;}
 ; 
 
@@ -504,7 +510,7 @@ semis: ';'	{ puts("semis created"); }
 
 void main(int argc, char **argv ){
 	//yyin = fopen(argv[1], "r");
-	yyin = fopen("interpolation.txt", "r");
+	yyin = fopen("types.txt", "r");
 	FILE * file = fopen("tree.dot", "w");
 	root = 0;
     yyparse();
