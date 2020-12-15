@@ -50,7 +50,9 @@ Rules useless in parser due to conflicts
 State 26 conflicts: 2 shift/reduce
 State 43 conflicts: 2 shift/reduce
 State 44 conflicts: 2 shift/reduce
+State 59 conflicts: 2 shift/reduce
 State 82 conflicts: 2 shift/reduce
+State 84 conflicts: 2 shift/reduce
 State 141 conflicts: 2 shift/reduce
 State 186 conflicts: 2 shift/reduce
 State 187 conflicts: 2 shift/reduce
@@ -112,9 +114,9 @@ Grammar
    29         | valDeclaration
    30         | varDeclaration
 
-   31 method: modifiers funcDeclaration ';'
+   31 method: modifiers funcDeclaration semis
    32       | modifiers func
-   33       | funcDeclaration ';'
+   33       | funcDeclaration semis
    34       | func
 
    35 initializer: INIT block
@@ -351,7 +353,7 @@ Terminals, with rules where they appear
     '.' (46) 184 185 187 188
     '/' (47) 172
     ':' (58) 9 11 13 15 38 39 40 41 44 45 46 47 50 51 124 129 130 132 133 206 207 208
-    ';' (59) 31 33 202 208 211 224 226
+    ';' (59) 202 208 211 224 226
     '<' (60) 137 174
     '=' (61) 123 130 131 133 134 194
     '>' (62) 137 175
@@ -544,7 +546,7 @@ Nonterminals, with rules where they appear
         on right: 150
     semis (139)
         on left: 224 225 226 227
-        on right: 1 4 7 8 17 19 23 26 125 126 144 145 146 147 148 149 150 151 152 153 154 155 214 217 220 221 222 223 226 227
+        on right: 1 4 7 8 17 19 23 26 31 33 125 126 144 145 146 147 148 149 150 151 152 153 154 155 214 217 220 221 222 223 226 227
 
 
 State 0
@@ -808,7 +810,7 @@ State 19
    14      | modifiers . CLASS ID '{' '}'
    27 property: modifiers . valDeclaration
    28         | modifiers . varDeclaration
-   31 method: modifiers . funcDeclaration ';'
+   31 method: modifiers . funcDeclaration semis
    32       | modifiers . func
 
     CLASS  shift, and go to state 45
@@ -891,15 +893,17 @@ State 22
 
 State 23
 
-   33 method: funcDeclaration . ';'
+   33 method: funcDeclaration . semis
   122 func: funcDeclaration . block
   123     | funcDeclaration . '=' expr
 
-    '{'  shift, and go to state 56
-    ';'  shift, and go to state 57
-    '='  shift, and go to state 58
+    NEW_LINE  shift, and go to state 1
+    '{'       shift, and go to state 56
+    '='       shift, and go to state 57
+    ';'       shift, and go to state 14
 
-    block  go to state 59
+    block  go to state 58
+    semis  go to state 59
 
 
 State 24
@@ -1174,15 +1178,17 @@ State 46
 
 State 47
 
-   31 method: modifiers funcDeclaration . ';'
+   31 method: modifiers funcDeclaration . semis
   122 func: funcDeclaration . block
   123     | funcDeclaration . '=' expr
 
-    '{'  shift, and go to state 56
-    ';'  shift, and go to state 84
-    '='  shift, and go to state 58
+    NEW_LINE  shift, and go to state 1
+    '{'       shift, and go to state 56
+    '='       shift, and go to state 57
+    ';'       shift, and go to state 14
 
-    block  go to state 59
+    block  go to state 58
+    semis  go to state 84
 
 
 State 48
@@ -1347,13 +1353,6 @@ State 56
 
 State 57
 
-   33 method: funcDeclaration ';' .
-
-    $default  reduce using rule 33 (method)
-
-
-State 58
-
   123 func: funcDeclaration '=' . expr
 
     ID       shift, and go to state 97
@@ -1373,11 +1372,25 @@ State 58
     expr  go to state 129
 
 
-State 59
+State 58
 
   122 func: funcDeclaration block .
 
     $default  reduce using rule 122 (func)
+
+
+State 59
+
+   33 method: funcDeclaration semis .
+  226 semis: semis . ';'
+  227      | semis . NEW_LINE
+
+    NEW_LINE  shift, and go to state 60
+    ';'       shift, and go to state 61
+
+    NEW_LINE  [reduce using rule 33 (method)]
+    ';'       [reduce using rule 33 (method)]
+    $default  reduce using rule 33 (method)
 
 
 State 60
@@ -1677,8 +1690,15 @@ State 83
 
 State 84
 
-   31 method: modifiers funcDeclaration ';' .
+   31 method: modifiers funcDeclaration semis .
+  226 semis: semis . ';'
+  227      | semis . NEW_LINE
 
+    NEW_LINE  shift, and go to state 60
+    ';'       shift, and go to state 61
+
+    NEW_LINE  [reduce using rule 31 (method)]
+    ';'       [reduce using rule 31 (method)]
     $default  reduce using rule 31 (method)
 
 
@@ -2222,8 +2242,8 @@ State 122
     '%'       shift, and go to state 218
     '.'       shift, and go to state 219
     '['       shift, and go to state 220
-    ';'       shift, and go to state 14
     '='       shift, and go to state 221
+    ';'       shift, and go to state 14
 
     semis  go to state 222
 
@@ -2479,7 +2499,7 @@ State 139
 
    27 property: modifiers . valDeclaration
    28         | modifiers . varDeclaration
-   31 method: modifiers . funcDeclaration ';'
+   31 method: modifiers . funcDeclaration semis
    32       | modifiers . func
 
     FUN  shift, and go to state 9

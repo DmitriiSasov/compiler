@@ -229,9 +229,9 @@ property: modifiers valDeclaration	{$$ = createProperty($1, $2); puts("prop crea
 | varDeclaration	{$$ = createProperty($1); puts("prop created");}
 ;
 
-method: modifiers funcDeclaration ';'	{$$ = createMethod($1, $2); puts("meth created");}
+method: modifiers funcDeclaration semis	{$$ = createMethod($1, $2); puts("meth created");}
 | modifiers func	{$$ = createMethod($1, $2); puts("meth created");}
-| funcDeclaration ';'	{$$ = createMethod($1); puts("meth created");}
+| funcDeclaration semis	{$$ = createMethod($1); puts("meth created");}
 | func	{$$ = createMethod($1); puts("meth created");}
 ;
 
@@ -503,7 +503,7 @@ semis: ';'	{ puts("semis created"); }
 
 void main(int argc, char **argv ){
 	//yyin = fopen(argv[1], "r");
-	yyin = fopen("class_wih_all_members.txt", "r");
+	yyin = fopen("classes_with_inheritance.txt", "r");
 	FILE * file = fopen("tree.dot", "w");
 	root = 0;
     yyparse();
