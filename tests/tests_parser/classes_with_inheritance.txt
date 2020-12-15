@@ -1,0 +1,38 @@
+
+abstract class Calc {
+	protected val constant:Float = 4.5000243
+	public final var calcRes:Double
+	constructor(constant:Float) {
+		this.constant = constant
+		calcRes = 0
+		print("calc class created")
+	}
+
+	init {
+		print("calc class created")	
+	}
+
+	public open fun add(expr:Double):Double	{
+		this.calcRes += expr
+		return this.calcRes;
+	}
+	abstract public fun calc(param1:Double, param2:Double, opType:Int): Double
+}
+
+class CalcInt: Calc {
+
+	constructor(constant:Float): super(5) {
+		super.calcRes = 0.0f
+		print("calcInt class created")
+	}
+
+	init {
+		print("calcInt class created")	
+	}
+
+	public fun add(expr:Int):Double	= super.add(expr.ToDouble()).toInt()
+	
+
+	override public fun calc(param1:Double, param2:Double, opType:Int): Double {
+	}
+}
