@@ -2397,7 +2397,7 @@ YY_RULE_SETUP
 { 
                             yylval.Char_v = tmpChar;
                             BEGIN(INITIAL);
-							return CHAR;
+							return CHR;
                         }
 	YY_BREAK
 case 148:

@@ -320,7 +320,7 @@ false 	{	yylval.Bool_v = false;
 <CHAR>\'                { 
                             yylval.Char_v = tmpChar;
                             BEGIN(INITIAL);
-							return CHAR;
+							return CHR;
                         }
 <CHAR>\n                { printf("ERROR! New line found, but expected \'\n"); }
 <CHAR><<EOF>>           { printf("ERROR! End of file found, but expected \'\n"); }

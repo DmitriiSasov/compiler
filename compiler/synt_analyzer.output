@@ -263,7 +263,7 @@ Grammar
   159     | ID '(' optFactParams ')'
   160     | INT
   161     | FLOAT
-  162     | CHAR
+  162     | CHR
   163     | DOUBLE
   164     | BOOLEAN
   165     | '(' expr ')'
@@ -430,7 +430,7 @@ Terminals, with rules where they appear
     INT <Int_v> (323) 160
     FLOAT <Float_v> (324) 161
     DOUBLE <Double_v> (325) 163
-    CHAR <Char_v> (326) 162
+    CHR <Char_v> (326) 162
     BOOLEAN <Bool_v> (327) 164
     ASUM (328) 195
     ASUB (329) 196
@@ -1329,7 +1329,7 @@ State 56
     INT       shift, and go to state 108
     FLOAT     shift, and go to state 109
     DOUBLE    shift, and go to state 110
-    CHAR      shift, and go to state 111
+    CHR       shift, and go to state 111
     BOOLEAN   shift, and go to state 112
     '+'       shift, and go to state 113
     '-'       shift, and go to state 114
@@ -1362,7 +1362,7 @@ State 57
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -1910,7 +1910,7 @@ State 102
     INT       shift, and go to state 108
     FLOAT     shift, and go to state 109
     DOUBLE    shift, and go to state 110
-    CHAR      shift, and go to state 111
+    CHR       shift, and go to state 111
     BOOLEAN   shift, and go to state 112
     '+'       shift, and go to state 113
     '-'       shift, and go to state 114
@@ -1984,7 +1984,7 @@ State 107
     INT       shift, and go to state 108
     FLOAT     shift, and go to state 109
     DOUBLE    shift, and go to state 110
-    CHAR      shift, and go to state 111
+    CHR       shift, and go to state 111
     BOOLEAN   shift, and go to state 112
     '+'       shift, and go to state 113
     '-'       shift, and go to state 114
@@ -2019,7 +2019,7 @@ State 110
 
 State 111
 
-  162 expr: CHAR .
+  162 expr: CHR .
 
     $default  reduce using rule 162 (expr)
 
@@ -2042,7 +2042,7 @@ State 113
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -2063,7 +2063,7 @@ State 114
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -2084,7 +2084,7 @@ State 115
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -2105,7 +2105,7 @@ State 116
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -2163,7 +2163,7 @@ State 120
     INT       shift, and go to state 108
     FLOAT     shift, and go to state 109
     DOUBLE    shift, and go to state 110
-    CHAR      shift, and go to state 111
+    CHR       shift, and go to state 111
     BOOLEAN   shift, and go to state 112
     '+'       shift, and go to state 113
     '-'       shift, and go to state 114
@@ -2322,7 +2322,7 @@ State 128
     INT       shift, and go to state 108
     FLOAT     shift, and go to state 109
     DOUBLE    shift, and go to state 110
-    CHAR      shift, and go to state 111
+    CHR       shift, and go to state 111
     BOOLEAN   shift, and go to state 112
     '+'       shift, and go to state 113
     '-'       shift, and go to state 114
@@ -2871,7 +2871,7 @@ State 178
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -2915,7 +2915,7 @@ State 180
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -2962,7 +2962,7 @@ State 184
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -3258,7 +3258,7 @@ State 198
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -3279,7 +3279,7 @@ State 199
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -3300,7 +3300,7 @@ State 200
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -3321,7 +3321,7 @@ State 201
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -3342,7 +3342,7 @@ State 202
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -3363,7 +3363,7 @@ State 203
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -3384,7 +3384,7 @@ State 204
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -3405,7 +3405,7 @@ State 205
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -3426,7 +3426,7 @@ State 206
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -3447,7 +3447,7 @@ State 207
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -3468,7 +3468,7 @@ State 208
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -3489,7 +3489,7 @@ State 209
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -3510,7 +3510,7 @@ State 210
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -3531,7 +3531,7 @@ State 211
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -3552,7 +3552,7 @@ State 212
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -3573,7 +3573,7 @@ State 213
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -3594,7 +3594,7 @@ State 214
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -3615,7 +3615,7 @@ State 215
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -3636,7 +3636,7 @@ State 216
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -3657,7 +3657,7 @@ State 217
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -3678,7 +3678,7 @@ State 218
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -3707,7 +3707,7 @@ State 220
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -3728,7 +3728,7 @@ State 221
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -3850,7 +3850,7 @@ State 229
     INT       shift, and go to state 108
     FLOAT     shift, and go to state 109
     DOUBLE    shift, and go to state 110
-    CHAR      shift, and go to state 111
+    CHR       shift, and go to state 111
     BOOLEAN   shift, and go to state 112
     '+'       shift, and go to state 113
     '-'       shift, and go to state 114
@@ -4036,7 +4036,7 @@ State 243
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -4064,7 +4064,7 @@ State 245
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -4092,7 +4092,7 @@ State 247
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -4113,7 +4113,7 @@ State 248
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -4319,7 +4319,7 @@ State 257
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -5710,7 +5710,7 @@ State 307
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -5731,7 +5731,7 @@ State 308
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -5777,7 +5777,7 @@ State 309
     INT       shift, and go to state 108
     FLOAT     shift, and go to state 109
     DOUBLE    shift, and go to state 110
-    CHAR      shift, and go to state 111
+    CHR       shift, and go to state 111
     BOOLEAN   shift, and go to state 112
     '+'       shift, and go to state 113
     '-'       shift, and go to state 114
@@ -5857,7 +5857,7 @@ State 311
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -5878,7 +5878,7 @@ State 312
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -5910,7 +5910,7 @@ State 313
     INT       shift, and go to state 108
     FLOAT     shift, and go to state 109
     DOUBLE    shift, and go to state 110
-    CHAR      shift, and go to state 111
+    CHR       shift, and go to state 111
     BOOLEAN   shift, and go to state 112
     '+'       shift, and go to state 113
     '-'       shift, and go to state 114
@@ -5965,7 +5965,7 @@ State 316
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -6216,7 +6216,7 @@ State 332
     INT       shift, and go to state 108
     FLOAT     shift, and go to state 109
     DOUBLE    shift, and go to state 110
-    CHAR      shift, and go to state 111
+    CHR       shift, and go to state 111
     BOOLEAN   shift, and go to state 112
     '+'       shift, and go to state 113
     '-'       shift, and go to state 114
@@ -6463,7 +6463,7 @@ State 348
     INT       shift, and go to state 108
     FLOAT     shift, and go to state 109
     DOUBLE    shift, and go to state 110
-    CHAR      shift, and go to state 111
+    CHR       shift, and go to state 111
     BOOLEAN   shift, and go to state 112
     '+'       shift, and go to state 113
     '-'       shift, and go to state 114
@@ -6508,7 +6508,7 @@ State 349
     INT       shift, and go to state 108
     FLOAT     shift, and go to state 109
     DOUBLE    shift, and go to state 110
-    CHAR      shift, and go to state 111
+    CHR       shift, and go to state 111
     BOOLEAN   shift, and go to state 112
     '+'       shift, and go to state 113
     '-'       shift, and go to state 114
@@ -6553,7 +6553,7 @@ State 350
     INT       shift, and go to state 108
     FLOAT     shift, and go to state 109
     DOUBLE    shift, and go to state 110
-    CHAR      shift, and go to state 111
+    CHR       shift, and go to state 111
     BOOLEAN   shift, and go to state 112
     '+'       shift, and go to state 113
     '-'       shift, and go to state 114
@@ -6602,7 +6602,7 @@ State 353
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -6625,7 +6625,7 @@ State 354
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -6861,7 +6861,7 @@ State 371
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -6887,7 +6887,7 @@ State 372
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -6939,7 +6939,7 @@ State 375
     INT       shift, and go to state 108
     FLOAT     shift, and go to state 109
     DOUBLE    shift, and go to state 110
-    CHAR      shift, and go to state 111
+    CHR       shift, and go to state 111
     BOOLEAN   shift, and go to state 112
     '+'       shift, and go to state 113
     '-'       shift, and go to state 114
@@ -6982,7 +6982,7 @@ State 376
     INT       shift, and go to state 108
     FLOAT     shift, and go to state 109
     DOUBLE    shift, and go to state 110
-    CHAR      shift, and go to state 111
+    CHR       shift, and go to state 111
     BOOLEAN   shift, and go to state 112
     '+'       shift, and go to state 113
     '-'       shift, and go to state 114
@@ -7031,7 +7031,7 @@ State 379
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114
@@ -7057,7 +7057,7 @@ State 380
     INT      shift, and go to state 108
     FLOAT    shift, and go to state 109
     DOUBLE   shift, and go to state 110
-    CHAR     shift, and go to state 111
+    CHR      shift, and go to state 111
     BOOLEAN  shift, and go to state 112
     '+'      shift, and go to state 113
     '-'      shift, and go to state 114

@@ -122,7 +122,7 @@ extern int yydebug;
     INT = 323,                     /* INT  */
     FLOAT = 324,                   /* FLOAT  */
     DOUBLE = 325,                  /* DOUBLE  */
-    CHAR = 326,                    /* CHAR  */
+    CHR = 326,                     /* CHR  */
     BOOLEAN = 327,                 /* BOOLEAN  */
     ASUM = 328,                    /* ASUM  */
     ASUB = 329,                    /* ASUB  */

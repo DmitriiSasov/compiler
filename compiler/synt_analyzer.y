@@ -155,7 +155,7 @@
 %token <Int_v> INT
 %token <Float_v> FLOAT
 %token <Double_v> DOUBLE
-%token <Char_v> CHAR
+%token <Char_v> CHR
 %token <Bool_v> BOOLEAN
 %token ASUM
 %token ASUB
@@ -410,7 +410,7 @@ expr: STR 	{$$ = createExpr($1, String);  puts("expr created"); }
 | ID '(' optFactParams ')'	{$$ = createExpr($1, $3, MethodCall);  puts("expr created"); }
 | INT 	{$$ = createExpr($1, Int);  puts("expr created"); }
 | FLOAT 	{$$ = createExpr($1, Float);  puts("expr created"); }
-| CHAR 	{$$ = createExpr($1, Char);  puts("expr created"); }
+| CHR 	{$$ = createExpr($1, Char);  puts("expr created"); }
 | DOUBLE 	{$$ = createExpr($1, Double);  puts("expr created"); }
 | BOOLEAN	{$$ = createExpr($1, Boolean);  puts("expr created"); }
 | '(' expr ')' 	{$$ = createExpr($2, ExprInBrackets);  puts("expr created"); }
@@ -503,7 +503,7 @@ semis: ';'	{ puts("semis created"); }
 
 void main(int argc, char **argv ){
 	//yyin = fopen(argv[1], "r");
-	yyin = fopen("classes_with_inheritance.txt", "r");
+	yyin = fopen("all_exprs.txt", "r");
 	FILE * file = fopen("tree.dot", "w");
 	root = 0;
     yyparse();

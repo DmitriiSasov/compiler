@@ -182,7 +182,7 @@ enum yysymbol_kind_t
   YYSYMBOL_INT = 68,                       /* INT  */
   YYSYMBOL_FLOAT = 69,                     /* FLOAT  */
   YYSYMBOL_DOUBLE = 70,                    /* DOUBLE  */
-  YYSYMBOL_CHAR = 71,                      /* CHAR  */
+  YYSYMBOL_CHR = 71,                       /* CHR  */
   YYSYMBOL_BOOLEAN = 72,                   /* BOOLEAN  */
   YYSYMBOL_ASUM = 73,                      /* ASUM  */
   YYSYMBOL_ASUB = 74,                      /* ASUB  */
@@ -675,11 +675,11 @@ static const char *const yytname[] =
   "DO", "WHILE", "FOR", "BREAK", "CONTINUE", "AS", "IN", "OUT", "DATA",
   "RETURN", "TAILREC", "OPERATOR", "INLINE", "NOINLINE", "CROSSINLINE",
   "REIFIED", "EXPECT", "INFIX", "OPEN", "FINAL", "CONST", "INT", "FLOAT",
-  "DOUBLE", "CHAR", "BOOLEAN", "ASUM", "ASUB", "ADIV", "AMUL", "AMOD",
-  "OR", "AND", "EQ", "AEQ", "NEQ", "NAEQ", "LOEQ", "MOEQ", "'<'", "'>'",
-  "RANGE", "'+'", "'-'", "'/'", "'*'", "'%'", "UMINUS", "UPLUS", "'!'",
-  "'.'", "'('", "')'", "'['", "']'", "':'", "'{'", "'}'", "','", "'='",
-  "';'", "$accept", "program", "class", "classBody", "property", "method",
+  "DOUBLE", "CHR", "BOOLEAN", "ASUM", "ASUB", "ADIV", "AMUL", "AMOD", "OR",
+  "AND", "EQ", "AEQ", "NEQ", "NAEQ", "LOEQ", "MOEQ", "'<'", "'>'", "RANGE",
+  "'+'", "'-'", "'/'", "'*'", "'%'", "UMINUS", "UPLUS", "'!'", "'.'",
+  "'('", "')'", "'['", "']'", "':'", "'{'", "'}'", "','", "'='", "';'",
+  "$accept", "program", "class", "classBody", "property", "method",
   "initializer", "constructor", "optFormalParams", "formalParams",
   "modifiers", "visibilityModifier", "inheritanceModifier", "func",
   "funcDeclaration", "block", "varDeclaration", "valDeclaration", "type",
@@ -2972,7 +2972,7 @@ yyreduce:
 #line 2973 "synt_analyzer.tab.cpp"
     break;
 
-  case 163: /* expr: CHAR  */
+  case 163: /* expr: CHR  */
 #line 413 "synt_analyzer.y"
         {(yyval.exprU) = createExpr((yyvsp[0].Char_v), Char);  puts("expr created"); }
 #line 2979 "synt_analyzer.tab.cpp"
@@ -3602,7 +3602,7 @@ yyreturn:
 
 void main(int argc, char **argv ){
 	//yyin = fopen(argv[1], "r");
-	yyin = fopen("classes_with_inheritance.txt", "r");
+	yyin = fopen("all_exprs.txt", "r");
 	FILE * file = fopen("tree.dot", "w");
 	root = 0;
     yyparse();
