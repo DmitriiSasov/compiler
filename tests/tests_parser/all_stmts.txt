@@ -1,0 +1,49 @@
+
+fun retExpr():Something {
+
+	val (a :	Int, b: Float, str:String) = expr.node(1)
+	var (d :	Int, e: Float, f:String) = expr.node(1)
+	
+	super.value /= this.calc(45, 67);
+
+	calc(2453, 0.0f, " ")
+
+	while(a);
+
+	while (a) {
+		
+	}
+	while (a) {
+		calc(b)
+	}
+	while (a) print(a)
+
+	do {
+		
+	} while (a)
+	
+	do {
+		calc(b)
+	} while (a)
+	do print(a) while(a)
+
+	for (a:Int in a..b);
+	for ((a:Int, b:Float) in x);
+	for (a:Int in a..b) print(a)
+	for ((a:Int, b:Float) in x) print(b)
+	for (a:Int in a..b) { print(a); }
+	for ((a:Int, b:Float) in x) { print(b); }
+	
+	if (a > b) { print(a);}
+	if (a > b) print(a)
+	if (a > b) {print(a);} else print(b)
+	if (a > b) {print(a);} else {print(b);}
+	if (a > b) print(a); else print(b)
+	if (a > b) print(a); else {print(b);}
+	if (a > b)
+	else print(b)
+	if (a > b)
+	else {print(b);}
+	if (a > b) print(a) else;
+	if (a > b) {print(a);} else;
+}

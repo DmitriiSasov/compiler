@@ -1,0 +1,28 @@
+
+fun retExpr():Something {
+    var a:Int = 5
+    while (a > 0) {
+        if (a > 5) while (a > 2) {
+                if (a == 5) {
+                    print(a);
+                } else {
+                    if (a == 2) {
+                        print(a)
+                    }
+                    print("a not equal 5")
+                }
+                a -= 1;
+            }
+        for (i:Int in 1..a) print(a)
+        a -= 1
+    }
+    
+    var i:Int = 5
+    for (i:Int in 1..9){
+        if (i < 5) {
+            print("a less 5")
+        } else {
+            print("a more or equal 5")
+        }
+    }
+}

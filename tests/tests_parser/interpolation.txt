@@ -1,0 +1,16 @@
+
+fun retExpr():Something {
+    var a:String = "Name"
+    var text:String = "Hello_${"_${ "${a + a}" }_"}_World"
+	"Hello_" + "_" + a + a + "_" + "_World"
+	"$`var = 5`"
+	"$"
+	"$a + a"
+	"""$a + $a printed
+
+printed"""
+	"""Hello ${ WORLD } printed
+printed"""
+}
+
+

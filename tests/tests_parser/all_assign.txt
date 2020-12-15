@@ -1,0 +1,16 @@
+
+fun retExpr():Something {
+
+	val (a :	Int, b: Float, str:String) = expr.node(1)
+	var (d :	Int, e: Float, f:String) = expr.node(1)
+	val a:Int = (5 * 6).toDouble();
+	
+	val x:Int = (3.4 * 50).toUInt();
+	a %= b
+	super.value /= this.calc(45, 67);
+	m -= calc(2453, 0.0f, " ")
+	this.meth_name += "print";
+	m *= b
+	m = a
+
+}

@@ -1,0 +1,11 @@
+
+fun retExpr():Something {
+	var a: String
+	var b: Array<String>
+	var c: Array<Array<String>>
+	var d: Map<int, String>
+	var e: Map<int, Array<String>>
+	var f: TypesSeq<int, Map<int, Array<String>>, String, Boolean>
+}
+
+
