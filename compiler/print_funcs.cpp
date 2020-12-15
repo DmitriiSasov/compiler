@@ -551,7 +551,7 @@ void print(struct funcS * f, FILE* file)
 		fprintf(file, "Id%p->Id%p\n", f, f->stmts);
 		print(f->stmts, file);
 	}
-	else
+	else if (f->expr != 0)
 	{
 		fprintf(file, "Id%p->Id%p\n", f, f->expr);
 		print(f->expr, file);
