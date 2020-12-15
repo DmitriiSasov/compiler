@@ -392,10 +392,10 @@ stmts : stmt	{$$ = createStmtList($1);  puts("stmts created"); }
 stmt : valDeclaration semis	{$$ = createStmt($1, VarOrVal);  puts("stmt created"); }
 | varDeclaration semis	{$$ = createStmt($1, VarOrVal);  puts("stmt created"); }
 | assignment semis	{$$ = createStmt($1, Assignment);  puts("stmt created"); }
-| whileLoop semis	{$$ = createStmt($1, WhileLoop);  puts("stmt created"); }
+| whileLoop {$$ = createStmt($1, WhileLoop);  puts("stmt created"); }
 | doWhileLoop semis	{$$ = createStmt($1, DoWhileLoop);  puts("stmt created"); }
-| forLoop semis	{$$ = createStmt($1, ForLoop);  puts("stmt created"); }
-| ifStmt semis	{$$ = createStmt($1, IfStmt);  puts("stmt created"); }
+| forLoop {$$ = createStmt($1, ForLoop);  puts("stmt created"); }
+| ifStmt {$$ = createStmt($1, IfStmt);  puts("stmt created"); }
 | expr semis	{$$ = createStmt($1, Expr);  puts("stmt created"); }
 | BREAK semis	{$$ = createStmt(Break);  puts("stmt created"); }
 | CONTINUE semis	{$$ = createStmt(Continue);  puts("stmt created"); }
@@ -455,9 +455,9 @@ assignment: expr '=' expr	{$$ = createAssignment($1, $3, Assign); puts("assignme
 | expr AMOD expr	{$$ = createAssignment($1, $3, Amod); puts("assignment created"); }
 ;
 
-whileLoop: WHILE '(' expr ')' expr	{$$ = createWhileLoop($3, $5, 0); puts("whileLoop created"); }
-| WHILE '(' expr ')' block	{$$ = createWhileLoop($3, $5, 0); puts("whileLoop created"); }
-| WHILE '(' expr ')' ';'	{$$ = createWhileLoop($3, 0); puts("whileLoop created"); }
+whileLoop: WHILE '(' expr ')' stmt	{$$ = createWhileLoop($3, $5, 0); puts("whileLoop created"); }
+| WHILE '(' expr ')' block semis	{$$ = createWhileLoop($3, $5, 0); puts("whileLoop created"); }
+| WHILE '(' expr ')' semis	{$$ = createWhileLoop($3, 0); puts("whileLoop created"); }
 ;
 
 doWhileLoop: DO expr WHILE '(' expr ')'	{$$ = createWhileLoop($5, $2, 1); puts("doWhileLoop created"); }
@@ -465,26 +465,28 @@ doWhileLoop: DO expr WHILE '(' expr ')'	{$$ = createWhileLoop($5, $2, 1); puts("
 | DO WHILE '(' expr ')' {$$ = createWhileLoop($4, 1); puts("doWhileLoop created"); }
 ;
 
-forLoop: FOR '(' ID ':' type IN expr ')' expr	{$$ = createForLoop($3, $5, $7, $9); puts("forLoop created"); }
-| FOR '(' ID ':' type IN expr ')' block	{$$ = createForLoop($3, $5, $7, $9); puts("forLoop created"); }
-| FOR '(' ID ':' type IN expr ')' ';' 	{$$ = createForLoop($3, $5, $7); puts("forLoop created"); }
-| FOR '(' '(' formalParams ')' IN expr ')' expr	{$$ = createForLoop($4, $7, $9); puts("forLoop created"); }
-| FOR '(' '(' formalParams ')' IN expr ')' block	{$$ = createForLoop($4, $7, $9); puts("forLoop created"); }
-| FOR '(' '(' formalParams ')' IN expr ')' ';'	{$$ = createForLoop($4, $7); puts("forLoop created"); }
+forLoop: FOR '(' ID ':' type IN expr ')' stmt	{$$ = createForLoop($3, $5, $7, $9); puts("forLoop created"); }
+| FOR '(' ID ':' type IN expr ')' block semis	{$$ = createForLoop($3, $5, $7, $9); puts("forLoop created"); }
+| FOR '(' ID ':' type IN expr ')' semis 	{$$ = createForLoop($3, $5, $7); puts("forLoop created"); }
+| FOR '(' '(' formalParams ')' IN expr ')' stmt	{$$ = createForLoop($4, $7, $9); puts("forLoop created"); }
+| FOR '(' '(' formalParams ')' IN expr ')' block semis	{$$ = createForLoop($4, $7, $9); puts("forLoop created"); }
+| FOR '(' '(' formalParams ')' IN expr ')' semis	{$$ = createForLoop($4, $7); puts("forLoop created"); }
 ;
 
-ifStmt: IF '(' expr ')' expr	{$$ = createIfStmt($3, $5); puts("ifStmt created"); }
-| IF '(' expr ')' block	{$$ = createIfStmt($3, $5); puts("ifStmt created"); }
-| IF '(' expr ')' 	{$$ = createIfStmt($3); puts("ifStmt created"); }
-| IF '(' expr ')' expr ELSE expr	{$$ = createIfStmt($3, $5, $7); puts("ifStmt created"); }
-| IF '(' expr ')' block ELSE expr	{$$ = createIfStmt($3, $5, $7); puts("ifStmt created"); }
-| IF '(' expr ')' semis ELSE expr	{$$ = createIfStmt($3, 0, $7); puts("ifStmt created"); }
-| IF '(' expr ')' expr ELSE block	{$$ = createIfStmt($3, $5, $7); puts("ifStmt created"); }
-| IF '(' expr ')' block ELSE block	{$$ = createIfStmt($3, $5, $7); puts("ifStmt created"); }
-| IF '(' expr ')' semis ELSE block	{$$ = createIfStmt($3, 0, $7); puts("ifStmt created"); }
+ifStmt: IF '(' expr ')' stmt	{$$ = createIfStmt($3, $5); puts("ifStmt created"); }
+| IF '(' expr ')' semis {$$ = createIfStmt($3); puts("ifStmt created"); }
+| IF '(' expr ')' block	semis {$$ = createIfStmt($3, $5); puts("ifStmt created"); }
+| IF '(' expr ')' expr ELSE stmt	{$$ = createIfStmt($3, $5, $7); puts("ifStmt created"); }
+| IF '(' expr ')' stmt ELSE stmt	{$$ = createIfStmt($3, $5, $7); puts("ifStmt created"); }
+| IF '(' expr ')' block ELSE stmt	{$$ = createIfStmt($3, $5, $7); puts("ifStmt created"); }
+| IF '(' expr ')' semis ELSE stmt	{$$ = createIfStmt($3, 0, $7); puts("ifStmt created"); }
+| IF '(' expr ')' expr ELSE block semis	{$$ = createIfStmt($3, $5, $7); puts("ifStmt created"); }
+| IF '(' expr ')' stmt ELSE block semis	{$$ = createIfStmt($3, $5, $7); puts("ifStmt created"); }
+| IF '(' expr ')' block ELSE block semis	{$$ = createIfStmt($3, $5, $7); puts("ifStmt created"); }
+| IF '(' expr ')' semis ELSE block semis	{$$ = createIfStmt($3, 0, $7); puts("ifStmt created"); }
 | IF '(' expr ')' expr ELSE semis	{$$ = createIfStmt($3, $5); puts("ifStmt created"); }
+| IF '(' expr ')' stmt ELSE	semis	{$$ = createIfStmt($3, $5); puts("ifStmt created"); }
 | IF '(' expr ')' block ELSE semis	{$$ = createIfStmt($3, $5); puts("ifStmt created"); }
-| IF '(' expr ')' semis ELSE semis	{$$ = createIfStmt($3); puts("ifStmt created"); }
 ;
 
 

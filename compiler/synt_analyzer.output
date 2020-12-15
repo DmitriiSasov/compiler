@@ -39,14 +39,6 @@ Terminals unused in grammar
     CONST
 
 
-Rules useless in parser due to conflicts
-
-  214 ifStmt: IF '(' expr ')'
-  221       | IF '(' expr ')' expr ELSE semis
-  222       | IF '(' expr ')' block ELSE semis
-  223       | IF '(' expr ')' semis ELSE semis
-
-
 State 26 conflicts: 2 shift/reduce
 State 43 conflicts: 2 shift/reduce
 State 44 conflicts: 2 shift/reduce
@@ -54,13 +46,11 @@ State 59 conflicts: 2 shift/reduce
 State 82 conflicts: 2 shift/reduce
 State 84 conflicts: 2 shift/reduce
 State 141 conflicts: 2 shift/reduce
-State 238 conflicts: 2 shift/reduce
-State 239 conflicts: 2 shift/reduce
-State 293 conflicts: 2 shift/reduce
-State 309 conflicts: 2 shift/reduce
-State 362 conflicts: 2 shift/reduce
-State 365 conflicts: 2 shift/reduce
-State 368 conflicts: 2 shift/reduce
+State 235 conflicts: 2 shift/reduce
+State 236 conflicts: 2 shift/reduce
+State 290 conflicts: 2 shift/reduce
+State 327 conflicts: 1 shift/reduce
+State 329 conflicts: 1 shift/reduce
 
 
 Grammar
@@ -234,10 +224,10 @@ Grammar
   144 stmt: valDeclaration semis
   145     | varDeclaration semis
   146     | assignment semis
-  147     | whileLoop semis
+  147     | whileLoop
   148     | doWhileLoop semis
-  149     | forLoop semis
-  150     | ifStmt semis
+  149     | forLoop
+  150     | ifStmt
   151     | expr semis
   152     | BREAK semis
   153     | CONTINUE semis
@@ -292,38 +282,40 @@ Grammar
   198           | expr AMUL expr
   199           | expr AMOD expr
 
-  200 whileLoop: WHILE '(' expr ')' expr
-  201          | WHILE '(' expr ')' block
-  202          | WHILE '(' expr ')' ';'
+  200 whileLoop: WHILE '(' expr ')' stmt
+  201          | WHILE '(' expr ')' block semis
+  202          | WHILE '(' expr ')' semis
 
   203 doWhileLoop: DO expr WHILE '(' expr ')'
   204            | DO block WHILE '(' expr ')'
   205            | DO WHILE '(' expr ')'
 
-  206 forLoop: FOR '(' ID ':' type IN expr ')' expr
-  207        | FOR '(' ID ':' type IN expr ')' block
-  208        | FOR '(' ID ':' type IN expr ')' ';'
-  209        | FOR '(' '(' formalParams ')' IN expr ')' expr
-  210        | FOR '(' '(' formalParams ')' IN expr ')' block
-  211        | FOR '(' '(' formalParams ')' IN expr ')' ';'
+  206 forLoop: FOR '(' ID ':' type IN expr ')' stmt
+  207        | FOR '(' ID ':' type IN expr ')' block semis
+  208        | FOR '(' ID ':' type IN expr ')' semis
+  209        | FOR '(' '(' formalParams ')' IN expr ')' stmt
+  210        | FOR '(' '(' formalParams ')' IN expr ')' block semis
+  211        | FOR '(' '(' formalParams ')' IN expr ')' semis
 
-  212 ifStmt: IF '(' expr ')' expr
-  213       | IF '(' expr ')' block
-  214       | IF '(' expr ')'
-  215       | IF '(' expr ')' expr ELSE expr
-  216       | IF '(' expr ')' block ELSE expr
-  217       | IF '(' expr ')' semis ELSE expr
-  218       | IF '(' expr ')' expr ELSE block
-  219       | IF '(' expr ')' block ELSE block
-  220       | IF '(' expr ')' semis ELSE block
-  221       | IF '(' expr ')' expr ELSE semis
-  222       | IF '(' expr ')' block ELSE semis
-  223       | IF '(' expr ')' semis ELSE semis
+  212 ifStmt: IF '(' expr ')' stmt
+  213       | IF '(' expr ')' semis
+  214       | IF '(' expr ')' block semis
+  215       | IF '(' expr ')' expr ELSE stmt
+  216       | IF '(' expr ')' stmt ELSE stmt
+  217       | IF '(' expr ')' block ELSE stmt
+  218       | IF '(' expr ')' semis ELSE stmt
+  219       | IF '(' expr ')' expr ELSE block semis
+  220       | IF '(' expr ')' stmt ELSE block semis
+  221       | IF '(' expr ')' block ELSE block semis
+  222       | IF '(' expr ')' semis ELSE block semis
+  223       | IF '(' expr ')' expr ELSE semis
+  224       | IF '(' expr ')' stmt ELSE semis
+  225       | IF '(' expr ')' block ELSE semis
 
-  224 semis: ';'
-  225      | NEW_LINE
-  226      | semis ';'
-  227      | semis NEW_LINE
+  226 semis: ';'
+  227      | NEW_LINE
+  228      | semis ';'
+  229      | semis NEW_LINE
 
 
 Terminals, with rules where they appear
@@ -331,8 +323,8 @@ Terminals, with rules where they appear
     $end (0) 0
     '!' (33) 166
     '%' (37) 173
-    '(' (40) 36 37 38 39 40 41 42 43 44 45 46 47 124 131 134 159 165 185 188 200 201 202 203 204 205 206 207 208 209 210 211 212 213 214 215 216 217 218 219 220 221 222 223
-    ')' (41) 36 37 38 39 40 41 42 43 44 45 46 47 124 131 134 159 165 185 188 200 201 202 203 204 205 206 207 208 209 210 211 212 213 214 215 216 217 218 219 220 221 222 223
+    '(' (40) 36 37 38 39 40 41 42 43 44 45 46 47 124 131 134 159 165 185 188 200 201 202 203 204 205 206 207 208 209 210 211 212 213 214 215 216 217 218 219 220 221 222 223 224 225
+    ')' (41) 36 37 38 39 40 41 42 43 44 45 46 47 124 131 134 159 165 185 188 200 201 202 203 204 205 206 207 208 209 210 211 212 213 214 215 216 217 218 219 220 221 222 223 224 225
     '*' (42) 171
     '+' (43) 167 169
     ',' (44) 51 140 141 193
@@ -340,7 +332,7 @@ Terminals, with rules where they appear
     '.' (46) 184 185 187 188
     '/' (47) 172
     ':' (58) 9 11 13 15 38 39 40 41 44 45 46 47 50 51 124 129 130 132 133 206 207 208
-    ';' (59) 202 208 211 224 226
+    ';' (59) 226 228
     '<' (60) 137 174
     '=' (61) 123 130 131 133 134 194
     '>' (62) 137 175
@@ -349,7 +341,7 @@ Terminals, with rules where they appear
     '{' (123) 9 10 11 12 13 14 15 16 125 126 127 128
     '}' (125) 9 10 11 12 13 14 15 16 125 126 127 128
     error (256)
-    NEW_LINE (258) 225 227
+    NEW_LINE (258) 227 229
     ID <IdOrString> (259) 9 10 11 12 13 14 15 16 50 51 124 129 130 132 133 135 137 138 140 157 159 184 185 187 188 206 207 208
     STR <IdOrString> (260) 156
     CLASS (261) 9 10 11 12 13 14 15 16
@@ -389,8 +381,8 @@ Terminals, with rules where they appear
     VAR (295) 129 130 131
     VAL (296) 132 133 134
     TYPEOF (297)
-    IF (298) 212 213 214 215 216 217 218 219 220 221 222 223
-    ELSE (299) 215 216 217 218 219 220 221 222 223
+    IF (298) 212 213 214 215 216 217 218 219 220 221 222 223 224 225
+    ELSE (299) 215 216 217 218 219 220 221 222 223 224 225
     WHERE (300)
     WHEN (301)
     DO (302) 203 204 205
@@ -485,7 +477,7 @@ Nonterminals, with rules where they appear
         on right: 31 33 122 123
     block <stmtListU> (123)
         on left: 125 126 127 128
-        on right: 35 36 40 41 42 46 47 122 201 204 207 210 213 216 218 219 220 222
+        on right: 35 36 40 41 42 46 47 122 201 204 207 210 214 217 219 220 221 222 225
     varDeclaration <varOrValDeclU> (124)
         on left: 129 130 131
         on right: 28 30 145
@@ -506,10 +498,10 @@ Nonterminals, with rules where they appear
         on right: 125 127 143
     stmt <stmtU> (130)
         on left: 144 145 146 147 148 149 150 151 152 153 154 155
-        on right: 142 143
+        on right: 142 143 200 206 209 212 215 216 217 218 220 224
     expr <exprU> (131)
         on left: 156 157 158 159 160 161 162 163 164 165 166 167 168 169 170 171 172 173 174 175 176 177 178 179 180 181 182 183 184 185 186 187 188 189
-        on right: 123 130 131 133 134 151 155 165 166 167 168 169 170 171 172 173 174 175 176 177 178 179 180 181 182 183 184 185 186 189 192 193 194 195 196 197 198 199 200 201 202 203 204 205 206 207 208 209 210 211 212 213 214 215 216 217 218 219 220 221 222 223
+        on right: 123 130 131 133 134 151 155 165 166 167 168 169 170 171 172 173 174 175 176 177 178 179 180 181 182 183 184 185 186 189 192 193 194 195 196 197 198 199 200 201 202 203 204 205 206 207 208 209 210 211 212 213 214 215 216 217 218 219 220 221 222 223 224 225
     optFactParams <factParamsListU> (132)
         on left: 190 191
         on right: 38 39 40 41 44 45 46 47 159 185 188
@@ -529,11 +521,11 @@ Nonterminals, with rules where they appear
         on left: 206 207 208 209 210 211
         on right: 149
     ifStmt <ifStmtU> (138)
-        on left: 212 213 214 215 216 217 218 219 220 221 222 223
+        on left: 212 213 214 215 216 217 218 219 220 221 222 223 224 225
         on right: 150
     semis (139)
-        on left: 224 225 226 227
-        on right: 1 4 7 8 17 19 23 26 31 33 125 126 144 145 146 147 148 149 150 151 152 153 154 155 217 220 221 222 223 226 227
+        on left: 226 227 228 229
+        on right: 1 4 7 8 17 19 23 26 31 33 125 126 144 145 146 148 151 152 153 154 155 201 202 207 208 210 211 213 214 218 219 220 221 222 223 224 225 228 229
 
 
 State 0
@@ -571,9 +563,9 @@ State 0
 
 State 1
 
-  225 semis: NEW_LINE .
+  227 semis: NEW_LINE .
 
-    $default  reduce using rule 225 (semis)
+    $default  reduce using rule 227 (semis)
 
 
 State 2
@@ -723,9 +715,9 @@ State 13
 
 State 14
 
-  224 semis: ';' .
+  226 semis: ';' .
 
-    $default  reduce using rule 224 (semis)
+    $default  reduce using rule 226 (semis)
 
 
 State 15
@@ -910,8 +902,8 @@ State 25
 State 26
 
     1 program: semis .
-  226 semis: semis . ';'
-  227      | semis . NEW_LINE
+  228 semis: semis . ';'
+  229      | semis . NEW_LINE
 
     NEW_LINE  shift, and go to state 60
     ';'       shift, and go to state 61
@@ -1121,8 +1113,8 @@ State 42
 State 43
 
     8 program: program semis .
-  226 semis: semis . ';'
-  227      | semis . NEW_LINE
+  228 semis: semis . ';'
+  229      | semis . NEW_LINE
 
     NEW_LINE  shift, and go to state 60
     ';'       shift, and go to state 61
@@ -1135,8 +1127,8 @@ State 43
 State 44
 
     4 program: property semis .
-  226 semis: semis . ';'
-  227      | semis . NEW_LINE
+  228 semis: semis . ';'
+  229      | semis . NEW_LINE
 
     NEW_LINE  shift, and go to state 60
     ';'       shift, and go to state 61
@@ -1369,8 +1361,8 @@ State 58
 State 59
 
    33 method: funcDeclaration semis .
-  226 semis: semis . ';'
-  227      | semis . NEW_LINE
+  228 semis: semis . ';'
+  229      | semis . NEW_LINE
 
     NEW_LINE  shift, and go to state 60
     ';'       shift, and go to state 61
@@ -1382,16 +1374,16 @@ State 59
 
 State 60
 
-  227 semis: semis NEW_LINE .
+  229 semis: semis NEW_LINE .
 
-    $default  reduce using rule 227 (semis)
+    $default  reduce using rule 229 (semis)
 
 
 State 61
 
-  226 semis: semis ';' .
+  228 semis: semis ';' .
 
-    $default  reduce using rule 226 (semis)
+    $default  reduce using rule 228 (semis)
 
 
 State 62
@@ -1653,8 +1645,8 @@ State 81
 State 82
 
     7 program: program property semis .
-  226 semis: semis . ';'
-  227      | semis . NEW_LINE
+  228 semis: semis . ';'
+  229      | semis . NEW_LINE
 
     NEW_LINE  shift, and go to state 60
     ';'       shift, and go to state 61
@@ -1678,8 +1670,8 @@ State 83
 State 84
 
    31 method: modifiers funcDeclaration semis .
-  226 semis: semis . ';'
-  227      | semis . NEW_LINE
+  228 semis: semis . ';'
+  229      | semis . NEW_LINE
 
     NEW_LINE  shift, and go to state 60
     ';'       shift, and go to state 61
@@ -1859,18 +1851,20 @@ State 100
 
 State 101
 
-  212 ifStmt: IF . '(' expr ')' expr
-  213       | IF . '(' expr ')' block
-  214       | IF . '(' expr ')'
-  215       | IF . '(' expr ')' expr ELSE expr
-  216       | IF . '(' expr ')' block ELSE expr
-  217       | IF . '(' expr ')' semis ELSE expr
-  218       | IF . '(' expr ')' expr ELSE block
-  219       | IF . '(' expr ')' block ELSE block
-  220       | IF . '(' expr ')' semis ELSE block
-  221       | IF . '(' expr ')' expr ELSE semis
-  222       | IF . '(' expr ')' block ELSE semis
-  223       | IF . '(' expr ')' semis ELSE semis
+  212 ifStmt: IF . '(' expr ')' stmt
+  213       | IF . '(' expr ')' semis
+  214       | IF . '(' expr ')' block semis
+  215       | IF . '(' expr ')' expr ELSE stmt
+  216       | IF . '(' expr ')' stmt ELSE stmt
+  217       | IF . '(' expr ')' block ELSE stmt
+  218       | IF . '(' expr ')' semis ELSE stmt
+  219       | IF . '(' expr ')' expr ELSE block semis
+  220       | IF . '(' expr ')' stmt ELSE block semis
+  221       | IF . '(' expr ')' block ELSE block semis
+  222       | IF . '(' expr ')' semis ELSE block semis
+  223       | IF . '(' expr ')' expr ELSE semis
+  224       | IF . '(' expr ')' stmt ELSE semis
+  225       | IF . '(' expr ')' block ELSE semis
 
     '('  shift, and go to state 180
 
@@ -1903,21 +1897,21 @@ State 102
 
 State 103
 
-  200 whileLoop: WHILE . '(' expr ')' expr
-  201          | WHILE . '(' expr ')' block
-  202          | WHILE . '(' expr ')' ';'
+  200 whileLoop: WHILE . '(' expr ')' stmt
+  201          | WHILE . '(' expr ')' block semis
+  202          | WHILE . '(' expr ')' semis
 
     '('  shift, and go to state 184
 
 
 State 104
 
-  206 forLoop: FOR . '(' ID ':' type IN expr ')' expr
-  207        | FOR . '(' ID ':' type IN expr ')' block
-  208        | FOR . '(' ID ':' type IN expr ')' ';'
-  209        | FOR . '(' '(' formalParams ')' IN expr ')' expr
-  210        | FOR . '(' '(' formalParams ')' IN expr ')' block
-  211        | FOR . '(' '(' formalParams ')' IN expr ')' ';'
+  206 forLoop: FOR . '(' ID ':' type IN expr ')' stmt
+  207        | FOR . '(' ID ':' type IN expr ')' block semis
+  208        | FOR . '(' ID ':' type IN expr ')' semis
+  209        | FOR . '(' '(' formalParams ')' IN expr ')' stmt
+  210        | FOR . '(' '(' formalParams ')' IN expr ')' block semis
+  211        | FOR . '(' '(' formalParams ')' IN expr ')' semis
 
     '('  shift, and go to state 185
 
@@ -2231,12 +2225,9 @@ State 123
 
 State 124
 
-  147 stmt: whileLoop . semis
+  147 stmt: whileLoop .
 
-    NEW_LINE  shift, and go to state 1
-    ';'       shift, and go to state 14
-
-    semis  go to state 224
+    $default  reduce using rule 147 (stmt)
 
 
 State 125
@@ -2246,35 +2237,29 @@ State 125
     NEW_LINE  shift, and go to state 1
     ';'       shift, and go to state 14
 
-    semis  go to state 225
+    semis  go to state 224
 
 
 State 126
 
-  149 stmt: forLoop . semis
+  149 stmt: forLoop .
 
-    NEW_LINE  shift, and go to state 1
-    ';'       shift, and go to state 14
-
-    semis  go to state 226
+    $default  reduce using rule 149 (stmt)
 
 
 State 127
 
-  150 stmt: ifStmt . semis
+  150 stmt: ifStmt .
 
-    NEW_LINE  shift, and go to state 1
-    ';'       shift, and go to state 14
-
-    semis  go to state 227
+    $default  reduce using rule 150 (stmt)
 
 
 State 128
 
   125 block: '{' semis . stmts '}'
   126      | '{' semis . '}'
-  226 semis: semis . ';'
-  227      | semis . NEW_LINE
+  228 semis: semis . ';'
+  229      | semis . NEW_LINE
 
     NEW_LINE  shift, and go to state 60
     ID        shift, and go to state 97
@@ -2299,12 +2284,12 @@ State 128
     '-'       shift, and go to state 114
     '!'       shift, and go to state 115
     '('       shift, and go to state 116
-    '}'       shift, and go to state 228
+    '}'       shift, and go to state 225
     ';'       shift, and go to state 61
 
     varDeclaration  go to state 118
     valDeclaration  go to state 119
-    stmts           go to state 229
+    stmts           go to state 226
     stmt            go to state 121
     expr            go to state 122
     assignment      go to state 123
@@ -2364,7 +2349,7 @@ State 130
    11 class: CLASS ID ':' ID . '{' classBody '}'
    15      | CLASS ID ':' ID . '{' '}'
 
-    '{'  shift, and go to state 230
+    '{'  shift, and go to state 227
 
 
 State 131
@@ -2376,7 +2361,7 @@ State 131
    46            | CONSTRUCTOR . '(' optFormalParams ')' ':' SUPER '(' optFactParams ')' block
    47            | CONSTRUCTOR . '(' optFormalParams ')' ':' THIS '(' optFactParams ')' block
 
-    '('  shift, and go to state 231
+    '('  shift, and go to state 228
 
 
 State 132
@@ -2385,7 +2370,7 @@ State 132
 
     '{'  shift, and go to state 56
 
-    block  go to state 232
+    block  go to state 229
 
 
 State 133
@@ -2418,13 +2403,13 @@ State 134
     VAL          shift, and go to state 11
     OPEN         shift, and go to state 12
     FINAL        shift, and go to state 13
-    '}'          shift, and go to state 233
+    '}'          shift, and go to state 230
     ';'          shift, and go to state 14
 
-    property             go to state 234
-    method               go to state 235
-    initializer          go to state 236
-    constructor          go to state 237
+    property             go to state 231
+    method               go to state 232
+    initializer          go to state 233
+    constructor          go to state 234
     modifiers            go to state 139
     visibilityModifier   go to state 140
     inheritanceModifier  go to state 21
@@ -2432,7 +2417,7 @@ State 134
     funcDeclaration      go to state 23
     varDeclaration       go to state 24
     valDeclaration       go to state 25
-    semis                go to state 238
+    semis                go to state 235
 
 
 State 135
@@ -2442,7 +2427,7 @@ State 135
     NEW_LINE  shift, and go to state 1
     ';'       shift, and go to state 14
 
-    semis  go to state 239
+    semis  go to state 236
 
 
 State 136
@@ -2508,7 +2493,7 @@ State 140
   102          | visibilityModifier . ABSTRACT inheritanceModifier OVERRIDE
   103          | visibilityModifier . ABSTRACT OVERRIDE inheritanceModifier
 
-    CONSTRUCTOR  shift, and go to state 240
+    CONSTRUCTOR  shift, and go to state 237
     OVERRIDE     shift, and go to state 50
     ABSTRACT     shift, and go to state 51
     OPEN         shift, and go to state 12
@@ -2522,8 +2507,8 @@ State 140
 State 141
 
    17 classBody: semis .
-  226 semis: semis . ';'
-  227      | semis . NEW_LINE
+  228 semis: semis . ';'
+  229      | semis . NEW_LINE
 
     NEW_LINE  shift, and go to state 60
     ';'       shift, and go to state 61
@@ -2621,7 +2606,7 @@ State 154
 
   124 funcDeclaration: FUN ID '(' optFormalParams . ')' ':' type
 
-    ')'  shift, and go to state 241
+    ')'  shift, and go to state 238
 
 
 State 155
@@ -2639,7 +2624,7 @@ State 156
   135 type: ID .
   137 templateType: ID . '<' type_seq '>'
 
-    '<'  shift, and go to state 242
+    '<'  shift, and go to state 239
 
     $default  reduce using rule 135 (type)
 
@@ -2649,7 +2634,7 @@ State 157
   129 varDeclaration: VAR ID ':' type .
   130               | VAR ID ':' type . '=' expr
 
-    '='  shift, and go to state 243
+    '='  shift, and go to state 240
 
     $default  reduce using rule 129 (varDeclaration)
 
@@ -2667,7 +2652,7 @@ State 159
 
     ID  shift, and go to state 156
 
-    type          go to state 244
+    type          go to state 241
     templateType  go to state 158
 
 
@@ -2675,14 +2660,14 @@ State 160
 
   131 varDeclaration: VAR '(' formalParams ')' . '=' expr
 
-    '='  shift, and go to state 245
+    '='  shift, and go to state 242
 
 
 State 161
 
    51 formalParams: formalParams ',' . ID ':' type
 
-    ID  shift, and go to state 246
+    ID  shift, and go to state 243
 
 
 State 162
@@ -2690,7 +2675,7 @@ State 162
   132 valDeclaration: VAL ID ':' type .
   133               | VAL ID ':' type . '=' expr
 
-    '='  shift, and go to state 247
+    '='  shift, and go to state 244
 
     $default  reduce using rule 132 (valDeclaration)
 
@@ -2699,7 +2684,7 @@ State 163
 
   134 valDeclaration: VAL '(' formalParams ')' . '=' expr
 
-    '='  shift, and go to state 248
+    '='  shift, and go to state 245
 
 
 State 164
@@ -2707,7 +2692,7 @@ State 164
     9 class: modifiers CLASS ID ':' . ID '{' classBody '}'
    13      | modifiers CLASS ID ':' . ID '{' '}'
 
-    ID  shift, and go to state 249
+    ID  shift, and go to state 246
 
 
 State 165
@@ -2729,10 +2714,10 @@ State 165
     VAL          shift, and go to state 11
     OPEN         shift, and go to state 12
     FINAL        shift, and go to state 13
-    '}'          shift, and go to state 250
+    '}'          shift, and go to state 247
     ';'          shift, and go to state 14
 
-    classBody            go to state 251
+    classBody            go to state 248
     property             go to state 135
     method               go to state 136
     initializer          go to state 137
@@ -2851,9 +2836,9 @@ State 178
 
     $default  reduce using rule 190 (optFactParams)
 
-    expr           go to state 252
-    optFactParams  go to state 253
-    factParams     go to state 254
+    expr           go to state 249
+    optFactParams  go to state 250
+    factParams     go to state 251
 
 
 State 179
@@ -2861,23 +2846,25 @@ State 179
   187 expr: SUPER '.' . ID
   188     | SUPER '.' . ID '(' optFactParams ')'
 
-    ID  shift, and go to state 255
+    ID  shift, and go to state 252
 
 
 State 180
 
-  212 ifStmt: IF '(' . expr ')' expr
-  213       | IF '(' . expr ')' block
-  214       | IF '(' . expr ')'
-  215       | IF '(' . expr ')' expr ELSE expr
-  216       | IF '(' . expr ')' block ELSE expr
-  217       | IF '(' . expr ')' semis ELSE expr
-  218       | IF '(' . expr ')' expr ELSE block
-  219       | IF '(' . expr ')' block ELSE block
-  220       | IF '(' . expr ')' semis ELSE block
-  221       | IF '(' . expr ')' expr ELSE semis
-  222       | IF '(' . expr ')' block ELSE semis
-  223       | IF '(' . expr ')' semis ELSE semis
+  212 ifStmt: IF '(' . expr ')' stmt
+  213       | IF '(' . expr ')' semis
+  214       | IF '(' . expr ')' block semis
+  215       | IF '(' . expr ')' expr ELSE stmt
+  216       | IF '(' . expr ')' stmt ELSE stmt
+  217       | IF '(' . expr ')' block ELSE stmt
+  218       | IF '(' . expr ')' semis ELSE stmt
+  219       | IF '(' . expr ')' expr ELSE block semis
+  220       | IF '(' . expr ')' stmt ELSE block semis
+  221       | IF '(' . expr ')' block ELSE block semis
+  222       | IF '(' . expr ')' semis ELSE block semis
+  223       | IF '(' . expr ')' expr ELSE semis
+  224       | IF '(' . expr ')' stmt ELSE semis
+  225       | IF '(' . expr ')' block ELSE semis
 
     ID       shift, and go to state 97
     STR      shift, and go to state 98
@@ -2893,21 +2880,21 @@ State 180
     '!'      shift, and go to state 115
     '('      shift, and go to state 116
 
-    expr  go to state 256
+    expr  go to state 253
 
 
 State 181
 
   205 doWhileLoop: DO WHILE . '(' expr ')'
 
-    '('  shift, and go to state 257
+    '('  shift, and go to state 254
 
 
 State 182
 
   204 doWhileLoop: DO block . WHILE '(' expr ')'
 
-    WHILE  shift, and go to state 258
+    WHILE  shift, and go to state 255
 
 
 State 183
@@ -2933,7 +2920,7 @@ State 183
   189     | expr . RANGE expr
   203 doWhileLoop: DO expr . WHILE '(' expr ')'
 
-    WHILE  shift, and go to state 259
+    WHILE  shift, and go to state 256
     OR     shift, and go to state 203
     AND    shift, and go to state 204
     EQ     shift, and go to state 205
@@ -2956,9 +2943,9 @@ State 183
 
 State 184
 
-  200 whileLoop: WHILE '(' . expr ')' expr
-  201          | WHILE '(' . expr ')' block
-  202          | WHILE '(' . expr ')' ';'
+  200 whileLoop: WHILE '(' . expr ')' stmt
+  201          | WHILE '(' . expr ')' block semis
+  202          | WHILE '(' . expr ')' semis
 
     ID       shift, and go to state 97
     STR      shift, and go to state 98
@@ -2974,27 +2961,27 @@ State 184
     '!'      shift, and go to state 115
     '('      shift, and go to state 116
 
-    expr  go to state 260
+    expr  go to state 257
 
 
 State 185
 
-  206 forLoop: FOR '(' . ID ':' type IN expr ')' expr
-  207        | FOR '(' . ID ':' type IN expr ')' block
-  208        | FOR '(' . ID ':' type IN expr ')' ';'
-  209        | FOR '(' . '(' formalParams ')' IN expr ')' expr
-  210        | FOR '(' . '(' formalParams ')' IN expr ')' block
-  211        | FOR '(' . '(' formalParams ')' IN expr ')' ';'
+  206 forLoop: FOR '(' . ID ':' type IN expr ')' stmt
+  207        | FOR '(' . ID ':' type IN expr ')' block semis
+  208        | FOR '(' . ID ':' type IN expr ')' semis
+  209        | FOR '(' . '(' formalParams ')' IN expr ')' stmt
+  210        | FOR '(' . '(' formalParams ')' IN expr ')' block semis
+  211        | FOR '(' . '(' formalParams ')' IN expr ')' semis
 
-    ID   shift, and go to state 261
-    '('  shift, and go to state 262
+    ID   shift, and go to state 258
+    '('  shift, and go to state 259
 
 
 State 186
 
   152 stmt: BREAK semis .
-  226 semis: semis . ';'
-  227      | semis . NEW_LINE
+  228 semis: semis . ';'
+  229      | semis . NEW_LINE
 
     NEW_LINE  shift, and go to state 60
     ';'       shift, and go to state 61
@@ -3005,8 +2992,8 @@ State 186
 State 187
 
   153 stmt: CONTINUE semis .
-  226 semis: semis . ';'
-  227      | semis . NEW_LINE
+  228 semis: semis . ';'
+  229      | semis . NEW_LINE
 
     NEW_LINE  shift, and go to state 60
     ';'       shift, and go to state 61
@@ -3058,14 +3045,14 @@ State 188
     '['       shift, and go to state 220
     ';'       shift, and go to state 14
 
-    semis  go to state 263
+    semis  go to state 260
 
 
 State 189
 
   154 stmt: RETURN semis .
-  226 semis: semis . ';'
-  227      | semis . NEW_LINE
+  228 semis: semis . ';'
+  229      | semis . NEW_LINE
 
     NEW_LINE  shift, and go to state 60
     ';'       shift, and go to state 61
@@ -3200,15 +3187,15 @@ State 193
     '*'    shift, and go to state 217
     '%'    shift, and go to state 218
     '.'    shift, and go to state 219
-    ')'    shift, and go to state 264
+    ')'    shift, and go to state 261
     '['    shift, and go to state 220
 
 
 State 194
 
   145 stmt: varDeclaration semis .
-  226 semis: semis . ';'
-  227      | semis . NEW_LINE
+  228 semis: semis . ';'
+  229      | semis . NEW_LINE
 
     NEW_LINE  shift, and go to state 60
     ';'       shift, and go to state 61
@@ -3219,8 +3206,8 @@ State 194
 State 195
 
   144 stmt: valDeclaration semis .
-  226 semis: semis . ';'
-  227      | semis . NEW_LINE
+  228 semis: semis . ';'
+  229      | semis . NEW_LINE
 
     NEW_LINE  shift, and go to state 60
     ';'       shift, and go to state 61
@@ -3260,7 +3247,7 @@ State 198
     '!'      shift, and go to state 115
     '('      shift, and go to state 116
 
-    expr  go to state 265
+    expr  go to state 262
 
 
 State 199
@@ -3281,7 +3268,7 @@ State 199
     '!'      shift, and go to state 115
     '('      shift, and go to state 116
 
-    expr  go to state 266
+    expr  go to state 263
 
 
 State 200
@@ -3302,7 +3289,7 @@ State 200
     '!'      shift, and go to state 115
     '('      shift, and go to state 116
 
-    expr  go to state 267
+    expr  go to state 264
 
 
 State 201
@@ -3323,7 +3310,7 @@ State 201
     '!'      shift, and go to state 115
     '('      shift, and go to state 116
 
-    expr  go to state 268
+    expr  go to state 265
 
 
 State 202
@@ -3344,7 +3331,7 @@ State 202
     '!'      shift, and go to state 115
     '('      shift, and go to state 116
 
-    expr  go to state 269
+    expr  go to state 266
 
 
 State 203
@@ -3365,7 +3352,7 @@ State 203
     '!'      shift, and go to state 115
     '('      shift, and go to state 116
 
-    expr  go to state 270
+    expr  go to state 267
 
 
 State 204
@@ -3386,7 +3373,7 @@ State 204
     '!'      shift, and go to state 115
     '('      shift, and go to state 116
 
-    expr  go to state 271
+    expr  go to state 268
 
 
 State 205
@@ -3407,7 +3394,7 @@ State 205
     '!'      shift, and go to state 115
     '('      shift, and go to state 116
 
-    expr  go to state 272
+    expr  go to state 269
 
 
 State 206
@@ -3428,7 +3415,7 @@ State 206
     '!'      shift, and go to state 115
     '('      shift, and go to state 116
 
-    expr  go to state 273
+    expr  go to state 270
 
 
 State 207
@@ -3449,7 +3436,7 @@ State 207
     '!'      shift, and go to state 115
     '('      shift, and go to state 116
 
-    expr  go to state 274
+    expr  go to state 271
 
 
 State 208
@@ -3470,7 +3457,7 @@ State 208
     '!'      shift, and go to state 115
     '('      shift, and go to state 116
 
-    expr  go to state 275
+    expr  go to state 272
 
 
 State 209
@@ -3491,7 +3478,7 @@ State 209
     '!'      shift, and go to state 115
     '('      shift, and go to state 116
 
-    expr  go to state 276
+    expr  go to state 273
 
 
 State 210
@@ -3512,7 +3499,7 @@ State 210
     '!'      shift, and go to state 115
     '('      shift, and go to state 116
 
-    expr  go to state 277
+    expr  go to state 274
 
 
 State 211
@@ -3533,7 +3520,7 @@ State 211
     '!'      shift, and go to state 115
     '('      shift, and go to state 116
 
-    expr  go to state 278
+    expr  go to state 275
 
 
 State 212
@@ -3554,7 +3541,7 @@ State 212
     '!'      shift, and go to state 115
     '('      shift, and go to state 116
 
-    expr  go to state 279
+    expr  go to state 276
 
 
 State 213
@@ -3575,7 +3562,7 @@ State 213
     '!'      shift, and go to state 115
     '('      shift, and go to state 116
 
-    expr  go to state 280
+    expr  go to state 277
 
 
 State 214
@@ -3596,7 +3583,7 @@ State 214
     '!'      shift, and go to state 115
     '('      shift, and go to state 116
 
-    expr  go to state 281
+    expr  go to state 278
 
 
 State 215
@@ -3617,7 +3604,7 @@ State 215
     '!'      shift, and go to state 115
     '('      shift, and go to state 116
 
-    expr  go to state 282
+    expr  go to state 279
 
 
 State 216
@@ -3638,7 +3625,7 @@ State 216
     '!'      shift, and go to state 115
     '('      shift, and go to state 116
 
-    expr  go to state 283
+    expr  go to state 280
 
 
 State 217
@@ -3659,7 +3646,7 @@ State 217
     '!'      shift, and go to state 115
     '('      shift, and go to state 116
 
-    expr  go to state 284
+    expr  go to state 281
 
 
 State 218
@@ -3680,7 +3667,7 @@ State 218
     '!'      shift, and go to state 115
     '('      shift, and go to state 116
 
-    expr  go to state 285
+    expr  go to state 282
 
 
 State 219
@@ -3688,7 +3675,7 @@ State 219
   184 expr: expr '.' . ID
   185     | expr '.' . ID '(' optFactParams ')'
 
-    ID  shift, and go to state 286
+    ID  shift, and go to state 283
 
 
 State 220
@@ -3709,7 +3696,7 @@ State 220
     '!'      shift, and go to state 115
     '('      shift, and go to state 116
 
-    expr  go to state 287
+    expr  go to state 284
 
 
 State 221
@@ -3730,14 +3717,14 @@ State 221
     '!'      shift, and go to state 115
     '('      shift, and go to state 116
 
-    expr  go to state 288
+    expr  go to state 285
 
 
 State 222
 
   151 stmt: expr semis .
-  226 semis: semis . ';'
-  227      | semis . NEW_LINE
+  228 semis: semis . ';'
+  229      | semis . NEW_LINE
 
     NEW_LINE  shift, and go to state 60
     ';'       shift, and go to state 61
@@ -3748,8 +3735,8 @@ State 222
 State 223
 
   146 stmt: assignment semis .
-  226 semis: semis . ';'
-  227      | semis . NEW_LINE
+  228 semis: semis . ';'
+  229      | semis . NEW_LINE
 
     NEW_LINE  shift, and go to state 60
     ';'       shift, and go to state 61
@@ -3759,21 +3746,9 @@ State 223
 
 State 224
 
-  147 stmt: whileLoop semis .
-  226 semis: semis . ';'
-  227      | semis . NEW_LINE
-
-    NEW_LINE  shift, and go to state 60
-    ';'       shift, and go to state 61
-
-    $default  reduce using rule 147 (stmt)
-
-
-State 225
-
   148 stmt: doWhileLoop semis .
-  226 semis: semis . ';'
-  227      | semis . NEW_LINE
+  228 semis: semis . ';'
+  229      | semis . NEW_LINE
 
     NEW_LINE  shift, and go to state 60
     ';'       shift, and go to state 61
@@ -3781,38 +3756,14 @@ State 225
     $default  reduce using rule 148 (stmt)
 
 
-State 226
-
-  149 stmt: forLoop semis .
-  226 semis: semis . ';'
-  227      | semis . NEW_LINE
-
-    NEW_LINE  shift, and go to state 60
-    ';'       shift, and go to state 61
-
-    $default  reduce using rule 149 (stmt)
-
-
-State 227
-
-  150 stmt: ifStmt semis .
-  226 semis: semis . ';'
-  227      | semis . NEW_LINE
-
-    NEW_LINE  shift, and go to state 60
-    ';'       shift, and go to state 61
-
-    $default  reduce using rule 150 (stmt)
-
-
-State 228
+State 225
 
   126 block: '{' semis '}' .
 
     $default  reduce using rule 126 (block)
 
 
-State 229
+State 226
 
   125 block: '{' semis stmts . '}'
   143 stmts: stmts . stmt
@@ -3839,7 +3790,7 @@ State 229
     '-'       shift, and go to state 114
     '!'       shift, and go to state 115
     '('       shift, and go to state 116
-    '}'       shift, and go to state 289
+    '}'       shift, and go to state 286
 
     varDeclaration  go to state 118
     valDeclaration  go to state 119
@@ -3852,7 +3803,7 @@ State 229
     ifStmt          go to state 127
 
 
-State 230
+State 227
 
    11 class: CLASS ID ':' ID '{' . classBody '}'
    15      | CLASS ID ':' ID '{' . '}'
@@ -3871,10 +3822,10 @@ State 230
     VAL          shift, and go to state 11
     OPEN         shift, and go to state 12
     FINAL        shift, and go to state 13
-    '}'          shift, and go to state 290
+    '}'          shift, and go to state 287
     ';'          shift, and go to state 14
 
-    classBody            go to state 291
+    classBody            go to state 288
     property             go to state 135
     method               go to state 136
     initializer          go to state 137
@@ -3889,7 +3840,7 @@ State 230
     semis                go to state 141
 
 
-State 231
+State 228
 
    42 constructor: CONSTRUCTOR '(' . optFormalParams ')' block
    43            | CONSTRUCTOR '(' . optFormalParams ')'
@@ -3902,60 +3853,60 @@ State 231
 
     $default  reduce using rule 48 (optFormalParams)
 
-    optFormalParams  go to state 292
+    optFormalParams  go to state 289
     formalParams     go to state 155
 
 
-State 232
+State 229
 
    35 initializer: INIT block .
 
     $default  reduce using rule 35 (initializer)
 
 
-State 233
+State 230
 
    12 class: CLASS ID '{' classBody '}' .
 
     $default  reduce using rule 12 (class)
 
 
-State 234
+State 231
 
    23 classBody: classBody property . semis
 
     NEW_LINE  shift, and go to state 1
     ';'       shift, and go to state 14
 
-    semis  go to state 293
+    semis  go to state 290
 
 
-State 235
+State 232
 
    22 classBody: classBody method .
 
     $default  reduce using rule 22 (classBody)
 
 
-State 236
+State 233
 
    25 classBody: classBody initializer .
 
     $default  reduce using rule 25 (classBody)
 
 
-State 237
+State 234
 
    24 classBody: classBody constructor .
 
     $default  reduce using rule 24 (classBody)
 
 
-State 238
+State 235
 
    26 classBody: classBody semis .
-  226 semis: semis . ';'
-  227      | semis . NEW_LINE
+  228 semis: semis . ';'
+  229      | semis . NEW_LINE
 
     NEW_LINE  shift, and go to state 60
     ';'       shift, and go to state 61
@@ -3965,11 +3916,11 @@ State 238
     $default  reduce using rule 26 (classBody)
 
 
-State 239
+State 236
 
    19 classBody: property semis .
-  226 semis: semis . ';'
-  227      | semis . NEW_LINE
+  228 semis: semis . ';'
+  229      | semis . NEW_LINE
 
     NEW_LINE  shift, and go to state 60
     ';'       shift, and go to state 61
@@ -3979,7 +3930,7 @@ State 239
     $default  reduce using rule 19 (classBody)
 
 
-State 240
+State 237
 
    36 constructor: visibilityModifier CONSTRUCTOR . '(' optFormalParams ')' block
    37            | visibilityModifier CONSTRUCTOR . '(' optFormalParams ')'
@@ -3988,29 +3939,85 @@ State 240
    40            | visibilityModifier CONSTRUCTOR . '(' optFormalParams ')' ':' SUPER '(' optFactParams ')' block
    41            | visibilityModifier CONSTRUCTOR . '(' optFormalParams ')' ':' THIS '(' optFactParams ')' block
 
-    '('  shift, and go to state 294
+    '('  shift, and go to state 291
+
+
+State 238
+
+  124 funcDeclaration: FUN ID '(' optFormalParams ')' . ':' type
+
+    ':'  shift, and go to state 292
+
+
+State 239
+
+  137 templateType: ID '<' . type_seq '>'
+
+    ID  shift, and go to state 293
+
+    templateType  go to state 294
+    type_seq      go to state 295
+
+
+State 240
+
+  130 varDeclaration: VAR ID ':' type '=' . expr
+
+    ID       shift, and go to state 97
+    STR      shift, and go to state 98
+    THIS     shift, and go to state 99
+    SUPER    shift, and go to state 100
+    INT      shift, and go to state 108
+    FLOAT    shift, and go to state 109
+    DOUBLE   shift, and go to state 110
+    CHR      shift, and go to state 111
+    BOOLEAN  shift, and go to state 112
+    '+'      shift, and go to state 113
+    '-'      shift, and go to state 114
+    '!'      shift, and go to state 115
+    '('      shift, and go to state 116
+
+    expr  go to state 296
 
 
 State 241
 
-  124 funcDeclaration: FUN ID '(' optFormalParams ')' . ':' type
+   50 formalParams: ID ':' type .
 
-    ':'  shift, and go to state 295
+    $default  reduce using rule 50 (formalParams)
 
 
 State 242
 
-  137 templateType: ID '<' . type_seq '>'
+  131 varDeclaration: VAR '(' formalParams ')' '=' . expr
 
-    ID  shift, and go to state 296
+    ID       shift, and go to state 97
+    STR      shift, and go to state 98
+    THIS     shift, and go to state 99
+    SUPER    shift, and go to state 100
+    INT      shift, and go to state 108
+    FLOAT    shift, and go to state 109
+    DOUBLE   shift, and go to state 110
+    CHR      shift, and go to state 111
+    BOOLEAN  shift, and go to state 112
+    '+'      shift, and go to state 113
+    '-'      shift, and go to state 114
+    '!'      shift, and go to state 115
+    '('      shift, and go to state 116
 
-    templateType  go to state 297
-    type_seq      go to state 298
+    expr  go to state 297
 
 
 State 243
 
-  130 varDeclaration: VAR ID ':' type '=' . expr
+   51 formalParams: formalParams ',' ID . ':' type
+
+    ':'  shift, and go to state 298
+
+
+State 244
+
+  133 valDeclaration: VAL ID ':' type '=' . expr
 
     ID       shift, and go to state 97
     STR      shift, and go to state 98
@@ -4029,16 +4036,9 @@ State 243
     expr  go to state 299
 
 
-State 244
-
-   50 formalParams: ID ':' type .
-
-    $default  reduce using rule 50 (formalParams)
-
-
 State 245
 
-  131 varDeclaration: VAR '(' formalParams ')' '=' . expr
+  134 valDeclaration: VAL '(' formalParams ')' '=' . expr
 
     ID       shift, and go to state 97
     STR      shift, and go to state 98
@@ -4059,69 +4059,20 @@ State 245
 
 State 246
 
-   51 formalParams: formalParams ',' ID . ':' type
-
-    ':'  shift, and go to state 301
-
-
-State 247
-
-  133 valDeclaration: VAL ID ':' type '=' . expr
-
-    ID       shift, and go to state 97
-    STR      shift, and go to state 98
-    THIS     shift, and go to state 99
-    SUPER    shift, and go to state 100
-    INT      shift, and go to state 108
-    FLOAT    shift, and go to state 109
-    DOUBLE   shift, and go to state 110
-    CHR      shift, and go to state 111
-    BOOLEAN  shift, and go to state 112
-    '+'      shift, and go to state 113
-    '-'      shift, and go to state 114
-    '!'      shift, and go to state 115
-    '('      shift, and go to state 116
-
-    expr  go to state 302
-
-
-State 248
-
-  134 valDeclaration: VAL '(' formalParams ')' '=' . expr
-
-    ID       shift, and go to state 97
-    STR      shift, and go to state 98
-    THIS     shift, and go to state 99
-    SUPER    shift, and go to state 100
-    INT      shift, and go to state 108
-    FLOAT    shift, and go to state 109
-    DOUBLE   shift, and go to state 110
-    CHR      shift, and go to state 111
-    BOOLEAN  shift, and go to state 112
-    '+'      shift, and go to state 113
-    '-'      shift, and go to state 114
-    '!'      shift, and go to state 115
-    '('      shift, and go to state 116
-
-    expr  go to state 303
-
-
-State 249
-
     9 class: modifiers CLASS ID ':' ID . '{' classBody '}'
    13      | modifiers CLASS ID ':' ID . '{' '}'
 
-    '{'  shift, and go to state 304
+    '{'  shift, and go to state 301
 
 
-State 250
+State 247
 
    14 class: modifiers CLASS ID '{' '}' .
 
     $default  reduce using rule 14 (class)
 
 
-State 251
+State 248
 
    10 class: modifiers CLASS ID '{' classBody . '}'
    22 classBody: classBody . method
@@ -4144,13 +4095,13 @@ State 251
     VAL          shift, and go to state 11
     OPEN         shift, and go to state 12
     FINAL        shift, and go to state 13
-    '}'          shift, and go to state 305
+    '}'          shift, and go to state 302
     ';'          shift, and go to state 14
 
-    property             go to state 234
-    method               go to state 235
-    initializer          go to state 236
-    constructor          go to state 237
+    property             go to state 231
+    method               go to state 232
+    initializer          go to state 233
+    constructor          go to state 234
     modifiers            go to state 139
     visibilityModifier   go to state 140
     inheritanceModifier  go to state 21
@@ -4158,10 +4109,10 @@ State 251
     funcDeclaration      go to state 23
     varDeclaration       go to state 24
     valDeclaration       go to state 25
-    semis                go to state 238
+    semis                go to state 235
 
 
-State 252
+State 249
 
   169 expr: expr . '+' expr
   170     | expr . '-' expr
@@ -4206,34 +4157,34 @@ State 252
     $default  reduce using rule 192 (factParams)
 
 
-State 253
+State 250
 
   159 expr: ID '(' optFactParams . ')'
 
-    ')'  shift, and go to state 306
+    ')'  shift, and go to state 303
 
 
-State 254
+State 251
 
   191 optFactParams: factParams .
   193 factParams: factParams . ',' expr
 
-    ','  shift, and go to state 307
+    ','  shift, and go to state 304
 
     $default  reduce using rule 191 (optFactParams)
 
 
-State 255
+State 252
 
   187 expr: SUPER '.' ID .
   188     | SUPER '.' ID . '(' optFactParams ')'
 
-    '('  shift, and go to state 308
+    '('  shift, and go to state 305
 
     $default  reduce using rule 187 (expr)
 
 
-State 256
+State 253
 
   169 expr: expr . '+' expr
   170     | expr . '-' expr
@@ -4254,18 +4205,20 @@ State 256
   185     | expr . '.' ID '(' optFactParams ')'
   186     | expr . '[' expr ']'
   189     | expr . RANGE expr
-  212 ifStmt: IF '(' expr . ')' expr
-  213       | IF '(' expr . ')' block
-  214       | IF '(' expr . ')'
-  215       | IF '(' expr . ')' expr ELSE expr
-  216       | IF '(' expr . ')' block ELSE expr
-  217       | IF '(' expr . ')' semis ELSE expr
-  218       | IF '(' expr . ')' expr ELSE block
-  219       | IF '(' expr . ')' block ELSE block
-  220       | IF '(' expr . ')' semis ELSE block
-  221       | IF '(' expr . ')' expr ELSE semis
-  222       | IF '(' expr . ')' block ELSE semis
-  223       | IF '(' expr . ')' semis ELSE semis
+  212 ifStmt: IF '(' expr . ')' stmt
+  213       | IF '(' expr . ')' semis
+  214       | IF '(' expr . ')' block semis
+  215       | IF '(' expr . ')' expr ELSE stmt
+  216       | IF '(' expr . ')' stmt ELSE stmt
+  217       | IF '(' expr . ')' block ELSE stmt
+  218       | IF '(' expr . ')' semis ELSE stmt
+  219       | IF '(' expr . ')' expr ELSE block semis
+  220       | IF '(' expr . ')' stmt ELSE block semis
+  221       | IF '(' expr . ')' block ELSE block semis
+  222       | IF '(' expr . ')' semis ELSE block semis
+  223       | IF '(' expr . ')' expr ELSE semis
+  224       | IF '(' expr . ')' stmt ELSE semis
+  225       | IF '(' expr . ')' block ELSE semis
 
     OR     shift, and go to state 203
     AND    shift, and go to state 204
@@ -4284,11 +4237,11 @@ State 256
     '*'    shift, and go to state 217
     '%'    shift, and go to state 218
     '.'    shift, and go to state 219
-    ')'    shift, and go to state 309
+    ')'    shift, and go to state 306
     '['    shift, and go to state 220
 
 
-State 257
+State 254
 
   205 doWhileLoop: DO WHILE '(' . expr ')'
 
@@ -4306,24 +4259,24 @@ State 257
     '!'      shift, and go to state 115
     '('      shift, and go to state 116
 
-    expr  go to state 310
+    expr  go to state 307
 
 
-State 258
+State 255
 
   204 doWhileLoop: DO block WHILE . '(' expr ')'
 
-    '('  shift, and go to state 311
+    '('  shift, and go to state 308
 
 
-State 259
+State 256
 
   203 doWhileLoop: DO expr WHILE . '(' expr ')'
 
-    '('  shift, and go to state 312
+    '('  shift, and go to state 309
 
 
-State 260
+State 257
 
   169 expr: expr . '+' expr
   170     | expr . '-' expr
@@ -4344,9 +4297,9 @@ State 260
   185     | expr . '.' ID '(' optFactParams ')'
   186     | expr . '[' expr ']'
   189     | expr . RANGE expr
-  200 whileLoop: WHILE '(' expr . ')' expr
-  201          | WHILE '(' expr . ')' block
-  202          | WHILE '(' expr . ')' ';'
+  200 whileLoop: WHILE '(' expr . ')' stmt
+  201          | WHILE '(' expr . ')' block semis
+  202          | WHILE '(' expr . ')' semis
 
     OR     shift, and go to state 203
     AND    shift, and go to state 204
@@ -4365,35 +4318,35 @@ State 260
     '*'    shift, and go to state 217
     '%'    shift, and go to state 218
     '.'    shift, and go to state 219
-    ')'    shift, and go to state 313
+    ')'    shift, and go to state 310
     '['    shift, and go to state 220
 
 
-State 261
+State 258
 
-  206 forLoop: FOR '(' ID . ':' type IN expr ')' expr
-  207        | FOR '(' ID . ':' type IN expr ')' block
-  208        | FOR '(' ID . ':' type IN expr ')' ';'
+  206 forLoop: FOR '(' ID . ':' type IN expr ')' stmt
+  207        | FOR '(' ID . ':' type IN expr ')' block semis
+  208        | FOR '(' ID . ':' type IN expr ')' semis
 
-    ':'  shift, and go to state 314
+    ':'  shift, and go to state 311
 
 
-State 262
+State 259
 
-  209 forLoop: FOR '(' '(' . formalParams ')' IN expr ')' expr
-  210        | FOR '(' '(' . formalParams ')' IN expr ')' block
-  211        | FOR '(' '(' . formalParams ')' IN expr ')' ';'
+  209 forLoop: FOR '(' '(' . formalParams ')' IN expr ')' stmt
+  210        | FOR '(' '(' . formalParams ')' IN expr ')' block semis
+  211        | FOR '(' '(' . formalParams ')' IN expr ')' semis
 
     ID  shift, and go to state 78
 
-    formalParams  go to state 315
+    formalParams  go to state 312
 
 
-State 263
+State 260
 
   155 stmt: RETURN expr semis .
-  226 semis: semis . ';'
-  227      | semis . NEW_LINE
+  228 semis: semis . ';'
+  229      | semis . NEW_LINE
 
     NEW_LINE  shift, and go to state 60
     ';'       shift, and go to state 61
@@ -4401,14 +4354,14 @@ State 263
     $default  reduce using rule 155 (stmt)
 
 
-State 264
+State 261
 
   165 expr: '(' expr ')' .
 
     $default  reduce using rule 165 (expr)
 
 
-State 265
+State 262
 
   169 expr: expr . '+' expr
   170     | expr . '-' expr
@@ -4453,7 +4406,7 @@ State 265
     $default  reduce using rule 195 (assignment)
 
 
-State 266
+State 263
 
   169 expr: expr . '+' expr
   170     | expr . '-' expr
@@ -4498,7 +4451,7 @@ State 266
     $default  reduce using rule 196 (assignment)
 
 
-State 267
+State 264
 
   169 expr: expr . '+' expr
   170     | expr . '-' expr
@@ -4543,7 +4496,7 @@ State 267
     $default  reduce using rule 197 (assignment)
 
 
-State 268
+State 265
 
   169 expr: expr . '+' expr
   170     | expr . '-' expr
@@ -4588,7 +4541,7 @@ State 268
     $default  reduce using rule 198 (assignment)
 
 
-State 269
+State 266
 
   169 expr: expr . '+' expr
   170     | expr . '-' expr
@@ -4633,7 +4586,7 @@ State 269
     $default  reduce using rule 199 (assignment)
 
 
-State 270
+State 267
 
   169 expr: expr . '+' expr
   170     | expr . '-' expr
@@ -4677,7 +4630,7 @@ State 270
     $default  reduce using rule 176 (expr)
 
 
-State 271
+State 268
 
   169 expr: expr . '+' expr
   170     | expr . '-' expr
@@ -4720,7 +4673,7 @@ State 271
     $default  reduce using rule 177 (expr)
 
 
-State 272
+State 269
 
   169 expr: expr . '+' expr
   170     | expr . '-' expr
@@ -4759,7 +4712,7 @@ State 272
     $default  reduce using rule 178 (expr)
 
 
-State 273
+State 270
 
   169 expr: expr . '+' expr
   170     | expr . '-' expr
@@ -4798,7 +4751,7 @@ State 273
     $default  reduce using rule 179 (expr)
 
 
-State 274
+State 271
 
   169 expr: expr . '+' expr
   170     | expr . '-' expr
@@ -4837,7 +4790,7 @@ State 274
     $default  reduce using rule 180 (expr)
 
 
-State 275
+State 272
 
   169 expr: expr . '+' expr
   170     | expr . '-' expr
@@ -4876,7 +4829,7 @@ State 275
     $default  reduce using rule 181 (expr)
 
 
-State 276
+State 273
 
   169 expr: expr . '+' expr
   170     | expr . '-' expr
@@ -4911,7 +4864,7 @@ State 276
     $default  reduce using rule 182 (expr)
 
 
-State 277
+State 274
 
   169 expr: expr . '+' expr
   170     | expr . '-' expr
@@ -4946,7 +4899,7 @@ State 277
     $default  reduce using rule 183 (expr)
 
 
-State 278
+State 275
 
   169 expr: expr . '+' expr
   170     | expr . '-' expr
@@ -4981,7 +4934,7 @@ State 278
     $default  reduce using rule 174 (expr)
 
 
-State 279
+State 276
 
   169 expr: expr . '+' expr
   170     | expr . '-' expr
@@ -5016,7 +4969,7 @@ State 279
     $default  reduce using rule 175 (expr)
 
 
-State 280
+State 277
 
   169 expr: expr . '+' expr
   170     | expr . '-' expr
@@ -5052,7 +5005,7 @@ State 280
     $default  reduce using rule 189 (expr)
 
 
-State 281
+State 278
 
   169 expr: expr . '+' expr
   169     | expr '+' expr .
@@ -5084,7 +5037,7 @@ State 281
     $default  reduce using rule 169 (expr)
 
 
-State 282
+State 279
 
   169 expr: expr . '+' expr
   170     | expr . '-' expr
@@ -5116,7 +5069,7 @@ State 282
     $default  reduce using rule 170 (expr)
 
 
-State 283
+State 280
 
   169 expr: expr . '+' expr
   170     | expr . '-' expr
@@ -5145,7 +5098,7 @@ State 283
     $default  reduce using rule 172 (expr)
 
 
-State 284
+State 281
 
   169 expr: expr . '+' expr
   170     | expr . '-' expr
@@ -5174,7 +5127,7 @@ State 284
     $default  reduce using rule 171 (expr)
 
 
-State 285
+State 282
 
   169 expr: expr . '+' expr
   170     | expr . '-' expr
@@ -5203,17 +5156,17 @@ State 285
     $default  reduce using rule 173 (expr)
 
 
-State 286
+State 283
 
   184 expr: expr '.' ID .
   185     | expr '.' ID . '(' optFactParams ')'
 
-    '('  shift, and go to state 316
+    '('  shift, and go to state 313
 
     $default  reduce using rule 184 (expr)
 
 
-State 287
+State 284
 
   169 expr: expr . '+' expr
   170     | expr . '-' expr
@@ -5254,10 +5207,10 @@ State 287
     '%'    shift, and go to state 218
     '.'    shift, and go to state 219
     '['    shift, and go to state 220
-    ']'    shift, and go to state 317
+    ']'    shift, and go to state 314
 
 
-State 288
+State 285
 
   169 expr: expr . '+' expr
   170     | expr . '-' expr
@@ -5302,21 +5255,21 @@ State 288
     $default  reduce using rule 194 (assignment)
 
 
-State 289
+State 286
 
   125 block: '{' semis stmts '}' .
 
     $default  reduce using rule 125 (block)
 
 
-State 290
+State 287
 
    15 class: CLASS ID ':' ID '{' '}' .
 
     $default  reduce using rule 15 (class)
 
 
-State 291
+State 288
 
    11 class: CLASS ID ':' ID '{' classBody . '}'
    22 classBody: classBody . method
@@ -5339,13 +5292,13 @@ State 291
     VAL          shift, and go to state 11
     OPEN         shift, and go to state 12
     FINAL        shift, and go to state 13
-    '}'          shift, and go to state 318
+    '}'          shift, and go to state 315
     ';'          shift, and go to state 14
 
-    property             go to state 234
-    method               go to state 235
-    initializer          go to state 236
-    constructor          go to state 237
+    property             go to state 231
+    method               go to state 232
+    initializer          go to state 233
+    constructor          go to state 234
     modifiers            go to state 139
     visibilityModifier   go to state 140
     inheritanceModifier  go to state 21
@@ -5353,10 +5306,10 @@ State 291
     funcDeclaration      go to state 23
     varDeclaration       go to state 24
     valDeclaration       go to state 25
-    semis                go to state 238
+    semis                go to state 235
 
 
-State 292
+State 289
 
    42 constructor: CONSTRUCTOR '(' optFormalParams . ')' block
    43            | CONSTRUCTOR '(' optFormalParams . ')'
@@ -5365,14 +5318,14 @@ State 292
    46            | CONSTRUCTOR '(' optFormalParams . ')' ':' SUPER '(' optFactParams ')' block
    47            | CONSTRUCTOR '(' optFormalParams . ')' ':' THIS '(' optFactParams ')' block
 
-    ')'  shift, and go to state 319
+    ')'  shift, and go to state 316
 
 
-State 293
+State 290
 
    23 classBody: classBody property semis .
-  226 semis: semis . ';'
-  227      | semis . NEW_LINE
+  228 semis: semis . ';'
+  229      | semis . NEW_LINE
 
     NEW_LINE  shift, and go to state 60
     ';'       shift, and go to state 61
@@ -5382,7 +5335,7 @@ State 293
     $default  reduce using rule 23 (classBody)
 
 
-State 294
+State 291
 
    36 constructor: visibilityModifier CONSTRUCTOR '(' . optFormalParams ')' block
    37            | visibilityModifier CONSTRUCTOR '(' . optFormalParams ')'
@@ -5395,48 +5348,48 @@ State 294
 
     $default  reduce using rule 48 (optFormalParams)
 
-    optFormalParams  go to state 320
+    optFormalParams  go to state 317
     formalParams     go to state 155
 
 
-State 295
+State 292
 
   124 funcDeclaration: FUN ID '(' optFormalParams ')' ':' . type
 
     ID  shift, and go to state 156
 
-    type          go to state 321
+    type          go to state 318
     templateType  go to state 158
 
 
-State 296
+State 293
 
   137 templateType: ID . '<' type_seq '>'
   138 type_seq: ID .
 
-    '<'  shift, and go to state 242
+    '<'  shift, and go to state 239
 
     $default  reduce using rule 138 (type_seq)
 
 
-State 297
+State 294
 
   139 type_seq: templateType .
 
     $default  reduce using rule 139 (type_seq)
 
 
-State 298
+State 295
 
   137 templateType: ID '<' type_seq . '>'
   140 type_seq: type_seq . ',' ID
   141         | type_seq . ',' templateType
 
-    '>'  shift, and go to state 322
-    ','  shift, and go to state 323
+    '>'  shift, and go to state 319
+    ','  shift, and go to state 320
 
 
-State 299
+State 296
 
   130 varDeclaration: VAR ID ':' type '=' expr .
   169 expr: expr . '+' expr
@@ -5481,7 +5434,7 @@ State 299
     $default  reduce using rule 130 (varDeclaration)
 
 
-State 300
+State 297
 
   131 varDeclaration: VAR '(' formalParams ')' '=' expr .
   169 expr: expr . '+' expr
@@ -5526,17 +5479,17 @@ State 300
     $default  reduce using rule 131 (varDeclaration)
 
 
-State 301
+State 298
 
    51 formalParams: formalParams ',' ID ':' . type
 
     ID  shift, and go to state 156
 
-    type          go to state 324
+    type          go to state 321
     templateType  go to state 158
 
 
-State 302
+State 299
 
   133 valDeclaration: VAL ID ':' type '=' expr .
   169 expr: expr . '+' expr
@@ -5581,7 +5534,7 @@ State 302
     $default  reduce using rule 133 (valDeclaration)
 
 
-State 303
+State 300
 
   134 valDeclaration: VAL '(' formalParams ')' '=' expr .
   169 expr: expr . '+' expr
@@ -5626,7 +5579,7 @@ State 303
     $default  reduce using rule 134 (valDeclaration)
 
 
-State 304
+State 301
 
     9 class: modifiers CLASS ID ':' ID '{' . classBody '}'
    13      | modifiers CLASS ID ':' ID '{' . '}'
@@ -5645,10 +5598,10 @@ State 304
     VAL          shift, and go to state 11
     OPEN         shift, and go to state 12
     FINAL        shift, and go to state 13
-    '}'          shift, and go to state 325
+    '}'          shift, and go to state 322
     ';'          shift, and go to state 14
 
-    classBody            go to state 326
+    classBody            go to state 323
     property             go to state 135
     method               go to state 136
     initializer          go to state 137
@@ -5663,21 +5616,21 @@ State 304
     semis                go to state 141
 
 
-State 305
+State 302
 
    10 class: modifiers CLASS ID '{' classBody '}' .
 
     $default  reduce using rule 10 (class)
 
 
-State 306
+State 303
 
   159 expr: ID '(' optFactParams ')' .
 
     $default  reduce using rule 159 (expr)
 
 
-State 307
+State 304
 
   193 factParams: factParams ',' . expr
 
@@ -5695,10 +5648,10 @@ State 307
     '!'      shift, and go to state 115
     '('      shift, and go to state 116
 
-    expr  go to state 327
+    expr  go to state 324
 
 
-State 308
+State 305
 
   188 expr: SUPER '.' ID '(' . optFactParams ')'
 
@@ -5718,31 +5671,42 @@ State 308
 
     $default  reduce using rule 190 (optFactParams)
 
-    expr           go to state 252
-    optFactParams  go to state 328
-    factParams     go to state 254
+    expr           go to state 249
+    optFactParams  go to state 325
+    factParams     go to state 251
 
 
-State 309
+State 306
 
-  212 ifStmt: IF '(' expr ')' . expr
-  213       | IF '(' expr ')' . block
-  214       | IF '(' expr ')' .
-  215       | IF '(' expr ')' . expr ELSE expr
-  216       | IF '(' expr ')' . block ELSE expr
-  217       | IF '(' expr ')' . semis ELSE expr
-  218       | IF '(' expr ')' . expr ELSE block
-  219       | IF '(' expr ')' . block ELSE block
-  220       | IF '(' expr ')' . semis ELSE block
-  221       | IF '(' expr ')' . expr ELSE semis
-  222       | IF '(' expr ')' . block ELSE semis
-  223       | IF '(' expr ')' . semis ELSE semis
+  212 ifStmt: IF '(' expr ')' . stmt
+  213       | IF '(' expr ')' . semis
+  214       | IF '(' expr ')' . block semis
+  215       | IF '(' expr ')' . expr ELSE stmt
+  216       | IF '(' expr ')' . stmt ELSE stmt
+  217       | IF '(' expr ')' . block ELSE stmt
+  218       | IF '(' expr ')' . semis ELSE stmt
+  219       | IF '(' expr ')' . expr ELSE block semis
+  220       | IF '(' expr ')' . stmt ELSE block semis
+  221       | IF '(' expr ')' . block ELSE block semis
+  222       | IF '(' expr ')' . semis ELSE block semis
+  223       | IF '(' expr ')' . expr ELSE semis
+  224       | IF '(' expr ')' . stmt ELSE semis
+  225       | IF '(' expr ')' . block ELSE semis
 
     NEW_LINE  shift, and go to state 1
     ID        shift, and go to state 97
     STR       shift, and go to state 98
     THIS      shift, and go to state 99
     SUPER     shift, and go to state 100
+    VAR       shift, and go to state 10
+    VAL       shift, and go to state 11
+    IF        shift, and go to state 101
+    DO        shift, and go to state 102
+    WHILE     shift, and go to state 103
+    FOR       shift, and go to state 104
+    BREAK     shift, and go to state 105
+    CONTINUE  shift, and go to state 106
+    RETURN    shift, and go to state 107
     INT       shift, and go to state 108
     FLOAT     shift, and go to state 109
     DOUBLE    shift, and go to state 110
@@ -5755,15 +5719,20 @@ State 309
     '{'       shift, and go to state 56
     ';'       shift, and go to state 14
 
-    NEW_LINE  [reduce using rule 214 (ifStmt)]
-    ';'       [reduce using rule 214 (ifStmt)]
+    block           go to state 326
+    varDeclaration  go to state 118
+    valDeclaration  go to state 119
+    stmt            go to state 327
+    expr            go to state 328
+    assignment      go to state 123
+    whileLoop       go to state 124
+    doWhileLoop     go to state 125
+    forLoop         go to state 126
+    ifStmt          go to state 127
+    semis           go to state 329
 
-    block  go to state 329
-    expr   go to state 330
-    semis  go to state 331
 
-
-State 310
+State 307
 
   169 expr: expr . '+' expr
   170     | expr . '-' expr
@@ -5803,11 +5772,11 @@ State 310
     '*'    shift, and go to state 217
     '%'    shift, and go to state 218
     '.'    shift, and go to state 219
-    ')'    shift, and go to state 332
+    ')'    shift, and go to state 330
     '['    shift, and go to state 220
 
 
-State 311
+State 308
 
   204 doWhileLoop: DO block WHILE '(' . expr ')'
 
@@ -5825,10 +5794,10 @@ State 311
     '!'      shift, and go to state 115
     '('      shift, and go to state 116
 
-    expr  go to state 333
+    expr  go to state 331
 
 
-State 312
+State 309
 
   203 doWhileLoop: DO expr WHILE '(' . expr ')'
 
@@ -5846,59 +5815,78 @@ State 312
     '!'      shift, and go to state 115
     '('      shift, and go to state 116
 
-    expr  go to state 334
+    expr  go to state 332
 
 
-State 313
+State 310
 
-  200 whileLoop: WHILE '(' expr ')' . expr
-  201          | WHILE '(' expr ')' . block
-  202          | WHILE '(' expr ')' . ';'
+  200 whileLoop: WHILE '(' expr ')' . stmt
+  201          | WHILE '(' expr ')' . block semis
+  202          | WHILE '(' expr ')' . semis
 
-    ID       shift, and go to state 97
-    STR      shift, and go to state 98
-    THIS     shift, and go to state 99
-    SUPER    shift, and go to state 100
-    INT      shift, and go to state 108
-    FLOAT    shift, and go to state 109
-    DOUBLE   shift, and go to state 110
-    CHR      shift, and go to state 111
-    BOOLEAN  shift, and go to state 112
-    '+'      shift, and go to state 113
-    '-'      shift, and go to state 114
-    '!'      shift, and go to state 115
-    '('      shift, and go to state 116
-    '{'      shift, and go to state 56
-    ';'      shift, and go to state 335
+    NEW_LINE  shift, and go to state 1
+    ID        shift, and go to state 97
+    STR       shift, and go to state 98
+    THIS      shift, and go to state 99
+    SUPER     shift, and go to state 100
+    VAR       shift, and go to state 10
+    VAL       shift, and go to state 11
+    IF        shift, and go to state 101
+    DO        shift, and go to state 102
+    WHILE     shift, and go to state 103
+    FOR       shift, and go to state 104
+    BREAK     shift, and go to state 105
+    CONTINUE  shift, and go to state 106
+    RETURN    shift, and go to state 107
+    INT       shift, and go to state 108
+    FLOAT     shift, and go to state 109
+    DOUBLE    shift, and go to state 110
+    CHR       shift, and go to state 111
+    BOOLEAN   shift, and go to state 112
+    '+'       shift, and go to state 113
+    '-'       shift, and go to state 114
+    '!'       shift, and go to state 115
+    '('       shift, and go to state 116
+    '{'       shift, and go to state 56
+    ';'       shift, and go to state 14
 
-    block  go to state 336
-    expr   go to state 337
+    block           go to state 333
+    varDeclaration  go to state 118
+    valDeclaration  go to state 119
+    stmt            go to state 334
+    expr            go to state 122
+    assignment      go to state 123
+    whileLoop       go to state 124
+    doWhileLoop     go to state 125
+    forLoop         go to state 126
+    ifStmt          go to state 127
+    semis           go to state 335
 
 
-State 314
+State 311
 
-  206 forLoop: FOR '(' ID ':' . type IN expr ')' expr
-  207        | FOR '(' ID ':' . type IN expr ')' block
-  208        | FOR '(' ID ':' . type IN expr ')' ';'
+  206 forLoop: FOR '(' ID ':' . type IN expr ')' stmt
+  207        | FOR '(' ID ':' . type IN expr ')' block semis
+  208        | FOR '(' ID ':' . type IN expr ')' semis
 
     ID  shift, and go to state 156
 
-    type          go to state 338
+    type          go to state 336
     templateType  go to state 158
 
 
-State 315
+State 312
 
    51 formalParams: formalParams . ',' ID ':' type
-  209 forLoop: FOR '(' '(' formalParams . ')' IN expr ')' expr
-  210        | FOR '(' '(' formalParams . ')' IN expr ')' block
-  211        | FOR '(' '(' formalParams . ')' IN expr ')' ';'
+  209 forLoop: FOR '(' '(' formalParams . ')' IN expr ')' stmt
+  210        | FOR '(' '(' formalParams . ')' IN expr ')' block semis
+  211        | FOR '(' '(' formalParams . ')' IN expr ')' semis
 
-    ')'  shift, and go to state 339
+    ')'  shift, and go to state 337
     ','  shift, and go to state 161
 
 
-State 316
+State 313
 
   185 expr: expr '.' ID '(' . optFactParams ')'
 
@@ -5918,26 +5906,26 @@ State 316
 
     $default  reduce using rule 190 (optFactParams)
 
-    expr           go to state 252
-    optFactParams  go to state 340
-    factParams     go to state 254
+    expr           go to state 249
+    optFactParams  go to state 338
+    factParams     go to state 251
 
 
-State 317
+State 314
 
   186 expr: expr '[' expr ']' .
 
     $default  reduce using rule 186 (expr)
 
 
-State 318
+State 315
 
    11 class: CLASS ID ':' ID '{' classBody '}' .
 
     $default  reduce using rule 11 (class)
 
 
-State 319
+State 316
 
    42 constructor: CONSTRUCTOR '(' optFormalParams ')' . block
    43            | CONSTRUCTOR '(' optFormalParams ')' .
@@ -5946,15 +5934,15 @@ State 319
    46            | CONSTRUCTOR '(' optFormalParams ')' . ':' SUPER '(' optFactParams ')' block
    47            | CONSTRUCTOR '(' optFormalParams ')' . ':' THIS '(' optFactParams ')' block
 
-    ':'  shift, and go to state 341
+    ':'  shift, and go to state 339
     '{'  shift, and go to state 56
 
     $default  reduce using rule 43 (constructor)
 
-    block  go to state 342
+    block  go to state 340
 
 
-State 320
+State 317
 
    36 constructor: visibilityModifier CONSTRUCTOR '(' optFormalParams . ')' block
    37            | visibilityModifier CONSTRUCTOR '(' optFormalParams . ')'
@@ -5963,48 +5951,48 @@ State 320
    40            | visibilityModifier CONSTRUCTOR '(' optFormalParams . ')' ':' SUPER '(' optFactParams ')' block
    41            | visibilityModifier CONSTRUCTOR '(' optFormalParams . ')' ':' THIS '(' optFactParams ')' block
 
-    ')'  shift, and go to state 343
+    ')'  shift, and go to state 341
 
 
-State 321
+State 318
 
   124 funcDeclaration: FUN ID '(' optFormalParams ')' ':' type .
 
     $default  reduce using rule 124 (funcDeclaration)
 
 
-State 322
+State 319
 
   137 templateType: ID '<' type_seq '>' .
 
     $default  reduce using rule 137 (templateType)
 
 
-State 323
+State 320
 
   140 type_seq: type_seq ',' . ID
   141         | type_seq ',' . templateType
 
-    ID  shift, and go to state 344
+    ID  shift, and go to state 342
 
-    templateType  go to state 345
+    templateType  go to state 343
 
 
-State 324
+State 321
 
    51 formalParams: formalParams ',' ID ':' type .
 
     $default  reduce using rule 51 (formalParams)
 
 
-State 325
+State 322
 
    13 class: modifiers CLASS ID ':' ID '{' '}' .
 
     $default  reduce using rule 13 (class)
 
 
-State 326
+State 323
 
     9 class: modifiers CLASS ID ':' ID '{' classBody . '}'
    22 classBody: classBody . method
@@ -6027,13 +6015,13 @@ State 326
     VAL          shift, and go to state 11
     OPEN         shift, and go to state 12
     FINAL        shift, and go to state 13
-    '}'          shift, and go to state 346
+    '}'          shift, and go to state 344
     ';'          shift, and go to state 14
 
-    property             go to state 234
-    method               go to state 235
-    initializer          go to state 236
-    constructor          go to state 237
+    property             go to state 231
+    method               go to state 232
+    initializer          go to state 233
+    constructor          go to state 234
     modifiers            go to state 139
     visibilityModifier   go to state 140
     inheritanceModifier  go to state 21
@@ -6041,10 +6029,10 @@ State 326
     funcDeclaration      go to state 23
     varDeclaration       go to state 24
     valDeclaration       go to state 25
-    semis                go to state 238
+    semis                go to state 235
 
 
-State 327
+State 324
 
   169 expr: expr . '+' expr
   170     | expr . '-' expr
@@ -6089,27 +6077,43 @@ State 327
     $default  reduce using rule 193 (factParams)
 
 
-State 328
+State 325
 
   188 expr: SUPER '.' ID '(' optFactParams . ')'
 
-    ')'  shift, and go to state 347
+    ')'  shift, and go to state 345
 
 
-State 329
+State 326
 
-  213 ifStmt: IF '(' expr ')' block .
-  216       | IF '(' expr ')' block . ELSE expr
-  219       | IF '(' expr ')' block . ELSE block
-  222       | IF '(' expr ')' block . ELSE semis
+  214 ifStmt: IF '(' expr ')' block . semis
+  217       | IF '(' expr ')' block . ELSE stmt
+  221       | IF '(' expr ')' block . ELSE block semis
+  225       | IF '(' expr ')' block . ELSE semis
+
+    NEW_LINE  shift, and go to state 1
+    ELSE      shift, and go to state 346
+    ';'       shift, and go to state 14
+
+    semis  go to state 347
+
+
+State 327
+
+  212 ifStmt: IF '(' expr ')' stmt .
+  216       | IF '(' expr ')' stmt . ELSE stmt
+  220       | IF '(' expr ')' stmt . ELSE block semis
+  224       | IF '(' expr ')' stmt . ELSE semis
 
     ELSE  shift, and go to state 348
 
-    $default  reduce using rule 213 (ifStmt)
+    ELSE      [reduce using rule 212 (ifStmt)]
+    $default  reduce using rule 212 (ifStmt)
 
 
-State 330
+State 328
 
+  151 stmt: expr . semis
   169 expr: expr . '+' expr
   170     | expr . '-' expr
   171     | expr . '*' expr
@@ -6129,55 +6133,71 @@ State 330
   185     | expr . '.' ID '(' optFactParams ')'
   186     | expr . '[' expr ']'
   189     | expr . RANGE expr
-  212 ifStmt: IF '(' expr ')' expr .
-  215       | IF '(' expr ')' expr . ELSE expr
-  218       | IF '(' expr ')' expr . ELSE block
-  221       | IF '(' expr ')' expr . ELSE semis
+  194 assignment: expr . '=' expr
+  195           | expr . ASUM expr
+  196           | expr . ASUB expr
+  197           | expr . ADIV expr
+  198           | expr . AMUL expr
+  199           | expr . AMOD expr
+  215 ifStmt: IF '(' expr ')' expr . ELSE stmt
+  219       | IF '(' expr ')' expr . ELSE block semis
+  223       | IF '(' expr ')' expr . ELSE semis
 
-    ELSE   shift, and go to state 349
-    OR     shift, and go to state 203
-    AND    shift, and go to state 204
-    EQ     shift, and go to state 205
-    AEQ    shift, and go to state 206
-    NEQ    shift, and go to state 207
-    NAEQ   shift, and go to state 208
-    LOEQ   shift, and go to state 209
-    MOEQ   shift, and go to state 210
-    '<'    shift, and go to state 211
-    '>'    shift, and go to state 212
-    RANGE  shift, and go to state 213
-    '+'    shift, and go to state 214
-    '-'    shift, and go to state 215
-    '/'    shift, and go to state 216
-    '*'    shift, and go to state 217
-    '%'    shift, and go to state 218
-    '.'    shift, and go to state 219
-    '['    shift, and go to state 220
+    NEW_LINE  shift, and go to state 1
+    ELSE      shift, and go to state 349
+    ASUM      shift, and go to state 198
+    ASUB      shift, and go to state 199
+    ADIV      shift, and go to state 200
+    AMUL      shift, and go to state 201
+    AMOD      shift, and go to state 202
+    OR        shift, and go to state 203
+    AND       shift, and go to state 204
+    EQ        shift, and go to state 205
+    AEQ       shift, and go to state 206
+    NEQ       shift, and go to state 207
+    NAEQ      shift, and go to state 208
+    LOEQ      shift, and go to state 209
+    MOEQ      shift, and go to state 210
+    '<'       shift, and go to state 211
+    '>'       shift, and go to state 212
+    RANGE     shift, and go to state 213
+    '+'       shift, and go to state 214
+    '-'       shift, and go to state 215
+    '/'       shift, and go to state 216
+    '*'       shift, and go to state 217
+    '%'       shift, and go to state 218
+    '.'       shift, and go to state 219
+    '['       shift, and go to state 220
+    '='       shift, and go to state 221
+    ';'       shift, and go to state 14
 
-    $default  reduce using rule 212 (ifStmt)
+    semis  go to state 222
 
 
-State 331
+State 329
 
-  217 ifStmt: IF '(' expr ')' semis . ELSE expr
-  220       | IF '(' expr ')' semis . ELSE block
-  223       | IF '(' expr ')' semis . ELSE semis
-  226 semis: semis . ';'
-  227      | semis . NEW_LINE
+  213 ifStmt: IF '(' expr ')' semis .
+  218       | IF '(' expr ')' semis . ELSE stmt
+  222       | IF '(' expr ')' semis . ELSE block semis
+  228 semis: semis . ';'
+  229      | semis . NEW_LINE
 
     NEW_LINE  shift, and go to state 60
     ELSE      shift, and go to state 350
     ';'       shift, and go to state 61
 
+    ELSE      [reduce using rule 213 (ifStmt)]
+    $default  reduce using rule 213 (ifStmt)
 
-State 332
+
+State 330
 
   205 doWhileLoop: DO WHILE '(' expr ')' .
 
     $default  reduce using rule 205 (doWhileLoop)
 
 
-State 333
+State 331
 
   169 expr: expr . '+' expr
   170     | expr . '-' expr
@@ -6221,7 +6241,7 @@ State 333
     '['    shift, and go to state 220
 
 
-State 334
+State 332
 
   169 expr: expr . '+' expr
   170     | expr . '-' expr
@@ -6265,109 +6285,79 @@ State 334
     '['    shift, and go to state 220
 
 
+State 333
+
+  201 whileLoop: WHILE '(' expr ')' block . semis
+
+    NEW_LINE  shift, and go to state 1
+    ';'       shift, and go to state 14
+
+    semis  go to state 353
+
+
+State 334
+
+  200 whileLoop: WHILE '(' expr ')' stmt .
+
+    $default  reduce using rule 200 (whileLoop)
+
+
 State 335
 
-  202 whileLoop: WHILE '(' expr ')' ';' .
+  202 whileLoop: WHILE '(' expr ')' semis .
+  228 semis: semis . ';'
+  229      | semis . NEW_LINE
+
+    NEW_LINE  shift, and go to state 60
+    ';'       shift, and go to state 61
 
     $default  reduce using rule 202 (whileLoop)
 
 
 State 336
 
-  201 whileLoop: WHILE '(' expr ')' block .
-
-    $default  reduce using rule 201 (whileLoop)
-
-
-State 337
-
-  169 expr: expr . '+' expr
-  170     | expr . '-' expr
-  171     | expr . '*' expr
-  172     | expr . '/' expr
-  173     | expr . '%' expr
-  174     | expr . '<' expr
-  175     | expr . '>' expr
-  176     | expr . OR expr
-  177     | expr . AND expr
-  178     | expr . EQ expr
-  179     | expr . AEQ expr
-  180     | expr . NEQ expr
-  181     | expr . NAEQ expr
-  182     | expr . LOEQ expr
-  183     | expr . MOEQ expr
-  184     | expr . '.' ID
-  185     | expr . '.' ID '(' optFactParams ')'
-  186     | expr . '[' expr ']'
-  189     | expr . RANGE expr
-  200 whileLoop: WHILE '(' expr ')' expr .
-
-    OR     shift, and go to state 203
-    AND    shift, and go to state 204
-    EQ     shift, and go to state 205
-    AEQ    shift, and go to state 206
-    NEQ    shift, and go to state 207
-    NAEQ   shift, and go to state 208
-    LOEQ   shift, and go to state 209
-    MOEQ   shift, and go to state 210
-    '<'    shift, and go to state 211
-    '>'    shift, and go to state 212
-    RANGE  shift, and go to state 213
-    '+'    shift, and go to state 214
-    '-'    shift, and go to state 215
-    '/'    shift, and go to state 216
-    '*'    shift, and go to state 217
-    '%'    shift, and go to state 218
-    '.'    shift, and go to state 219
-    '['    shift, and go to state 220
-
-    $default  reduce using rule 200 (whileLoop)
-
-
-State 338
-
-  206 forLoop: FOR '(' ID ':' type . IN expr ')' expr
-  207        | FOR '(' ID ':' type . IN expr ')' block
-  208        | FOR '(' ID ':' type . IN expr ')' ';'
-
-    IN  shift, and go to state 353
-
-
-State 339
-
-  209 forLoop: FOR '(' '(' formalParams ')' . IN expr ')' expr
-  210        | FOR '(' '(' formalParams ')' . IN expr ')' block
-  211        | FOR '(' '(' formalParams ')' . IN expr ')' ';'
+  206 forLoop: FOR '(' ID ':' type . IN expr ')' stmt
+  207        | FOR '(' ID ':' type . IN expr ')' block semis
+  208        | FOR '(' ID ':' type . IN expr ')' semis
 
     IN  shift, and go to state 354
 
 
-State 340
+State 337
+
+  209 forLoop: FOR '(' '(' formalParams ')' . IN expr ')' stmt
+  210        | FOR '(' '(' formalParams ')' . IN expr ')' block semis
+  211        | FOR '(' '(' formalParams ')' . IN expr ')' semis
+
+    IN  shift, and go to state 355
+
+
+State 338
 
   185 expr: expr '.' ID '(' optFactParams . ')'
 
-    ')'  shift, and go to state 355
+    ')'  shift, and go to state 356
 
 
-State 341
+State 339
 
    44 constructor: CONSTRUCTOR '(' optFormalParams ')' ':' . SUPER '(' optFactParams ')'
    45            | CONSTRUCTOR '(' optFormalParams ')' ':' . THIS '(' optFactParams ')'
    46            | CONSTRUCTOR '(' optFormalParams ')' ':' . SUPER '(' optFactParams ')' block
    47            | CONSTRUCTOR '(' optFormalParams ')' ':' . THIS '(' optFactParams ')' block
 
-    THIS   shift, and go to state 356
-    SUPER  shift, and go to state 357
+    THIS   shift, and go to state 357
+    SUPER  shift, and go to state 358
 
 
-State 342
+State 340
 
    42 constructor: CONSTRUCTOR '(' optFormalParams ')' block .
 
     $default  reduce using rule 42 (constructor)
 
 
-State 343
+State 341
 
    36 constructor: visibilityModifier CONSTRUCTOR '(' optFormalParams ')' . block
    37            | visibilityModifier CONSTRUCTOR '(' optFormalParams ')' .
@@ -6376,56 +6366,65 @@ State 343
    40            | visibilityModifier CONSTRUCTOR '(' optFormalParams ')' . ':' SUPER '(' optFactParams ')' block
    41            | visibilityModifier CONSTRUCTOR '(' optFormalParams ')' . ':' THIS '(' optFactParams ')' block
 
-    ':'  shift, and go to state 358
+    ':'  shift, and go to state 359
     '{'  shift, and go to state 56
 
     $default  reduce using rule 37 (constructor)
 
-    block  go to state 359
+    block  go to state 360
 
 
-State 344
+State 342
 
   137 templateType: ID . '<' type_seq '>'
   140 type_seq: type_seq ',' ID .
 
-    '<'  shift, and go to state 242
+    '<'  shift, and go to state 239
 
     $default  reduce using rule 140 (type_seq)
 
 
-State 345
+State 343
 
   141 type_seq: type_seq ',' templateType .
 
     $default  reduce using rule 141 (type_seq)
 
 
-State 346
+State 344
 
     9 class: modifiers CLASS ID ':' ID '{' classBody '}' .
 
     $default  reduce using rule 9 (class)
 
 
-State 347
+State 345
 
   188 expr: SUPER '.' ID '(' optFactParams ')' .
 
     $default  reduce using rule 188 (expr)
 
 
-State 348
+State 346
 
-  216 ifStmt: IF '(' expr ')' block ELSE . expr
-  219       | IF '(' expr ')' block ELSE . block
-  222       | IF '(' expr ')' block ELSE . semis
+  217 ifStmt: IF '(' expr ')' block ELSE . stmt
+  221       | IF '(' expr ')' block ELSE . block semis
+  225       | IF '(' expr ')' block ELSE . semis
 
     NEW_LINE  shift, and go to state 1
     ID        shift, and go to state 97
     STR       shift, and go to state 98
     THIS      shift, and go to state 99
     SUPER     shift, and go to state 100
+    VAR       shift, and go to state 10
+    VAL       shift, and go to state 11
+    IF        shift, and go to state 101
+    DO        shift, and go to state 102
+    WHILE     shift, and go to state 103
+    FOR       shift, and go to state 104
+    BREAK     shift, and go to state 105
+    CONTINUE  shift, and go to state 106
+    RETURN    shift, and go to state 107
     INT       shift, and go to state 108
     FLOAT     shift, and go to state 109
     DOUBLE    shift, and go to state 110
@@ -6438,22 +6437,96 @@ State 348
     '{'       shift, and go to state 56
     ';'       shift, and go to state 14
 
-    block  go to state 360
-    expr   go to state 361
-    semis  go to state 362
+    block           go to state 361
+    varDeclaration  go to state 118
+    valDeclaration  go to state 119
+    stmt            go to state 362
+    expr            go to state 122
+    assignment      go to state 123
+    whileLoop       go to state 124
+    doWhileLoop     go to state 125
+    forLoop         go to state 126
+    ifStmt          go to state 127
+    semis           go to state 363
+
+
+State 347
+
+  214 ifStmt: IF '(' expr ')' block semis .
+  228 semis: semis . ';'
+  229      | semis . NEW_LINE
+
+    NEW_LINE  shift, and go to state 60
+    ';'       shift, and go to state 61
+
+    $default  reduce using rule 214 (ifStmt)
+
+
+State 348
+
+  216 ifStmt: IF '(' expr ')' stmt ELSE . stmt
+  220       | IF '(' expr ')' stmt ELSE . block semis
+  224       | IF '(' expr ')' stmt ELSE . semis
+
+    NEW_LINE  shift, and go to state 1
+    ID        shift, and go to state 97
+    STR       shift, and go to state 98
+    THIS      shift, and go to state 99
+    SUPER     shift, and go to state 100
+    VAR       shift, and go to state 10
+    VAL       shift, and go to state 11
+    IF        shift, and go to state 101
+    DO        shift, and go to state 102
+    WHILE     shift, and go to state 103
+    FOR       shift, and go to state 104
+    BREAK     shift, and go to state 105
+    CONTINUE  shift, and go to state 106
+    RETURN    shift, and go to state 107
+    INT       shift, and go to state 108
+    FLOAT     shift, and go to state 109
+    DOUBLE    shift, and go to state 110
+    CHR       shift, and go to state 111
+    BOOLEAN   shift, and go to state 112
+    '+'       shift, and go to state 113
+    '-'       shift, and go to state 114
+    '!'       shift, and go to state 115
+    '('       shift, and go to state 116
+    '{'       shift, and go to state 56
+    ';'       shift, and go to state 14
+
+    block           go to state 364
+    varDeclaration  go to state 118
+    valDeclaration  go to state 119
+    stmt            go to state 365
+    expr            go to state 122
+    assignment      go to state 123
+    whileLoop       go to state 124
+    doWhileLoop     go to state 125
+    forLoop         go to state 126
+    ifStmt          go to state 127
+    semis           go to state 366
 
 
 State 349
 
-  215 ifStmt: IF '(' expr ')' expr ELSE . expr
-  218       | IF '(' expr ')' expr ELSE . block
-  221       | IF '(' expr ')' expr ELSE . semis
+  215 ifStmt: IF '(' expr ')' expr ELSE . stmt
+  219       | IF '(' expr ')' expr ELSE . block semis
+  223       | IF '(' expr ')' expr ELSE . semis
 
     NEW_LINE  shift, and go to state 1
     ID        shift, and go to state 97
     STR       shift, and go to state 98
     THIS      shift, and go to state 99
     SUPER     shift, and go to state 100
+    VAR       shift, and go to state 10
+    VAL       shift, and go to state 11
+    IF        shift, and go to state 101
+    DO        shift, and go to state 102
+    WHILE     shift, and go to state 103
+    FOR       shift, and go to state 104
+    BREAK     shift, and go to state 105
+    CONTINUE  shift, and go to state 106
+    RETURN    shift, and go to state 107
     INT       shift, and go to state 108
     FLOAT     shift, and go to state 109
     DOUBLE    shift, and go to state 110
@@ -6466,22 +6539,37 @@ State 349
     '{'       shift, and go to state 56
     ';'       shift, and go to state 14
 
-    block  go to state 363
-    expr   go to state 364
-    semis  go to state 365
+    block           go to state 367
+    varDeclaration  go to state 118
+    valDeclaration  go to state 119
+    stmt            go to state 368
+    expr            go to state 122
+    assignment      go to state 123
+    whileLoop       go to state 124
+    doWhileLoop     go to state 125
+    forLoop         go to state 126
+    ifStmt          go to state 127
+    semis           go to state 369
 
 
 State 350
 
-  217 ifStmt: IF '(' expr ')' semis ELSE . expr
-  220       | IF '(' expr ')' semis ELSE . block
-  223       | IF '(' expr ')' semis ELSE . semis
+  218 ifStmt: IF '(' expr ')' semis ELSE . stmt
+  222       | IF '(' expr ')' semis ELSE . block semis
 
-    NEW_LINE  shift, and go to state 1
     ID        shift, and go to state 97
     STR       shift, and go to state 98
     THIS      shift, and go to state 99
     SUPER     shift, and go to state 100
+    VAR       shift, and go to state 10
+    VAL       shift, and go to state 11
+    IF        shift, and go to state 101
+    DO        shift, and go to state 102
+    WHILE     shift, and go to state 103
+    FOR       shift, and go to state 104
+    BREAK     shift, and go to state 105
+    CONTINUE  shift, and go to state 106
+    RETURN    shift, and go to state 107
     INT       shift, and go to state 108
     FLOAT     shift, and go to state 109
     DOUBLE    shift, and go to state 110
@@ -6492,11 +6580,17 @@ State 350
     '!'       shift, and go to state 115
     '('       shift, and go to state 116
     '{'       shift, and go to state 56
-    ';'       shift, and go to state 14
 
-    block  go to state 366
-    expr   go to state 367
-    semis  go to state 368
+    block           go to state 370
+    varDeclaration  go to state 118
+    valDeclaration  go to state 119
+    stmt            go to state 371
+    expr            go to state 122
+    assignment      go to state 123
+    whileLoop       go to state 124
+    doWhileLoop     go to state 125
+    forLoop         go to state 126
+    ifStmt          go to state 127
 
 
 State 351
@@ -6515,32 +6609,21 @@ State 352
 
 State 353
 
-  206 forLoop: FOR '(' ID ':' type IN . expr ')' expr
-  207        | FOR '(' ID ':' type IN . expr ')' block
-  208        | FOR '(' ID ':' type IN . expr ')' ';'
+  201 whileLoop: WHILE '(' expr ')' block semis .
+  228 semis: semis . ';'
+  229      | semis . NEW_LINE
 
-    ID       shift, and go to state 97
-    STR      shift, and go to state 98
-    THIS     shift, and go to state 99
-    SUPER    shift, and go to state 100
-    INT      shift, and go to state 108
-    FLOAT    shift, and go to state 109
-    DOUBLE   shift, and go to state 110
-    CHR      shift, and go to state 111
-    BOOLEAN  shift, and go to state 112
-    '+'      shift, and go to state 113
-    '-'      shift, and go to state 114
-    '!'      shift, and go to state 115
-    '('      shift, and go to state 116
+    NEW_LINE  shift, and go to state 60
+    ';'       shift, and go to state 61
 
-    expr  go to state 369
+    $default  reduce using rule 201 (whileLoop)
 
 
 State 354
 
-  209 forLoop: FOR '(' '(' formalParams ')' IN . expr ')' expr
-  210        | FOR '(' '(' formalParams ')' IN . expr ')' block
-  211        | FOR '(' '(' formalParams ')' IN . expr ')' ';'
+  206 forLoop: FOR '(' ID ':' type IN . expr ')' stmt
+  207        | FOR '(' ID ':' type IN . expr ')' block semis
+  208        | FOR '(' ID ':' type IN . expr ')' semis
 
     ID       shift, and go to state 97
     STR      shift, and go to state 98
@@ -6556,293 +6639,179 @@ State 354
     '!'      shift, and go to state 115
     '('      shift, and go to state 116
 
-    expr  go to state 370
+    expr  go to state 372
 
 
 State 355
+
+  209 forLoop: FOR '(' '(' formalParams ')' IN . expr ')' stmt
+  210        | FOR '(' '(' formalParams ')' IN . expr ')' block semis
+  211        | FOR '(' '(' formalParams ')' IN . expr ')' semis
+
+    ID       shift, and go to state 97
+    STR      shift, and go to state 98
+    THIS     shift, and go to state 99
+    SUPER    shift, and go to state 100
+    INT      shift, and go to state 108
+    FLOAT    shift, and go to state 109
+    DOUBLE   shift, and go to state 110
+    CHR      shift, and go to state 111
+    BOOLEAN  shift, and go to state 112
+    '+'      shift, and go to state 113
+    '-'      shift, and go to state 114
+    '!'      shift, and go to state 115
+    '('      shift, and go to state 116
+
+    expr  go to state 373
+
+
+State 356
 
   185 expr: expr '.' ID '(' optFactParams ')' .
 
     $default  reduce using rule 185 (expr)
 
 
-State 356
+State 357
 
    45 constructor: CONSTRUCTOR '(' optFormalParams ')' ':' THIS . '(' optFactParams ')'
    47            | CONSTRUCTOR '(' optFormalParams ')' ':' THIS . '(' optFactParams ')' block
 
-    '('  shift, and go to state 371
+    '('  shift, and go to state 374
 
 
-State 357
+State 358
 
    44 constructor: CONSTRUCTOR '(' optFormalParams ')' ':' SUPER . '(' optFactParams ')'
    46            | CONSTRUCTOR '(' optFormalParams ')' ':' SUPER . '(' optFactParams ')' block
 
-    '('  shift, and go to state 372
+    '('  shift, and go to state 375
 
 
-State 358
+State 359
 
    38 constructor: visibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' . SUPER '(' optFactParams ')'
    39            | visibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' . THIS '(' optFactParams ')'
    40            | visibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' . SUPER '(' optFactParams ')' block
    41            | visibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' . THIS '(' optFactParams ')' block
 
-    THIS   shift, and go to state 373
-    SUPER  shift, and go to state 374
+    THIS   shift, and go to state 376
+    SUPER  shift, and go to state 377
 
 
-State 359
+State 360
 
    36 constructor: visibilityModifier CONSTRUCTOR '(' optFormalParams ')' block .
 
     $default  reduce using rule 36 (constructor)
 
 
-State 360
-
-  219 ifStmt: IF '(' expr ')' block ELSE block .
-
-    $default  reduce using rule 219 (ifStmt)
-
-
 State 361
 
-  169 expr: expr . '+' expr
-  170     | expr . '-' expr
-  171     | expr . '*' expr
-  172     | expr . '/' expr
-  173     | expr . '%' expr
-  174     | expr . '<' expr
-  175     | expr . '>' expr
-  176     | expr . OR expr
-  177     | expr . AND expr
-  178     | expr . EQ expr
-  179     | expr . AEQ expr
-  180     | expr . NEQ expr
-  181     | expr . NAEQ expr
-  182     | expr . LOEQ expr
-  183     | expr . MOEQ expr
-  184     | expr . '.' ID
-  185     | expr . '.' ID '(' optFactParams ')'
-  186     | expr . '[' expr ']'
-  189     | expr . RANGE expr
-  216 ifStmt: IF '(' expr ')' block ELSE expr .
+  221 ifStmt: IF '(' expr ')' block ELSE block . semis
 
-    OR     shift, and go to state 203
-    AND    shift, and go to state 204
-    EQ     shift, and go to state 205
-    AEQ    shift, and go to state 206
-    NEQ    shift, and go to state 207
-    NAEQ   shift, and go to state 208
-    LOEQ   shift, and go to state 209
-    MOEQ   shift, and go to state 210
-    '<'    shift, and go to state 211
-    '>'    shift, and go to state 212
-    RANGE  shift, and go to state 213
-    '+'    shift, and go to state 214
-    '-'    shift, and go to state 215
-    '/'    shift, and go to state 216
-    '*'    shift, and go to state 217
-    '%'    shift, and go to state 218
-    '.'    shift, and go to state 219
-    '['    shift, and go to state 220
+    NEW_LINE  shift, and go to state 1
+    ';'       shift, and go to state 14
 
-    $default  reduce using rule 216 (ifStmt)
+    semis  go to state 378
 
 
 State 362
 
-  222 ifStmt: IF '(' expr ')' block ELSE semis .
-  226 semis: semis . ';'
-  227      | semis . NEW_LINE
-
-    NEW_LINE  shift, and go to state 60
-    ';'       shift, and go to state 61
-
-    NEW_LINE  [reduce using rule 222 (ifStmt)]
-    ';'       [reduce using rule 222 (ifStmt)]
-
-
-State 363
-
-  218 ifStmt: IF '(' expr ')' expr ELSE block .
-
-    $default  reduce using rule 218 (ifStmt)
-
-
-State 364
-
-  169 expr: expr . '+' expr
-  170     | expr . '-' expr
-  171     | expr . '*' expr
-  172     | expr . '/' expr
-  173     | expr . '%' expr
-  174     | expr . '<' expr
-  175     | expr . '>' expr
-  176     | expr . OR expr
-  177     | expr . AND expr
-  178     | expr . EQ expr
-  179     | expr . AEQ expr
-  180     | expr . NEQ expr
-  181     | expr . NAEQ expr
-  182     | expr . LOEQ expr
-  183     | expr . MOEQ expr
-  184     | expr . '.' ID
-  185     | expr . '.' ID '(' optFactParams ')'
-  186     | expr . '[' expr ']'
-  189     | expr . RANGE expr
-  215 ifStmt: IF '(' expr ')' expr ELSE expr .
-
-    OR     shift, and go to state 203
-    AND    shift, and go to state 204
-    EQ     shift, and go to state 205
-    AEQ    shift, and go to state 206
-    NEQ    shift, and go to state 207
-    NAEQ   shift, and go to state 208
-    LOEQ   shift, and go to state 209
-    MOEQ   shift, and go to state 210
-    '<'    shift, and go to state 211
-    '>'    shift, and go to state 212
-    RANGE  shift, and go to state 213
-    '+'    shift, and go to state 214
-    '-'    shift, and go to state 215
-    '/'    shift, and go to state 216
-    '*'    shift, and go to state 217
-    '%'    shift, and go to state 218
-    '.'    shift, and go to state 219
-    '['    shift, and go to state 220
-
-    $default  reduce using rule 215 (ifStmt)
-
-
-State 365
-
-  221 ifStmt: IF '(' expr ')' expr ELSE semis .
-  226 semis: semis . ';'
-  227      | semis . NEW_LINE
-
-    NEW_LINE  shift, and go to state 60
-    ';'       shift, and go to state 61
-
-    NEW_LINE  [reduce using rule 221 (ifStmt)]
-    ';'       [reduce using rule 221 (ifStmt)]
-
-
-State 366
-
-  220 ifStmt: IF '(' expr ')' semis ELSE block .
-
-    $default  reduce using rule 220 (ifStmt)
-
-
-State 367
-
-  169 expr: expr . '+' expr
-  170     | expr . '-' expr
-  171     | expr . '*' expr
-  172     | expr . '/' expr
-  173     | expr . '%' expr
-  174     | expr . '<' expr
-  175     | expr . '>' expr
-  176     | expr . OR expr
-  177     | expr . AND expr
-  178     | expr . EQ expr
-  179     | expr . AEQ expr
-  180     | expr . NEQ expr
-  181     | expr . NAEQ expr
-  182     | expr . LOEQ expr
-  183     | expr . MOEQ expr
-  184     | expr . '.' ID
-  185     | expr . '.' ID '(' optFactParams ')'
-  186     | expr . '[' expr ']'
-  189     | expr . RANGE expr
-  217 ifStmt: IF '(' expr ')' semis ELSE expr .
-
-    OR     shift, and go to state 203
-    AND    shift, and go to state 204
-    EQ     shift, and go to state 205
-    AEQ    shift, and go to state 206
-    NEQ    shift, and go to state 207
-    NAEQ   shift, and go to state 208
-    LOEQ   shift, and go to state 209
-    MOEQ   shift, and go to state 210
-    '<'    shift, and go to state 211
-    '>'    shift, and go to state 212
-    RANGE  shift, and go to state 213
-    '+'    shift, and go to state 214
-    '-'    shift, and go to state 215
-    '/'    shift, and go to state 216
-    '*'    shift, and go to state 217
-    '%'    shift, and go to state 218
-    '.'    shift, and go to state 219
-    '['    shift, and go to state 220
+  217 ifStmt: IF '(' expr ')' block ELSE stmt .
 
     $default  reduce using rule 217 (ifStmt)
 
 
-State 368
+State 363
 
-  223 ifStmt: IF '(' expr ')' semis ELSE semis .
-  226 semis: semis . ';'
-  227      | semis . NEW_LINE
+  225 ifStmt: IF '(' expr ')' block ELSE semis .
+  228 semis: semis . ';'
+  229      | semis . NEW_LINE
 
     NEW_LINE  shift, and go to state 60
     ';'       shift, and go to state 61
 
-    NEW_LINE  [reduce using rule 223 (ifStmt)]
-    ';'       [reduce using rule 223 (ifStmt)]
+    $default  reduce using rule 225 (ifStmt)
+
+
+State 364
+
+  220 ifStmt: IF '(' expr ')' stmt ELSE block . semis
+
+    NEW_LINE  shift, and go to state 1
+    ';'       shift, and go to state 14
+
+    semis  go to state 379
+
+
+State 365
+
+  216 ifStmt: IF '(' expr ')' stmt ELSE stmt .
+
+    $default  reduce using rule 216 (ifStmt)
+
+
+State 366
+
+  224 ifStmt: IF '(' expr ')' stmt ELSE semis .
+  228 semis: semis . ';'
+  229      | semis . NEW_LINE
+
+    NEW_LINE  shift, and go to state 60
+    ';'       shift, and go to state 61
+
+    $default  reduce using rule 224 (ifStmt)
+
+
+State 367
+
+  219 ifStmt: IF '(' expr ')' expr ELSE block . semis
+
+    NEW_LINE  shift, and go to state 1
+    ';'       shift, and go to state 14
+
+    semis  go to state 380
+
+
+State 368
+
+  215 ifStmt: IF '(' expr ')' expr ELSE stmt .
+
+    $default  reduce using rule 215 (ifStmt)
 
 
 State 369
 
-  169 expr: expr . '+' expr
-  170     | expr . '-' expr
-  171     | expr . '*' expr
-  172     | expr . '/' expr
-  173     | expr . '%' expr
-  174     | expr . '<' expr
-  175     | expr . '>' expr
-  176     | expr . OR expr
-  177     | expr . AND expr
-  178     | expr . EQ expr
-  179     | expr . AEQ expr
-  180     | expr . NEQ expr
-  181     | expr . NAEQ expr
-  182     | expr . LOEQ expr
-  183     | expr . MOEQ expr
-  184     | expr . '.' ID
-  185     | expr . '.' ID '(' optFactParams ')'
-  186     | expr . '[' expr ']'
-  189     | expr . RANGE expr
-  206 forLoop: FOR '(' ID ':' type IN expr . ')' expr
-  207        | FOR '(' ID ':' type IN expr . ')' block
-  208        | FOR '(' ID ':' type IN expr . ')' ';'
+  223 ifStmt: IF '(' expr ')' expr ELSE semis .
+  228 semis: semis . ';'
+  229      | semis . NEW_LINE
 
-    OR     shift, and go to state 203
-    AND    shift, and go to state 204
-    EQ     shift, and go to state 205
-    AEQ    shift, and go to state 206
-    NEQ    shift, and go to state 207
-    NAEQ   shift, and go to state 208
-    LOEQ   shift, and go to state 209
-    MOEQ   shift, and go to state 210
-    '<'    shift, and go to state 211
-    '>'    shift, and go to state 212
-    RANGE  shift, and go to state 213
-    '+'    shift, and go to state 214
-    '-'    shift, and go to state 215
-    '/'    shift, and go to state 216
-    '*'    shift, and go to state 217
-    '%'    shift, and go to state 218
-    '.'    shift, and go to state 219
-    ')'    shift, and go to state 375
-    '['    shift, and go to state 220
+    NEW_LINE  shift, and go to state 60
+    ';'       shift, and go to state 61
+
+    $default  reduce using rule 223 (ifStmt)
 
 
 State 370
 
+  222 ifStmt: IF '(' expr ')' semis ELSE block . semis
+
+    NEW_LINE  shift, and go to state 1
+    ';'       shift, and go to state 14
+
+    semis  go to state 381
+
+
+State 371
+
+  218 ifStmt: IF '(' expr ')' semis ELSE stmt .
+
+    $default  reduce using rule 218 (ifStmt)
+
+
+State 372
+
   169 expr: expr . '+' expr
   170     | expr . '-' expr
   171     | expr . '*' expr
@@ -6862,9 +6831,9 @@ State 370
   185     | expr . '.' ID '(' optFactParams ')'
   186     | expr . '[' expr ']'
   189     | expr . RANGE expr
-  209 forLoop: FOR '(' '(' formalParams ')' IN expr . ')' expr
-  210        | FOR '(' '(' formalParams ')' IN expr . ')' block
-  211        | FOR '(' '(' formalParams ')' IN expr . ')' ';'
+  206 forLoop: FOR '(' ID ':' type IN expr . ')' stmt
+  207        | FOR '(' ID ':' type IN expr . ')' block semis
+  208        | FOR '(' ID ':' type IN expr . ')' semis
 
     OR     shift, and go to state 203
     AND    shift, and go to state 204
@@ -6883,11 +6852,57 @@ State 370
     '*'    shift, and go to state 217
     '%'    shift, and go to state 218
     '.'    shift, and go to state 219
-    ')'    shift, and go to state 376
+    ')'    shift, and go to state 382
     '['    shift, and go to state 220
 
 
-State 371
+State 373
+
+  169 expr: expr . '+' expr
+  170     | expr . '-' expr
+  171     | expr . '*' expr
+  172     | expr . '/' expr
+  173     | expr . '%' expr
+  174     | expr . '<' expr
+  175     | expr . '>' expr
+  176     | expr . OR expr
+  177     | expr . AND expr
+  178     | expr . EQ expr
+  179     | expr . AEQ expr
+  180     | expr . NEQ expr
+  181     | expr . NAEQ expr
+  182     | expr . LOEQ expr
+  183     | expr . MOEQ expr
+  184     | expr . '.' ID
+  185     | expr . '.' ID '(' optFactParams ')'
+  186     | expr . '[' expr ']'
+  189     | expr . RANGE expr
+  209 forLoop: FOR '(' '(' formalParams ')' IN expr . ')' stmt
+  210        | FOR '(' '(' formalParams ')' IN expr . ')' block semis
+  211        | FOR '(' '(' formalParams ')' IN expr . ')' semis
+
+    OR     shift, and go to state 203
+    AND    shift, and go to state 204
+    EQ     shift, and go to state 205
+    AEQ    shift, and go to state 206
+    NEQ    shift, and go to state 207
+    NAEQ   shift, and go to state 208
+    LOEQ   shift, and go to state 209
+    MOEQ   shift, and go to state 210
+    '<'    shift, and go to state 211
+    '>'    shift, and go to state 212
+    RANGE  shift, and go to state 213
+    '+'    shift, and go to state 214
+    '-'    shift, and go to state 215
+    '/'    shift, and go to state 216
+    '*'    shift, and go to state 217
+    '%'    shift, and go to state 218
+    '.'    shift, and go to state 219
+    ')'    shift, and go to state 383
+    '['    shift, and go to state 220
+
+
+State 374
 
    45 constructor: CONSTRUCTOR '(' optFormalParams ')' ':' THIS '(' . optFactParams ')'
    47            | CONSTRUCTOR '(' optFormalParams ')' ':' THIS '(' . optFactParams ')' block
@@ -6908,12 +6923,12 @@ State 371
 
     $default  reduce using rule 190 (optFactParams)
 
-    expr           go to state 252
-    optFactParams  go to state 377
-    factParams     go to state 254
+    expr           go to state 249
+    optFactParams  go to state 384
+    factParams     go to state 251
 
 
-State 372
+State 375
 
    44 constructor: CONSTRUCTOR '(' optFormalParams ')' ':' SUPER '(' . optFactParams ')'
    46            | CONSTRUCTOR '(' optFormalParams ')' ':' SUPER '(' . optFactParams ')' block
@@ -6934,96 +6949,182 @@ State 372
 
     $default  reduce using rule 190 (optFactParams)
 
-    expr           go to state 252
-    optFactParams  go to state 378
-    factParams     go to state 254
-
-
-State 373
-
-   39 constructor: visibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' THIS . '(' optFactParams ')'
-   41            | visibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' THIS . '(' optFactParams ')' block
-
-    '('  shift, and go to state 379
-
-
-State 374
-
-   38 constructor: visibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' SUPER . '(' optFactParams ')'
-   40            | visibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' SUPER . '(' optFactParams ')' block
-
-    '('  shift, and go to state 380
-
-
-State 375
-
-  206 forLoop: FOR '(' ID ':' type IN expr ')' . expr
-  207        | FOR '(' ID ':' type IN expr ')' . block
-  208        | FOR '(' ID ':' type IN expr ')' . ';'
-
-    ID       shift, and go to state 97
-    STR      shift, and go to state 98
-    THIS     shift, and go to state 99
-    SUPER    shift, and go to state 100
-    INT      shift, and go to state 108
-    FLOAT    shift, and go to state 109
-    DOUBLE   shift, and go to state 110
-    CHR      shift, and go to state 111
-    BOOLEAN  shift, and go to state 112
-    '+'      shift, and go to state 113
-    '-'      shift, and go to state 114
-    '!'      shift, and go to state 115
-    '('      shift, and go to state 116
-    '{'      shift, and go to state 56
-    ';'      shift, and go to state 381
-
-    block  go to state 382
-    expr   go to state 383
+    expr           go to state 249
+    optFactParams  go to state 385
+    factParams     go to state 251
 
 
 State 376
 
-  209 forLoop: FOR '(' '(' formalParams ')' IN expr ')' . expr
-  210        | FOR '(' '(' formalParams ')' IN expr ')' . block
-  211        | FOR '(' '(' formalParams ')' IN expr ')' . ';'
+   39 constructor: visibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' THIS . '(' optFactParams ')'
+   41            | visibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' THIS . '(' optFactParams ')' block
 
-    ID       shift, and go to state 97
-    STR      shift, and go to state 98
-    THIS     shift, and go to state 99
-    SUPER    shift, and go to state 100
-    INT      shift, and go to state 108
-    FLOAT    shift, and go to state 109
-    DOUBLE   shift, and go to state 110
-    CHR      shift, and go to state 111
-    BOOLEAN  shift, and go to state 112
-    '+'      shift, and go to state 113
-    '-'      shift, and go to state 114
-    '!'      shift, and go to state 115
-    '('      shift, and go to state 116
-    '{'      shift, and go to state 56
-    ';'      shift, and go to state 384
-
-    block  go to state 385
-    expr   go to state 386
+    '('  shift, and go to state 386
 
 
 State 377
 
-   45 constructor: CONSTRUCTOR '(' optFormalParams ')' ':' THIS '(' optFactParams . ')'
-   47            | CONSTRUCTOR '(' optFormalParams ')' ':' THIS '(' optFactParams . ')' block
+   38 constructor: visibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' SUPER . '(' optFactParams ')'
+   40            | visibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' SUPER . '(' optFactParams ')' block
 
-    ')'  shift, and go to state 387
+    '('  shift, and go to state 387
 
 
 State 378
 
-   44 constructor: CONSTRUCTOR '(' optFormalParams ')' ':' SUPER '(' optFactParams . ')'
-   46            | CONSTRUCTOR '(' optFormalParams ')' ':' SUPER '(' optFactParams . ')' block
+  221 ifStmt: IF '(' expr ')' block ELSE block semis .
+  228 semis: semis . ';'
+  229      | semis . NEW_LINE
 
-    ')'  shift, and go to state 388
+    NEW_LINE  shift, and go to state 60
+    ';'       shift, and go to state 61
+
+    $default  reduce using rule 221 (ifStmt)
 
 
 State 379
+
+  220 ifStmt: IF '(' expr ')' stmt ELSE block semis .
+  228 semis: semis . ';'
+  229      | semis . NEW_LINE
+
+    NEW_LINE  shift, and go to state 60
+    ';'       shift, and go to state 61
+
+    $default  reduce using rule 220 (ifStmt)
+
+
+State 380
+
+  219 ifStmt: IF '(' expr ')' expr ELSE block semis .
+  228 semis: semis . ';'
+  229      | semis . NEW_LINE
+
+    NEW_LINE  shift, and go to state 60
+    ';'       shift, and go to state 61
+
+    $default  reduce using rule 219 (ifStmt)
+
+
+State 381
+
+  222 ifStmt: IF '(' expr ')' semis ELSE block semis .
+  228 semis: semis . ';'
+  229      | semis . NEW_LINE
+
+    NEW_LINE  shift, and go to state 60
+    ';'       shift, and go to state 61
+
+    $default  reduce using rule 222 (ifStmt)
+
+
+State 382
+
+  206 forLoop: FOR '(' ID ':' type IN expr ')' . stmt
+  207        | FOR '(' ID ':' type IN expr ')' . block semis
+  208        | FOR '(' ID ':' type IN expr ')' . semis
+
+    NEW_LINE  shift, and go to state 1
+    ID        shift, and go to state 97
+    STR       shift, and go to state 98
+    THIS      shift, and go to state 99
+    SUPER     shift, and go to state 100
+    VAR       shift, and go to state 10
+    VAL       shift, and go to state 11
+    IF        shift, and go to state 101
+    DO        shift, and go to state 102
+    WHILE     shift, and go to state 103
+    FOR       shift, and go to state 104
+    BREAK     shift, and go to state 105
+    CONTINUE  shift, and go to state 106
+    RETURN    shift, and go to state 107
+    INT       shift, and go to state 108
+    FLOAT     shift, and go to state 109
+    DOUBLE    shift, and go to state 110
+    CHR       shift, and go to state 111
+    BOOLEAN   shift, and go to state 112
+    '+'       shift, and go to state 113
+    '-'       shift, and go to state 114
+    '!'       shift, and go to state 115
+    '('       shift, and go to state 116
+    '{'       shift, and go to state 56
+    ';'       shift, and go to state 14
+
+    block           go to state 388
+    varDeclaration  go to state 118
+    valDeclaration  go to state 119
+    stmt            go to state 389
+    expr            go to state 122
+    assignment      go to state 123
+    whileLoop       go to state 124
+    doWhileLoop     go to state 125
+    forLoop         go to state 126
+    ifStmt          go to state 127
+    semis           go to state 390
+
+
+State 383
+
+  209 forLoop: FOR '(' '(' formalParams ')' IN expr ')' . stmt
+  210        | FOR '(' '(' formalParams ')' IN expr ')' . block semis
+  211        | FOR '(' '(' formalParams ')' IN expr ')' . semis
+
+    NEW_LINE  shift, and go to state 1
+    ID        shift, and go to state 97
+    STR       shift, and go to state 98
+    THIS      shift, and go to state 99
+    SUPER     shift, and go to state 100
+    VAR       shift, and go to state 10
+    VAL       shift, and go to state 11
+    IF        shift, and go to state 101
+    DO        shift, and go to state 102
+    WHILE     shift, and go to state 103
+    FOR       shift, and go to state 104
+    BREAK     shift, and go to state 105
+    CONTINUE  shift, and go to state 106
+    RETURN    shift, and go to state 107
+    INT       shift, and go to state 108
+    FLOAT     shift, and go to state 109
+    DOUBLE    shift, and go to state 110
+    CHR       shift, and go to state 111
+    BOOLEAN   shift, and go to state 112
+    '+'       shift, and go to state 113
+    '-'       shift, and go to state 114
+    '!'       shift, and go to state 115
+    '('       shift, and go to state 116
+    '{'       shift, and go to state 56
+    ';'       shift, and go to state 14
+
+    block           go to state 391
+    varDeclaration  go to state 118
+    valDeclaration  go to state 119
+    stmt            go to state 392
+    expr            go to state 122
+    assignment      go to state 123
+    whileLoop       go to state 124
+    doWhileLoop     go to state 125
+    forLoop         go to state 126
+    ifStmt          go to state 127
+    semis           go to state 393
+
+
+State 384
+
+   45 constructor: CONSTRUCTOR '(' optFormalParams ')' ':' THIS '(' optFactParams . ')'
+   47            | CONSTRUCTOR '(' optFormalParams ')' ':' THIS '(' optFactParams . ')' block
+
+    ')'  shift, and go to state 394
+
+
+State 385
+
+   44 constructor: CONSTRUCTOR '(' optFormalParams ')' ':' SUPER '(' optFactParams . ')'
+   46            | CONSTRUCTOR '(' optFormalParams ')' ':' SUPER '(' optFactParams . ')' block
+
+    ')'  shift, and go to state 395
+
+
+State 386
 
    39 constructor: visibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' THIS '(' . optFactParams ')'
    41            | visibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' THIS '(' . optFactParams ')' block
@@ -7044,12 +7145,12 @@ State 379
 
     $default  reduce using rule 190 (optFactParams)
 
-    expr           go to state 252
-    optFactParams  go to state 389
-    factParams     go to state 254
+    expr           go to state 249
+    optFactParams  go to state 396
+    factParams     go to state 251
 
 
-State 380
+State 387
 
    38 constructor: visibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' SUPER '(' . optFactParams ')'
    40            | visibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' SUPER '(' . optFactParams ')' block
@@ -7070,130 +7171,70 @@ State 380
 
     $default  reduce using rule 190 (optFactParams)
 
-    expr           go to state 252
-    optFactParams  go to state 390
-    factParams     go to state 254
+    expr           go to state 249
+    optFactParams  go to state 397
+    factParams     go to state 251
 
 
-State 381
+State 388
 
-  208 forLoop: FOR '(' ID ':' type IN expr ')' ';' .
+  207 forLoop: FOR '(' ID ':' type IN expr ')' block . semis
 
-    $default  reduce using rule 208 (forLoop)
+    NEW_LINE  shift, and go to state 1
+    ';'       shift, and go to state 14
 
-
-State 382
-
-  207 forLoop: FOR '(' ID ':' type IN expr ')' block .
-
-    $default  reduce using rule 207 (forLoop)
+    semis  go to state 398
 
 
-State 383
+State 389
 
-  169 expr: expr . '+' expr
-  170     | expr . '-' expr
-  171     | expr . '*' expr
-  172     | expr . '/' expr
-  173     | expr . '%' expr
-  174     | expr . '<' expr
-  175     | expr . '>' expr
-  176     | expr . OR expr
-  177     | expr . AND expr
-  178     | expr . EQ expr
-  179     | expr . AEQ expr
-  180     | expr . NEQ expr
-  181     | expr . NAEQ expr
-  182     | expr . LOEQ expr
-  183     | expr . MOEQ expr
-  184     | expr . '.' ID
-  185     | expr . '.' ID '(' optFactParams ')'
-  186     | expr . '[' expr ']'
-  189     | expr . RANGE expr
-  206 forLoop: FOR '(' ID ':' type IN expr ')' expr .
-
-    OR     shift, and go to state 203
-    AND    shift, and go to state 204
-    EQ     shift, and go to state 205
-    AEQ    shift, and go to state 206
-    NEQ    shift, and go to state 207
-    NAEQ   shift, and go to state 208
-    LOEQ   shift, and go to state 209
-    MOEQ   shift, and go to state 210
-    '<'    shift, and go to state 211
-    '>'    shift, and go to state 212
-    RANGE  shift, and go to state 213
-    '+'    shift, and go to state 214
-    '-'    shift, and go to state 215
-    '/'    shift, and go to state 216
-    '*'    shift, and go to state 217
-    '%'    shift, and go to state 218
-    '.'    shift, and go to state 219
-    '['    shift, and go to state 220
+  206 forLoop: FOR '(' ID ':' type IN expr ')' stmt .
 
     $default  reduce using rule 206 (forLoop)
 
 
-State 384
+State 390
 
-  211 forLoop: FOR '(' '(' formalParams ')' IN expr ')' ';' .
+  208 forLoop: FOR '(' ID ':' type IN expr ')' semis .
+  228 semis: semis . ';'
+  229      | semis . NEW_LINE
 
-    $default  reduce using rule 211 (forLoop)
+    NEW_LINE  shift, and go to state 60
+    ';'       shift, and go to state 61
 
-
-State 385
-
-  210 forLoop: FOR '(' '(' formalParams ')' IN expr ')' block .
-
-    $default  reduce using rule 210 (forLoop)
+    $default  reduce using rule 208 (forLoop)
 
 
-State 386
+State 391
 
-  169 expr: expr . '+' expr
-  170     | expr . '-' expr
-  171     | expr . '*' expr
-  172     | expr . '/' expr
-  173     | expr . '%' expr
-  174     | expr . '<' expr
-  175     | expr . '>' expr
-  176     | expr . OR expr
-  177     | expr . AND expr
-  178     | expr . EQ expr
-  179     | expr . AEQ expr
-  180     | expr . NEQ expr
-  181     | expr . NAEQ expr
-  182     | expr . LOEQ expr
-  183     | expr . MOEQ expr
-  184     | expr . '.' ID
-  185     | expr . '.' ID '(' optFactParams ')'
-  186     | expr . '[' expr ']'
-  189     | expr . RANGE expr
-  209 forLoop: FOR '(' '(' formalParams ')' IN expr ')' expr .
+  210 forLoop: FOR '(' '(' formalParams ')' IN expr ')' block . semis
 
-    OR     shift, and go to state 203
-    AND    shift, and go to state 204
-    EQ     shift, and go to state 205
-    AEQ    shift, and go to state 206
-    NEQ    shift, and go to state 207
-    NAEQ   shift, and go to state 208
-    LOEQ   shift, and go to state 209
-    MOEQ   shift, and go to state 210
-    '<'    shift, and go to state 211
-    '>'    shift, and go to state 212
-    RANGE  shift, and go to state 213
-    '+'    shift, and go to state 214
-    '-'    shift, and go to state 215
-    '/'    shift, and go to state 216
-    '*'    shift, and go to state 217
-    '%'    shift, and go to state 218
-    '.'    shift, and go to state 219
-    '['    shift, and go to state 220
+    NEW_LINE  shift, and go to state 1
+    ';'       shift, and go to state 14
+
+    semis  go to state 399
+
+
+State 392
+
+  209 forLoop: FOR '(' '(' formalParams ')' IN expr ')' stmt .
 
     $default  reduce using rule 209 (forLoop)
 
 
-State 387
+State 393
+
+  211 forLoop: FOR '(' '(' formalParams ')' IN expr ')' semis .
+  228 semis: semis . ';'
+  229      | semis . NEW_LINE
+
+    NEW_LINE  shift, and go to state 60
+    ';'       shift, and go to state 61
+
+    $default  reduce using rule 211 (forLoop)
+
+
+State 394
 
    45 constructor: CONSTRUCTOR '(' optFormalParams ')' ':' THIS '(' optFactParams ')' .
    47            | CONSTRUCTOR '(' optFormalParams ')' ':' THIS '(' optFactParams ')' . block
@@ -7202,10 +7243,10 @@ State 387
 
     $default  reduce using rule 45 (constructor)
 
-    block  go to state 391
+    block  go to state 400
 
 
-State 388
+State 395
 
    44 constructor: CONSTRUCTOR '(' optFormalParams ')' ':' SUPER '(' optFactParams ')' .
    46            | CONSTRUCTOR '(' optFormalParams ')' ':' SUPER '(' optFactParams ')' . block
@@ -7214,40 +7255,64 @@ State 388
 
     $default  reduce using rule 44 (constructor)
 
-    block  go to state 392
+    block  go to state 401
 
 
-State 389
+State 396
 
    39 constructor: visibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' THIS '(' optFactParams . ')'
    41            | visibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' THIS '(' optFactParams . ')' block
 
-    ')'  shift, and go to state 393
+    ')'  shift, and go to state 402
 
 
-State 390
+State 397
 
    38 constructor: visibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' SUPER '(' optFactParams . ')'
    40            | visibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' SUPER '(' optFactParams . ')' block
 
-    ')'  shift, and go to state 394
+    ')'  shift, and go to state 403
 
 
-State 391
+State 398
+
+  207 forLoop: FOR '(' ID ':' type IN expr ')' block semis .
+  228 semis: semis . ';'
+  229      | semis . NEW_LINE
+
+    NEW_LINE  shift, and go to state 60
+    ';'       shift, and go to state 61
+
+    $default  reduce using rule 207 (forLoop)
+
+
+State 399
+
+  210 forLoop: FOR '(' '(' formalParams ')' IN expr ')' block semis .
+  228 semis: semis . ';'
+  229      | semis . NEW_LINE
+
+    NEW_LINE  shift, and go to state 60
+    ';'       shift, and go to state 61
+
+    $default  reduce using rule 210 (forLoop)
+
+
+State 400
 
    47 constructor: CONSTRUCTOR '(' optFormalParams ')' ':' THIS '(' optFactParams ')' block .
 
     $default  reduce using rule 47 (constructor)
 
 
-State 392
+State 401
 
    46 constructor: CONSTRUCTOR '(' optFormalParams ')' ':' SUPER '(' optFactParams ')' block .
 
     $default  reduce using rule 46 (constructor)
 
 
-State 393
+State 402
 
    39 constructor: visibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' THIS '(' optFactParams ')' .
    41            | visibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' THIS '(' optFactParams ')' . block
@@ -7256,10 +7321,10 @@ State 393
 
     $default  reduce using rule 39 (constructor)
 
-    block  go to state 395
+    block  go to state 404
 
 
-State 394
+State 403
 
    38 constructor: visibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' SUPER '(' optFactParams ')' .
    40            | visibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' SUPER '(' optFactParams ')' . block
@@ -7268,17 +7333,17 @@ State 394
 
     $default  reduce using rule 38 (constructor)
 
-    block  go to state 396
+    block  go to state 405
 
 
-State 395
+State 404
 
    41 constructor: visibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' THIS '(' optFactParams ')' block .
 
     $default  reduce using rule 41 (constructor)
 
 
-State 396
+State 405
 
    40 constructor: visibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' SUPER '(' optFactParams ')' block .
 

@@ -101,22 +101,26 @@ struct factParamsList* addToFactParamsList(struct factParamsList* list, struct e
 struct assignmentS* createAssignment(struct exprS* left, struct exprS* right, enum assignmentType type);
 
 struct whileLoopS* createWhileLoop(struct exprS* cond, struct exprS* expr, int isDoWhile);
+struct whileLoopS* createWhileLoop(struct exprS* cond, struct stmtS* stmt, int isDoWhile);
 struct whileLoopS* createWhileLoop(struct exprS* cond, struct stmtList* stmts, int isDoWhile);
 struct whileLoopS* createWhileLoop(struct exprS* cond, int isDoWhile);
 
-struct forLoopS* createForLoop(char* id, struct typeS* type, struct exprS* iterableExpr, struct exprS* expr);
+struct forLoopS* createForLoop(char* id, struct typeS* type, struct exprS* iterableExpr, struct stmtS* stmt);
 struct forLoopS* createForLoop(char* id, struct typeS* type, struct exprS* iterableExpr, struct stmtList* stmts);
 struct forLoopS* createForLoop(struct formalParamsList* idsAndTypes, struct exprS* iterableExpr, struct stmtList* stmts);
-struct forLoopS* createForLoop(struct formalParamsList* idsAndTypes, struct exprS* iterableExpr, struct exprS* expr);
+struct forLoopS* createForLoop(struct formalParamsList* idsAndTypes, struct exprS* iterableExpr, struct stmtS* stmt);
 struct forLoopS* createForLoop(char* id, struct typeS* type, struct exprS* iterableExpr);
 struct forLoopS* createForLoop(struct formalParamsList* idsAndTypes, struct exprS* iterableExpr);
 
+struct ifStmtS* createIfStmt(struct exprS* cond, struct stmtS* action);
 struct ifStmtS* createIfStmt(struct exprS* cond, struct exprS* action);
 struct ifStmtS* createIfStmt(struct exprS* cond, struct stmtList* actions);
 struct ifStmtS* createIfStmt(struct exprS* cond);
-struct ifStmtS* createIfStmt(struct exprS* cond, struct exprS* action, struct exprS* altAction);
+struct ifStmtS* createIfStmt(struct exprS* cond, struct exprS* action, struct stmtS* altAction);
+struct ifStmtS* createIfStmt(struct exprS* cond, struct stmtS* action, struct stmtS* altAction);
 struct ifStmtS* createIfStmt(struct exprS* cond, struct exprS* action, struct stmtList* altActions);
-struct ifStmtS* createIfStmt(struct exprS* cond, struct stmtList* actions, struct exprS* altAction);
-struct ifStmtS* createIfStmt(struct exprS* cond, struct stmtList* actions, struct stmtList* altActions);
-struct ifStmtS* createIfStmt(struct exprS* cond, int action, struct exprS* altAction);
+struct ifStmtS* createIfStmt(struct exprS* cond, struct stmtS* action, struct stmtList* altActions);
+struct ifStmtS* createIfStmt(struct exprS* cond, struct stmtList* actions, struct stmtS* altAction);
+struct ifStmtS* createIfStmt(struct exprS* cond, struct stmtList* action, struct stmtList* altActions);
+struct ifStmtS* createIfStmt(struct exprS* cond, int action, struct stmtS* altAction);
 struct ifStmtS* createIfStmt(struct exprS* cond, int action, struct stmtList* altActions);
