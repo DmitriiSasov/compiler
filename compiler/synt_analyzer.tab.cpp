@@ -2766,37 +2766,37 @@ yyreduce:
 
   case 130: /* varDeclaration: VAR ID ':' type  */
 #line 364 "synt_analyzer.y"
-                                {(yyval.varOrValDeclU) = createVarOrValDecl((yyvsp[-2].IdOrString), (yyvsp[0].typeU), 0); puts("val created");}
+                                {(yyval.varOrValDeclU) = createVarOrValDecl((yyvsp[-2].IdOrString), (yyvsp[0].typeU), 0); puts("var created");}
 #line 2771 "synt_analyzer.tab.cpp"
     break;
 
   case 131: /* varDeclaration: VAR ID ':' type '=' expr  */
 #line 365 "synt_analyzer.y"
-                                {(yyval.varOrValDeclU) = createVarOrValDecl((yyvsp[-4].IdOrString), (yyvsp[-2].typeU), (yyvsp[0].exprU), 0); puts("val created");}
+                                {(yyval.varOrValDeclU) = createVarOrValDecl((yyvsp[-4].IdOrString), (yyvsp[-2].typeU), (yyvsp[0].exprU), 0); puts("var created");}
 #line 2777 "synt_analyzer.tab.cpp"
     break;
 
   case 132: /* varDeclaration: VAR '(' formalParams ')' '=' expr  */
 #line 366 "synt_analyzer.y"
-                                        {(yyval.varOrValDeclU) = createVarOrValDecl((yyvsp[-3].formalParamsListU), (yyvsp[0].exprU), 0); puts("val created"); }
+                                        {(yyval.varOrValDeclU) = createVarOrValDecl((yyvsp[-3].formalParamsListU), (yyvsp[0].exprU), 0); puts("var created"); }
 #line 2783 "synt_analyzer.tab.cpp"
     break;
 
   case 133: /* valDeclaration: VAL ID ':' type  */
 #line 370 "synt_analyzer.y"
-                                {(yyval.varOrValDeclU) = createVarOrValDecl((yyvsp[-2].IdOrString), (yyvsp[0].typeU), 1); puts("var created"); }
+                                {(yyval.varOrValDeclU) = createVarOrValDecl((yyvsp[-2].IdOrString), (yyvsp[0].typeU), 1); puts("val created"); }
 #line 2789 "synt_analyzer.tab.cpp"
     break;
 
   case 134: /* valDeclaration: VAL ID ':' type '=' expr  */
 #line 371 "synt_analyzer.y"
-                                {(yyval.varOrValDeclU) = createVarOrValDecl((yyvsp[-4].IdOrString), (yyvsp[-2].typeU), (yyvsp[0].exprU), 1); puts("var created"); }
+                                {(yyval.varOrValDeclU) = createVarOrValDecl((yyvsp[-4].IdOrString), (yyvsp[-2].typeU), (yyvsp[0].exprU), 1); puts("val created"); }
 #line 2795 "synt_analyzer.tab.cpp"
     break;
 
   case 135: /* valDeclaration: VAL '(' formalParams ')' '=' expr  */
 #line 372 "synt_analyzer.y"
-                                        {(yyval.varOrValDeclU) = createVarOrValDecl((yyvsp[-3].formalParamsListU), (yyvsp[0].exprU), 1); puts("var created"); }
+                                        {(yyval.varOrValDeclU) = createVarOrValDecl((yyvsp[-3].formalParamsListU), (yyvsp[0].exprU), 1); puts("val created"); }
 #line 2801 "synt_analyzer.tab.cpp"
     break;
 
@@ -3604,7 +3604,7 @@ yyreturn:
 
 void main(int argc, char **argv ){
 	//yyin = fopen(argv[1], "r");
-	yyin = fopen("all_stmts.txt", "r");
+	yyin = fopen("interpolation.txt", "r");
 	FILE * file = fopen("tree.dot", "w");
 	root = 0;
     yyparse();

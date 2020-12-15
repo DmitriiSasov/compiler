@@ -361,15 +361,15 @@ block : '{' semis stmts '}'	{$$ = $3;  puts("block created");}
 ;
 
 
-varDeclaration: VAR ID ':' type	{$$ = createVarOrValDecl($2, $4, 0); puts("val created");}
-| VAR ID ':' type '=' expr	{$$ = createVarOrValDecl($2, $4, $6, 0); puts("val created");}
-| VAR '(' formalParams ')' '=' expr	{$$ = createVarOrValDecl($3, $6, 0); puts("val created"); }
+varDeclaration: VAR ID ':' type	{$$ = createVarOrValDecl($2, $4, 0); puts("var created");}
+| VAR ID ':' type '=' expr	{$$ = createVarOrValDecl($2, $4, $6, 0); puts("var created");}
+| VAR '(' formalParams ')' '=' expr	{$$ = createVarOrValDecl($3, $6, 0); puts("var created"); }
 ;
 
 
-valDeclaration: VAL ID ':' type	{$$ = createVarOrValDecl($2, $4, 1); puts("var created"); }
-| VAL ID ':' type '=' expr	{$$ = createVarOrValDecl($2, $4, $6, 1); puts("var created"); }
-| VAL '(' formalParams ')' '=' expr	{$$ = createVarOrValDecl($3, $6, 1); puts("var created"); }
+valDeclaration: VAL ID ':' type	{$$ = createVarOrValDecl($2, $4, 1); puts("val created"); }
+| VAL ID ':' type '=' expr	{$$ = createVarOrValDecl($2, $4, $6, 1); puts("val created"); }
+| VAL '(' formalParams ')' '=' expr	{$$ = createVarOrValDecl($3, $6, 1); puts("val created"); }
 ;
 
 type: ID	{$$ = createType($1); puts("type created"); }
@@ -504,7 +504,7 @@ semis: ';'	{ puts("semis created"); }
 
 void main(int argc, char **argv ){
 	//yyin = fopen(argv[1], "r");
-	yyin = fopen("all_stmts.txt", "r");
+	yyin = fopen("interpolation.txt", "r");
 	FILE * file = fopen("tree.dot", "w");
 	root = 0;
     yyparse();
