@@ -376,12 +376,12 @@ funcDeclaration: FUN ID '(' optFormalParams ')' ':' type	{$$ = createFuncDecl($2
 ;
 
 
-block : '{' semis stmts '}'	{$$ = $3;  puts("block created");}
-| '{' semis '}'	{$$ = 0;  puts("block created");}
-| '{' stmts '}'	{$$ = $2;  puts("block created");}
-| '{' newLines stmts '}'	{$$ = $3;  puts("block created");}
-| '{' newLines '}'	{$$ = 0;  puts("block created");}
-| '{' '}'	{$$ = 0;  puts("block created");}
+block : optNewLines '{' semis stmts '}'	{$$ = $4;  puts("block created");}
+| optNewLines '{' semis '}'	{$$ = 0;  puts("block created");}
+| optNewLines '{' stmts '}'	{$$ = $3;  puts("block created");}
+| optNewLines '{' newLines stmts '}'	{$$ = $4;  puts("block created");}
+| optNewLines '{' newLines '}'	{$$ = 0;  puts("block created");}
+| optNewLines '{' '}'	{$$ = 0;  puts("block created");}
 ;
 
 
@@ -400,13 +400,13 @@ type: ID	{$$ = createType($1); puts("type created"); }
 | templateType	{$$ = createType($1); puts("type created"); }
 ;
 
-templateType: ID '<' type_seq '>'	{$$ = createTemplateType($1, $3); puts("template type created"); }
+templateType: ID optNewLines '<' optNewLines type_seq optNewLines '>'	{$$ = createTemplateType($1, $5); puts("template type created"); }
 ;
 
 type_seq: ID	{$$ = createTypesList($1); puts("type seq created"); }
 | templateType	{$$ = createTypesList($1); puts("type seq created"); }
-| type_seq ',' ID	{$$ = addToTypesList($1, $3);  puts("type seq created"); }
-| type_seq ',' templateType	{$$ = addToTypesList($1, $3);  puts("type seq created"); }
+| type_seq optNewLines ',' optNewLines ID	{$$ = addToTypesList($1, $5);  puts("type seq created"); }
+| type_seq optNewLines ',' optNewLines templateType	{$$ = addToTypesList($1, $5);  puts("type seq created"); }
 ;
 
 stmts : stmt	{$$ = createStmtList($1);  puts("stmts created"); }
@@ -560,7 +560,7 @@ semis: ';'	{ puts("semis created"); }
 
 void main(int argc, char **argv ){
 	//yyin = fopen(argv[1], "r");
-	yyin = fopen("complex_test.txt", "r");
+	yyin = fopen("easy_test.txt", "r");
 	FILE * file = fopen("tree.dot", "w");
 	root = 0;
     yyparse();
