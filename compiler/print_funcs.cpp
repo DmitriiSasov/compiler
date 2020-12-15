@@ -142,7 +142,7 @@ void print(struct exprS * e, FILE* file)
 			print(e->right, file);
 		break;
 		case Mod:
-			fprintf(file, "Id%p [label=\"%\"]\n", e);
+			fprintf(file, "Id%p [label=\"%%\"]\n", e);
 			fprintf(file, "Id%p->Id%p\n", e, e->left);
 			print(e->left, file);
 			fprintf(file, "Id%p->Id%p\n", e, e->right);
