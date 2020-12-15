@@ -1,0 +1,39 @@
+public val a:String;
+
+private val b:Array<String, Int>
+;
+;
+;
+
+public fun f() : T
+{
+
+	if (a)
+
+{
+	print(a)
+}
+
+
+else
+	if (m) 
+		print(m)
+	else
+		a += 1
+
+
+while (f)
+	print(f)
+
+do
+	calc(f)
+while(a);
+
+
+}
+
+
+val c:String
+
+;
+val d:String

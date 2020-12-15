@@ -1,4 +1,6 @@
 var sum:Double = 6.54f
+public override var sum:Double = 6.54f
+internal var sum:Double = 6.54f
 
 class CalcMethods{
 

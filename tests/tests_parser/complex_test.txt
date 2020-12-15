@@ -1,0 +1,102 @@
+var sum:Double = 6.54f
+public var sum:Double = 6.54f
+internal var sum:Double = 6.54f
+
+
+abstract class Calc {
+	final protected val constant:Float = 4.5000243
+	public final var calcRes:Double
+	constructor(constant:Float) {
+		this.constant = constant
+		calcRes = 0
+		print("calc class created")
+	}
+
+	init {
+		print("calc class created")	
+	}
+
+	public open fun add(expr:Double):Double	{
+		this.calcRes += expr
+		return this.calcRes;
+	}
+	abstract public fun calc(param1:Double, param2:Double, opType:Int): Double
+
+	final public fun calcSomething():Something {
+		return "a" + a * (5 / 1.0).toInt() % 10000000 + 'm' + -1.0f + +b || !true && !false || (1) == 1 && a > b && a < b && false != true && m <= b || m >= c + "%"[a - 5] + 1..54325[2] - this.Field * super.Field - super.calc(45) * this.calcInt(312 * 4)
+	}
+}
+
+class CalcInt: Calc {
+
+	constructor(constant:Float): super(5) {
+		super.calcRes = 0.0f
+		print("calcInt class created")
+	}
+
+	init {
+		print("calcInt class created")	
+	}
+
+	public fun add(expr:Int):Double	= super.add(expr.ToDouble()).toInt()
+	
+
+	override public fun calc(param1:Double, param2:Double, opType:Int): Double {
+		val (a :	Int, b: Float, str:String) = expr.node(1)
+		var (d :	Int, e: Float, f:String) = expr.node(1)
+		val c:Double = (5 * 6).toDouble();
+	
+		val x:UInt = (3.4 * 50).toUInt();
+		a %= b.toInt()
+		super.value /= this.calc(45, 67);
+		m -= calc(2453, 0.0f, " ")
+		this.meth_name += "Hello_${"_${ "${a + a}" }_"}_World";
+		m *= b
+		m = """$a + $a printed
+
+printed"""
+	"""Hello ${ WORLD } printed
+printed"""
+		return c
+	}
+	
+	public fun doSome() : Unit {
+                var a:Int = 5
+                while (a > 0) {
+                    if (a > 5) while (a > 2) {
+                        if (a == 5) {
+                            print(a);
+                        } else {
+                            if (a == 2) {
+                                print(a)
+                            }
+                            print("a not equal 5")
+                        }
+                        a -= 1;
+                    }
+                    for (i:Int in 1..a) print(a)
+                    a -= 1
+                }
+        
+                var i:Int = 5
+                for (i:Int in 1..9){
+                    if (i < 5) {
+                        print("a less 5")
+                    } else {
+                        print("a more or equal 5")
+                    }
+                }
+        }
+}
+
+
+fun retExpr():Something {
+	var a: String
+	var b: Array<String>
+	var c: Array<Array<String>>
+	var d: Map<int, String>
+	var e: Map<int, Array<String>>
+	var f: TypesSeq<int, Map<int, Array<String>>, String, Boolean>
+}
+
+
