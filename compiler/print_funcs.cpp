@@ -81,7 +81,7 @@ void print(struct exprS * e, FILE* file)
 			fprintf(file, "Id%p [label=\"%f\"]\n", e, e->floatV);
 		break;
 		case String:
-			fprintf(file, "Id%p [label=\"%s\"]\n", e, e->stringOrId);
+			fprintf(file, "Id%p [label=\"\\\"%s\\\"\"]\n", e, e->stringOrId);
 		break;
 		case Char:
 			fprintf(file, "Id%p [label=\"%c\"]\n", e, e->charV);
