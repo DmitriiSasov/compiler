@@ -427,6 +427,7 @@ struct typeS* createType(char* id, struct templateTypeS* type)
 	struct typeS* t = (struct typeS*)malloc(sizeof(struct typeS));
 	t->easyType = id;
 	t->complexType = type;
+	t->next = 0;
 	return t;
 }
 
