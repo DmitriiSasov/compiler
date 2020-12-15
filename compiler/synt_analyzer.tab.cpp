@@ -2302,13 +2302,13 @@ yyreduce:
 
   case 54: /* modifiers: visibilityModifier  */
 #line 265 "synt_analyzer.y"
-                        {(yyval.modifiersU) = createModifiers(0, 1, (yyvsp[0].visibilityModU), None); puts("mods created");}
+                        {(yyval.modifiersU) = createModifiers(0, 0, (yyvsp[0].visibilityModU), None); puts("mods created");}
 #line 2307 "synt_analyzer.tab.cpp"
     break;
 
   case 55: /* modifiers: inheritanceModifier  */
 #line 266 "synt_analyzer.y"
-                        {(yyval.modifiersU) = createModifiers(0, 1, Unknown, (yyvsp[0].inheritanceModU)); puts("mods created");}
+                        {(yyval.modifiersU) = createModifiers(0, 0, Unknown, (yyvsp[0].inheritanceModU)); puts("mods created");}
 #line 2313 "synt_analyzer.tab.cpp"
     break;
 
@@ -3584,7 +3584,7 @@ yyreturn:
 
 void main(int argc, char **argv ){
 	//yyin = fopen(argv[1], "r");
-	yyin = fopen("2_funcs.txt", "r");
+	yyin = fopen("class_wih_all_members.txt", "r");
 	FILE * file = fopen("tree.dot", "w");
 	root = 0;
     yyparse();

@@ -262,8 +262,8 @@ formalParams: ID ':' type	{$$ = createFormalParamsList($1, $3); puts("formal par
 ;
 
 modifiers: OVERRIDE	{$$ = createModifiers(0, 1, Unknown, None); puts("mods created");}
-| visibilityModifier	{$$ = createModifiers(0, 1, $1, None); puts("mods created");}
-| inheritanceModifier	{$$ = createModifiers(0, 1, Unknown, $1); puts("mods created");}
+| visibilityModifier	{$$ = createModifiers(0, 0, $1, None); puts("mods created");}
+| inheritanceModifier	{$$ = createModifiers(0, 0, Unknown, $1); puts("mods created");}
 | ABSTRACT	{$$ = createModifiers(1, 0, Unknown, None); puts("mods created");}
 | OVERRIDE visibilityModifier	{$$ = createModifiers(0, 1, $2, None); puts("mods created");}
 | OVERRIDE inheritanceModifier	{$$ = createModifiers(0, 1, Unknown, $2); puts("mods created");}
@@ -503,7 +503,7 @@ semis: ';'	{ puts("semis created"); }
 
 void main(int argc, char **argv ){
 	//yyin = fopen(argv[1], "r");
-	yyin = fopen("2_funcs.txt", "r");
+	yyin = fopen("class_wih_all_members.txt", "r");
 	FILE * file = fopen("tree.dot", "w");
 	root = 0;
     yyparse();
