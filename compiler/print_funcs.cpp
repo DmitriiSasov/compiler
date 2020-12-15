@@ -634,17 +634,10 @@ void print(struct initializerS * i, FILE* file)
 {
 	fprintf(file, "Id%p [label=\"initializer\"]\n", i);
 	if (i->stmts != 0)
-	{
-		struct stmtS * s = i->stmts->first;
-		while(s != 0)
-		{
-			fprintf(file, "Id%p->Id%p\n", i, s);
-			print(s, file);
-			s = s->next;
-		}
+	{		
+		fprintf(file, "Id%p->Id%p\n", i, i->stmts);
+		print(i->stmts, file);
 	}
-	
-	
 }
 
 void print(struct classS * c, FILE* file)
