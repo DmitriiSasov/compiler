@@ -191,19 +191,29 @@
 
 
 program: semis	{root = createProgram(); puts("program created");}
+| newLines {root = createProgram(); puts("program created");}
 | class	{root = createProgram($1);puts("program created");}
 | method	{root = createProgram($1);puts("program created");}
 | valDeclaration semis	{root = createProgram(createProperty($1));puts("program created");}
 | varDeclaration semis	{root = createProgram(createProperty($1));puts("program created");}
 | visibilityModifier valDeclaration semis	{root = createProgram(createProperty(createModifiers(0, 0, $1, None), $2));puts("program created");}
 | visibilityModifier varDeclaration semis	{root = createProgram(createProperty(createModifiers(0, 0, $1, None), $2));puts("program created");}
+| valDeclaration newLines	{root = createProgram(createProperty($1));puts("program created");}
+| varDeclaration newLines	{root = createProgram(createProperty($1));puts("program created");}
+| visibilityModifier valDeclaration newLines	{root = createProgram(createProperty(createModifiers(0, 0, $1, None), $2));puts("program created");}
+| visibilityModifier varDeclaration newLines	{root = createProgram(createProperty(createModifiers(0, 0, $1, None), $2));puts("program created");}
 | program class	{root = addToProgram(root, $2);puts("class added to prog");}
 | program method	{root = addToProgram(root, $2);puts("meth added to prog");}
 | program valDeclaration semis	{root = addToProgram(root, createProperty($2));puts("prop added to prog");}
 | program varDeclaration semis	{root = addToProgram(root, createProperty($2));puts("prop added to prog");}
 | program visibilityModifier valDeclaration semis	{root = addToProgram(root, createProperty(createModifiers(0, 0, $2, None), $3));puts("prop added to prog");}
 | program visibilityModifier varDeclaration semis	{root = addToProgram(root, createProperty(createModifiers(0, 0, $2, None), $3));puts("prop added to prog");}
+| program valDeclaration newLines	{root = addToProgram(root, createProperty($2));puts("prop added to prog");}
+| program varDeclaration newLines	{root = addToProgram(root, createProperty($2));puts("prop added to prog");}
+| program visibilityModifier valDeclaration newLines	{root = addToProgram(root, createProperty(createModifiers(0, 0, $2, None), $3));puts("prop added to prog");}
+| program visibilityModifier varDeclaration newLines	{root = addToProgram(root, createProperty(createModifiers(0, 0, $2, None), $3));puts("prop added to prog");}
 | program semis {root = root;}
+| program newLines {root = root;}
 ; 
 
 class: modifiers CLASS ID ':' ID  '{' classBody '}'	{$$ = createClass($1, $3, $5, $7);puts("class created");}
@@ -217,15 +227,19 @@ class: modifiers CLASS ID ':' ID  '{' classBody '}'	{$$ = createClass($1, $3, $5
 ;
 
 classBody: semis 	{$$ = createClassBody(); puts("class body created");}
+| newLines 	{$$ = createClassBody(); puts("class body created");}
 | method	{$$ = createClassBody($1);  puts("class body created");}
 | property semis	{$$ = createClassBody($1);  puts("class body created");}
+| property newLines	{$$ = createClassBody($1);  puts("class body created");}
 | constructor	{$$ = createClassBody($1);  puts("class body created");}
 | initializer	{$$ = createClassBody($1);  puts("class body created");}
 | classBody method	{$$ = addToClassBody($1, $2);  puts("meth added to class body");}
 | classBody property semis	{$$ = addToClassBody($1, $2); puts("prop added to class body");}
+| classBody property newLines	{$$ = addToClassBody($1, $2); puts("prop added to class body");}
 | classBody constructor	{$$ = addToClassBody($1, $2); puts("constr added to class body");}
 | classBody initializer	{$$ = addToClassBody($1, $2); puts("init added to class body");}
 | classBody semis	{$$ = $1; puts("semis added to class body");}
+| classBody newLines	{$$ = $1; puts("newLines added to class body");}
 ;
 
 property: modifiers valDeclaration	{$$ = createProperty($1, $2); puts("prop created");}
@@ -235,8 +249,10 @@ property: modifiers valDeclaration	{$$ = createProperty($1, $2); puts("prop crea
 ;
 
 method: modifiers funcDeclaration semis	{$$ = createMethod($1, $2); puts("meth created");}
+| modifiers funcDeclaration newLines	{$$ = createMethod($1, $2); puts("meth created");}
 | modifiers func	{$$ = createMethod($1, $2); puts("meth created");}
 | funcDeclaration semis	{$$ = createMethod($1); puts("meth created");}
+| funcDeclaration newLines	{$$ = createMethod($1); puts("meth created");}
 | func	{$$ = createMethod($1); puts("meth created");}
 ;
 
@@ -363,6 +379,8 @@ funcDeclaration: FUN ID '(' optFormalParams ')' ':' type	{$$ = createFuncDecl($2
 block : '{' semis stmts '}'	{$$ = $3;  puts("block created");}
 | '{' semis '}'	{$$ = 0;  puts("block created");}
 | '{' stmts '}'	{$$ = $2;  puts("block created");}
+| '{' newLines stmts '}'	{$$ = $3;  puts("block created");}
+| '{' newLines '}'	{$$ = 0;  puts("block created");}
 | '{' '}'	{$$ = 0;  puts("block created");}
 ;
 
@@ -407,6 +425,16 @@ stmt : valDeclaration semis	{$$ = createStmt($1, VarOrVal);  puts("stmt created"
 | CONTINUE semis	{$$ = createStmt(Continue);  puts("stmt created"); }
 | RETURN semis	{$$ = createStmt(Return);  puts("stmt created"); }
 | RETURN expr semis	{$$ = createStmt($2, ReturnValue);  puts("stmt created"); }
+| valDeclaration newLines	{$$ = createStmt($1, VarOrVal);  puts("stmt created"); }
+| varDeclaration newLines	{$$ = createStmt($1, VarOrVal);  puts("stmt created"); }
+| assignment newLines	{$$ = createStmt($1, Assignment);  puts("stmt created"); }
+| doWhileLoop newLines	{$$ = createStmt($1, DoWhileLoop);  puts("stmt created"); }
+| expr newLines	{$$ = createStmt($1, Expr);  puts("stmt created"); }
+| BREAK newLines	{$$ = createStmt(Break);  puts("stmt created"); }
+| CONTINUE newLines	{$$ = createStmt(Continue);  puts("stmt created"); }
+| RETURN newLines	{$$ = createStmt(Return);  puts("stmt created"); }
+| RETURN expr newLines	{$$ = createStmt($2, ReturnValue);  puts("stmt created"); }
+
 ;
 
 expr: STR 	{$$ = createExpr($1, String);  puts("expr created"); }
@@ -464,6 +492,8 @@ assignment: expr '=' expr	{$$ = createAssignment($1, $3, Assign); puts("assignme
 whileLoop: WHILE '(' expr ')' stmt	{$$ = createWhileLoop($3, $5, 0); puts("whileLoop created"); }
 | WHILE '(' expr ')' block semis	{$$ = createWhileLoop($3, $5, 0); puts("whileLoop created"); }
 | WHILE '(' expr ')' semis	{$$ = createWhileLoop($3, 0); puts("whileLoop created"); }
+| WHILE '(' expr ')' block newLines	{$$ = createWhileLoop($3, $5, 0); puts("whileLoop created"); }
+| WHILE '(' expr ')' newLines	{$$ = createWhileLoop($3, 0); puts("whileLoop created"); }
 ;
 
 doWhileLoop: DO expr WHILE '(' expr ')'	{$$ = createWhileLoop($5, $2, 1); puts("doWhileLoop created"); }
@@ -477,6 +507,10 @@ forLoop: FOR '(' ID ':' type IN expr ')' stmt	{$$ = createForLoop($3, $5, $7, $9
 | FOR '(' '(' formalParams ')' IN expr ')' stmt	{$$ = createForLoop($4, $7, $9); puts("forLoop created"); }
 | FOR '(' '(' formalParams ')' IN expr ')' block semis	{$$ = createForLoop($4, $7, $9); puts("forLoop created"); }
 | FOR '(' '(' formalParams ')' IN expr ')' semis	{$$ = createForLoop($4, $7); puts("forLoop created"); }
+| FOR '(' ID ':' type IN expr ')' block newLines	{$$ = createForLoop($3, $5, $7, $9); puts("forLoop created"); }
+| FOR '(' ID ':' type IN expr ')' newLines 	{$$ = createForLoop($3, $5, $7); puts("forLoop created"); }
+| FOR '(' '(' formalParams ')' IN expr ')' block newLines	{$$ = createForLoop($4, $7, $9); puts("forLoop created"); }
+| FOR '(' '(' formalParams ')' IN expr ')' newLines	{$$ = createForLoop($4, $7); puts("forLoop created"); }
 ;
 
 ifStmt: IF '(' expr ')' stmt	{$$ = createIfStmt($3, $5); puts("ifStmt created"); }
@@ -493,13 +527,29 @@ ifStmt: IF '(' expr ')' stmt	{$$ = createIfStmt($3, $5); puts("ifStmt created");
 | IF '(' expr ')' expr ELSE semis	{$$ = createIfStmt($3, $5); puts("ifStmt created"); }
 | IF '(' expr ')' stmt ELSE	semis	{$$ = createIfStmt($3, $5); puts("ifStmt created"); }
 | IF '(' expr ')' block ELSE semis	{$$ = createIfStmt($3, $5); puts("ifStmt created"); }
+| IF '(' expr ')' newLines {$$ = createIfStmt($3); puts("ifStmt created"); }
+| IF '(' expr ')' block	newLines {$$ = createIfStmt($3, $5); puts("ifStmt created"); }
+| IF '(' expr ')' newLines ELSE stmt	{$$ = createIfStmt($3, 0, $7); puts("ifStmt created"); }
+| IF '(' expr ')' expr ELSE block newLines	{$$ = createIfStmt($3, $5, $7); puts("ifStmt created"); }
+| IF '(' expr ')' stmt ELSE block newLines	{$$ = createIfStmt($3, $5, $7); puts("ifStmt created"); }
+| IF '(' expr ')' block ELSE block newLines	{$$ = createIfStmt($3, $5, $7); puts("ifStmt created"); }
+| IF '(' expr ')' newLines ELSE block newLines	{$$ = createIfStmt($3, 0, $7); puts("ifStmt created"); }
+| IF '(' expr ')' expr ELSE newLines	{$$ = createIfStmt($3, $5); puts("ifStmt created"); }
+| IF '(' expr ')' stmt ELSE	newLines	{$$ = createIfStmt($3, $5); puts("ifStmt created"); }
+| IF '(' expr ')' block ELSE newLines	{$$ = createIfStmt($3, $5); puts("ifStmt created"); }
 ;
 
+optNewLines: /*empty*/
+| newLines
+;
+
+newLines: NEW_LINE
+| newLines NEW_LINE 
+;
 
 semis: ';'	{ puts("semis created"); }
-| NEW_LINE	{ puts("semis created"); }
-| semis ';'	{ puts("semis created"); }
-| semis NEW_LINE	{ puts("semis created"); }
+| semis ';'	{ puts("; added to semis"); }
+| semis newLines { puts("newLines added to semis"); }
 ;
 
 
@@ -510,7 +560,7 @@ semis: ';'	{ puts("semis created"); }
 
 void main(int argc, char **argv ){
 	//yyin = fopen(argv[1], "r");
-	yyin = fopen("types.txt", "r");
+	yyin = fopen("complex_test.txt", "r");
 	FILE * file = fopen("tree.dot", "w");
 	root = 0;
     yyparse();
