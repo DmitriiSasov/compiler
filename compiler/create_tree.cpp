@@ -657,25 +657,25 @@ struct assignmentS* createAssignment(struct exprS* left, struct exprS* right, en
 	return a;
 }
 
-struct whileLoopS* createWhileLoop(struct exprS* cond, struct stmtS* stmt, struct stmtList* stmts, int isDoWhile)
+struct whileLoopS* createWhileLoop(struct exprS* cond, struct exprS* expr, struct stmtList* stmts, int isDoWhile)
 {
 	struct whileLoopS* l = (struct whileLoopS*)malloc(sizeof(struct whileLoopS));
 	l->isDoWhile = isDoWhile;
 	l->cond = cond;
-	if (stmt == 0)
+	if (expr == 0)
 	{
 		l->stmts = stmts;
 	}
 	else
 	{
-		stmts = createStmtList(stmt);
+		stmts = createStmtList(createStmt(expr, Expr));
 	}
 	return l;
 }
 
-struct whileLoopS* createWhileLoop(struct exprS* cond, struct stmtS* stmt, int isDoWhile)
+struct whileLoopS* createWhileLoop(struct exprS* cond, struct exprS* expr, int isDoWhile)
 {
-	return createWhileLoop(cond, stmt, 0, isDoWhile);
+	return createWhileLoop(cond, expr, 0, isDoWhile);
 }
 
 struct whileLoopS* createWhileLoop(struct exprS* cond, struct stmtList* stmts, int isDoWhile)
@@ -690,7 +690,7 @@ struct whileLoopS* createWhileLoop(struct exprS* cond, int isDoWhile)
 
 
 
-struct forLoopS* createForLoop(char* id, struct typeS* type, struct exprS* iterableExpr, struct stmtS* stmt, struct stmtList* stmts, struct formalParamsList* idsAndTypes)
+struct forLoopS* createForLoop(char* id, struct typeS* type, struct exprS* iterableExpr, struct exprS* expr, struct stmtList* stmts, struct formalParamsList* idsAndTypes)
 {
 	struct forLoopS* l = (struct forLoopS*)malloc(sizeof(struct forLoopS));
 
@@ -703,21 +703,21 @@ struct forLoopS* createForLoop(char* id, struct typeS* type, struct exprS* itera
 		l->params = createFormalParamsList(id, type);
 	}
 	l->iterableExpr = iterableExpr;
-	if (stmt == 0)
+	if (expr == 0)
 	{
 		l->stmts = stmts;
 	}
 	else
 	{
-		l->stmts = createStmtList(stmt);
+		l->stmts = createStmtList(createStmt(expr, Expr));
 	}
 
 	return l;
 }
 
-struct forLoopS* createForLoop(char* id, struct typeS* type, struct exprS* iterableExpr, struct stmtS* stmt)
+struct forLoopS* createForLoop(char* id, struct typeS* type, struct exprS* iterableExpr, struct exprS* expr)
 {
-	return createForLoop(id, type, iterableExpr, stmt, 0, 0);
+	return createForLoop(id, type, iterableExpr, expr, 0, 0);
 }
 
 struct forLoopS* createForLoop(char* id, struct typeS* type, struct exprS* iterableExpr, struct stmtList* stmts)
@@ -730,9 +730,9 @@ struct forLoopS* createForLoop(struct formalParamsList* idsAndTypes, struct expr
 	return createForLoop(0, 0, iterableExpr, 0, stmts, idsAndTypes);
 }
 
-struct forLoopS* createForLoop(struct formalParamsList* idsAndTypes, struct exprS* iterableExpr, struct stmtS* stmt)
+struct forLoopS* createForLoop(struct formalParamsList* idsAndTypes, struct exprS* iterableExpr, struct exprS* expr)
 {
-	return createForLoop(0, 0, iterableExpr, stmt, 0, idsAndTypes);
+	return createForLoop(0, 0, iterableExpr, expr, 0, idsAndTypes);
 }
 
 struct forLoopS* createForLoop(char* id, struct typeS* type, struct exprS* iterableExpr)
@@ -746,7 +746,7 @@ struct forLoopS* createForLoop(struct formalParamsList* idsAndTypes, struct expr
 }
 
 
-struct ifStmtS* createIfStmt(struct exprS* cond, struct stmtList* actions, struct stmtList* altActions, struct stmtS* action, struct stmtS* altAction)
+struct ifStmtS* createIfStmt(struct exprS* cond, struct stmtList* actions, struct stmtList* altActions, struct exprS* action, struct exprS* altAction)
 {
 	struct ifStmtS* i = (struct ifStmtS*)malloc(sizeof(struct ifStmtS));
 	i->condition = cond;
@@ -756,7 +756,7 @@ struct ifStmtS* createIfStmt(struct exprS* cond, struct stmtList* actions, struc
 	}
 	else
 	{
-		i->actions = createStmtList(action);
+		i->actions = createStmtList(createStmt(action, Expr));
 	}
 	if (altAction == 0)
 	{
@@ -764,13 +764,13 @@ struct ifStmtS* createIfStmt(struct exprS* cond, struct stmtList* actions, struc
 	}
 	else
 	{
-		i->altActions = createStmtList(altAction);
+		i->altActions = createStmtList(createStmt(altAction, Expr));
 	}
 	return i;
 }
 
 
-struct ifStmtS* createIfStmt(struct exprS* cond, struct stmtS* action)
+struct ifStmtS* createIfStmt(struct exprS* cond, struct exprS* action)
 {
 	return createIfStmt(cond, 0, 0, action, 0);
 }
@@ -785,17 +785,17 @@ struct ifStmtS* createIfStmt(struct exprS* cond)
 	return createIfStmt(cond, 0, 0, 0, 0);
 }
 
-struct ifStmtS* createIfStmt(struct exprS* cond, struct stmtS* action, struct stmtS* altAction)
+struct ifStmtS* createIfStmt(struct exprS* cond, struct exprS* action, struct exprS* altAction)
 {
 	return createIfStmt(cond, 0, 0, action, altAction);
 }
 
-struct ifStmtS* createIfStmt(struct exprS* cond, struct stmtS* action, struct stmtList* altActions)
+struct ifStmtS* createIfStmt(struct exprS* cond, struct exprS* action, struct stmtList* altActions)
 {
 	return createIfStmt(cond, 0, altActions, action, 0);
 }
 
-struct ifStmtS* createIfStmt(struct exprS* cond, struct stmtList* actions, struct stmtS* altAction)
+struct ifStmtS* createIfStmt(struct exprS* cond, struct stmtList* actions, struct exprS* altAction)
 {
 	return createIfStmt(cond, actions, 0, 0, altAction);
 }
@@ -805,7 +805,7 @@ struct ifStmtS* createIfStmt(struct exprS* cond, struct stmtList* actions, struc
 	return createIfStmt(cond, actions, altActions, 0, 0);
 }
 
-struct ifStmtS* createIfStmt(struct exprS* cond, int action, struct stmtS* altAction)
+struct ifStmtS* createIfStmt(struct exprS* cond, int action, struct exprS* altAction)
 {
 	return createIfStmt(cond, 0, 0, 0, altAction);
 }
