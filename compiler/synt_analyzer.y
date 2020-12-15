@@ -400,13 +400,13 @@ type: ID	{$$ = createType($1); puts("type created"); }
 | templateType	{$$ = createType($1); puts("type created"); }
 ;
 
-templateType: ID optNewLines '<' optNewLines type_seq optNewLines '>'	{$$ = createTemplateType($1, $5); puts("template type created"); }
+templateType: ID '<' type_seq '>'	{$$ = createTemplateType($1, $3); puts("template type created"); }
 ;
 
 type_seq: ID	{$$ = createTypesList($1); puts("type seq created"); }
 | templateType	{$$ = createTypesList($1); puts("type seq created"); }
-| type_seq optNewLines ',' optNewLines ID	{$$ = addToTypesList($1, $5);  puts("type seq created"); }
-| type_seq optNewLines ',' optNewLines templateType	{$$ = addToTypesList($1, $5);  puts("type seq created"); }
+| type_seq ',' ID	{$$ = addToTypesList($1, $3);  puts("type seq created"); }
+| type_seq ',' templateType	{$$ = addToTypesList($1, $3);  puts("type seq created"); }
 ;
 
 stmts : stmt	{$$ = createStmtList($1);  puts("stmts created"); }
