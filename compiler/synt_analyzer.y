@@ -489,28 +489,25 @@ assignment: expr '=' expr	{$$ = createAssignment($1, $3, Assign); puts("assignme
 | expr AMOD expr	{$$ = createAssignment($1, $3, Amod); puts("assignment created"); }
 ;
 
-whileLoop: WHILE '(' expr ')' stmt	{$$ = createWhileLoop($3, $5, 0); puts("whileLoop created"); }
+whileLoop: WHILE '(' expr ')' optNewLines stmt	{$$ = createWhileLoop($3, $6, 0); puts("whileLoop created"); }
 | WHILE '(' expr ')' block semis	{$$ = createWhileLoop($3, $5, 0); puts("whileLoop created"); }
 | WHILE '(' expr ')' semis	{$$ = createWhileLoop($3, 0); puts("whileLoop created"); }
 | WHILE '(' expr ')' block newLines	{$$ = createWhileLoop($3, $5, 0); puts("whileLoop created"); }
-| WHILE '(' expr ')' newLines	{$$ = createWhileLoop($3, 0); puts("whileLoop created"); }
 ;
 
-doWhileLoop: DO expr WHILE '(' expr ')'	{$$ = createWhileLoop($5, $2, 1); puts("doWhileLoop created"); }
-| DO block WHILE '(' expr ')'	{$$ = createWhileLoop($5, $2, 1); puts("doWhileLoop created"); }
-| DO WHILE '(' expr ')' {$$ = createWhileLoop($4, 1); puts("doWhileLoop created"); }
+doWhileLoop: DO optNewLines expr optNewLines WHILE '(' expr ')'	{$$ = createWhileLoop($7, $3, 1); puts("doWhileLoop created"); }
+| DO block optNewLines WHILE '(' expr ')'	{$$ = createWhileLoop($6, $2, 1); puts("doWhileLoop created"); }
+| DO optNewLines WHILE '(' expr ')' {$$ = createWhileLoop($5, 1); puts("doWhileLoop created"); }
 ;
 
-forLoop: FOR '(' ID ':' type IN expr ')' stmt	{$$ = createForLoop($3, $5, $7, $9); puts("forLoop created"); }
+forLoop: FOR '(' ID ':' type IN expr ')' optNewLines stmt	{$$ = createForLoop($3, $5, $7, $10); puts("forLoop created"); }
 | FOR '(' ID ':' type IN expr ')' block semis	{$$ = createForLoop($3, $5, $7, $9); puts("forLoop created"); }
 | FOR '(' ID ':' type IN expr ')' semis 	{$$ = createForLoop($3, $5, $7); puts("forLoop created"); }
-| FOR '(' '(' formalParams ')' IN expr ')' stmt	{$$ = createForLoop($4, $7, $9); puts("forLoop created"); }
+| FOR '(' '(' formalParams ')' IN expr ')' optNewLines stmt	{$$ = createForLoop($4, $7, $10); puts("forLoop created"); }
 | FOR '(' '(' formalParams ')' IN expr ')' block semis	{$$ = createForLoop($4, $7, $9); puts("forLoop created"); }
 | FOR '(' '(' formalParams ')' IN expr ')' semis	{$$ = createForLoop($4, $7); puts("forLoop created"); }
 | FOR '(' ID ':' type IN expr ')' block newLines	{$$ = createForLoop($3, $5, $7, $9); puts("forLoop created"); }
-| FOR '(' ID ':' type IN expr ')' newLines 	{$$ = createForLoop($3, $5, $7); puts("forLoop created"); }
 | FOR '(' '(' formalParams ')' IN expr ')' block newLines	{$$ = createForLoop($4, $7, $9); puts("forLoop created"); }
-| FOR '(' '(' formalParams ')' IN expr ')' newLines	{$$ = createForLoop($4, $7); puts("forLoop created"); }
 ;
 
 ifStmt: IF '(' expr ')' stmt	{$$ = createIfStmt($3, $5); puts("ifStmt created"); }
