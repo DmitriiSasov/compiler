@@ -12,7 +12,8 @@
     {
         _STRING,
         _ID,
-        _PLUS
+        _PLUS,
+        _None
     };
     struct InterpolationElement 
     {
@@ -28,6 +29,8 @@
     };
     bool addToList(struct InterpolElementsLinkedList * list, struct InterpolationElement * newElement);
     bool removeLastFromList(struct InterpolElementsLinkedList * list);
+    InterpolationElement * createInterpolationElement(char * strOrId, InterpolationElement * next, InterpolationElement * previous, enum InterpolElemType type);
+    InterpolElementsLinkedList * createList();
 %}
 
 %x MLCOMMENT SLCOMMENT STRING CHAR IDENTIFICATOR MLSTRING
@@ -42,13 +45,13 @@ long numLong;
 float numFloat;
 double numDouble;
 char commentText[1000];
-char str[1000];
+static char str[1000];
 char tmpChar;
 char * tmp = 0;
 char forNum[100];
 static int complexTemplateNestingLevel = 0; //Уровень вложенности для сложных шаблонов ${}
 static bool isMLString = false;    //Встретилась ли интерполяция в многострочной строковой константе
-static struct InterpolElementsLinkedList * list = (InterpolElementsLinkedList *)malloc(sizeof(InterpolElementsLinkedList));
+static struct InterpolElementsLinkedList * list = createList();
 static int elementToRemoveFromStack = 0;
 struct InterpolationElement * el;
 
@@ -58,21 +61,24 @@ while (elementToRemoveFromStack > 0)
     if (list->last->type == _PLUS)
     {
         removeLastFromList(list);
+        --elementToRemoveFromStack;
         return '+';
     }
     else if (list->last->type == _ID)
     {
         yylval.IdOrString = list->last->stringOrId;
         removeLastFromList(list);
+        --elementToRemoveFromStack;
         return ID;
     }
-    else
+    else if (list->last->type == _STRING)
     {
         yylval.IdOrString = list->last->stringOrId;
         removeLastFromList(list);
+        --elementToRemoveFromStack;
         return STR;
     }
-    --elementToRemoveFromStack;
+    
 }
 
 %}
@@ -366,20 +372,17 @@ false 	{	yylval.Bool_v = false;
                                 strcpy(yylval.IdOrString, str);
                                 str[0] = 0;
 
-                                el = (InterpolationElement *)malloc(sizeof(InterpolationElement));
-                                el->type = _PLUS;
+                                el = createInterpolationElement(0, 0, 0, _PLUS);
                                 addToList(list, el);
                                 ++elementToRemoveFromStack;
 
-                                el = (InterpolationElement *)malloc(sizeof(InterpolationElement));
-                                el->type = _ID;
+                                el = createInterpolationElement(0, 0, 0, _ID);
                                 el->stringOrId = (char *)malloc(strlen(yytext + 1) + 1);
                                 strcpy(el->stringOrId, yytext + 1);
                                 addToList(list, el);
                                 ++elementToRemoveFromStack;
 
-                                el = (InterpolationElement *)malloc(sizeof(InterpolationElement));
-                                el->type = _PLUS;
+                                el = createInterpolationElement(0, 0, 0, _PLUS);
                                 addToList(list, el);
                                 ++elementToRemoveFromStack;
                                 str[0] = 0;
@@ -393,13 +396,11 @@ false 	{	yylval.Bool_v = false;
                                 strcpy(yylval.IdOrString, str);
                                 str[0] = 0;
 
-                                el = (InterpolationElement *)malloc(sizeof(InterpolationElement));
-                                el->type = _PLUS;
+                                el = createInterpolationElement(0, 0, 0, _PLUS);
                                 addToList(list, el);
                                 ++elementToRemoveFromStack;
 
-                                el = (InterpolationElement *)malloc(sizeof(InterpolationElement));
-                                el->type = _ID;
+                                el = createInterpolationElement(0, 0, 0, _ID);
                                 strcpy(str, yytext + 2);
                                 str[yyleng - 2 - 1] = 0;
                                 el->stringOrId = (char *)malloc(strlen(str + 1) + 1);
@@ -407,8 +408,7 @@ false 	{	yylval.Bool_v = false;
                                 addToList(list, el);
                                 ++elementToRemoveFromStack;
 
-                                el = (InterpolationElement *)malloc(sizeof(InterpolationElement));
-                                el->type = _PLUS;
+                                el = createInterpolationElement(0, 0, 0, _PLUS);
                                 addToList(list, el);
                                 ++elementToRemoveFromStack;
                                 str[0] = 0; 
@@ -422,8 +422,7 @@ false 	{	yylval.Bool_v = false;
                                     yylval.IdOrString = (char *)malloc(strlen(str) + 1);
                                     strcpy(yylval.IdOrString, str);
 
-                                    el = (InterpolationElement *)malloc(sizeof(InterpolationElement));
-                                    el->type = _PLUS;
+                                    el = createInterpolationElement(0, 0, 0, _PLUS);
                                     addToList(list, el);
                                     ++elementToRemoveFromStack;
 
@@ -455,8 +454,7 @@ false 	{	yylval.Bool_v = false;
                         yylval.IdOrString = (char *)malloc(strlen(str) + 1);
                         strcpy(yylval.IdOrString, str);
 
-                        el = (InterpolationElement *)malloc(sizeof(InterpolationElement));
-                        el->type = _PLUS;
+                        el = createInterpolationElement(0, 0, 0, _PLUS);
                         addToList(list, el);
                         ++elementToRemoveFromStack;
 
@@ -563,6 +561,26 @@ int bin_from_str_to_dec(const char * str) {
     return value;
 }
 
+
+InterpolElementsLinkedList * createList()
+{
+    InterpolElementsLinkedList* res = (InterpolElementsLinkedList*)malloc(sizeof(InterpolElementsLinkedList));
+    res->first = 0;
+    res->last = 0;
+
+    return res;
+}
+
+InterpolationElement * createInterpolationElement(char * strOrId, InterpolationElement * next, InterpolationElement * previous, enum InterpolElemType type)
+{
+    InterpolationElement * res = (InterpolationElement *)malloc(sizeof(InterpolationElement));
+    res->stringOrId = strOrId;
+    res->next = next;
+    res->previous = previous;
+    res->type = type;
+    return res;
+}
+
 bool addToList(InterpolElementsLinkedList * list, InterpolationElement * newElement)
 {
     if (list == 0) 
@@ -594,7 +612,10 @@ bool removeLastFromList(InterpolElementsLinkedList * list)
     }
     InterpolationElement * tmp = list->last;
     list->last = list->last->previous;
-    list->last->next = 0;
+    if (list->last != 0)
+        list->last->next = 0;
+    else
+        list->first = 0;
     tmp->previous = 0;
     free(tmp);
     return true;
