@@ -1,0 +1,11 @@
+var sum:Double = 6.54f
+
+class CalcMethods{
+
+	
+}
+
+fun a():Int {
+	return 0;
+}
+

@@ -1,13 +1,13 @@
 
 fun a():Int {
-	return 5 + 3 * 5;
+	return 5 + 3
 }
 
 
 fun b () : Unit {
-	print();
+	calc(5 + 5)
 
-	print();
+	print("hi")
 
 
 }
