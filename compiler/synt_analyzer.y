@@ -510,30 +510,26 @@ forLoop: FOR '(' ID ':' type IN expr ')' optNewLines stmt	{$$ = createForLoop($3
 | FOR '(' '(' formalParams ')' IN expr ')' block newLines	{$$ = createForLoop($4, $7, $9); puts("forLoop created"); }
 ;
 
-ifStmt: IF '(' expr ')' stmt	{$$ = createIfStmt($3, $5); puts("ifStmt created"); }
+ifStmt: IF '(' expr ')' optNewLines stmt	{$$ = createIfStmt($3, $6); puts("ifStmt created"); }
 | IF '(' expr ')' semis {$$ = createIfStmt($3); puts("ifStmt created"); }
 | IF '(' expr ')' block	semis {$$ = createIfStmt($3, $5); puts("ifStmt created"); }
-| IF '(' expr ')' expr ELSE stmt	{$$ = createIfStmt($3, $5, $7); puts("ifStmt created"); }
-| IF '(' expr ')' stmt ELSE stmt	{$$ = createIfStmt($3, $5, $7); puts("ifStmt created"); }
-| IF '(' expr ')' block ELSE stmt	{$$ = createIfStmt($3, $5, $7); puts("ifStmt created"); }
-| IF '(' expr ')' semis ELSE stmt	{$$ = createIfStmt($3, 0, $7); puts("ifStmt created"); }
-| IF '(' expr ')' expr ELSE block semis	{$$ = createIfStmt($3, $5, $7); puts("ifStmt created"); }
-| IF '(' expr ')' stmt ELSE block semis	{$$ = createIfStmt($3, $5, $7); puts("ifStmt created"); }
-| IF '(' expr ')' block ELSE block semis	{$$ = createIfStmt($3, $5, $7); puts("ifStmt created"); }
+| IF '(' expr ')' optNewLines expr ELSE optNewLines stmt	{$$ = createIfStmt($3, $6, $9); puts("ifStmt created"); }
+| IF '(' expr ')' optNewLines stmt ELSE optNewLines stmt	{$$ = createIfStmt($3, $6, $9); puts("ifStmt created"); }
+| IF '(' expr ')' block optNewLines ELSE optNewLines stmt	{$$ = createIfStmt($3, $5, $9); puts("ifStmt created"); }
+| IF '(' expr ')' semis ELSE optNewLines stmt	{$$ = createIfStmt($3, 0, $8); puts("ifStmt created"); }
+| IF '(' expr ')' optNewLines expr ELSE block semis	{$$ = createIfStmt($3, $6, $8); puts("ifStmt created"); }
+| IF '(' expr ')' optNewLines stmt ELSE block semis	{$$ = createIfStmt($3, $6, $8); puts("ifStmt created"); }
+| IF '(' expr ')' block optNewLines ELSE block semis	{$$ = createIfStmt($3, $5, $8); puts("ifStmt created"); }
 | IF '(' expr ')' semis ELSE block semis	{$$ = createIfStmt($3, 0, $7); puts("ifStmt created"); }
-| IF '(' expr ')' expr ELSE semis	{$$ = createIfStmt($3, $5); puts("ifStmt created"); }
-| IF '(' expr ')' stmt ELSE	semis	{$$ = createIfStmt($3, $5); puts("ifStmt created"); }
-| IF '(' expr ')' block ELSE semis	{$$ = createIfStmt($3, $5); puts("ifStmt created"); }
-| IF '(' expr ')' newLines {$$ = createIfStmt($3); puts("ifStmt created"); }
-| IF '(' expr ')' block	newLines {$$ = createIfStmt($3, $5); puts("ifStmt created"); }
-| IF '(' expr ')' newLines ELSE stmt	{$$ = createIfStmt($3, 0, $7); puts("ifStmt created"); }
-| IF '(' expr ')' expr ELSE block newLines	{$$ = createIfStmt($3, $5, $7); puts("ifStmt created"); }
-| IF '(' expr ')' stmt ELSE block newLines	{$$ = createIfStmt($3, $5, $7); puts("ifStmt created"); }
-| IF '(' expr ')' block ELSE block newLines	{$$ = createIfStmt($3, $5, $7); puts("ifStmt created"); }
+| IF '(' expr ')' optNewLines expr ELSE semis	{$$ = createIfStmt($3, $6); puts("ifStmt created"); }
+| IF '(' expr ')' optNewLines stmt ELSE	semis	{$$ = createIfStmt($3, $6); puts("ifStmt created"); }
+| IF '(' expr ')' block optNewLines ELSE semis	{$$ = createIfStmt($3, $5); puts("ifStmt created"); }
+| IF '(' expr ')' block	optNewLines {$$ = createIfStmt($3, $5); puts("ifStmt created"); }
+| IF '(' expr ')' newLines ELSE optNewLines stmt	{$$ = createIfStmt($3, 0, $8); puts("ifStmt created"); }
+| IF '(' expr ')' optNewLines expr ELSE block newLines	{$$ = createIfStmt($3, $6, $8); puts("ifStmt created"); }
+| IF '(' expr ')' optNewLines stmt ELSE block newLines	{$$ = createIfStmt($3, $6, $8); puts("ifStmt created"); }
+| IF '(' expr ')' block optNewLines ELSE block newLines	{$$ = createIfStmt($3, $5, $8); puts("ifStmt created"); }
 | IF '(' expr ')' newLines ELSE block newLines	{$$ = createIfStmt($3, 0, $7); puts("ifStmt created"); }
-| IF '(' expr ')' expr ELSE newLines	{$$ = createIfStmt($3, $5); puts("ifStmt created"); }
-| IF '(' expr ')' stmt ELSE	newLines	{$$ = createIfStmt($3, $5); puts("ifStmt created"); }
-| IF '(' expr ')' block ELSE newLines	{$$ = createIfStmt($3, $5); puts("ifStmt created"); }
 ;
 
 optNewLines: /*empty*/
@@ -557,7 +553,7 @@ semis: ';'	{ puts("semis created"); }
 
 void main(int argc, char **argv ){
 	//yyin = fopen(argv[1], "r");
-	yyin = fopen("easy_test.txt", "r");
+	yyin = fopen("complex_test.txt", "r");
 	FILE * file = fopen("tree.dot", "w");
 	root = 0;
     yyparse();
