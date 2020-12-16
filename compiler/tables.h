@@ -62,11 +62,10 @@ class ConstantsTableElement
 	}
 };
 
-
-class classTableElement 
+class ClassTableElement 
 {
 	string className = "";
-	
+
 	string parentClassName = "";
 
 	bool isAbstract = false;

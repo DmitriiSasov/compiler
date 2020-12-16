@@ -1,0 +1,10 @@
+
+
+
+fun a():Int {
+	return 0;
+}
+
+class Aaaa {
+
+}
