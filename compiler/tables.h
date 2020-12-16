@@ -57,3 +57,14 @@ class ConstantsTableElement
 		ConstantsTableElement(constNum, strNum, type, string(value));
 	}
 };
+
+class ClassTableElement 
+{
+	string className = "";
+
+	string parentClassName = "";
+
+	bool isAbstract = false;
+
+	//bool is
+};

@@ -212,8 +212,6 @@ program: semis	{root = createProgram(); puts("program created");}
 | program varDeclaration newLines	{root = addToProgram(root, createProperty($2));puts("prop added to prog");}
 | program visibilityModifier valDeclaration newLines	{root = addToProgram(root, createProperty(createModifiers(0, 0, $2, None), $3));puts("prop added to prog");}
 | program visibilityModifier varDeclaration newLines	{root = addToProgram(root, createProperty(createModifiers(0, 0, $2, None), $3));puts("prop added to prog");}
-| program semis {root = root;}
-| program newLines {root = root;}
 ; 
 
 class: modifiers CLASS ID ':' ID  '{' classBody '}'	{$$ = createClass($1, $3, $5, $7);puts("class created");}
@@ -238,8 +236,7 @@ classBody: semis 	{$$ = createClassBody(); puts("class body created");}
 | classBody property newLines	{$$ = addToClassBody($1, $2); puts("prop added to class body");}
 | classBody constructor	{$$ = addToClassBody($1, $2); puts("constr added to class body");}
 | classBody initializer	{$$ = addToClassBody($1, $2); puts("init added to class body");}
-| classBody semis	{$$ = $1; puts("semis added to class body");}
-| classBody newLines	{$$ = $1; puts("newLines added to class body");}
+
 ;
 
 property: modifiers valDeclaration	{$$ = createProperty($1, $2); puts("prop created");}
@@ -256,22 +253,22 @@ method: modifiers funcDeclaration semis	{$$ = createMethod($1, $2); puts("meth c
 | func	{$$ = createMethod($1); puts("meth created");}
 ;
 
-initializer: INIT block	{$$ = createInit($2); puts("init created");}
+initializer: INIT optNewLines block	{$$ = createInit($3); puts("init created");}
 ;
 
  
-constructor: visibilityModifier CONSTRUCTOR '(' optFormalParams ')' block	{$$ = createConstructor($1, $4, $6); puts("constr created");}
+constructor: visibilityModifier CONSTRUCTOR '(' optFormalParams ')' optNewLines block	{$$ = createConstructor($1, $4, $7); puts("constr created");}
 | visibilityModifier CONSTRUCTOR '(' optFormalParams ')'	{$$ = createConstructor($1, $4); puts("constr created");}
 | visibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' SUPER '(' optFactParams ')'	{$$ = createConstructor($1, $4, "super", $9); puts("constr created");}
 | visibilityModifier CONSTRUCTOR '(' optFormalParams ')'  ':' THIS '(' optFactParams ')' 	{$$ = createConstructor($1, $4, "this", $9); puts("constr created");}
-| visibilityModifier CONSTRUCTOR '(' optFormalParams ')'  ':' SUPER '(' optFactParams ')' block	{$$ = createConstructor($1, $4, "super", $9, $11); puts("constr created");}
-| visibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' THIS '(' optFactParams ')' block	{$$ = createConstructor($1, $4, "this", $9, $11); puts("constr created");}
-| CONSTRUCTOR '(' optFormalParams ')' block 	{$$ = createConstructor($3, $5); puts("constr created");}
+| visibilityModifier CONSTRUCTOR '(' optFormalParams ')'  ':' SUPER '(' optFactParams ')' optNewLines block	{$$ = createConstructor($1, $4, "super", $9, $12); puts("constr created");}
+| visibilityModifier CONSTRUCTOR '(' optFormalParams ')' ':' THIS '(' optFactParams ')' optNewLines block	{$$ = createConstructor($1, $4, "this", $9, $12); puts("constr created");}
+| CONSTRUCTOR '(' optFormalParams ')' optNewLines block 	{$$ = createConstructor($3, $6); puts("constr created");}
 | CONSTRUCTOR '(' optFormalParams ')' 	{$$ = createConstructor($3); puts("constr created");}
 | CONSTRUCTOR '(' optFormalParams ')' ':' SUPER '(' optFactParams ')'	{$$ = createConstructor($3, "super", $8); puts("constr created");}
 | CONSTRUCTOR '(' optFormalParams ')'  ':' THIS '(' optFactParams ')' 	{$$ = createConstructor($3, "this", $8); puts("constr created");}
-| CONSTRUCTOR '(' optFormalParams ')'  ':' SUPER '(' optFactParams ')' block	{$$ = createConstructor($3, "super", $8, $10); puts("constr created");}
-| CONSTRUCTOR '(' optFormalParams ')' ':' THIS '(' optFactParams ')' block	{$$ = createConstructor($3, "this", $8, $10); puts("constr created");}
+| CONSTRUCTOR '(' optFormalParams ')'  ':' SUPER '(' optFactParams ')' optNewLines block	{$$ = createConstructor($3, "super", $8, $11); puts("constr created");}
+| CONSTRUCTOR '(' optFormalParams ')' ':' THIS '(' optFactParams ')' optNewLines block	{$$ = createConstructor($3, "this", $8, $11); puts("constr created");}
 ;
 
 optFormalParams: /*empty*/	{$$ = 0; puts("opt formal params created");}
@@ -367,7 +364,7 @@ inheritanceModifier: FINAL {$$ = Final;}
 | OPEN {$$ = Open;}
 ;
 
-func : funcDeclaration block	{$$ = createFunc($1, $2); puts("func created");}
+func : funcDeclaration optNewLines block	{$$ = createFunc($1, $3); puts("func created");}
 | funcDeclaration '=' expr	{$$ = createFunc($1, $3); puts("func created");}
 ;
 
@@ -376,12 +373,12 @@ funcDeclaration: FUN ID '(' optFormalParams ')' ':' type	{$$ = createFuncDecl($2
 ;
 
 
-block : optNewLines '{' semis stmts '}'	{$$ = $4;  puts("block created");}
-| optNewLines '{' semis '}'	{$$ = 0;  puts("block created");}
-| optNewLines '{' stmts '}'	{$$ = $3;  puts("block created");}
-| optNewLines '{' newLines stmts '}'	{$$ = $4;  puts("block created");}
-| optNewLines '{' newLines '}'	{$$ = 0;  puts("block created");}
-| optNewLines '{' '}'	{$$ = 0;  puts("block created");}
+block : '{' semis stmts '}'	{$$ = $3;  puts("block created");}
+| '{' semis '}'	{$$ = 0;  puts("block created");}
+| '{' stmts '}'	{$$ = $2;  puts("block created");}
+| '{' newLines stmts '}'	{$$ = $3;  puts("block created");}
+| '{' newLines '}'	{$$ = 0;  puts("block created");}
+| '{' '}'	{$$ = 0;  puts("block created");}
 ;
 
 
@@ -396,17 +393,17 @@ valDeclaration: VAL ID ':' type	{$$ = createVarOrValDecl($2, $4, 1); puts("val c
 | VAL '(' formalParams ')' '=' expr	{$$ = createVarOrValDecl($3, $6, 1); puts("val created"); }
 ;
 
-type: ID	{$$ = createType($1); puts("type created"); }
-| templateType	{$$ = createType($1); puts("type created"); }
+type: ID {$$ = createType($1); puts("type created"); }
+| templateType 	{$$ = createType($1); puts("type created"); }
 ;
 
-templateType: ID '<' type_seq '>'	{$$ = createTemplateType($1, $3); puts("template type created"); }
+templateType: ID '<' optNewLines type_seq '>' {$$ = createTemplateType($1, $4); puts("template type created"); }
 ;
 
-type_seq: ID	{$$ = createTypesList($1); puts("type seq created"); }
+type_seq: ID optNewLines	{$$ = createTypesList($1); puts("type seq created"); }
 | templateType	{$$ = createTypesList($1); puts("type seq created"); }
-| type_seq ',' ID	{$$ = addToTypesList($1, $3);  puts("type seq created"); }
-| type_seq ',' templateType	{$$ = addToTypesList($1, $3);  puts("type seq created"); }
+| type_seq ',' optNewLines ID optNewLines	{$$ = addToTypesList($1, $4);  puts("type seq created"); }
+| type_seq ',' optNewLines templateType	{$$ = addToTypesList($1, $4);  puts("type seq created"); }
 ;
 
 stmts : stmt	{$$ = createStmtList($1);  puts("stmts created"); }
@@ -490,46 +487,46 @@ assignment: expr '=' expr	{$$ = createAssignment($1, $3, Assign); puts("assignme
 ;
 
 whileLoop: WHILE '(' expr ')' optNewLines stmt	{$$ = createWhileLoop($3, $6, 0); puts("whileLoop created"); }
-| WHILE '(' expr ')' block semis	{$$ = createWhileLoop($3, $5, 0); puts("whileLoop created"); }
+| WHILE '(' expr ')' optNewLines block semis	{$$ = createWhileLoop($3, $6, 0); puts("whileLoop created"); }
 | WHILE '(' expr ')' semis	{$$ = createWhileLoop($3, 0); puts("whileLoop created"); }
-| WHILE '(' expr ')' block newLines	{$$ = createWhileLoop($3, $5, 0); puts("whileLoop created"); }
+| WHILE '(' expr ')' optNewLines block newLines	{$$ = createWhileLoop($3, $6, 0); puts("whileLoop created"); }
 ;
 
 doWhileLoop: DO optNewLines expr optNewLines WHILE '(' expr ')'	{$$ = createWhileLoop($7, $3, 1); puts("doWhileLoop created"); }
-| DO block optNewLines WHILE '(' expr ')'	{$$ = createWhileLoop($6, $2, 1); puts("doWhileLoop created"); }
+| DO optNewLines block optNewLines WHILE '(' expr ')'	{$$ = createWhileLoop($7, $3, 1); puts("doWhileLoop created"); }
 | DO optNewLines WHILE '(' expr ')' {$$ = createWhileLoop($5, 1); puts("doWhileLoop created"); }
 ;
 
 forLoop: FOR '(' ID ':' type IN expr ')' optNewLines stmt	{$$ = createForLoop($3, $5, $7, $10); puts("forLoop created"); }
-| FOR '(' ID ':' type IN expr ')' block semis	{$$ = createForLoop($3, $5, $7, $9); puts("forLoop created"); }
+| FOR '(' ID ':' type IN expr ')' optNewLines block semis	{$$ = createForLoop($3, $5, $7, $10); puts("forLoop created"); }
 | FOR '(' ID ':' type IN expr ')' semis 	{$$ = createForLoop($3, $5, $7); puts("forLoop created"); }
 | FOR '(' '(' formalParams ')' IN expr ')' optNewLines stmt	{$$ = createForLoop($4, $7, $10); puts("forLoop created"); }
-| FOR '(' '(' formalParams ')' IN expr ')' block semis	{$$ = createForLoop($4, $7, $9); puts("forLoop created"); }
+| FOR '(' '(' formalParams ')' IN expr ')' optNewLines block semis	{$$ = createForLoop($4, $7, $10); puts("forLoop created"); }
 | FOR '(' '(' formalParams ')' IN expr ')' semis	{$$ = createForLoop($4, $7); puts("forLoop created"); }
-| FOR '(' ID ':' type IN expr ')' block newLines	{$$ = createForLoop($3, $5, $7, $9); puts("forLoop created"); }
-| FOR '(' '(' formalParams ')' IN expr ')' block newLines	{$$ = createForLoop($4, $7, $9); puts("forLoop created"); }
+| FOR '(' ID ':' type IN expr ')' optNewLines block newLines	{$$ = createForLoop($3, $5, $7, $10); puts("forLoop created"); }
+| FOR '(' '(' formalParams ')' IN expr ')' optNewLines block newLines	{$$ = createForLoop($4, $7, $10); puts("forLoop created"); }
 ;
 
 ifStmt: IF '(' expr ')' optNewLines stmt	{$$ = createIfStmt($3, $6); puts("ifStmt created"); }
 | IF '(' expr ')' semis {$$ = createIfStmt($3); puts("ifStmt created"); }
-| IF '(' expr ')' block	semis {$$ = createIfStmt($3, $5); puts("ifStmt created"); }
+| IF '(' expr ')' optNewLines block	semis {$$ = createIfStmt($3, $6); puts("ifStmt created"); }
 | IF '(' expr ')' optNewLines expr ELSE optNewLines stmt	{$$ = createIfStmt($3, $6, $9); puts("ifStmt created"); }
 | IF '(' expr ')' optNewLines stmt ELSE optNewLines stmt	{$$ = createIfStmt($3, $6, $9); puts("ifStmt created"); }
-| IF '(' expr ')' block optNewLines ELSE optNewLines stmt	{$$ = createIfStmt($3, $5, $9); puts("ifStmt created"); }
+| IF '(' expr ')' optNewLines block optNewLines ELSE optNewLines stmt	{$$ = createIfStmt($3, $6, $10); puts("ifStmt created"); }
 | IF '(' expr ')' semis ELSE optNewLines stmt	{$$ = createIfStmt($3, 0, $8); puts("ifStmt created"); }
-| IF '(' expr ')' optNewLines expr ELSE block semis	{$$ = createIfStmt($3, $6, $8); puts("ifStmt created"); }
-| IF '(' expr ')' optNewLines stmt ELSE block semis	{$$ = createIfStmt($3, $6, $8); puts("ifStmt created"); }
-| IF '(' expr ')' block optNewLines ELSE block semis	{$$ = createIfStmt($3, $5, $8); puts("ifStmt created"); }
-| IF '(' expr ')' semis ELSE block semis	{$$ = createIfStmt($3, 0, $7); puts("ifStmt created"); }
+| IF '(' expr ')' optNewLines expr ELSE optNewLines block semis	{$$ = createIfStmt($3, $6, $9); puts("ifStmt created"); }
+| IF '(' expr ')' optNewLines stmt ELSE optNewLines block semis	{$$ = createIfStmt($3, $6, $9); puts("ifStmt created"); }
+| IF '(' expr ')' optNewLines block optNewLines ELSE optNewLines block semis	{$$ = createIfStmt($3, $6, $10); puts("ifStmt created"); }
+| IF '(' expr ')' semis ELSE optNewLines block semis	{$$ = createIfStmt($3, 0, $8); puts("ifStmt created"); }
 | IF '(' expr ')' optNewLines expr ELSE semis	{$$ = createIfStmt($3, $6); puts("ifStmt created"); }
 | IF '(' expr ')' optNewLines stmt ELSE	semis	{$$ = createIfStmt($3, $6); puts("ifStmt created"); }
-| IF '(' expr ')' block optNewLines ELSE semis	{$$ = createIfStmt($3, $5); puts("ifStmt created"); }
-| IF '(' expr ')' block	optNewLines {$$ = createIfStmt($3, $5); puts("ifStmt created"); }
+| IF '(' expr ')' optNewLines block optNewLines ELSE semis	{$$ = createIfStmt($3, $6); puts("ifStmt created"); }
+| IF '(' expr ')' optNewLines block	optNewLines {$$ = createIfStmt($3, $6); puts("ifStmt created"); }
 | IF '(' expr ')' newLines ELSE optNewLines stmt	{$$ = createIfStmt($3, 0, $8); puts("ifStmt created"); }
-| IF '(' expr ')' optNewLines expr ELSE block newLines	{$$ = createIfStmt($3, $6, $8); puts("ifStmt created"); }
-| IF '(' expr ')' optNewLines stmt ELSE block newLines	{$$ = createIfStmt($3, $6, $8); puts("ifStmt created"); }
-| IF '(' expr ')' block optNewLines ELSE block newLines	{$$ = createIfStmt($3, $5, $8); puts("ifStmt created"); }
-| IF '(' expr ')' newLines ELSE block newLines	{$$ = createIfStmt($3, 0, $7); puts("ifStmt created"); }
+| IF '(' expr ')' optNewLines expr ELSE optNewLines block newLines	{$$ = createIfStmt($3, $6, $9); puts("ifStmt created"); }
+| IF '(' expr ')' optNewLines stmt ELSE optNewLines block newLines	{$$ = createIfStmt($3, $6, $9); puts("ifStmt created"); }
+| IF '(' expr ')' optNewLines block optNewLines ELSE optNewLines block newLines	{$$ = createIfStmt($3, $6, $10); puts("ifStmt created"); }
+| IF '(' expr ')' newLines ELSE optNewLines block newLines	{$$ = createIfStmt($3, 0, $8); puts("ifStmt created"); }
 ;
 
 optNewLines: /*empty*/
@@ -542,7 +539,7 @@ newLines: NEW_LINE
 
 semis: ';'	{ puts("semis created"); }
 | semis ';'	{ puts("; added to semis"); }
-| semis newLines { puts("newLines added to semis"); }
+| semis NEW_LINE { puts("newLines added to semis"); }
 ;
 
 
