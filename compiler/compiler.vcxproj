@@ -39,6 +39,7 @@
     <ClInclude Include="create_tree.h" />
     <ClInclude Include="print_funcs.h" />
     <ClInclude Include="synt_analyzer.tab.h" />
+    <ClInclude Include="tables.h" />
     <ClInclude Include="tree_nodes.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

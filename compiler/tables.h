@@ -2,9 +2,13 @@
 #include <utility>
 #include <string>
 #include <map>
+
+
 using namespace std;
 
 map<int, ConstantsTableElement> constsTable;
+
+
 
 enum ConstantType {
 	UTF_8,
@@ -56,4 +60,28 @@ class ConstantsTableElement
 	{
 		ConstantsTableElement(constNum, strNum, type, string(value));
 	}
+};
+
+
+class classTableElement 
+{
+	string className = "";
+	
+	string parentClassName = "";
+
+	bool isAbstract = false;
+
+	bool isFinal = true;
+
+
+};
+
+
+class fieldTableElement 
+{
+	string fieldName = "";
+
+	string descriptor = "";
+
+
 };
