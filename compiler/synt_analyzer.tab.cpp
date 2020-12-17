@@ -71,7 +71,7 @@
 
 
 	#include <stdio.h>
-	#include "create_tree.h"
+	#include "transform_root.h"
 	void yyerror(const char* message) {
 		fprintf(stderr, message);
 	}
@@ -3910,7 +3910,7 @@ void main(int argc, char **argv )
 {
 
 	if (argc == 2) yyin = fopen(argv[1], "r");
-	else yyin = fopen("easy_test.txt", "r");
+	else yyin = fopen("complex_test.txt", "r");
 
 	FILE * file = fopen("tree.dot", "w");
 	root = 0;
@@ -3921,6 +3921,8 @@ void main(int argc, char **argv )
 	fprintf(file, "\n}");
 
 	fclose(file);
+	root = transformProgram(root);
+
 
     return;
 }
