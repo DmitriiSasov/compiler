@@ -43,7 +43,19 @@ enum assignmentType
 	Asub,
 	Adiv,
 	Amul,
-	Amod
+	Amod,
+	AssignToField,
+	AsumToField,
+	AsubToField,
+	AdivToField,
+	AmulToField,
+	AmodToField,
+	AssignToArray,
+	AsumToArray,
+	AsubToArray,
+	AdivToArray,
+	AmulToArray,
+	AmodToArray
 };
 
 enum stmtType 
@@ -156,6 +168,8 @@ struct assignmentS
 	enum assignmentType type;
 	struct exprS * left;
 	struct exprS * right;
+	struct exprS* subLeft;
+	char* fieldName;
 };
 
 struct propertyS 
