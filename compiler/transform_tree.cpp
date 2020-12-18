@@ -503,9 +503,47 @@ void checkClassesNames(programS* program)
 	}
 }
 
+
+void transformFuncsLikeExpr(methodS* meth)
+{
+	if (meth->func != 0 && meth->func->expr != 0)
+	{
+		meth->func->stmts = createStmtList(createStmt(meth->func->expr, ReturnValue));
+		meth->func->expr = 0;
+	}
+}
+
+void transformFuncsLikeExpr(classS* cl)
+{
+	if (cl->body == 0)
+	{
+		return;
+	}
+	classBodyElementS* cbe = cl->body->first;
+	while (cbe != 0)
+	{
+		if (cbe->method != 0) transformFuncsLikeExpr(cbe->method);
+		cbe = cbe->next;
+	}
+}
+
+void transformFuncsLikeExpr(programS* program)
+{
+	if (program == 0)
+		return;
+
+	programElementS* pe = program->first;
+	while (pe != 0)
+	{
+		if (pe->clas != 0) transformFuncsLikeExpr(pe->clas);
+		pe = pe->next;
+	}
+}
+
 programS* transformProgram(programS* program)
 {
 	program = transformProgramToClass(program);
+	transformFuncsLikeExpr(program);
 	transformAssignmentWithFieldAndArrays(program);
 	complementModifiers(program);
 	checkClassesNames(program);
