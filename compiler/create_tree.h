@@ -21,6 +21,7 @@ struct classBodyS* createClassBody(struct methodS* meth);
 struct classBodyS* createClassBody(struct initializerS* initializer);
 struct classBodyS* createClassBody(struct propertyS* prop);
 struct classBodyS* createClassBody(struct constructorS* constr);
+struct classBodyS* addToClassBody(struct classBodyS* body, struct classBodyElementS* cbe);
 struct classBodyS* addToClassBody(struct classBodyS* body, struct methodS* meth);
 struct classBodyS* addToClassBody(struct classBodyS* body, struct initializerS* initializer);
 struct classBodyS* addToClassBody(struct classBodyS* body, struct propertyS* prop);

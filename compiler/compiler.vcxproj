@@ -26,6 +26,8 @@
     <ClCompile Include="lexer.flex.cpp" />
     <ClCompile Include="print_funcs.cpp" />
     <ClCompile Include="synt_analyzer.tab.cpp" />
+    <ClCompile Include="tables.cpp" />
+    <ClCompile Include="transform_tree.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Bison Include="synt_analyzer.y">
@@ -40,6 +42,7 @@
     <ClInclude Include="print_funcs.h" />
     <ClInclude Include="synt_analyzer.tab.h" />
     <ClInclude Include="tables.h" />
+    <ClInclude Include="transform_root.h" />
     <ClInclude Include="tree_nodes.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

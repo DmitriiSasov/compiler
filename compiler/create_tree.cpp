@@ -655,6 +655,8 @@ struct assignmentS* createAssignment(struct exprS* left, struct exprS* right, en
 	a->type = type;
 	a->left = left;
 	a->right = right;
+	a->subLeft = 0;
+	a->fieldName = 0;
 	return a;
 }
 

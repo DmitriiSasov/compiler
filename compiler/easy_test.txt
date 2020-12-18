@@ -1,39 +1,10 @@
-public val a:String;
 
-private val b:Array<String, Int>
-;
-;
-;
+class A {
 
-public fun f() : T
-{
+	var prop1:Int = 5
+	val prop2:Double = 6.2
 
-	if (a)
-
-{
-	print(a)
-}
-
-
-else
-	if (m) 
-		print(m)
-	else
-		a += 1
-
-
-while (f)
-	print(f)
-
-do
-	calc(f)
-while(a);
-
+	protected override fun f1():Unit {}
+	fun f2():Unit {}
 
 }
-
-
-val c:String
-
-;
-val d:String
