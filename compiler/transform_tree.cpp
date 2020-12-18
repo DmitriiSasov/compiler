@@ -504,7 +504,6 @@ void checkClassesNames(programS* program)
 	}
 }
 
-
 void transformFuncsLikeExpr(methodS* meth)
 {
 	if (meth->func != 0 && meth->func->expr != 0)
@@ -537,6 +536,47 @@ void transformFuncsLikeExpr(programS* program)
 	while (pe != 0)
 	{
 		if (pe->clas != 0) transformFuncsLikeExpr(pe->clas);
+		pe = pe->next;
+	}
+}
+
+void checkConstructorsAndInits(classS* cl)
+{
+	if (cl->body == 0)
+	{
+		return;
+	}
+	
+	classBodyElementS* cbe = cl->body->first;
+	while (cbe != 0)
+	{
+		if (cbe->constructor != 0) 
+		{
+			char message[200] = "EXCEPTION! Unsupported constructor in class \"";
+
+			exception e((strcat(strcat(message, cl->name), "\"")));
+			throw e;
+		}
+		if (cbe->init != 0)
+		{
+			char message[200] = "EXCEPTION! Unsupported initializator in class \"";
+
+			exception e((strcat(strcat(message, cl->name), "\"")));
+			throw e;
+		}
+		cbe = cbe->next;
+	}
+}
+
+void checkConstructorsAndInits(programS* program)
+{
+	if (program == 0)
+		return;
+
+	programElementS* pe = program->first;
+	while (pe != 0)
+	{
+		if (pe->clas != 0) checkConstructorsAndInits(pe->clas);
 		pe = pe->next;
 	}
 }
