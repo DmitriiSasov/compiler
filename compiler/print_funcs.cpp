@@ -425,10 +425,51 @@ void print(struct assignmentS * a, FILE* file)
 		case Amod:
 			fprintf(file, "Id%p [label=\"%=\"]\n", a);
 		break;
+		case AssignToField:
+			fprintf(file, "Id%p [label=\".=\"]\n", a);
+			break;
+		case AsumToField:
+			fprintf(file, "Id%p [label=\".+=\"]\n", a);
+			break;
+		case AsubToField:
+			fprintf(file, "Id%p [label=\".-=\"]\n", a);
+			break;
+		case AdivToField:
+			fprintf(file, "Id%p [label=\"./=\"]\n", a);
+			break;
+		case AmulToField:
+			fprintf(file, "Id%p [label=\".*=\"]\n", a);
+			break;
+		case AmodToField:
+			fprintf(file, "Id%p [label=\".%=\"]\n", a);
+			break;
+		case AssignToArray:
+			fprintf(file, "Id%p [label=\"[]=\"]\n", a);
+			break;
+		case AsumToArray:
+			fprintf(file, "Id%p [label=\"[].+=\"]\n", a);
+			break;
+		case AsubToArray:
+			fprintf(file, "Id%p [label=\"[]-=\"]\n", a);
+			break;
+		case AdivToArray:
+			fprintf(file, "Id%p [label=\"[]/=\"]\n", a);
+			break;
+		case AmulToArray:
+			fprintf(file, "Id%p [label=\"[]*=\"]\n", a);
+			break;
+		case AmodToArray:
+			fprintf(file, "Id%p [label=\"[]%=\"]\n", a);
+			break;
 	}
 	
 	fprintf(file, "Id%p->Id%p\n", a, a->left);
 	print(a->left, file);
+	if (a->subLeft != 0) 
+	{
+		fprintf(file, "Id%p->Id%p\n", a, a->subLeft);
+		print(a->subLeft, file);
+	}
 	fprintf(file, "Id%p->Id%p\n", a, a->right);
 	print(a->right, file);
 }

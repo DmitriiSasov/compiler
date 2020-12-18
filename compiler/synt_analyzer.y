@@ -564,6 +564,10 @@ void main(int argc, char **argv )
 	try
 	{
 		root = transformProgram(root);
+		file = fopen("tree_after_semantic.dot", "w");
+		fprintf(file, "digraph G {\n");
+		print(root, file);
+		fprintf(file, "\n}");
 	}
 	catch(exception& e)
 	{
