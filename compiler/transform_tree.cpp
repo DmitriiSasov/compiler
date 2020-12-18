@@ -64,11 +64,12 @@ programS* transformProgramToClass(programS* programTreeRoot)
 	}
 	//Убрали из дерева лишние узлы
 	programTreeRoot = removeRedundantNodes(programTreeRoot);
-	
-	//Добавили новый класс
-	if (programTreeRoot->first == 0)
-		programTreeRoot = createProgram(newClass);
-	else programTreeRoot = addToProgram(programTreeRoot, newClass);
+	if (newClass->body->first != 0)
+	{
+		//Добавили новый класс
+		if (programTreeRoot->first == 0)	programTreeRoot = createProgram(newClass);
+		else	programTreeRoot = addToProgram(programTreeRoot, newClass);
+	}	
 
 	return programTreeRoot;
 }
