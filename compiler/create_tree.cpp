@@ -705,7 +705,7 @@ struct whileLoopS* createWhileLoop(struct exprS* cond, int isDoWhile)
 
 
 
-struct forLoopS* createForLoop(char* id, struct typeS* type, struct exprS* iterableExpr, struct stmtS* stmt, struct stmtList* stmts, struct formalParamsList* idsAndTypes)
+struct forLoopS* createForLoop(char* id, struct typeS* type, struct exprS* iterableExpr, struct stmtS* stmt, struct stmtList* stmts, struct formalParamsList* idsAndTypes, bool isDestructing)
 {
 	struct forLoopS* l = (struct forLoopS*)malloc(sizeof(struct forLoopS));
 
@@ -726,38 +726,38 @@ struct forLoopS* createForLoop(char* id, struct typeS* type, struct exprS* itera
 	{
 		l->stmts = createStmtList(stmt);
 	}
-
+	l->isDestructing = false;
 	return l;
 }
 
 struct forLoopS* createForLoop(char* id, struct typeS* type, struct exprS* iterableExpr, struct stmtS* stmt)
 {
-	return createForLoop(id, type, iterableExpr, stmt, 0, 0);
+	return createForLoop(id, type, iterableExpr, stmt, 0, 0, false);
 }
 
 struct forLoopS* createForLoop(char* id, struct typeS* type, struct exprS* iterableExpr, struct stmtList* stmts)
 {
-	return createForLoop(id, type, iterableExpr, 0, stmts, 0);
+	return createForLoop(id, type, iterableExpr, 0, stmts, 0, false);
 }
 
-struct forLoopS* createForLoop(struct formalParamsList* idsAndTypes, struct exprS* iterableExpr, struct stmtList* stmts)
+struct forLoopS* createForLoop(struct formalParamsList* idsAndTypes, struct exprS* iterableExpr, struct stmtList* stmts, bool isDestructing)
 {
-	return createForLoop(0, 0, iterableExpr, 0, stmts, idsAndTypes);
+	return createForLoop(0, 0, iterableExpr, 0, stmts, idsAndTypes, isDestructing);
 }
 
-struct forLoopS* createForLoop(struct formalParamsList* idsAndTypes, struct exprS* iterableExpr, struct stmtS* stmt)
+struct forLoopS* createForLoop(struct formalParamsList* idsAndTypes, struct exprS* iterableExpr, struct stmtS* stmt, bool isDestructing)
 {
-	return createForLoop(0, 0, iterableExpr, stmt, 0, idsAndTypes);
+	return createForLoop(0, 0, iterableExpr, stmt, 0, idsAndTypes, isDestructing);
 }
 
 struct forLoopS* createForLoop(char* id, struct typeS* type, struct exprS* iterableExpr)
 {
-	return createForLoop(id, type, iterableExpr, 0, 0, 0);
+	return createForLoop(id, type, iterableExpr, 0, 0, 0, false);
 }
 
-struct forLoopS* createForLoop(struct formalParamsList* idsAndTypes, struct exprS* iterableExpr)
+struct forLoopS* createForLoop(struct formalParamsList* idsAndTypes, struct exprS* iterableExpr, bool isDestructing)
 {
-	return createForLoop(0, 0, iterableExpr, 0, 0, idsAndTypes);
+	return createForLoop(0, 0, iterableExpr, 0, 0, idsAndTypes, isDestructing);
 }
 
 

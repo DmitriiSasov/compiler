@@ -1,3 +1,5 @@
+
+#include <string>
 enum exprType 
 {
 	Identificator,
@@ -154,6 +156,7 @@ struct forLoopS
 	struct formalParamsList * params;
 	struct exprS * iterableExpr;
 	struct stmtList * stmts;
+	bool isDestructing;
 };
 
 struct whileLoopS 

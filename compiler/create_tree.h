@@ -1,7 +1,7 @@
 #pragma once
 #include <malloc.h>
 #include "print_funcs.h"
-#include <string.h>
+
 
 struct programS* createProgram();
 struct programS* createProgram(struct classS* clas);
@@ -108,10 +108,10 @@ struct whileLoopS* createWhileLoop(struct exprS* cond, int isDoWhile);
 
 struct forLoopS* createForLoop(char* id, struct typeS* type, struct exprS* iterableExpr, struct stmtS* stmt);
 struct forLoopS* createForLoop(char* id, struct typeS* type, struct exprS* iterableExpr, struct stmtList* stmts);
-struct forLoopS* createForLoop(struct formalParamsList* idsAndTypes, struct exprS* iterableExpr, struct stmtList* stmts);
-struct forLoopS* createForLoop(struct formalParamsList* idsAndTypes, struct exprS* iterableExpr, struct stmtS* stmt);
+struct forLoopS* createForLoop(struct formalParamsList* idsAndTypes, struct exprS* iterableExpr, struct stmtList* stmts, bool isDestructing);
+struct forLoopS* createForLoop(struct formalParamsList* idsAndTypes, struct exprS* iterableExpr, struct stmtS* stmt, bool isDestructing);
 struct forLoopS* createForLoop(char* id, struct typeS* type, struct exprS* iterableExpr);
-struct forLoopS* createForLoop(struct formalParamsList* idsAndTypes, struct exprS* iterableExpr);
+struct forLoopS* createForLoop(struct formalParamsList* idsAndTypes, struct exprS* iterableExpr, bool isDestructing);
 
 struct ifStmtS* createIfStmt(struct exprS* cond, struct stmtS* action);
 struct ifStmtS* createIfStmt(struct exprS* cond, struct exprS* action);
