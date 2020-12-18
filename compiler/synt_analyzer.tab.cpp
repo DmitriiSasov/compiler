@@ -3238,7 +3238,7 @@ yyreduce:
 
   case 195: /* expr: '(' expr ')'  */
 #line 444 "synt_analyzer.y"
-                {(yyval.exprU) = createExpr((yyvsp[-1].exprU), ExprInBrackets);  puts("expr created"); }
+                {(yyval.exprU) = (yyvsp[-1].exprU); puts("expr created"); }
 #line 3243 "synt_analyzer.tab.cpp"
     break;
 
@@ -3910,7 +3910,7 @@ void main(int argc, char **argv )
 {
 
 	if (argc == 2) yyin = fopen(argv[1], "r");
-	else yyin = fopen("complex_test.txt", "r");
+	else yyin = fopen("easy_test.txt", "r");
 
 	FILE * file = fopen("tree.dot", "w");
 	root = 0;
@@ -3921,7 +3921,16 @@ void main(int argc, char **argv )
 	fprintf(file, "\n}");
 
 	fclose(file);
-	root = transformProgram(root);
+	try
+	{
+		root = transformProgram(root);
+	}
+	catch(exception& e)
+	{
+		printf("%s", e.what());
+		return;
+	}
+	
 
 
     return;

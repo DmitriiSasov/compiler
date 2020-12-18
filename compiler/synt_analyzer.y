@@ -441,7 +441,7 @@ expr: STR 	{$$ = createExpr($1, String);  puts("expr created"); }
 | CHR 	{$$ = createExpr($1, Char);  puts("expr created"); }
 | DOUBLE 	{$$ = createExpr($1, Double);  puts("expr created"); }
 | BOOLEAN	{$$ = createExpr($1, Boolean);  puts("expr created"); }
-| '(' expr ')' 	{$$ = createExpr($2, ExprInBrackets);  puts("expr created"); }
+| '(' expr ')' 	{$$ = $2; puts("expr created"); }
 | '!' expr 	{$$ = createExpr($2, LogicalNot);}
 | '+' expr %prec UPLUS	{$$ = createExpr($2, UnaryPlusExpr);  puts("expr created"); }
 | '-' expr %prec UMINUS	{$$ = createExpr($2, UnaryMinusExpr);  puts("expr created"); }
@@ -550,7 +550,7 @@ void main(int argc, char **argv )
 {
 
 	if (argc == 2) yyin = fopen(argv[1], "r");
-	else yyin = fopen("complex_test.txt", "r");
+	else yyin = fopen("easy_test.txt", "r");
 
 	FILE * file = fopen("tree.dot", "w");
 	root = 0;
@@ -561,7 +561,16 @@ void main(int argc, char **argv )
 	fprintf(file, "\n}");
 
 	fclose(file);
-	root = transformProgram(root);
+	try
+	{
+		root = transformProgram(root);
+	}
+	catch(exception& e)
+	{
+		printf("%s", e.what());
+		return;
+	}
+	
 
 
     return;
