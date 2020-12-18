@@ -647,6 +647,7 @@ void transformDestructAssign(methodS* meth)
 			for (fp = fp->next; fp != 0; fp = fp->next)
 			{
 				char componentNum[3] = "";
+				methodName = new char[13];
 				strcat(strcpy(methodName, "component"), _itoa(fpCount, componentNum, 10));
 				newInitValue = createExpr(startInitValue, methodName, 0, MethodCalcExpr);
 				stmtS* newStmt = createStmt(createVarOrValDecl(fp->name, fp->type, newInitValue, stmt->varOrVal->isVal), VarOrVal);
