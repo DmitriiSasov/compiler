@@ -4,6 +4,8 @@ void transformAssignmentWithFieldAndArrays(stmtList* stmts);
 
 void templateTypeFree(templateTypeS* type);
 
+void transformTypes(stmtList* stmts, programS* root);
+
 void freeMem(programElementS* firstElement, programElementS* stopElement)
 {
 	programElementS* pe = firstElement;
@@ -671,6 +673,14 @@ void transformDestructAssign(methodS* meth)
 			stmt->varOrVal->namesAndTypes = 0;
 			currentStmt->next = afterMultiDeclStmt;
 		}
+		else if (stmt->forLoop != 0 && stmt->forLoop->isDestructing)
+		{
+			char message[200] = "EXCEPTION! Unsupported destruction in for loop in method \"";
+
+			exception e(strcat(strcat(message, meth->func->delc->name), "\""));
+			throw e;
+		}
+
 
 		if (currentStmt != 0)	stmt = currentStmt->next;
 		else					stmt = stmt->next;
@@ -706,13 +716,15 @@ void transformDestructAssign(programS* program)
 
 void typeFree(typesList* type)
 {
-	for (typeS* t = type->first; t != 0; t->next)
+	for (typeS* t = type->first; t != 0;)
 	{
 		if (t->easyType != 0) return;
 		else
 		{
 			templateTypeFree(t->complexType);
+			typeS* next = t->next;
 			free(t);
+			t = next;
 		}
 	}
 }
@@ -724,14 +736,14 @@ void templateTypeFree(templateTypeS* type)
 	free(type->list);
 }
 
-bool existsType(char* typeName, programS* root)
+bool existsEasyType(char* typeName, programS* root)
 {
 	if (root == 0 || root->first == 0)
 		return false;
 
 	bool res = strcmp(typeName, "Int") != 0 && strcmp(typeName, "Float") != 0
 		&& strcmp(typeName, "Double") != 0 && strcmp(typeName, "String") != 0
-		&& strcmp(typeName, "Array") != 0 && strcmp(typeName, "Char") != 0;
+		&& strcmp(typeName, "Char") != 0 && strcmp(typeName, "Unit") != 0;
 
 
 	for (programElementS* pe = root->first; pe != 0; pe = pe->next)
@@ -741,10 +753,10 @@ bool existsType(char* typeName, programS* root)
 	return !res;
 }
 
-void collectArrayInfo(templateTypeS* type, programS* root, int& nestingLevel, char* typeOfArray)
+char * collectArrayInfo(templateTypeS* type, programS* root, int& nestingLevel)
 {
 	if (root == 0 || root->first == 0 || type == 0)
-		return;
+		return 0;
 
 	if (strcmp(type->type, "Array") != 0)
 	{
@@ -758,28 +770,29 @@ void collectArrayInfo(templateTypeS* type, programS* root, int& nestingLevel, ch
 		exception e(message);
 		throw e;
 	}
-	if (type->list->first->easyType == 0)
+	if (type->list->first->easyType != 0)
 	{
-		if (!existsType(type->list->first->easyType, root))
+		if (!existsEasyType(type->list->first->easyType, root))
 		{
-			char message[200] = "EXCEPTION! Incorrect type \"";
+			char message[200] = "EXCEPTION! Incorrect array type \"";
 			exception e(strcat(strcat(message, type->list->first->easyType), "\""));
 			throw e;
 		}
-		typeOfArray = new char[strlen(type->list->first->easyType) + 1];
+		char * typeOfArray = new char[strlen(type->list->first->easyType) + 1];
 		strcpy(typeOfArray, type->list->first->easyType);
+		return typeOfArray;
 	}
 	else
 	{
 		++nestingLevel;
-		collectArrayInfo(type->list->first->complexType, root, nestingLevel, typeOfArray);
+		return collectArrayInfo(type->list->first->complexType, root, nestingLevel);
 	}
 }
 
 void transformTypes(typeS* type, programS* root)
 {
 	//Проверяем простые типы
-	if (type->easyType != 0 && !existsType(type->easyType, root))
+	if (type->easyType != 0 && !existsEasyType(type->easyType, root))
 	{
 		char message[200] = "EXCEPTION! Incorrect type \"";
 		exception e(strcat(strcat(message, type->easyType), "\""));
@@ -788,8 +801,7 @@ void transformTypes(typeS* type, programS* root)
 	else if (type->complexType != 0 )
 	{
 		int templateNestingLevel = 1;
-		char* arrayType = 0;
-		collectArrayInfo(type->complexType, root, templateNestingLevel, arrayType);
+		char* arrayType = collectArrayInfo(type->complexType, root, templateNestingLevel);;
 		char* newType = new char(strlen(arrayType) + templateNestingLevel * 2 + 1);
 		strcpy(newType, arrayType);
 		for (int i = 0; i < templateNestingLevel; ++i)
@@ -797,6 +809,7 @@ void transformTypes(typeS* type, programS* root)
 		type->easyType = newType;
 		templateTypeFree(type->complexType);
 		free(type->complexType);
+		type->complexType = 0;
 	}
 }
 
@@ -892,25 +905,6 @@ void transformTypes(programS* program, programS* root)
 		pe = pe->next;
 	}
 }
-/*
-void collectHighLevelClassesInfo(list<ClassFile*>& classInfo, classS* cl)
-{
-	ClassFile* file = new ClassFile(cl);
-}
-
-void collectHighLevelClassesInfo(list<ClassFile*>& classInfo, programS* program)
-{
-	programElementS* pe = program->first;
-	while (pe != 0)
-	{
-		if (pe->clas != 0)
-		{
-			ClassFile* file = new ClassFile(pe->clas);
-			classesInfo.push_back(file);
-		}
-		pe = pe->next;
-	}
-}*/
 
 programS* transformProgram(programS* program)
 {
