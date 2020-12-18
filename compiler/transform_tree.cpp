@@ -2,6 +2,8 @@
 
 void transformAssignmentWithFieldAndArrays(stmtList* stmts);
 
+void templateTypeFree(templateTypeS* type);
+
 void freeMem(programElementS* firstElement, programElementS* stopElement)
 {
 	programElementS* pe = firstElement;
@@ -702,6 +704,214 @@ void transformDestructAssign(programS* program)
 	}
 }
 
+void typeFree(typesList* type)
+{
+	for (typeS* t = type->first; t != 0; t->next)
+	{
+		if (t->easyType != 0) return;
+		else
+		{
+			templateTypeFree(t->complexType);
+			free(t);
+		}
+	}
+}
+
+void templateTypeFree(templateTypeS* type)
+{
+	free(type->type);
+	typeFree(type->list);
+	free(type->list);
+}
+
+bool existsType(char* typeName, programS* root)
+{
+	if (root == 0 || root->first == 0)
+		return false;
+
+	bool res = strcmp(typeName, "Int") != 0 && strcmp(typeName, "Float") != 0
+		&& strcmp(typeName, "Double") != 0 && strcmp(typeName, "String") != 0
+		&& strcmp(typeName, "Array") != 0 && strcmp(typeName, "Char") != 0;
+
+
+	for (programElementS* pe = root->first; pe != 0; pe = pe->next)
+	{
+		if (pe->clas != 0)	res = res && strcmp(typeName, pe->clas->name) != 0;
+	}
+	return !res;
+}
+
+void collectArrayInfo(templateTypeS* type, programS* root, int& nestingLevel, char* typeOfArray)
+{
+	if (root == 0 || root->first == 0 || type == 0)
+		return;
+
+	if (strcmp(type->type, "Array") != 0)
+	{
+		char message[200] = "EXCEPTION! Unsupported type \"";
+		exception e(strcat(strcat(message, type->type), "\""));
+		throw e;
+	}
+	if (type->list->first != type->list->last)
+	{
+		char message[200] = "EXCEPTION! invalid array type \"";
+		exception e(message);
+		throw e;
+	}
+	if (type->list->first->easyType == 0)
+	{
+		if (!existsType(type->list->first->easyType, root))
+		{
+			char message[200] = "EXCEPTION! Incorrect type \"";
+			exception e(strcat(strcat(message, type->list->first->easyType), "\""));
+			throw e;
+		}
+		typeOfArray = new char[strlen(type->list->first->easyType) + 1];
+		strcpy(typeOfArray, type->list->first->easyType);
+	}
+	else
+	{
+		++nestingLevel;
+		collectArrayInfo(type->list->first->complexType, root, nestingLevel, typeOfArray);
+	}
+}
+
+void transformTypes(typeS* type, programS* root)
+{
+	//Проверяем простые типы
+	if (type->easyType != 0 && !existsType(type->easyType, root))
+	{
+		char message[200] = "EXCEPTION! Incorrect type \"";
+		exception e(strcat(strcat(message, type->easyType), "\""));
+		throw e;
+	}
+	else if (type->complexType != 0 )
+	{
+		int templateNestingLevel = 1;
+		char* arrayType = 0;
+		collectArrayInfo(type->complexType, root, templateNestingLevel, arrayType);
+		char* newType = new char(strlen(arrayType) + templateNestingLevel * 2 + 1);
+		strcpy(newType, arrayType);
+		for (int i = 0; i < templateNestingLevel; ++i)
+			strcat(newType, "[]");
+		type->easyType = newType;
+		templateTypeFree(type->complexType);
+		free(type->complexType);
+	}
+}
+
+void transformTypes(funcDeclS* decl, programS* root) 
+{
+	if (decl == 0 || root == 0)
+		return;
+
+	transformTypes(decl->type, root);
+}
+
+void transformTypes(methodS* meth, programS* root)
+{
+	if (meth == 0 || root == 0 || meth->func == 0)
+	{
+		return;
+	}
+
+	if (meth->func->delc != 0)
+	{
+		transformTypes(meth->func->delc, root);
+	}
+	
+	if (meth->func->stmts != 0) transformTypes(meth->func->stmts, root);
+}
+
+void transformTypes(stmtS* stmt, programS* root)
+{
+	switch (stmt->type) 
+	{
+	case VarOrVal:
+		transformTypes(stmt->varOrVal->type, root);
+		break;
+	case WhileLoop:
+	case DoWhileLoop:
+		transformTypes(stmt->whileLoop->stmts, root);
+		break;
+	case ForLoop:
+		transformTypes(stmt->forLoop->stmts, root);
+		break;
+	case IfStmt:
+		if (stmt->ifStmt->actions != 0)
+			transformTypes(stmt->ifStmt->actions, root);
+		else
+			transformTypes(stmt->ifStmt->altActions, root);
+		break;
+	}
+}
+
+void transformTypes(stmtList* stmts, programS* root)
+{
+	if (stmts == 0 || root == 0) return;
+
+	for (stmtS* stmt = stmts->first; stmt != 0; stmt = stmt->next)
+	{
+		transformTypes(stmt, root);
+	}
+}
+
+void transformTypes(propertyS* prop, programS* root)
+{
+	if (prop == 0 || root == 0) return;
+
+	transformTypes(prop->varOrVal->type, root);
+}
+
+void transformTypes(classS* cl, programS* root)
+{
+	if (cl == 0 || cl->body == 0 || root == 0)
+	{
+		return;
+	}
+	classBodyElementS* cbe = cl->body->first;
+	while (cbe != 0)
+	{
+		if (cbe->method != 0) transformTypes(cbe->method, root);
+		else if (cbe->property != 0) transformTypes(cbe->property, root);
+		cbe = cbe->next;
+	}
+}
+
+//Проверить типы на корректность, все ли указанные типы вообще существуют.
+//Преобразовать типы Kotlin к базовым в java
+void transformTypes(programS* program, programS* root) 
+{
+	if (program == 0 || root == 0)
+		return;
+
+	programElementS* pe = program->first;
+	while (pe != 0)
+	{
+		if (pe->clas != 0) transformTypes(pe->clas, program);
+		pe = pe->next;
+	}
+}
+/*
+void collectHighLevelClassesInfo(list<ClassFile*>& classInfo, classS* cl)
+{
+	ClassFile* file = new ClassFile(cl);
+}
+
+void collectHighLevelClassesInfo(list<ClassFile*>& classInfo, programS* program)
+{
+	programElementS* pe = program->first;
+	while (pe != 0)
+	{
+		if (pe->clas != 0)
+		{
+			ClassFile* file = new ClassFile(pe->clas);
+			classesInfo.push_back(file);
+		}
+		pe = pe->next;
+	}
+}*/
+
 programS* transformProgram(programS* program)
 {
 	program = transformProgramToClass(program);
@@ -712,5 +922,7 @@ programS* transformProgram(programS* program)
 	complementModifiers(program);
 	transformDestructAssign(program);
 	checkClassesNames(program);
+	transformTypes(program, program);
+
 	return program;
 }
