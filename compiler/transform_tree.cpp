@@ -581,10 +581,50 @@ void checkConstructorsAndInits(programS* program)
 	}
 }
 
+void checkPropertyInitialization(classS* cl)
+{
+	if (cl->body == 0)
+	{
+		return;
+	}
+
+	classBodyElementS* cbe = cl->body->first;
+	while (cbe != 0)
+	{
+		if (cbe->property != 0)
+		{
+			if (cbe->property->varOrVal->initValue != 0)
+			{
+				char message[200] = "EXCEPTION! Unsupported intialization of property \"";
+
+				exception e(strcat(strcat(strcat(message, cbe->property->varOrVal->id), "\"  in class - "), cl->name));
+				throw e;
+			}			
+		}
+		cbe = cbe->next;
+	}
+}
+
+void checkPropertyInitialization(programS* program)
+{
+	if (program == 0)
+		return;
+
+	programElementS* pe = program->first;
+	while (pe != 0)
+	{
+		if (pe->clas != 0) checkPropertyInitialization(pe->clas);
+		pe = pe->next;
+	}
+
+}
+
 programS* transformProgram(programS* program)
 {
 	program = transformProgramToClass(program);
 	transformFuncsLikeExpr(program);
+	checkConstructorsAndInits(program);
+	checkPropertyInitialization(program);
 	transformAssignmentWithFieldAndArrays(program);
 	complementModifiers(program);
 	checkClassesNames(program);
