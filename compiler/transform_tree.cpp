@@ -619,6 +619,88 @@ void checkPropertyInitialization(programS* program)
 
 }
 
+void transformDestructAssign(methodS* meth)
+{
+	if (meth->func == 0 || meth->func->stmts == 0)
+	{
+		return;
+	}
+	stmtS* stmt = meth->func->stmts->first;
+	while (stmt != 0)
+	{
+		stmtS* currentStmt = 0;
+		if (stmt->type == VarOrVal && stmt->varOrVal->namesAndTypes != 0)
+		{
+			stmtS* afterMultiDeclStmt = stmt->next;
+			exprS* startInitValue = stmt->varOrVal->initValue;
+			
+			formalParamS* fp = stmt->varOrVal->namesAndTypes->first;
+			stmt->varOrVal->id = fp->name;
+			stmt->varOrVal->type= fp->type;
+			char* methodName = new char[13];
+			strcpy(methodName, "component1");
+			exprS* newInitValue = createExpr(startInitValue, methodName, 0, MethodCalcExpr);
+			stmt->varOrVal->initValue = newInitValue;
+			
+			int fpCount = 2;
+			currentStmt = stmt;
+			for (fp = fp->next; fp != 0; fp = fp->next)
+			{
+				char componentNum[3] = "";
+				strcat(strcpy(methodName, "component"), _itoa(fpCount, componentNum, 10));
+				newInitValue = createExpr(startInitValue, methodName, 0, MethodCalcExpr);
+				stmtS* newStmt = createStmt(createVarOrValDecl(fp->name, fp->type, newInitValue, stmt->varOrVal->isVal), VarOrVal);
+				currentStmt->next = newStmt;
+				currentStmt = currentStmt->next;
+				++fpCount;
+				
+				if (fpCount > 100)
+				{
+					char message[200] = "EXCEPTION! Unsupported call of componentN in method \"";
+
+					exception e(strcat(strcat(message, meth->func->delc->name), "\""));
+					throw e;
+				}
+			}
+			
+			if (afterMultiDeclStmt == 0) meth->func->stmts->last = currentStmt;
+			free(stmt->varOrVal->namesAndTypes);
+			stmt->varOrVal->namesAndTypes = 0;
+			currentStmt->next = afterMultiDeclStmt;
+		}
+
+		if (currentStmt != 0)	stmt = currentStmt->next;
+		else					stmt = stmt->next;
+	}
+}
+
+void transformDestructAssign(classS* cl)
+{
+	if (cl->body == 0)
+	{
+		return;
+	}
+	classBodyElementS* cbe = cl->body->first;
+	while (cbe != 0)
+	{
+		if (cbe->method != 0) transformDestructAssign(cbe->method);
+		cbe = cbe->next;
+	}
+}
+
+void transformDestructAssign(programS* program)
+{
+	if (program == 0)
+		return;
+
+	programElementS* pe = program->first;
+	while (pe != 0)
+	{
+		if (pe->clas != 0) transformDestructAssign(pe->clas);
+		pe = pe->next;
+	}
+}
+
 programS* transformProgram(programS* program)
 {
 	program = transformProgramToClass(program);
@@ -627,6 +709,7 @@ programS* transformProgram(programS* program)
 	checkPropertyInitialization(program);
 	transformAssignmentWithFieldAndArrays(program);
 	complementModifiers(program);
+	transformDestructAssign(program);
 	checkClassesNames(program);
 	return program;
 }

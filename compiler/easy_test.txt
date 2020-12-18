@@ -1,10 +1,28 @@
 
 class A {
 
-	var prop1:Int = 5
-	val prop2:Double = 6.2
-
+	
 	protected override fun f1():Unit {}
 	fun f2(i1:Int, i2:Int):Unit = i1 + i2
+
+}
+
+fun a():Unit
+{
+
+	val arr:Array<Int> = arrayOf(1,2,3,4)
+	var (a1:Int,a2:Int,a3:Int) = arr
+	
+
+}
+
+fun b():Unit
+{
+
+	val arr:Array<Int> = arrayOf(1,2,3,4)
+	var (a1:Int,a2:Int,a3:Int) = arr
+
+	var (b1:Int,b2:Int,b3:Int) = arr
+	calc(b1)
 
 }
