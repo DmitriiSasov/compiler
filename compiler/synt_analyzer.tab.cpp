@@ -3508,19 +3508,19 @@ yyreduce:
 
   case 240: /* forLoop: FOR '(' '(' formalParams ')' IN expr ')' optNewLines stmt  */
 #line 501 "synt_analyzer.y"
-                                                                {(yyval.forLoopU) = createForLoop((yyvsp[-6].formalParamsListU), (yyvsp[-3].exprU), (yyvsp[0].stmtU)); puts("forLoop created"); }
+                                                                {(yyval.forLoopU) = createForLoop((yyvsp[-6].formalParamsListU), (yyvsp[-3].exprU), (yyvsp[0].stmtU), true); puts("forLoop created"); }
 #line 3513 "synt_analyzer.tab.cpp"
     break;
 
   case 241: /* forLoop: FOR '(' '(' formalParams ')' IN expr ')' block semis  */
 #line 502 "synt_analyzer.y"
-                                                        {(yyval.forLoopU) = createForLoop((yyvsp[-6].formalParamsListU), (yyvsp[-3].exprU), (yyvsp[-1].stmtListU)); puts("forLoop created"); }
+                                                        {(yyval.forLoopU) = createForLoop((yyvsp[-6].formalParamsListU), (yyvsp[-3].exprU), (yyvsp[-1].stmtListU), true); puts("forLoop created"); }
 #line 3519 "synt_analyzer.tab.cpp"
     break;
 
   case 242: /* forLoop: FOR '(' '(' formalParams ')' IN expr ')' semis  */
 #line 503 "synt_analyzer.y"
-                                                        {(yyval.forLoopU) = createForLoop((yyvsp[-5].formalParamsListU), (yyvsp[-2].exprU)); puts("forLoop created"); }
+                                                        {(yyval.forLoopU) = createForLoop((yyvsp[-5].formalParamsListU), (yyvsp[-2].exprU), true); puts("forLoop created"); }
 #line 3525 "synt_analyzer.tab.cpp"
     break;
 
@@ -3532,7 +3532,7 @@ yyreduce:
 
   case 244: /* forLoop: FOR '(' '(' formalParams ')' IN expr ')' block newLines  */
 #line 505 "synt_analyzer.y"
-                                                                {(yyval.forLoopU) = createForLoop((yyvsp[-6].formalParamsListU), (yyvsp[-3].exprU), (yyvsp[-1].stmtListU)); puts("forLoop created"); }
+                                                                {(yyval.forLoopU) = createForLoop((yyvsp[-6].formalParamsListU), (yyvsp[-3].exprU), (yyvsp[-1].stmtListU), true); puts("forLoop created"); }
 #line 3537 "synt_analyzer.tab.cpp"
     break;
 
