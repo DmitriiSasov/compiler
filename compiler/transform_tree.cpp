@@ -4,7 +4,7 @@ void transformAssignmentWithFieldAndArrays(stmtList* stmts);
 
 void templateTypeFree(templateTypeS* type);
 
-void transformTypes(stmtList* stmts, programS* root);
+void transformTypes(stmtList* stmts, list<string>& classesNames);
 
 void freeMem(programElementS* firstElement, programElementS* stopElement)
 {
@@ -736,26 +736,24 @@ void templateTypeFree(templateTypeS* type)
 	free(type->list);
 }
 
-bool existsEasyType(char* typeName, programS* root)
+bool existsEasyType(char* typeName, list<string>& classesNames)
 {
-	if (root == 0 || root->first == 0)
-		return false;
-
 	bool res = strcmp(typeName, "Int") != 0 && strcmp(typeName, "Float") != 0
 		&& strcmp(typeName, "Double") != 0 && strcmp(typeName, "String") != 0
-		&& strcmp(typeName, "Char") != 0 && strcmp(typeName, "Unit") != 0;
+		&& strcmp(typeName, "Char") != 0 && strcmp(typeName, "Unit") != 0
+		&& strcmp(typeName, "Boolean") != 0;
 
 
-	for (programElementS* pe = root->first; pe != 0; pe = pe->next)
+	for (auto className: classesNames)
 	{
-		if (pe->clas != 0)	res = res && strcmp(typeName, pe->clas->name) != 0;
+		res = res && strcmp(typeName, className.c_str()) != 0;
 	}
 	return !res;
 }
 
-char * collectArrayInfo(templateTypeS* type, programS* root, int& nestingLevel)
+char * collectArrayInfo(templateTypeS* type, list<string>& classesNames, int& nestingLevel)
 {
-	if (root == 0 || root->first == 0 || type == 0)
+	if (type == 0)
 		return 0;
 
 	if (strcmp(type->type, "Array") != 0)
@@ -772,7 +770,7 @@ char * collectArrayInfo(templateTypeS* type, programS* root, int& nestingLevel)
 	}
 	if (type->list->first->easyType != 0)
 	{
-		if (!existsEasyType(type->list->first->easyType, root))
+		if (!existsEasyType(type->list->first->easyType, classesNames))
 		{
 			char message[200] = "EXCEPTION! Incorrect array type \"";
 			exception e(strcat(strcat(message, type->list->first->easyType), "\""));
@@ -785,14 +783,14 @@ char * collectArrayInfo(templateTypeS* type, programS* root, int& nestingLevel)
 	else
 	{
 		++nestingLevel;
-		return collectArrayInfo(type->list->first->complexType, root, nestingLevel);
+		return collectArrayInfo(type->list->first->complexType, classesNames, nestingLevel);
 	}
 }
 
-void transformTypes(typeS* type, programS* root)
+void transformTypes(typeS* type, list<string>& classesNames)
 {
 	//Проверяем простые типы
-	if (type->easyType != 0 && !existsEasyType(type->easyType, root))
+	if (type->easyType != 0 && !existsEasyType(type->easyType, classesNames))
 	{
 		char message[200] = "EXCEPTION! Incorrect type \"";
 		exception e(strcat(strcat(message, type->easyType), "\""));
@@ -801,7 +799,7 @@ void transformTypes(typeS* type, programS* root)
 	else if (type->complexType != 0 )
 	{
 		int templateNestingLevel = 1;
-		char* arrayType = collectArrayInfo(type->complexType, root, templateNestingLevel);;
+		char* arrayType = collectArrayInfo(type->complexType, classesNames, templateNestingLevel);;
 		char* newType = new char(strlen(arrayType) + templateNestingLevel * 2 + 1);
 		strcpy(newType, arrayType);
 		for (int i = 0; i < templateNestingLevel; ++i)
@@ -813,98 +811,106 @@ void transformTypes(typeS* type, programS* root)
 	}
 }
 
-void transformTypes(funcDeclS* decl, programS* root) 
+void transformTypes(funcDeclS* decl, list<string>& classesNames)
 {
-	if (decl == 0 || root == 0)
-		return;
+	if (decl == 0) return;
 
-	transformTypes(decl->type, root);
+	transformTypes(decl->type, classesNames);
 }
 
-void transformTypes(methodS* meth, programS* root)
+void transformTypes(methodS* meth, list<string>& classesNames)
 {
-	if (meth == 0 || root == 0 || meth->func == 0)
+	if (meth == 0 || meth->func == 0)
 	{
 		return;
 	}
 
 	if (meth->func->delc != 0)
 	{
-		transformTypes(meth->func->delc, root);
+		transformTypes(meth->func->delc, classesNames);
 	}
 	
-	if (meth->func->stmts != 0) transformTypes(meth->func->stmts, root);
+	if (meth->func->stmts != 0) transformTypes(meth->func->stmts, classesNames);
 }
 
-void transformTypes(stmtS* stmt, programS* root)
+void transformTypes(stmtS* stmt, list<string>& classesNames)
 {
 	switch (stmt->type) 
 	{
 	case VarOrVal:
-		transformTypes(stmt->varOrVal->type, root);
+		transformTypes(stmt->varOrVal->type, classesNames);
 		break;
 	case WhileLoop:
 	case DoWhileLoop:
-		transformTypes(stmt->whileLoop->stmts, root);
+		transformTypes(stmt->whileLoop->stmts, classesNames);
 		break;
 	case ForLoop:
-		transformTypes(stmt->forLoop->stmts, root);
+		transformTypes(stmt->forLoop->stmts, classesNames);
 		break;
 	case IfStmt:
 		if (stmt->ifStmt->actions != 0)
-			transformTypes(stmt->ifStmt->actions, root);
+			transformTypes(stmt->ifStmt->actions, classesNames);
 		else
-			transformTypes(stmt->ifStmt->altActions, root);
+			transformTypes(stmt->ifStmt->altActions, classesNames);
 		break;
 	}
 }
 
-void transformTypes(stmtList* stmts, programS* root)
+void transformTypes(stmtList* stmts, list<string>& classesNames)
 {
-	if (stmts == 0 || root == 0) return;
+	if (stmts == 0) return;
 
 	for (stmtS* stmt = stmts->first; stmt != 0; stmt = stmt->next)
 	{
-		transformTypes(stmt, root);
+		transformTypes(stmt, classesNames);
 	}
 }
 
-void transformTypes(propertyS* prop, programS* root)
+void transformTypes(propertyS* prop, list<string>& classesNames)
 {
-	if (prop == 0 || root == 0) return;
+	if (prop == 0) return;
 
-	transformTypes(prop->varOrVal->type, root);
+	transformTypes(prop->varOrVal->type, classesNames);
 }
 
-void transformTypes(classS* cl, programS* root)
+void transformTypes(classS* cl, list<string>& classesNames)
 {
-	if (cl == 0 || cl->body == 0 || root == 0)
+	if (cl == 0 || cl->body == 0)
 	{
 		return;
 	}
 	classBodyElementS* cbe = cl->body->first;
 	while (cbe != 0)
 	{
-		if (cbe->method != 0) transformTypes(cbe->method, root);
-		else if (cbe->property != 0) transformTypes(cbe->property, root);
+		if (cbe->method != 0) transformTypes(cbe->method, classesNames);
+		else if (cbe->property != 0) transformTypes(cbe->property, classesNames);
 		cbe = cbe->next;
 	}
 }
 
 //Проверить типы на корректность, все ли указанные типы вообще существуют.
 //Преобразовать типы Kotlin к базовым в java
-void transformTypes(programS* program, programS* root) 
+void transformTypes(programS* program) 
 {
-	if (program == 0 || root == 0)
+	if (program == 0)
 		return;
+	list<string> classesNames;
 
 	programElementS* pe = program->first;
 	while (pe != 0)
 	{
-		if (pe->clas != 0) transformTypes(pe->clas, program);
+		if (pe->clas != 0) classesNames.push_back(pe->clas->name);
+		pe = pe->next;
+	}
+	pe = program->first;
+	while (pe != 0)
+	{
+		if (pe->clas != 0)	transformTypes(pe->clas, classesNames);
 		pe = pe->next;
 	}
 }
+
+
 
 programS* transformProgram(programS* program)
 {
@@ -916,7 +922,7 @@ programS* transformProgram(programS* program)
 	complementModifiers(program);
 	transformDestructAssign(program);
 	checkClassesNames(program);
-	transformTypes(program, program);
+	transformTypes(program);
 
 	return program;
 }
