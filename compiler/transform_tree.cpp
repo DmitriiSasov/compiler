@@ -911,9 +911,52 @@ void transformTypes(programS* program)
 }
 
 
+bool isParentClass(string potentialParent, string potentialChild, list<pair<string, string>>& classesAndParents) {
+	
+	for (auto classAndParent : classesAndParents)
+	{
+		if (classAndParent.first == potentialChild)
+		{
+			if (classAndParent.second == "")
+				return false;
+			else if (classAndParent.second == potentialParent) return true;
+			else return isParentClass(potentialParent, classAndParent.second, classesAndParents);
+		}		
+	}
+	return false;
+}
+
+void checkCirclesInInheritance(programS* program)
+{
+	list<pair<string, string>> classesAndParents;
+	for (programElementS* pe = program->first; pe != 0; pe = pe->next)
+	{
+		if (pe->clas != 0)
+		{
+			pair<string, string> classAndParent;
+			classAndParent.first = pe->clas->name;
+			if (pe->clas->parentClassName != 0) classAndParent.second = pe->clas->parentClassName;
+			else classAndParent.second = "";
+			classesAndParents.push_back(classAndParent);
+		}
+	}
+	for (programElementS* pe = program->first; pe != 0; pe = pe->next)
+	{
+		if (pe->clas != 0 && pe->clas->parentClassName != 0 
+			&& isParentClass(pe->clas->name, pe->clas->parentClassName, classesAndParents))
+		{
+			char message[200] = "EXCEPTION! Class \"";
+			exception e(strcat(strcat(strcat(message, pe->clas->name), "\" cannot be a child of class "),
+				pe->clas->parentClassName));
+			throw e;
+		}
+	}
+}
 
 programS* transformProgram(programS* program)
 {
+	if (program == 0 || program->first == 0) return program;
+
 	program = transformProgramToClass(program);
 	transformFuncsLikeExpr(program);
 	checkConstructorsAndInits(program);
@@ -923,6 +966,7 @@ programS* transformProgram(programS* program)
 	transformDestructAssign(program);
 	checkClassesNames(program);
 	transformTypes(program);
+	checkCirclesInInheritance(program);
 
 	return program;
 }
