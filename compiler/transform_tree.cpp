@@ -51,7 +51,7 @@ programS* transformProgramToClass(programS* programTreeRoot)
 {
 	classS* newClass = new classS();
 	newClass->name = new char[7]();
-	strcpy(newClass->name, "<Main>");
+	strcpy(newClass->name, "Main$");
 	newClass->mods = createModifiers(0, 0, Public, Final);
 	newClass->parentClassName = 0;
 	newClass->body = createClassBody();
@@ -953,6 +953,53 @@ void checkCirclesInInheritance(programS* program)
 	}
 }
 
+
+void fillClassesFiles(list<ClassFile*> files, programS* program)
+{
+	list<ShortClassInfo*> classesInfo;
+	for (programElementS* pe = program->first; pe != 0 ; pe = pe->next)
+	{
+		if (pe->clas != 0) 
+		{
+			ShortClassInfo* sci = new ShortClassInfo();
+			sci->className = pe->clas->name;
+			if (pe->clas->body != 0)
+			{
+				for (classBodyElementS* cbe = pe->clas->body->first; cbe != 0; cbe = cbe->next)
+				{
+					if (cbe->property != 0)
+					{
+						sci->propertiesInfo.push_back(string(cbe->property->varOrVal->type->easyType) + "|"
+						+ string(cbe->property->varOrVal->id));
+					}
+					else if (cbe->method != 0) 
+					{
+						string methodInfo = string(cbe->method->func->delc->type->easyType) + "|"
+							+ string(cbe->method->func->delc->name);
+						if (cbe->method->func->delc->params != 0)
+						{
+							for (formalParamS* fp = cbe->method->func->delc->params->first; fp != 0; fp = fp->next)
+							{
+								methodInfo = methodInfo + fp->type->easyType + '|' + fp->name;
+							}
+						}
+						sci->methodsInfo.push_back(methodInfo);
+					}
+				}
+			}
+			classesInfo.push_back(sci);
+		}
+	}
+	for (programElementS* pe = program->first; pe != 0; pe = pe->next)
+	{
+		if (pe->clas != 0)
+		{
+			ClassFile* file = new ClassFile(pe->clas, classesInfo);
+		}
+	}
+}
+
+
 programS* transformProgram(programS* program)
 {
 	if (program == 0 || program->first == 0) return program;
@@ -967,6 +1014,6 @@ programS* transformProgram(programS* program)
 	checkClassesNames(program);
 	transformTypes(program);
 	checkCirclesInInheritance(program);
-
+	fillConstantsTable(classesFiles, program);
 	return program;
 }
