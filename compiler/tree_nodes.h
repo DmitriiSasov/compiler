@@ -1,5 +1,8 @@
 
 #include <string>
+
+using namespace std;
+
 enum exprType 
 {
 	Identificator,
@@ -35,7 +38,8 @@ enum exprType
 	ArrayElementCall,
 	ParentFieldCall,
 	ParentMethodCall,
-	Range
+	Range,
+	TypeCast
 };
 
 enum assignmentType
@@ -117,7 +121,7 @@ struct exprS
 	bool booleanV;
 	
 	struct exprS * next;
-	
+	string exprRes;
 };
 
 struct factParamsList 
