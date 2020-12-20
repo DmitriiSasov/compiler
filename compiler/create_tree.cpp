@@ -572,6 +572,7 @@ struct exprS* createExpr(char* idOrString, int iVal, struct factParamsList* para
 	e->doubleV = dVal;
 	e->booleanV = bVar;
 	e->next = 0;
+	e->exprRes = "";
 	return e;
 
 }
