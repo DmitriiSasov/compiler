@@ -326,7 +326,6 @@ void ClassFile::fillHighLevelObjectsConstants(classS* clas, list<ShortClassInfo*
 	findUtf8OrAdd("Code");
 	thisClass = findClassOrAdd(clas->name);
 	if (clas->parentClassName != 0)	superClass = findClassOrAdd(clas->name);
-	else	superClass = findClassOrAdd("java/lang/Object");		//Точно ли имя указывается так??? Возможен вариант Ljava/lang/Object
 	
 	//Заполняю флаги доступа к классу
 	accessFlags |= 0x0001; //Устанавливаю флаг PUBLIC
