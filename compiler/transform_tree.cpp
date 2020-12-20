@@ -52,7 +52,7 @@ programS* transformProgramToClass(programS* programTreeRoot)
 	classS* newClass = new classS();
 	newClass->name = new char[7]();
 	strcpy(newClass->name, "Main$");
-	newClass->mods = createModifiers(0, 0, Public, Final);
+	newClass->mods = createModifiers(0, 0, Public, None);
 	newClass->parentClassName = 0;
 	newClass->body = createClassBody();
 	programElementS* pe = programTreeRoot->first;
@@ -75,7 +75,9 @@ programS* transformProgramToClass(programS* programTreeRoot)
 			if (pe->property->mods != 0)	pe->property->mods->isStatic = true;
 			else
 			{
-				pe->property->mods = createModifiers(0, 0, Public, Final);
+				if (pe->property->varOrVal->isVal)	pe->property->mods = createModifiers(0, 0, Public, Final);
+				else pe->property->mods = createModifiers(0, 0, Public, None);
+
 				pe->property->mods->isStatic = true;
 			}
 			newClass->body = addToClassBody(newClass->body, pe->property);
@@ -338,7 +340,15 @@ void complementModifiers(classS* cl)
 		{
 			if (cbe->property->mods != 0)
 			{
-				if (cbe->property->mods->iMod == None) cbe->property->mods->iMod = Final;
+				if (cbe->property->mods->iMod == Open || cbe->property->mods->iMod == Final)
+				{
+					char message[200] = "EXCEPTION! Inheritance mods of properties are not supported. Property \"";
+
+					exception e((strcat(strcat(message, cbe->property->varOrVal->id), "\" has inheritance mod")));
+					throw e;
+				}
+				else if (cbe->property->varOrVal->isVal) cbe->property->mods->iMod = Final;
+
 				if (cbe->property->mods->vMod == Unknown) cbe->property->mods->vMod = Public;
 				else if (cbe->property->mods->vMod == Internal)
 				{
@@ -364,7 +374,9 @@ void complementModifiers(classS* cl)
 			}
 			else
 			{
-				cbe->property->mods = createModifiers(0, 0, Public, Final);
+				if (cbe->property->varOrVal->isVal)	cbe->property->mods = createModifiers(0, 0, Public, Final);
+				else	cbe->property->mods = createModifiers(0, 0, Public, None);
+				
 			}
 		}
 		else if (cbe->method)
