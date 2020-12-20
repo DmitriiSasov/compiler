@@ -12,7 +12,8 @@
 	extern FILE* yyin;
 	
 	struct programS * root;
-	
+	list<ClassFile> classesFiles;
+
 	
 %}
 //Секция объявлений
@@ -563,7 +564,7 @@ void main(int argc, char **argv )
 	fclose(file);
 	try
 	{
-		root = transformProgram(root);
+		root = transformProgram(classesFiles ,root);
 		file = fopen("tree_after_semantic.dot", "w");
 		fprintf(file, "digraph G {\n");
 		print(root, file);
