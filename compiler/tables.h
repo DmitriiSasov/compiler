@@ -60,14 +60,21 @@ struct attribute
 
 };
 
-
+struct LocalVariableInfo
+{
+	bool isConst;
+	bool hasValue;
+	string name;
+	string type;
+};
 
 class MethodTableElement
 {
 
 	int localVarsCount = 0;
 
-	list<string> localVarsAndConsts;
+	//Type and name
+	list<LocalVariableInfo> localVarsAndConsts;
 
 	attribute code;
 
@@ -82,7 +89,7 @@ public:
 	MethodTableElement(uint16_t methName, uint16_t descriptor,
 		VisibilityMod vMod, bool isFinal, bool isStatic);
 
-	void addLocalVar(varOrValDeclS* varOrValDecl);
+	bool addLocalVar(varOrValDeclS* varOrValDecl);
 
 	void remove(int varOrValDeclIndex);
 
@@ -158,6 +165,11 @@ public:
 
 	int getRefValue(unsigned int index) { return refValue[index]; }
 
+	string getValueString()
+	{
+		return strV;
+	}
+
 	friend bool operator==(const ConstantsTableElement& lhs, const ConstantsTableElement& rhs);
 };
 
@@ -185,13 +197,32 @@ class ClassFile
 
 	map<string, MethodTableElement> methodTable;
 
-	string& generateMethodKey(methodS* meth);
-
 	void fillHighLevelObjectsConstants(classS* clas, list<ShortClassInfo*> allClassesInfo);
 
 	void fillHighLevelObjectsConstants(propertyS* prop, list<ShortClassInfo*> allClassesInfo);
 
 	void fillHighLevelObjectsConstants(methodS* meth, list<ShortClassInfo*> allClassesInfo);
+
+	void addConstantsFrom(methodS* meth, list<ShortClassInfo*> allClassesInfo);
+	
+	void addConstantsFrom(stmtS* stmt, list<ShortClassInfo*> allClassesInfo, string methodKey);
+
+	void addConstantsFrom(varOrValDeclS* v, list<ShortClassInfo*> allClassesInfo, string methodKey);
+	
+
+	void addConstantsFrom(assignmentS* a, list<ShortClassInfo*> allClassesInfo, string methodKey);
+	
+
+	void addConstantsFrom(whileLoopS* w, list<ShortClassInfo*> allClassesInfo, string methodKey);
+	
+
+	void addConstantsFrom(forLoopS* f, list<ShortClassInfo*> allClassesInfo, string methodKey);
+	
+
+	void addConstantsFrom(ifStmtS* i, list<ShortClassInfo*> allClassesInfo, string methodKey);
+	
+	void addConstantsFrom(exprS* e, list<ShortClassInfo*> allClassesInfo, string methodKey);
+
 
 public:
 
@@ -224,5 +255,3 @@ public:
 
 };
 
-
-list<ClassFile*> classesFiles;
