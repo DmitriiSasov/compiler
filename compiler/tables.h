@@ -37,60 +37,47 @@ struct ShortClassInfo
 };
 
 
-class FieldTableElement
+struct FieldTableElement
 {
 
 public:
 
-	string fieldName = "";
+	uint16_t fieldName = 0;
 
-	string descriptor = "";
+	uint16_t descriptor = 0;
 
-	VisibilityMod vMod = _PUBLIC;
+	uint16_t accessFlags = 0;
 
-	bool isFinal = true;
-
-	bool isStatic = false;
-
-
-
-	FieldTableElement(string fieldName, string descriptor, VisibilityMod vMod, bool isStatic)
-	{
-		this->fieldName = fieldName;
-		this->descriptor = descriptor;
-		this->vMod = vMod;
-	}
+	FieldTableElement(uint16_t fieldName, uint16_t descriptor, VisibilityMod vMod, bool isStatic, bool isFinal);
 
 };
+
+struct attribute
+{
+
+};
+
+
 
 class MethodTableElement
 {
 
-	methodS* meth = 0;
-
 	int localVarsCount = 0;
 
-	map<string, varOrValDeclS*> localVarsAndConsts;
+	list<string> localVarsAndConsts;
+
+	list<attribute> attribs;
 
 public:
 
-	string methName = "";
+	uint16_t name = 0;
 
-	string descriptor = "";
+	uint16_t descriptor = 0;
 
-	VisibilityMod vMod = _PUBLIC;
+	uint16_t accessFlags = 0;
 
-	bool isAbstract = false;
-
-	bool isFinal = true;
-
-	bool isStatic = false;
-
-	MethodTableElement(string methName, string descriptor,
-		VisibilityMod vMod, bool isAbstract, bool isFinal, bool isStatic)
-	{
-
-	}
+	MethodTableElement(uint16_t methName, uint16_t descriptor,
+		VisibilityMod vMod, bool isFinal, bool isStatic);
 
 	void addLocalVar(varOrValDeclS* varOrValDecl);
 
@@ -99,8 +86,7 @@ public:
 
 	int find(string varOrValName);
 
-	varOrValDeclS* find(int varOrValIndex);
-
+	void addAttributes();
 
 
 };
@@ -123,6 +109,8 @@ class ConstantsTableElement
 	float valueF = 0.0f;
 
 	int valueI = 0;
+
+	string strV = "";
 
 public:
 	ConstantsTableElement(ConstantType type, string value)
@@ -178,7 +166,7 @@ class ClassFile
 
 	const uint16_t minorV = 0;
 
-	const uint16_t majorV = 0;
+	const uint16_t majorV = 52;
 
 	uint16_t accessFlags = 0;
 
@@ -219,7 +207,9 @@ public:
 
 	IdT findFloatOrAdd(float i);
 
-	IdT findFloatOrAdd(double i);
+	IdT findDoubleOrAdd(double i);
+
+	IdT findStringOrAdd(string v);
 
 	IdT findClassOrAdd(std::string const& className);
 
@@ -233,49 +223,3 @@ public:
 
 
 list<ClassFile*> classesFiles;
-
-
-class ProgramInfo
-{
-	
-	list<classS*> classes;
-	map<string, methodS*> methods;
-	map<string, propertyS*> properties;
-
-	bool addMethod(string className, methodS* meth)
-	{
-
-	}
-
-public:
-
-	bool addClass(classS* cl) 
-	{
-		if (cl != 0) 
-		{
-			auto res = find(classes.begin(), classes.end(), cl);
-			if (res != classes.end())
-			{
-				classes.push_back(cl);
-				if (cl->body != 0)
-				{
-					for (auto cbe = cl->body->first; cbe != 0; cbe = cbe->next)
-					{
-
-					}
-				}
-				return true;
-			}
-			else return false;
-		}
-		
-	}
-
-
-
-
-
-};
-
-
-

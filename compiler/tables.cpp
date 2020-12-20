@@ -19,6 +19,52 @@ VisibilityMod translateVisibilityMod(visibilityMod vMod)
 	throw e;
 }
 
+
+FieldTableElement::FieldTableElement(uint16_t fieldName, uint16_t descriptor, VisibilityMod vMod, bool isStatic, bool isFinal)
+{
+	this->fieldName = fieldName;
+	this->descriptor = descriptor;
+	switch (vMod)
+	{
+	case _PUBLIC:
+		accessFlags |= 0x0001;
+		break;
+	case _PROTECTED:
+		accessFlags |= 0x0004;
+		break;
+	case _PRIVATE:
+		accessFlags |= 0x0002;
+		break;
+	}
+	if (isStatic)	accessFlags |= 0x0008;
+
+	if (isFinal)	accessFlags |= 0x0010;
+}
+
+MethodTableElement::MethodTableElement(uint16_t methName, uint16_t descriptor,
+	VisibilityMod vMod, bool isFinal, bool isStatic)
+{
+	this->name = methName;
+	this->descriptor = descriptor;
+
+	switch (vMod)
+	{
+	case _PUBLIC:
+		accessFlags |= 0x0001;
+		break;
+	case _PROTECTED:
+		accessFlags |= 0x0004;
+		break;
+	case _PRIVATE:
+		accessFlags |= 0x0002;
+		break;
+	}
+	if (isStatic)	accessFlags |= 0x0008;
+	else	localVarsAndConsts.push_back("this");
+
+	if (isFinal)	accessFlags |= 0x0010;
+}
+
 bool operator==(const ConstantsTableElement& lhs, const ConstantsTableElement& rhs)
 {
 	if (lhs.type != rhs.type)
@@ -91,9 +137,21 @@ IdT ClassFile::findFloatOrAdd(float i)
 	return foundIter - constsTable.begin();
 }
 
-IdT ClassFile::findFloatOrAdd(double i)
+IdT ClassFile::findDoubleOrAdd(double i)
 {
 	ConstantsTableElement constant(_DOUBLE, i);
+	const auto foundIter = std::find(constsTable.begin(), constsTable.end(), constant);
+	if (foundIter == constsTable.end())
+	{
+		constsTable.push_back(constant);
+		return constsTable.end() - constsTable.begin();
+	}
+	return foundIter - constsTable.begin();
+}
+
+IdT ClassFile::findStringOrAdd(string v)
+{
+	ConstantsTableElement constant(_STRING, v);
 	const auto foundIter = std::find(constsTable.begin(), constsTable.end(), constant);
 	if (foundIter == constsTable.end())
 	{
@@ -187,33 +245,61 @@ string transformTypeToDescriptor(const char* type, list<string> allClassesNames)
 	}
 }
 
-void ClassFile::fillHighLevelObjectsConstants(propertyS* prop, list<ShortClassInfo*> allClassesInfo)
+void createClassNamesList(list<string>& allClassesNames, list<ShortClassInfo*> allClassesInfo)
 {
-	findUtf8OrAdd(prop->varOrVal->id);
-	list<string> allClassesNames;
-	for (auto info : allClassesInfo) 
+	for (auto info : allClassesInfo)
 	{
 		allClassesNames.push_back(info->className);
 	}
-	findUtf8OrAdd(transformTypeToDescriptor(prop->varOrVal->type->easyType, allClassesNames));
+}
 
+void ClassFile::fillHighLevelObjectsConstants(propertyS* prop, list<ShortClassInfo*> allClassesInfo)
+{
+	
+	uint16_t nameId = findUtf8OrAdd(prop->varOrVal->id);
+	
+	list<string> allClassesNames;
+	createClassNamesList(allClassesNames, allClassesInfo);
+	uint16_t descId = findUtf8OrAdd(transformTypeToDescriptor(prop->varOrVal->type->easyType, 
+		allClassesNames));
+	
+	FieldTableElement fte(nameId, descId, translateVisibilityMod(prop->mods->vMod), prop->mods->isStatic, 
+		prop->mods->iMod == Final);
 
+	fieldTable.insert(make_pair(string(prop->varOrVal->type->easyType) + '|' + prop->varOrVal->id, fte));
 }
 
 void ClassFile::fillHighLevelObjectsConstants(methodS* meth, list<ShortClassInfo*> allClassesInfo)
 {
+	uint16_t nameId = findUtf8OrAdd(meth->func->delc->name);
 
+	list<string> allClassesNames;
+	createClassNamesList(allClassesNames, allClassesInfo);
+	string methodDescr = "(";
+	if (meth->func->delc->params != 0)
+	{
+		for (formalParamS* fp = meth->func->delc->params->first; fp != 0; fp = fp->next)
+		{
+			methodDescr += transformTypeToDescriptor(fp->type->easyType, allClassesNames);
+		}
+		methodDescr += ';';
+	}
+	methodDescr = ')';
+
+	methodDescr += transformTypeToDescriptor(meth->func->delc->type->easyType,
+		allClassesNames);
+	uint16_t descId = findUtf8OrAdd(methodDescr);
+	
+	MethodTableElement mte(nameId, descId, translateVisibilityMod(meth->mods->vMod), 
+		meth->mods->iMod == Final, meth->mods->isStatic);
 }
 
 void ClassFile::fillHighLevelObjectsConstants(classS* clas, list<ShortClassInfo*> allClassesInfo)
 {
 	findUtf8OrAdd("Code");
 	thisClass = findClassOrAdd(clas->name);
-	if (clas->parentClassName != 0)
-	{
-		superClass = findClassOrAdd(clas->name);
-	}
-	else	superClass = 0;
+	if (clas->parentClassName != 0)	superClass = findClassOrAdd(clas->name);
+	else	superClass = findClassOrAdd("java/lang/Object");		//Точно ли имя указывается так??? Возможен вариант Ljava/lang/Object
 	
 	//Заполняю флаги доступа к классу
 	accessFlags |= 0x0001; //Устанавливаю флаг PUBLIC
@@ -228,6 +314,9 @@ void ClassFile::fillHighLevelObjectsConstants(classS* clas, list<ShortClassInfo*
 			else if (cbe->property != 0) fillHighLevelObjectsConstants(cbe->property, allClassesInfo);
 		}
 	}
+
+	findUtf8OrAdd("<init>");
+	findUtf8OrAdd("()V");
 }
 
 
@@ -256,11 +345,6 @@ void MethodTableElement::remove(int varOrValDeclIndex)
 }
 
 int MethodTableElement::find(string varOrValName)
-{
-	return 0;
-}
-
-varOrValDeclS* MethodTableElement::find(int varOrValIndex)
 {
 	return 0;
 }
