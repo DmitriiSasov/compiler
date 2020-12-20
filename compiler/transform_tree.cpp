@@ -995,7 +995,7 @@ void checkCirclesInInheritance(programS* program)
 
 
 
-void fillClassesFiles(list<ClassFile*> files, programS* program)
+void fillClassesFiles(list<ClassFile> files, programS* program)
 {
 	list<ShortClassInfo*> classesInfo;
 	for (programElementS* pe = program->first; pe != 0 ; pe = pe->next)
@@ -1026,12 +1026,13 @@ void fillClassesFiles(list<ClassFile*> files, programS* program)
 		if (pe->clas != 0)
 		{
 			ClassFile* file = new ClassFile(pe->clas, classesInfo);
+			files.push_back(*file);
 		}
 	}
 }
 
 
-programS* transformProgram(programS* program)
+programS* transformProgram(list<ClassFile> classesFiles, programS* program)
 {
 	if (program == 0 || program->first == 0) return program;
 

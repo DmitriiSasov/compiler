@@ -1,4 +1,4 @@
 #pragma once
 #include "tables.h"
 
-programS* transformProgram(programS* program);
+programS* transformProgram(list<ClassFile> classesFiles, programS* program);
