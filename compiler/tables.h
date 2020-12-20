@@ -36,6 +36,9 @@ struct ShortClassInfo
 	list<string> propertiesInfo;
 };
 
+string createShortInfo(propertyS* prop);
+
+string createShortInfo(methodS* meth);
 
 struct FieldTableElement
 {
@@ -66,7 +69,7 @@ class MethodTableElement
 
 	list<string> localVarsAndConsts;
 
-	list<attribute> attribs;
+	attribute code;
 
 public:
 

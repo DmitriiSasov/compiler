@@ -19,6 +19,30 @@ VisibilityMod translateVisibilityMod(visibilityMod vMod)
 	throw e;
 }
 
+string createShortInfo(propertyS* prop)
+{
+	string isConstant;
+	if (prop->varOrVal->isVal) isConstant = "val";
+	else	isConstant = "var";
+
+	return isConstant + string(prop->varOrVal->type->easyType) + "|"
+		+ string(prop->varOrVal->id);
+}
+
+string createShortInfo(methodS* meth)
+{
+
+	string methInfo = string(meth->func->delc->type->easyType) + "|"
+		+ string(meth->func->delc->name);
+	if (meth->func->delc->params != 0)
+	{
+		for (formalParamS* fp = meth->func->delc->params->first; fp != 0; fp = fp->next)
+		{
+			methInfo = methInfo + fp->type->easyType + '|' + fp->name;
+		}
+	}
+	return methInfo;
+}
 
 FieldTableElement::FieldTableElement(uint16_t fieldName, uint16_t descriptor, VisibilityMod vMod, bool isStatic, bool isFinal)
 {
@@ -265,9 +289,10 @@ void ClassFile::fillHighLevelObjectsConstants(propertyS* prop, list<ShortClassIn
 	
 	FieldTableElement fte(nameId, descId, translateVisibilityMod(prop->mods->vMod), prop->mods->isStatic, 
 		prop->varOrVal->isVal);
-
-	fieldTable.insert(make_pair(string(prop->varOrVal->type->easyType) + '|' + prop->varOrVal->id, fte));
+	
+	fieldTable.insert(make_pair(createShortInfo(prop), fte));
 }
+
 
 void ClassFile::fillHighLevelObjectsConstants(methodS* meth, list<ShortClassInfo*> allClassesInfo)
 {
@@ -292,6 +317,8 @@ void ClassFile::fillHighLevelObjectsConstants(methodS* meth, list<ShortClassInfo
 	
 	MethodTableElement mte(nameId, descId, translateVisibilityMod(meth->mods->vMod), 
 		meth->mods->iMod == Final, meth->mods->isStatic);
+
+	methodTable.insert(make_pair(createShortInfo(meth), mte));
 }
 
 void ClassFile::fillHighLevelObjectsConstants(classS* clas, list<ShortClassInfo*> allClassesInfo)

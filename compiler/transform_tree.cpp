@@ -994,6 +994,7 @@ void checkCirclesInInheritance(programS* program)
 }
 
 
+
 void fillClassesFiles(list<ClassFile*> files, programS* program)
 {
 	list<ShortClassInfo*> classesInfo;
@@ -1009,21 +1010,11 @@ void fillClassesFiles(list<ClassFile*> files, programS* program)
 				{
 					if (cbe->property != 0)
 					{
-						sci->propertiesInfo.push_back(string(cbe->property->varOrVal->type->easyType) + "|"
-						+ string(cbe->property->varOrVal->id));
+						sci->propertiesInfo.push_back(createShortInfo(cbe->property));
 					}
 					else if (cbe->method != 0) 
 					{
-						string methodInfo = string(cbe->method->func->delc->type->easyType) + "|"
-							+ string(cbe->method->func->delc->name);
-						if (cbe->method->func->delc->params != 0)
-						{
-							for (formalParamS* fp = cbe->method->func->delc->params->first; fp != 0; fp = fp->next)
-							{
-								methodInfo = methodInfo + fp->type->easyType + '|' + fp->name;
-							}
-						}
-						sci->methodsInfo.push_back(methodInfo);
+						sci->methodsInfo.push_back(createShortInfo(cbe->method));
 					}
 				}
 			}
@@ -1054,6 +1045,6 @@ programS* transformProgram(programS* program)
 	checkClassesNames(program);
 	transformTypes(program);
 	checkCirclesInInheritance(program);
-	fillConstantsTable(classesFiles, program);
+	fillClassesFiles(classesFiles, program);
 	return program;
 }
