@@ -62,7 +62,17 @@ programS* transformProgramToClass(programS* programTreeRoot)
 	{
 		if (pe->method != 0) 
 		{
-			if (pe->method->mods != 0)	pe->method->mods->isStatic = true;
+			if (pe->method->mods != 0)
+			{
+				if (pe->method->mods->isOverride)
+				{
+					char message[200] = "EXCEPTION! Top level function \"";
+					exception e((strcat(strcat(message, pe->method->funcDecl->name), "\" cannot be overriden")));
+					throw e;
+				}
+
+				pe->method->mods->isStatic = true;
+			}
 			else
 			{
 				pe->method->mods = createModifiers(0, 0, Public, Final);
