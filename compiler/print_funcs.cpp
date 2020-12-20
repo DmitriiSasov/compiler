@@ -34,7 +34,12 @@ void print(struct modifiersS * m, FILE* file)
 	{
 		fprintf(file, "override\\n");
 	}
-	
+
+	if (m->isStatic == true)
+	{
+		fprintf(file, "static\\n");
+	}
+
 	if (m->vMod != Unknown)
 	{		
 		fprintf(file, "%s\\n", visModToStr(m->vMod));		
@@ -51,7 +56,8 @@ void print(struct modifiersS * m, FILE* file)
 			fprintf(file, "open");
 		}
 	}
-	
+
+
 	fprintf(file, "\"]\n");
 }
 

@@ -345,6 +345,7 @@ struct modifiersS* createModifiers(int isAbstruct, int isOverride, enum visibili
 	m->isOverride = isOverride;
 	m->vMod = vMod;
 	m->iMod = iMod;
+	m->isStatic = false;
 	return m;
 }
 

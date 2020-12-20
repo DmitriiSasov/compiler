@@ -60,10 +60,27 @@ programS* transformProgramToClass(programS* programTreeRoot)
 	//ƒобавили все глобальные пол€ и методы в новый класс
 	while (pe != 0)
 	{
-		if (pe->method != 0)
+		if (pe->method != 0) 
+		{
+			if (pe->method->mods != 0)	pe->method->mods->isStatic = true;
+			else
+			{
+				pe->method->mods = createModifiers(0, 0, Public, Final);
+				pe->method->mods->isStatic = true;
+			}
 			newClass->body = addToClassBody(newClass->body, pe->method);
+		}
 		else if (pe->property != 0)
+		{
+			if (pe->property->mods != 0)	pe->property->mods->isStatic = true;
+			else
+			{
+				pe->property->mods = createModifiers(0, 0, Public, Final);
+				pe->property->mods->isStatic = true;
+			}
 			newClass->body = addToClassBody(newClass->body, pe->property);
+		}
+			
 		pe = pe->next;
 	}
 	//”брали из дерева лишние узлы

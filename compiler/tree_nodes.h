@@ -81,6 +81,7 @@ struct modifiersS
 	bool isOverride;
 	enum visibilityMod vMod;
 	enum inheritanceMod iMod;
+	bool isStatic;
 };
 
 enum visibilityMod 
