@@ -84,7 +84,6 @@ MethodTableElement::MethodTableElement(uint16_t methName, uint16_t descriptor,
 		break;
 	}
 	if (isStatic)	accessFlags |= 0x0008;
-	else	localVarsAndConsts.push_back("this");
 
 	if (isFinal)	accessFlags |= 0x0010;
 }
@@ -132,9 +131,9 @@ IdT ClassFile::findUtf8OrAdd(std::string const& utf8)
 	if (foundIter == constsTable.end())
 	{
 		constsTable.push_back(constant);
-		return constsTable.end() - constsTable.begin();
+		return constsTable.end() - constsTable.begin() + 1;
 	}
-	return foundIter - constsTable.begin();
+	return foundIter - constsTable.begin() + 1;
 }
 
 IdT ClassFile::findIntOrAdd(IntT i)
@@ -144,9 +143,9 @@ IdT ClassFile::findIntOrAdd(IntT i)
 	if (foundIter == constsTable.end())
 	{
 		constsTable.push_back(constant);
-		return constsTable.end() - constsTable.begin();
+		return constsTable.end() - constsTable.begin() + 1;
 	}
-	return foundIter - constsTable.begin();
+	return foundIter - constsTable.begin() + 1;
 }
 
 IdT ClassFile::findFloatOrAdd(float i)
@@ -156,9 +155,9 @@ IdT ClassFile::findFloatOrAdd(float i)
 	if (foundIter == constsTable.end())
 	{
 		constsTable.push_back(constant);
-		return constsTable.end() - constsTable.begin();
+		return constsTable.end() - constsTable.begin() + 1;
 	}
-	return foundIter - constsTable.begin();
+	return foundIter - constsTable.begin() + 1;
 }
 
 IdT ClassFile::findDoubleOrAdd(double i)
@@ -168,9 +167,9 @@ IdT ClassFile::findDoubleOrAdd(double i)
 	if (foundIter == constsTable.end())
 	{
 		constsTable.push_back(constant);
-		return constsTable.end() - constsTable.begin();
+		return constsTable.end() - constsTable.begin() + 1;
 	}
-	return foundIter - constsTable.begin();
+	return foundIter - constsTable.begin() + 1;
 }
 
 IdT ClassFile::findStringOrAdd(string v)
@@ -180,9 +179,9 @@ IdT ClassFile::findStringOrAdd(string v)
 	if (foundIter == constsTable.end())
 	{
 		constsTable.push_back(constant);
-		return constsTable.end() - constsTable.begin();
+		return constsTable.end() - constsTable.begin() + 1;
 	}
-	return foundIter - constsTable.begin();
+	return foundIter - constsTable.begin() + 1;
 }
 
 IdT ClassFile::findClassOrAdd(std::string const& className)
@@ -193,9 +192,9 @@ IdT ClassFile::findClassOrAdd(std::string const& className)
 	if (foundIter == constsTable.end())
 	{
 		constsTable.push_back(constant);
-		return constsTable.end() - constsTable.begin();
+		return constsTable.end() - constsTable.begin() + 1;
 	}
-	return foundIter - constsTable.begin();
+	return foundIter - constsTable.begin() + 1;
 }
 
 IdT ClassFile::findNameAndTypeOrAdd(std::string const& name, std::string const& type)
@@ -206,9 +205,9 @@ IdT ClassFile::findNameAndTypeOrAdd(std::string const& name, std::string const& 
 	if (foundIter == constsTable.end())
 	{
 		constsTable.push_back(constant);
-		return constsTable.end() - constsTable.begin();
+		return constsTable.end() - constsTable.begin() + 1;
 	}
-	return foundIter - constsTable.begin();
+	return foundIter - constsTable.begin() + 1;
 }
 
 IdT ClassFile::findFieldRefOrAdd(std::string const& className, std::string const& name, std::string const& type)
@@ -220,9 +219,9 @@ IdT ClassFile::findFieldRefOrAdd(std::string const& className, std::string const
 	if (foundIter == constsTable.end())
 	{
 		constsTable.push_back(constant);
-		return constsTable.end() - constsTable.begin();
+		return constsTable.end() - constsTable.begin() + 1;
 	}
-	return foundIter - constsTable.begin();
+	return foundIter - constsTable.begin() + 1;
 }
 
 IdT ClassFile::findMethodRefOrAdd(std::string const& className, std::string const& name, std::string const& type)
@@ -233,9 +232,9 @@ IdT ClassFile::findMethodRefOrAdd(std::string const& className, std::string cons
 	if (foundIter == constsTable.end())
 	{
 		constsTable.push_back(constant);
-		return constsTable.end() - constsTable.begin();
+		return constsTable.end() - constsTable.begin() + 1;
 	}
-	return foundIter - constsTable.begin();
+	return foundIter - constsTable.begin() + 1;
 }
 
 string transformTypeToDescriptor(const char* type, list<string> allClassesNames)
@@ -246,12 +245,12 @@ string transformTypeToDescriptor(const char* type, list<string> allClassesNames)
 	else if (strcmp(type, "Double") == 0)	return string("D");
 	else if (strcmp(type, "Float") == 0)	return string("F");
 	else if (strcmp(type, "Char") == 0)	return string("C");
-	else if (strcmp(type, "String") == 0)	return string("Ljava/lang/String");
+	else if (strcmp(type, "String") == 0)	return string("Ljava/lang/String;");
 	else if (strcmp(type, "Unit") == 0)	return string("V");
 	else
 	{
 		auto res = find(allClassesNames.begin(), allClassesNames.end(), string(type));
-		if (res != allClassesNames.end())	return string("L") + type;
+		if (res != allClassesNames.end())	return string("L") + type + ';';
 		else
 		{
 			string typeName = type;
@@ -264,7 +263,7 @@ string transformTypeToDescriptor(const char* type, list<string> allClassesNames)
 			{
 				typeName.push_back(type[i]);
 			}
-			return descriptor + transformTypeToDescriptor(typeName.c_str, allClassesNames);
+			return descriptor + transformTypeToDescriptor(typeName.c_str, allClassesNames) + ';';
 		}
 	}
 }
@@ -319,6 +318,7 @@ void ClassFile::fillHighLevelObjectsConstants(methodS* meth, list<ShortClassInfo
 		meth->mods->iMod == Final, meth->mods->isStatic);
 
 	methodTable.insert(make_pair(createShortInfo(meth), mte));
+	addConstantsFromMethod(meth, allClassesInfo);
 }
 
 void ClassFile::fillHighLevelObjectsConstants(classS* clas, list<ShortClassInfo*> allClassesInfo)
@@ -346,7 +346,10 @@ void ClassFile::fillHighLevelObjectsConstants(classS* clas, list<ShortClassInfo*
 }
 
 
+void ClassFile::addConstantsFromMethod(methodS* meth, list<ShortClassInfo*> allClassesInfo)
+{
 
+}
 
 
 
