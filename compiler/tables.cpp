@@ -116,11 +116,9 @@ bool operator==(const ConstantsTableElement& lhs, const ConstantsTableElement& r
 
 ClassFile::ClassFile(classS* clas, list<ShortClassInfo*> allClassesInfo)
 {
-	
-	this->isAbstract = isAbstract;
+	this->isAbstract = false;
 	this->isFinal = clas->mods->iMod == Final;
 	this->vMod = translateVisibilityMod(clas->mods->vMod);
-
 
 }
 
@@ -263,7 +261,7 @@ string transformTypeToDescriptor(const char* type, list<string> allClassesNames)
 			{
 				typeName.push_back(type[i]);
 			}
-			return descriptor + transformTypeToDescriptor(typeName.c_str, allClassesNames) + ';';
+			return descriptor + transformTypeToDescriptor(typeName.c_str(), allClassesNames) + ';';
 		}
 	}
 }
@@ -318,7 +316,7 @@ void ClassFile::fillHighLevelObjectsConstants(methodS* meth, list<ShortClassInfo
 		meth->mods->iMod == Final, meth->mods->isStatic);
 
 	methodTable.insert(make_pair(createShortInfo(meth), mte));
-	addConstantsFromMethod(meth, allClassesInfo);
+	addConstantsFrom(meth, allClassesInfo);
 }
 
 void ClassFile::fillHighLevelObjectsConstants(classS* clas, list<ShortClassInfo*> allClassesInfo)
@@ -332,6 +330,9 @@ void ClassFile::fillHighLevelObjectsConstants(classS* clas, list<ShortClassInfo*
 	if (isFinal) accessFlags |= 0x0010; //Устанавливаю флаг FINAL
 	accessFlags |= 0x0020; //Устанавливаю флаг SUPER !Он устанавливается для совместимости
 
+	findUtf8OrAdd("<init>");
+	findUtf8OrAdd("()V");
+
 	if (clas->body != 0)
 	{
 		for (auto cbe = clas->body->first; cbe != 0; cbe = cbe->next)
@@ -341,37 +342,211 @@ void ClassFile::fillHighLevelObjectsConstants(classS* clas, list<ShortClassInfo*
 		}
 	}
 
-	findUtf8OrAdd("<init>");
-	findUtf8OrAdd("()V");
+	
+}
+
+string calcType(exprS* e1, exprS* e2, list<ShortClassInfo*> allClassesInfo)
+{
+	return "";
+}
+
+//type1 - к чему приводить, type2 - что приводить 
+bool canCastType(const char* type1, const char* type2)
+{
+	return false;
+}
+
+void ClassFile::addConstantsFrom(varOrValDeclS* v, list<ShortClassInfo*> allClassesInfo, string methodKey)
+{
+	MethodTableElement res = methodTable.at(methodKey);
+	if (res.addLocalVar(v))
+	{
+		char message[200] = "EXCEPTION! Redefine of variable \"";
+		exception e((strcat(strcat(message, v->id), "\"")));
+		throw e;
+	}
+	if (v->initValue != 0)
+	{
+		addConstantsFrom(v->initValue, allClassesInfo, methodKey);
+		if (strcmp(v->type->easyType, v->initValue->exprRes.c_str()) != 0)
+		{
+			if (canCastType(v->type->easyType, v->initValue->exprRes.c_str()))
+			{
+				//Создать узел с новым типом
+			}
+			else
+			{
+				char message[300] = "EXCEPTION! Cast error. Cannot cast \"";
+				exception e(strcat(strcat(strcat(strcat(strcat(strcat(message, v->type->easyType), 
+					"\" of variable \""), v->id), "\" to type \""), v->initValue->exprRes.c_str()), "\""));
+				throw e;
+			}
+		}
+	}
+	
 }
 
 
-void ClassFile::addConstantsFromMethod(methodS* meth, list<ShortClassInfo*> allClassesInfo)
+void ClassFile::addConstantsFrom(assignmentS* a, list<ShortClassInfo*> allClassesInfo, string methodKey)
+{
+	if (a->left->type != Identificator && a->subLeft == 0)
+	{
+		char message[100] = "EXCEPTION! Not l-value expr in assignment \"";
+		exception e(message);
+		throw e;
+	}
+	addConstantsFrom(a->left, allClassesInfo, methodKey);
+	addConstantsFrom(a->right, allClassesInfo, methodKey);
+
+	if (a->subLeft == 0)
+	{
+		if (a->left->exprRes != a->right->exprRes)
+		{
+			if (canCastType(a->left->exprRes.c_str(), a->right->exprRes.c_str()))
+			{
+				//Создать узел с новым типом
+			}
+			else
+			{
+				char message[300] = "EXCEPTION! Cast error. Cannot cast \"";
+				exception e(strcat(strcat(strcat(strcat(message, a->left->exprRes.c_str()),
+					"\" to type \""), a->right->exprRes.c_str()), "\" in assignment"));
+				throw e;
+			}
+		}
+	}
+	else
+	{
+		if (a->type == AssignToField || a->type == AsumToField || a->type == AsubToField
+			|| a->type == AdivToField || a->type == AmulToField || a->type == AmodToField)
+		{
+			//Найти поле в классе
+			//Если есть, создаем fieldRef
+			//Если нет - ошибка - обращение к несуществующему полю
+			auto className = a->left->exprRes;
+			for (auto i : allClassesInfo)
+			{
+				if (i->className == className)
+				{
+
+				}
+			}
+
+
+		}
+		else
+		{
+			if (a->subLeft->exprRes != "Int")
+			{
+				char message[300] = "EXCEPTION! Not integer array index in assignment ";
+				exception e(message);
+				throw e;
+			}
+
+			//Сравнить тип левой части без [] с правой частью
+			//Если не равны, то привести
+				//Если не равны опять - ошибка
+		}
+	}
+}
+
+void ClassFile::addConstantsFrom(whileLoopS* w, list<ShortClassInfo*> allClassesInfo, string methodKey)
+{
+	//Проверить условие цикла
+	//Проверить все stmt цикла
+}
+
+void ClassFile::addConstantsFrom(forLoopS* f, list<ShortClassInfo*> allClassesInfo, string methodKey)
+{
+	//Проверить переменную
+	//Проверить условие
+	//Проверить все stmt цикла
+}
+
+void ClassFile::addConstantsFrom(ifStmtS* i, list<ShortClassInfo*> allClassesInfo, string methodKey)
+{
+	//Проверить условие
+	//Проверить все ветви
+}
+
+
+void ClassFile::addConstantsFrom(exprS* e, list<ShortClassInfo*> allClassesInfo, string methodKey)
+{
+	//Собрать инфу для таблицы
+	//Преобразовать типы
+
+}
+
+void ClassFile::addConstantsFrom(stmtS* stmt, list<ShortClassInfo*> allClassesInfo, string methodKey)
 {
 
+	if (stmt->type == Continue)
+	{
+		exception e("EXCEPTION! Unsupported CONTINUE operator");
+		throw e;
+	}
+		
+	switch (stmt->type)
+	{
+	case VarOrVal:
+		addConstantsFrom(stmt->varOrVal, allClassesInfo, methodKey);
+		break;
+	case Assignment:
+		addConstantsFrom(stmt->assignment, allClassesInfo, methodKey);
+		break;
+	case WhileLoop:
+		addConstantsFrom(stmt->whileLoop, allClassesInfo, methodKey);
+		break;
+	case ForLoop:
+		addConstantsFrom(stmt->forLoop, allClassesInfo, methodKey);
+		break;
+	case DoWhileLoop:
+		addConstantsFrom(stmt->whileLoop, allClassesInfo, methodKey);
+		break;
+	case IfStmt:
+		addConstantsFrom(stmt->ifStmt, allClassesInfo, methodKey);
+		break;
+	case Expr:
+		addConstantsFrom(stmt->expr, allClassesInfo, methodKey);
+		break;
+	case ReturnValue:
+		addConstantsFrom(stmt->expr, allClassesInfo, methodKey);
+		break;
+	}
+
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void MethodTableElement::addLocalVar(varOrValDeclS* varOrValDecl)
+void ClassFile::addConstantsFrom(methodS* meth, list<ShortClassInfo*> allClassesInfo)
 {
+	if (meth->func->stmts != 0)
+	{
+		for (stmtS* stmt = meth->func->stmts->first; stmt != 0; stmt = stmt->next)
+		{
+			addConstantsFrom(stmt, allClassesInfo, createShortInfo(meth));
+		}
+	}
+	
 }
 
-void MethodTableElement::remove(int varOrValDeclIndex)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+bool MethodTableElement::addLocalVar(varOrValDeclS* varOrValDecl)
 {
+	return 0;
 }
+
 
 int MethodTableElement::find(string varOrValName)
 {
