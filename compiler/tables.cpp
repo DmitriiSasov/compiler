@@ -264,7 +264,7 @@ void ClassFile::fillHighLevelObjectsConstants(propertyS* prop, list<ShortClassIn
 		allClassesNames));
 	
 	FieldTableElement fte(nameId, descId, translateVisibilityMod(prop->mods->vMod), prop->mods->isStatic, 
-		prop->mods->iMod == Final);
+		prop->varOrVal->isVal);
 
 	fieldTable.insert(make_pair(string(prop->varOrVal->type->easyType) + '|' + prop->varOrVal->id, fte));
 }

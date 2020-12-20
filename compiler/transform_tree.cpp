@@ -82,12 +82,16 @@ programS* transformProgramToClass(programS* programTreeRoot)
 		}
 		else if (pe->property != 0)
 		{
+			if (pe->property->varOrVal->isVal)
+			{
+				char message[200] = "EXCEPTION! Unsupported static constant value \"";
+				exception e((strcat(strcat(message, pe->property->varOrVal->id), "\"")));
+				throw e;
+			}
 			if (pe->property->mods != 0)	pe->property->mods->isStatic = true;
 			else
 			{
-				if (pe->property->varOrVal->isVal)	pe->property->mods = createModifiers(0, 0, Public, Final);
-				else pe->property->mods = createModifiers(0, 0, Public, None);
-
+				pe->property->mods = createModifiers(0, 0, Public, None);
 				pe->property->mods->isStatic = true;
 			}
 			newClass->body = addToClassBody(newClass->body, pe->property);
@@ -357,8 +361,7 @@ void complementModifiers(classS* cl)
 					exception e((strcat(strcat(message, cbe->property->varOrVal->id), "\" has inheritance mod")));
 					throw e;
 				}
-				else if (cbe->property->varOrVal->isVal) cbe->property->mods->iMod = Final;
-
+				
 				if (cbe->property->mods->vMod == Unknown) cbe->property->mods->vMod = Public;
 				else if (cbe->property->mods->vMod == Internal)
 				{
@@ -384,9 +387,7 @@ void complementModifiers(classS* cl)
 			}
 			else
 			{
-				if (cbe->property->varOrVal->isVal)	cbe->property->mods = createModifiers(0, 0, Public, Final);
-				else	cbe->property->mods = createModifiers(0, 0, Public, None);
-				
+				cbe->property->mods = createModifiers(0, 0, Public, None);
 			}
 		}
 		else if (cbe->method)
