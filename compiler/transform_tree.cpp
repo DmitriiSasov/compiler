@@ -1025,7 +1025,7 @@ void fillClassesFiles(list<ClassFile> files, programS* program)
 	{
 		if (pe->clas != 0)
 		{
-			ClassFile* file = new ClassFile(pe->clas, classesInfo);
+			ClassFile* file = new ClassFile(pe->clas, program);
 			files.push_back(*file);
 		}
 	}
