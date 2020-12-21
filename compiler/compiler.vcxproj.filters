@@ -33,10 +33,10 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="tables.cpp">
-      <Filter>Файлы заголовков</Filter>
+      <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="transform_tree.cpp">
-      <Filter>Файлы заголовков</Filter>
+      <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
