@@ -83,6 +83,7 @@ struct stmtS* createStmt(struct ifStmtS* ifStmt, enum stmtType type);
 struct stmtS* createStmt(struct exprS* expr, enum stmtType type);
 struct stmtS* createStmt(enum stmtType type);
 
+struct exprS* createExprCopy(exprS* e1);
 struct exprS* createExpr(char* idOrString, enum exprType type);
 struct exprS* createExpr(int val, enum exprType type);
 struct exprS* createExpr(char* idOrString, struct factParamsList* params, enum exprType type);

@@ -558,6 +558,28 @@ struct stmtS* createStmt(enum stmtType type)
 }
 
 
+struct exprS* createExprCopy(exprS* e1)
+{
+	exprS* newE = (exprS*)malloc(sizeof(exprS));
+	newE->type = e1->type;
+	newE->left = e1->left;
+	newE->right = e1->right;
+	newE->factParams = e1->factParams;
+	newE->stringOrId = e1->stringOrId;
+	newE->charV = e1->charV;
+	newE->intV = e1->intV;
+	newE->floatV = e1->floatV;
+	newE->doubleV = e1->doubleV;
+	newE->booleanV = e1->booleanV;
+	newE->next = e1->next;
+	newE->varInTableNum = e1->varInTableNum;
+	newE->refInfo = e1->refInfo;
+	newE->isStaticCall = e1->isStaticCall;
+	newE->exprRes = e1->exprRes;
+	
+	return newE;
+}
+
 struct exprS* createExpr(char* idOrString, int iVal, struct factParamsList* params, float fVal, double dVal, char cVar, bool bVar, struct exprS* exprL, struct exprS* exprR, enum exprType type)
 {
 	struct exprS* e = (struct exprS*)malloc(sizeof(struct exprS));
@@ -574,7 +596,7 @@ struct exprS* createExpr(char* idOrString, int iVal, struct factParamsList* para
 	e->next = 0;
 	e->exprRes = "";
 	e->varInTableNum = -1;
-	e->refInfo = 0;
+	e->refInfo = -1;
 	e->isStaticCall = false;
 	return e;
 
