@@ -121,6 +121,8 @@ struct exprS
 	bool booleanV;
 	
 	struct exprS * next;
+
+	int varInTableNum;
 	string exprRes;
 };
 
