@@ -123,6 +123,8 @@ struct exprS
 	struct exprS * next;
 
 	int varInTableNum;
+	uint16_t refInfo;
+	bool isStaticCall;
 	string exprRes;
 };
 
