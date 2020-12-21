@@ -29,6 +29,8 @@ enum ConstantType
 
 VisibilityMod translateVisibilityMod(visibilityMod vMod);
 
+string transformTypeToDescriptor(const char* type, const programS* program);
+
 struct ShortClassInfo 
 {
 	string className = "";
@@ -66,6 +68,14 @@ struct LocalVariableInfo
 	bool hasValue;
 	string name;
 	string type;
+
+	LocalVariableInfo(bool isConst, bool hasValue, string name, string type)
+	{
+		this->isConst = isConst;
+		this->hasValue = hasValue;
+		this->name = name;
+		this->type = type;
+	}
 };
 
 class MethodTableElement
@@ -86,15 +96,21 @@ public:
 
 	uint16_t accessFlags = 0;
 
+	bool isStatic = false;
+
 	MethodTableElement(uint16_t methName, uint16_t descriptor,
 		VisibilityMod vMod, bool isFinal, bool isStatic);
 
 	bool addLocalVar(varOrValDeclS* varOrValDecl);
 
+	bool addLocalVar(LocalVariableInfo* varOrValDecl);
+
 	void remove(int varOrValDeclIndex);
 
 
 	int find(string varOrValName);
+
+	LocalVariableInfo find(int indexInTable);
 
 	void addAttributes();
 
@@ -121,6 +137,7 @@ class ConstantsTableElement
 	int valueI = 0;
 
 	string strV = "";
+
 
 public:
 	ConstantsTableElement(ConstantType type, string value)
@@ -187,7 +204,11 @@ class ClassFile
 
 	uint16_t thisClass = 0;
 
+	string className = "";
+
 	uint16_t superClass = 0;
+
+	string parentClassName = "";
 
 	const uint16_t interfaces_count = 0;
 
@@ -197,32 +218,39 @@ class ClassFile
 
 	map<string, MethodTableElement> methodTable;
 
-	void fillHighLevelObjectsConstants(classS* clas, list<ShortClassInfo*> allClassesInfo);
+	void fillHighLevelObjectsConstants(classS* clas, programS* program);
 
-	void fillHighLevelObjectsConstants(propertyS* prop, list<ShortClassInfo*> allClassesInfo);
+	void fillHighLevelObjectsConstants(propertyS* prop, programS* program);
 
-	void fillHighLevelObjectsConstants(methodS* meth, list<ShortClassInfo*> allClassesInfo);
+	void fillHighLevelObjectsConstants(methodS* meth, programS* program);
 
-	void addConstantsFrom(methodS* meth, list<ShortClassInfo*> allClassesInfo);
+	void addConstantsFrom(methodS* meth, programS* program);
 	
-	void addConstantsFrom(stmtS* stmt, list<ShortClassInfo*> allClassesInfo, string methodKey);
+	void addConstantsFrom(stmtS* stmt, programS* program, string methodKey);
 
-	void addConstantsFrom(varOrValDeclS* v, list<ShortClassInfo*> allClassesInfo, string methodKey);
-	
-
-	void addConstantsFrom(assignmentS* a, list<ShortClassInfo*> allClassesInfo, string methodKey);
+	void addConstantsFrom(varOrValDeclS* v, programS* program, string methodKey);
 	
 
-	void addConstantsFrom(whileLoopS* w, list<ShortClassInfo*> allClassesInfo, string methodKey);
+	void addConstantsFrom(assignmentS* a, programS* program, string methodKey);
 	
 
-	void addConstantsFrom(forLoopS* f, list<ShortClassInfo*> allClassesInfo, string methodKey);
+	void addConstantsFrom(whileLoopS* w, programS* program, string methodKey);
 	
 
-	void addConstantsFrom(ifStmtS* i, list<ShortClassInfo*> allClassesInfo, string methodKey);
+	void addConstantsFrom(forLoopS* f, programS* program, string methodKey);
 	
-	void addConstantsFrom(exprS* e, list<ShortClassInfo*> allClassesInfo, string methodKey);
 
+	void addConstantsFrom(ifStmtS* i, programS* program, string methodKey);
+	
+	void addConstantsFrom(exprS* e, programS* program, string methodKey);
+
+	void calcType(exprS* e1, programS* program, string& methodKey);
+
+	bool transformKotlinTypeCastOperators(exprS* e);
+	
+	void transformTypeCastToValueOf(exprS* e, const char* staticClassName);
+
+	int calcType(factParamsList* fpl, programS* program, string& methodKey);
 
 public:
 
@@ -233,7 +261,7 @@ public:
 	VisibilityMod vMod = _PUBLIC;
 
 	
-	ClassFile(classS* clas, list<ShortClassInfo*> allClassesInfo);
+	ClassFile(classS* clas, programS* program);
 
 	IdT findUtf8OrAdd(std::string const& utf8);
 
