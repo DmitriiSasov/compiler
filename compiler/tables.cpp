@@ -625,6 +625,7 @@ bool ClassFile::transformKotlinTypeCastOperators(exprS* e)
 			e->floatV = e->left->floatV;
 			e->exprRes = "Float";
 			e->refInfo = findFloatOrAdd(e->floatV);
+			castType(e, "Int");
 			castType(e, "Char");
 		}
 		else
@@ -662,6 +663,15 @@ bool ClassFile::transformKotlinTypeCastOperators(exprS* e)
 			transformTypeCastToValueOf(e, "String");
 			e->refInfo = findMethodRefOrAdd("java/lang/String", "valueOf", "(D)Ljava/lang/String;");
 		}
+		else if (strcmp(e->right->stringOrId, "toChar") == 0)
+		{
+			e->type = Double;
+			e->doubleV = e->left->doubleV;
+			e->exprRes = "Double";
+			e->refInfo = findDoubleOrAdd(e->doubleV);
+			castType(e, "Int");
+			castType(e, "Char");
+		}
 		else
 		{
 			return false;
@@ -693,6 +703,7 @@ bool ClassFile::transformKotlinTypeCastOperators(exprS* e)
 			e->type = Char;
 			e->charV = e->left->charV;
 			e->exprRes = "Char";
+			castType(e, "Int");
 			castType(e, "Float");
 		}
 		else if (strcmp(e->right->stringOrId, "toDouble") == 0)
@@ -700,6 +711,7 @@ bool ClassFile::transformKotlinTypeCastOperators(exprS* e)
 			e->type = Char;
 			e->charV = e->left->charV;
 			e->exprRes = "Char";
+			castType(e, "Int");
 			castType(e, "Double");
 		}
 		else if (strcmp(e->right->stringOrId, "toString") == 0)
