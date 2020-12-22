@@ -252,6 +252,8 @@ class ClassFile
 
 	int calcType(factParamsList* fpl, programS* program, string& methodKey);
 
+	void convertToJavaBasicTypeClass(exprS* e1);
+
 public:
 
 	bool isAbstract = false;
