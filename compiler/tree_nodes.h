@@ -8,6 +8,7 @@ enum exprType
 	Identificator,
 	This,
 	MethodCall,
+	ConstructorCall,
 	Int,
 	Float,
 	String,
