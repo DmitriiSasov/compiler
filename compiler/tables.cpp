@@ -23,9 +23,8 @@ VisibilityMod translateVisibilityMod(visibilityMod vMod)
 
 bool isStandartClass(const string& className)
 {
-	if (className == "String" || className == "Object" || className == "Int"
-		|| className == "Float" || className == "Char" || className == "Double"
-		|| className == "Boolean")
+	if (className == "String" || className == "Int" || className == "Float"
+		 || className == "Char" || className == "Double" || className == "Boolean")
 		return true;
 	return false;
 }
@@ -89,7 +88,7 @@ string isStandartStaticMethod(string methodSign)
 string isObjectMethod(string methodSign)
 {
 	if (methodSign == "toString()") return "String";
-	else if (methodSign == "equals(Object)") return "String";
+	else if (methodSign == "equals(Object)") return "Boolean";
 	else return "";
 }
 
@@ -517,7 +516,7 @@ bool ClassFile::transformKotlinTypeCastOperators(exprS* e)
 	{
 		if (strcmp(e->right->stringOrId, "toInt") == 0)
 		{
-			transformTypeCastToValueOf(e, "Integer");
+			transformTypeCastToValueOf(e, "Int");
 			e->refInfo = findMethodRefOrAdd("java/lang/Integer", "Integer", "(Ljava/lang/String;)I");
 		}
 		else if (strcmp(e->right->stringOrId, "toFloat") == 0)
@@ -553,14 +552,14 @@ bool ClassFile::transformKotlinTypeCastOperators(exprS* e)
 		{
 			e->type = Int;
 			e->intV = e->left->intV;
-			e->exprRes = "Integer";
+			e->exprRes = "Int";
 			e->refInfo = findIntOrAdd(e->intV);
 		}
 		else if (strcmp(e->right->stringOrId, "toFloat") == 0)
 		{
 			e->type = Int;
 			e->intV = e->left->intV;
-			e->exprRes = "Integer";
+			e->exprRes = "Int";
 			e->refInfo = findIntOrAdd(e->intV);
 			castType(e, "Float");
 		}
@@ -568,7 +567,7 @@ bool ClassFile::transformKotlinTypeCastOperators(exprS* e)
 		{
 			e->type = Int;
 			e->intV = e->left->intV;
-			e->exprRes = "Integer";
+			e->exprRes = "Int";
 			e->refInfo = findIntOrAdd(e->intV);
 			castType(e, "Double");
 		}
@@ -581,7 +580,7 @@ bool ClassFile::transformKotlinTypeCastOperators(exprS* e)
 		{
 			e->type = Int;
 			e->intV = e->left->intV;
-			e->exprRes = "Integer";
+			e->exprRes = "Int";
 			e->refInfo = findIntOrAdd(e->intV);
 			castType(e, "Char");
 		}
@@ -743,6 +742,34 @@ int ClassFile::calcType(factParamsList* fpl, programS* program, string& methodKe
 	return paramsCount;
 }
 
+int isComponent(const char* methodName) 
+{
+	if (strcmp(methodName, "component1") == 0)
+	{
+		return 1;
+	}
+	else if (strcmp(methodName, "component2") == 0)
+	{
+		return 2;
+	}
+	else if (strcmp(methodName, "component3") == 0)
+	{
+		return 3;
+	}
+	else if (strcmp(methodName, "component4") == 0)
+	{
+		return 4;
+	}
+	else if (strcmp(methodName, "component5") == 0)
+	{
+		return 5;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
 void ClassFile::calcType(exprS* e1, programS* program, string& methodKey)
 {
 	if (e1->type == Identificator)
@@ -787,56 +814,60 @@ void ClassFile::calcType(exprS* e1, programS* program, string& methodKey)
 		//Рассчитать типы для параметров
 		int paramsCount = calcType(e1->factParams, program, methodKey);
 		
-		//Проверить, существует ли такой метод
-		string res = getMethodType(createShortInfo(e1), program, className);
-		
-		if (res == "")
+		//Проверка на методы equals and toString()
+		if (className != "Main$")	//Если вызов вне статического класса
 		{
-			res = getMethodType(createShortInfo(e1), program, "Main$");
+			if (strcmp(e1->stringOrId, "equals") && paramsCount == 1)
+			{
+				castType(e1->factParams->first, "Object");
+				e1->exprRes = "Boolean";
+				e1->refInfo = findMethodRefOrAdd(className, "equals",
+					"(Ljava/lang/Object;)Z");
+			}
+			else if (strcmp(e1->stringOrId, "toString") && paramsCount == 0)
+			{
+				e1->exprRes = "String";
+				e1->refInfo = findMethodRefOrAdd(className, "equals",
+					"()Ljava/lang/String;");
+			}
+		}
+		else
+		{
+			//Проверить, существует ли такой метод
+			string res = getMethodType(createShortInfo(e1), program, className);
+
 			if (res == "")
 			{
-				//Проверка на методы equals and toString()
-				if (className != "Main$")	//Если вызов вне статического класса
-				{
-					if (strcmp(e1->stringOrId, "equals") && paramsCount == 1)
-					{
-						castType(e1->factParams->first, "Object");
-						res = "Boolean";
-					}
-					else if (strcmp(e1->stringOrId, "toString") && paramsCount == 0)
-					{
-						res = "String";
-					}
-				}
-				
-				res = isStandartStaticMethod(methodKey);
+				res = getMethodType(createShortInfo(e1), program, "Main$");
 				if (res == "")
 				{
-					char message[200] = "EXCEPTION! Call of unknown method \"";
-					exception e((strcat(strcat(message, methodKey.c_str()), "\"")));
-					throw e;
+					res = isStandartStaticMethod(methodKey);
+					if (res == "")
+					{
+						char message[200] = "EXCEPTION! Call of unknown method \"";
+						exception e((strcat(strcat(message, methodKey.c_str()), "\"")));
+						throw e;
+					}
+					e1->exprRes = res;
+					e1->refInfo = findMethodRefOrAdd("MyLib/MyIOClass", e1->stringOrId,
+						transformMethodCallToDescriptor(e1, program));
 				}
-				e1->exprRes = res;
-				e1->refInfo = findMethodRefOrAdd("MyIOClass", e1->right->stringOrId,
-					transformMethodCallToDescriptor(e1, program));
-				
+				else
+				{
+					e1->exprRes = res;
+					e1->refInfo = findMethodRefOrAdd("Main$", e1->stringOrId,
+						transformMethodCallToDescriptor(e1, program));
+				}
+
+				e1->isStaticCall = true;
 			}
 			else
 			{
 				e1->exprRes = res;
-				e1->refInfo = findMethodRefOrAdd("Main$", e1->right->stringOrId,
+				e1->refInfo = findMethodRefOrAdd(className, e1->stringOrId,
 					transformMethodCallToDescriptor(e1, program));
 			}
-				
-			e1->isStaticCall = true;
 		}
-		else
-		{
-			e1->exprRes = res;
-			e1->refInfo = findMethodRefOrAdd(className, e1->right->stringOrId,
-				transformMethodCallToDescriptor(e1, program));
-		}
-		
 	}
 	else if (e1->type == FieldCalcExpr)
 	{
@@ -868,13 +899,24 @@ void ClassFile::calcType(exprS* e1, programS* program, string& methodKey)
 			e1->refInfo = findMethodRefOrAdd(e1->left->exprRes, e1->right->stringOrId,
 				transformMethodCallToDescriptor(e1, program));
 		}
+		else if (strstr(e1->left->exprRes.c_str(), "[]") != 0 
+			&& paramsCount == 0)
+		{
+			int componntNum = isComponent(e1->stringOrId);
+			if (componntNum != 0)
+			{
+				e1->type = ArrayElementCall;
+				e1->right = createExpr(componntNum - 1, Int);
+				e1->stringOrId = 0;
+			}
+		}
 		else if (isStandartClass(e1->left->exprRes))
 		{
 			if (e1->left->exprRes == "String" && strcmp(e1->right->stringOrId, "get") == 0 
 				&& paramsCount == 1 && e1->factParams->first->exprRes == "Integer")
 			{
 				char* tmp = new char[strlen("charAt") + 1];
-				strcmp(tmp, "charAt");
+				strcpy(tmp, "charAt");
 				e1->right->stringOrId = tmp;
 				e1->refInfo = findMethodRefOrAdd("java/lang/String", e1->right->stringOrId,
 					"(I)C");
@@ -887,6 +929,11 @@ void ClassFile::calcType(exprS* e1, programS* program, string& methodKey)
 				throw e;
 			}
 		}
+		//Обращение к методам equals и toString
+		else if (true)
+		{
+
+		}
 		else
 		{
 			char message[200] = "EXCEPTION! Call of unknown method \"";
@@ -895,7 +942,34 @@ void ClassFile::calcType(exprS* e1, programS* program, string& methodKey)
 			throw e;
 		}
 	}
+	else if (e1->type == ArrayElementCall)
+	{
+		calcType(e1->left, program, methodKey);
+		calcType(e1->right, program, methodKey);
+		if (e1->right->exprRes == "Int")
+		{
+			if (strstr(e1->left->exprRes.c_str(), "[]") != 0)
+			{
 
+			}
+			else if (e1->left->exprRes == "String")
+			{
+
+			}
+			else
+			{
+				char message[200] = "EXCEPTION! Try to get index of not array or string object in method \"";
+				exception e(strcat(strcat(message, methodKey.c_str()), "\""));
+				throw e;
+			}
+		}
+		else 
+		{
+			char message[200] = "EXCEPTION! Not integer index  in method \"";
+			exception e(strcat(strcat(message, methodKey.c_str()), "\""));
+			throw e;
+		}
+	}
 }
 
 //type1 - к чему приводить, type2 - что приводить, return - тип к которому можно привести
