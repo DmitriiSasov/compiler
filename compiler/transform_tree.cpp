@@ -524,7 +524,68 @@ void complementModifiers(programS* program)
 	}
 }
 
-void checkPropsNames(classS* clas, programS* program)
+//Проверяем, что у родительского метода менее строгий уровень доступа
+bool isParentMethodVisModWeaken(visibilityMod vMod, const programS* const program, 
+	const string& methodSign, const string& parentClassName)
+{
+	if (&parentClassName == NULL || parentClassName == "")
+		return false;
+
+	if (parentClassName == "MyLib/Any")
+	{
+		if ((methodSign == "equals(MyLib/Any)" || methodSign == "toString()") && vMod != Public)
+		{
+			return false;
+		}
+	}
+	else
+	{
+		for (auto pe = program->first; pe != 0; pe = pe->next)
+		{
+			if (pe->clas != 0 && parentClassName == pe->clas->name)
+			{
+				if (pe->clas->body == 0)
+				{
+					return isParentMethodVisModWeaken(vMod, program, methodSign, pe->clas->parentClassName);
+				}
+				else
+				{
+					for (auto cbe = pe->clas->body->first; cbe != 0; cbe = cbe->next)
+					{
+						if (cbe->method != 0 && createMethodSignature(cbe->method) == methodSign
+							&& cbe->method->mods->vMod < vMod)
+							return true;
+					}
+				}
+			}
+		}
+	}
+}
+
+//Проверяем понижение уровня доступа для методов класса, которые переопределяются
+void checkMethodsVilibilityLevelIncreasing(const programS* const program)
+{
+	for (auto pe = program->first; pe != 0; pe = pe->next)
+	{
+		if (pe->clas != 0 && pe->clas->body != 0 && strcmp(pe->clas->name, "Main$") != 0)
+		{
+			for (auto cbe = pe->clas->body->first; cbe != 0; cbe = cbe->next)
+			{
+				if (cbe->method != 0 && cbe->method->mods->isOverride 
+					&& isParentMethodVisModWeaken(cbe->method->mods->vMod, program, 
+						createMethodSignature(cbe->method), pe->clas->parentClassName))
+				{
+					char message[200] = "EXCEPTION! Method \"";
+					exception e(strcat(strcat(strcat(message, pe->clas->name), "\" has stricter visibility modifier than parent's method"),
+						pe->clas->parentClassName));
+					throw e;
+				}
+			}
+		}
+	}
+}
+
+void checkPropsNames(classS* clas, const  programS* program)
 {
 	if (clas == 0 || clas->body == 0)
 		return;
@@ -605,36 +666,14 @@ void checkMethodsNames(classS* clas, const programS* program)
 	}
 }
 
-void checkMethodsAndPropsNames(classS* clas) 
+void checkMethodsAndPropsNames(programS* program)
 {
-	if (clas == 0 || clas->body == 0)
-		return;
-	
-	list<string> methodNames;
-	list<string> propertyNames;
-	for (classBodyElementS* cbe = clas->body->first; cbe != 0; cbe = cbe->next)
+	for (auto pe = program->first; pe != 0; pe = pe->next)
 	{
-		if (cbe->property != 0)
+		if (pe->clas != 0)
 		{
-			auto res = find(propertyNames.begin(), propertyNames.end(), string(cbe->property->varOrVal->id));
-			if (res != propertyNames.end())
-			{
-				char message[200] = "EXCEPTION! property with name \"";
-				exception e((strcat(strcat(message, cbe->property->varOrVal->id), "\" is already declared")));
-				throw e;
-			}
-			else	propertyNames.push_back(string(cbe->property->varOrVal->id));
-		}
-		else if (cbe->method != 0)
-		{
-			auto res = find(methodNames.begin(), methodNames.end(), string(cbe->method->func->delc->name));
-			if (res != methodNames.end())
-			{
-				char message[200] = "EXCEPTION! method with name \"";
-				exception e((strcat(strcat(message, cbe->method->func->delc->name), "\" is already declared")));
-				throw e;
-			}
-			else	methodNames.push_back(string(cbe->method->func->delc->name));
+			checkMethodsNames(pe->clas, program);
+			checkPropsNames(pe->clas, program);
 		}
 	}
 }
@@ -1110,10 +1149,9 @@ bool isParentClass(string potentialParent, string potentialChild, list<pair<stri
 	{
 		if (classAndParent.first == potentialChild)
 		{
-			if (classAndParent.second == "")
-				return false;
-			else if (classAndParent.second == potentialParent) return true;
-			else return isParentClass(potentialParent, classAndParent.second, classesAndParents);
+			if (classAndParent.second == "")	return false;
+			else if (classAndParent.second == potentialParent)	 return true;
+			else	return isParentClass(potentialParent, classAndParent.second, classesAndParents);
 		}		
 	}
 	return false;
