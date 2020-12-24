@@ -29,23 +29,6 @@ bool isStandartClass(const string& className)
 	return false;
 }
 
-//return - className
-string findClass(const string& className, const programS* const program)
-{
-	string res = "";
-
-	for (auto pe = program->first; pe != 0; pe = pe->next)
-	{
-		if (pe->clas != 0 && className == pe->clas->name)
-		{
-			res = className;
-		}
-	}
-
-	return res;
-}
-
-
 string getPropertyType(const char* propName, const programS* const program, const string& currentClassName) 
 {
 	string res = "";
@@ -55,12 +38,12 @@ string getPropertyType(const char* propName, const programS* const program, cons
 		{
 			for (auto cbe = pe->clas->body->first; cbe != 0; cbe = cbe->next)
 			{
-				if (cbe->property != 0 && strstr(cbe->property->varOrVal->id, propName) != 0)
+				if (cbe->property != 0 && strcmp(cbe->property->varOrVal->id, propName) == 0)
 				{				
-					res = cbe->method->func->delc->type->easyType;
+					res = cbe->property->varOrVal->id;
 				}
 			}
-			if (res == "" && pe->clas->parentClassName != 0)
+			if (res == "" && pe->clas->parentClassName != 0 && strcmp(pe->clas->parentClassName, "MyLib/Any") != 0)
 			{
 				res = getPropertyType(propName, program, pe->clas->parentClassName);
 			}
@@ -74,13 +57,19 @@ string getPropertyType(const char* propName, const programS* const program, cons
 string isStandartStaticMethod(string methodSign)
 {
 	if (methodSign == "print(Int|)" || methodSign == "print(Float|)" || methodSign == "print(Double|)"
-		|| methodSign == "print(Char|)" || methodSign == "print(String|)")
+		|| methodSign == "print(Char|)" || methodSign == "print(MyString|)" || methodSign == "print(Boolean|)"
+		|| methodSign == "print(Any|)")
 		return "Unit";
 	else if (methodSign == "readInt()")	return "Int";
-	else if (methodSign == "readString()") return "String";
+	else if (methodSign == "readLine()") return "MyString";
 	else if (methodSign == "readDouble()") return "Double";
 	else if (methodSign == "readChar()") return "Char";
 	else if (methodSign == "readFloat()") return "Float";
+	else if (methodSign == "readBoolean()") return "Boolean";
+	else if (methodSign.find("arrayOf(") == 0)
+	{
+		//??????ЧТо возвращать???
+	}
 	else return "";
 
 }
@@ -388,8 +377,7 @@ string transformTypeToDescriptor(const char* type, const programS* program)
 	else if (strcmp(type, "Unit") == 0)	return string("V");
 	else
 	{
-		string res = findClass(type, program);
-		if (res != "")	return string("L") + res + ';';
+		if (isUserClass(type, program))	return string("L") + type + ';';
 		else
 		{
 			string typeName = type;
@@ -474,11 +462,10 @@ void ClassFile::fillHighLevelObjectsConstants(classS* clas, programS* program)
 
 
 
-
+//Привести типы для базовых типов без использования методов valueOf и to<Type>
 void castType(exprS* e1, string type)
 {
 	exprS* newE = createExprCopy(e1);
-	newE->next = 0;
 	e1->exprRes = type;
 	e1->type = TypeCast;
 	e1->left = newE;
@@ -838,13 +825,67 @@ void ClassFile::convertToJavaBasicTypeClass(exprS* e)
 	e->varInTableNum = -1;
 }
 
-bool isUserClass(const char* name, programS* program)
+bool isUserClass(const char* name, const programS* program)
 {
-	if (name != 0 && strlen(name) > 0)
+
+	bool res = false;
+
+	for (auto pe = program->first; pe != 0 && res == false; pe = pe->next)
 	{
-		return findClass(name, program) != "";
+		if (pe->clas != 0 && strcmp(name, pe->clas->name) == 0 
+			&& strcmp(name, "Main$") != 0)
+		{
+			res = true;
+		}
 	}
-	return false;
+
+	return res;
+}
+
+bool checkUnitOperandsInExpr(exprS* e, const string& methodKey)
+{
+	if (e->factParams != 0)
+	{
+		for (auto fp = e->factParams->first; fp != 0; fp = fp->next)
+		{
+			if (fp->exprRes == "Unit")
+			{
+				char message[200] = "EXCEPTION! Incorrect operand with UNIT (void) type in method - ";
+				exception e(strcat(message, methodKey.c_str()));
+				throw e;
+			}
+		}
+	}
+	if (e->left != 0 && e->left->exprRes == "Unit" 
+		|| e->right != 0 && e->right->exprRes == "Unit")
+	{
+		char message[200] = "EXCEPTION! Incorrect operand with UNIT (void) type in method - ";
+		exception e(strcat(message, methodKey.c_str()));
+		throw e;
+	}
+}
+
+void ClassFile::addToStringCall(exprS* e, programS* program)
+{
+	exprS* newE = createExprCopy(e);
+	e->type = MethodCalcExpr;
+	char* tmp = new char[strlen("toString") + 1];
+	strcpy(tmp, "toString");
+	e->stringOrId = tmp;
+	e->left = newE;
+	e->factParams = 0;
+
+	string basicToStringClass;
+	if (strstr(newE->exprRes.c_str(), "[]") != 0)
+	{
+		basicToStringClass = "java/lang/Object";
+	}
+	else
+	{
+		basicToStringClass = newE->exprRes;
+	}
+	e->exprRes = "String";
+	e->refInfo = findMethodRefOrAdd(basicToStringClass, "toString", "()Ljava/lang/String;");
 }
 
 void ClassFile::calcType(exprS* e1, programS* program, string& methodKey)
@@ -894,7 +935,8 @@ void ClassFile::calcType(exprS* e1, programS* program, string& methodKey)
 	{
 		//Рассчитать типы для параметров
 		int paramsCount = calcType(e1->factParams, program, methodKey);
-		
+		checkUnitOperandsInExpr(e1, methodKey);
+
 		//Проверка на методы equals and toString()
 		if (className != "Main$")	//Если вызов вне статического класса
 		{
@@ -947,7 +989,7 @@ void ClassFile::calcType(exprS* e1, programS* program, string& methodKey)
 							throw e;
 						}
 						e1->exprRes = res;
-						e1->refInfo = findMethodRefOrAdd("MyLib/MyIOClass", e1->stringOrId,
+						e1->refInfo = findMethodRefOrAdd("MyLib/MyIO", e1->stringOrId,
 							transformMethodCallToDescriptor(e1, program));
 					}
 					else
@@ -973,7 +1015,7 @@ void ClassFile::calcType(exprS* e1, programS* program, string& methodKey)
 	else if (e1->type == FieldCalcExpr)
 	{
 		calcType(e1->left, program, methodKey);
-
+		checkUnitOperandsInExpr(e1, methodKey);
 		//Найти поле в классе
 		string res = getPropertyType(e1->stringOrId, program, e1->left->exprRes);
 		if (res == "")
@@ -984,6 +1026,13 @@ void ClassFile::calcType(exprS* e1, programS* program, string& methodKey)
 				char* tmp = new char[strlen("length") + 1];
 				strcpy(tmp, "length");
 				e1->stringOrId = tmp;
+				e1->exprRes = "Int";
+			}
+			else if (e1->left->exprRes == "String" && strcmp(e1->stringOrId, "length"))
+			{
+				e1->type = MethodCalcExpr;
+				e1->exprRes = "Int";
+				e1->refInfo = findMethodRefOrAdd("java/lang/String", "length", "()I");
 			}
 			else
 			{
@@ -993,15 +1042,19 @@ void ClassFile::calcType(exprS* e1, programS* program, string& methodKey)
 				throw e;
 			}			
 		}
-		e1->exprRes = res;
-		e1->refInfo = findFieldRefOrAdd(e1->left->exprRes, e1->stringOrId, 
-			transformTypeToDescriptor(res.c_str(), program));
+		else
+		{
+			e1->exprRes = res;
+			e1->refInfo = findFieldRefOrAdd(e1->left->exprRes, e1->stringOrId,
+				transformTypeToDescriptor(res.c_str(), program));
+		}
+		
 	}
 	else if (e1->type == MethodCalcExpr)
 	{
 		int paramsCount = calcType(e1->factParams, program, methodKey);
 		calcType(e1->left, program, methodKey);
-
+		checkUnitOperandsInExpr(e1, methodKey);
 		
 		string res = getMethodType(createShortInfo(e1), program, className);
 		//Если метод у объекта такого типа существует:
@@ -1026,7 +1079,7 @@ void ClassFile::calcType(exprS* e1, programS* program, string& methodKey)
 			e1->refInfo = findMethodRefOrAdd(e1->left->exprRes, "equals",
 				"(Ljava/lang/Object;)Z");
 		}
-		//Если объект - базовый класс Kotlin + toString
+		//Если объект - базовый класс Kotlin + toString для базовых типов
 		else if (isStandartClass(e1->left->exprRes))
 		{
 			if (e1->left->exprRes == "String" && strcmp(e1->stringOrId, "get") == 0 
@@ -1045,6 +1098,18 @@ void ClassFile::calcType(exprS* e1, programS* program, string& methodKey)
 					methodKey.c_str()));
 				throw e;
 			}
+		}
+		//Обращение к методу toString для нестандартных классов
+		else if (strcmp(e1->stringOrId, "toString") == 0 && paramsCount == 0)
+		{
+			e1->exprRes = "String";
+			string basicToStringClass = e1->left->exprRes;
+			if (strstr(e1->left->exprRes.c_str(), "[]") != 0)
+			{
+				basicToStringClass = "java/lang/Object";
+			}
+			e1->refInfo = findMethodRefOrAdd(e1->left->exprRes, "toString",
+				"()Ljava/lang/String;");
 		}
 		//Если объект массив и у него берут одну из компонент
 		else if (strstr(e1->left->exprRes.c_str(), "[]") != 0
@@ -1114,8 +1179,6 @@ void ClassFile::calcType(exprS* e1, programS* program, string& methodKey)
 	}
 	else if (e1->type == ParentFieldCall)
 	{
-		calcType(e1->left, program, methodKey);
-
 		if (parentClassName == "")
 		{
 			char message[200] = "EXCEPTION! Call of unknown parent field \"";
@@ -1141,7 +1204,7 @@ void ClassFile::calcType(exprS* e1, programS* program, string& methodKey)
 	else if (e1->type == ParentMethodCall)
 	{
 		int paramsCount = calcType(e1->factParams, program, methodKey);
-		calcType(e1->left, program, methodKey);
+		checkUnitOperandsInExpr(e1, methodKey);
 
 		e1->varInTableNum = 0;
 		//Если метод equals
@@ -1181,7 +1244,235 @@ void ClassFile::calcType(exprS* e1, programS* program, string& methodKey)
 			}
 		}
 	}
-	
+	else if (e1->type == Int)
+	{
+		e1->exprRes = "Int";
+		e1->refInfo = findIntOrAdd(e1->intV);
+	}
+	else if (e1->type == Double)
+	{
+		e1->exprRes = "Double";
+		e1->refInfo = findDoubleOrAdd(e1->doubleV);
+	}
+	else if (e1->type == Float)
+	{
+		e1->exprRes = "Float";
+		e1->refInfo = findFloatOrAdd(e1->floatV);
+	}
+	else if (e1->type == String)
+	{
+		e1->exprRes = "String";
+		e1->refInfo = findStringOrAdd(e1->stringOrId);
+	}
+	else if (e1->type == Char)
+	{
+		e1->exprRes = "Char";
+	}
+	else if (e1->type == Boolean)
+	{
+		e1->exprRes = "Boolean";
+	}
+	else if (e1->type == Range)
+	{
+		char message[200] = "EXCEPTION! Unsupported range out of For loop in method - ";
+		exception e(strcat(message,methodKey.c_str()));
+		throw e;
+	}
+	else if (e1->type == LogicalNot)
+	{
+		calcType(e1->left, program, methodKey);
+		if (e1->left->exprRes != "Boolean")
+		{
+			char message[200] = "EXCEPTION! Incorrect operator! operand with not boolean type in method - ";
+			exception e(strcat(message, methodKey.c_str()));
+			throw e;
+		}
+		e1->exprRes = "Boolean";
+	}
+	else if (e1->type == UnaryPlusExpr || e1->type == UnaryMinusExpr)
+	{
+		calcType(e1->left, program, methodKey);
+
+		if (e1->left->exprRes != "Int" && e1->left->exprRes != "Double" && e1->left->exprRes != "Float")
+		{
+			char message[200] = "EXCEPTION! Incorrect operator+ (unary) operand with not number type in method - ";
+			exception e(strcat(message, methodKey.c_str()));
+			throw e;
+		}
+		e1->exprRes = e1->left->exprRes;
+	}
+	else if (e1->type == Sum)
+	{
+		calcType(e1->left, program, methodKey);
+		calcType(e1->right, program, methodKey);
+		checkUnitOperandsInExpr(e1, methodKey);
+
+		if (e1->left->exprRes == "String")
+		{
+			if (e1->right->exprRes != "String");
+			{
+				if (isStandartClass(e1->right->exprRes))
+				{ 
+					convertBasicTypeExprToString(e1->right);
+				}
+				else
+				{
+					addToStringCall(e1, program);
+				}
+			}
+			e1->type = MethodCalcExpr;
+			e1->exprRes = "String";
+			char* tmp = new char[strlen("concat") + 1];
+			strcpy(tmp, "concat");
+			e1->stringOrId = tmp;
+			e1->factParams = createFactParamsList(e1->right);
+			e1->right = 0;
+			e1->refInfo = findMethodRefOrAdd("java/lang/String", "concat", "(Ljava/lang/String;)Ljava/lang/String;");
+		}
+		else if (e1->left->exprRes == "Int")
+		{
+			if (e1->right->exprRes == "Float" || e1->right->exprRes == "Double")
+			{
+				castType(e1->left, e1->right->exprRes);
+			}
+			else if(e1->right->exprRes != "Int")
+			{
+				char message[200] = "EXCEPTION! Incorrect operator+ right operand with type";
+				exception e(strcat(strcat(strcat(message, e1->right->exprRes.c_str()), 
+					" in method - "), methodKey.c_str()));
+				throw e;
+			}
+			e1->exprRes = e1->right->exprRes;
+		}
+		else if (e1->left->exprRes == "Char")
+		{
+			if (e1->right->exprRes == "String")
+			{
+				convertBasicTypeExprToString(e1->left);
+				e1->type = MethodCalcExpr;
+				e1->exprRes = "String";
+				char* tmp = new char[strlen("concat") + 1];
+				strcpy(tmp, "concat");
+				e1->stringOrId = tmp;
+				e1->factParams = createFactParamsList(e1->right);
+				e1->right = 0;
+				e1->refInfo = findMethodRefOrAdd("java/lang/String", "concat", "(Ljava/lang/String;)Ljava/lang/String;");
+			}
+			else if (e1->right->exprRes != "Int")
+			{
+				char message[200] = "EXCEPTION! Incorrect operator+ right operand with type";
+				exception e(strcat(strcat(strcat(message, e1->right->exprRes.c_str()),
+					" in method - "), methodKey.c_str()));
+				throw e;
+			}
+			else
+			{
+				castType(e1->left, "Int");
+				e1->exprRes = "Int";
+				castType(e1, "Char");
+			}			
+		}
+		else if (e1->left->exprRes == "Float")
+		{
+			if (e1->right->exprRes == "Double")
+			{
+				castType(e1->left, "Double");
+				e1->exprRes = "Double";
+			}
+			else if (e1->right->exprRes == "Int")
+			{
+				castType(e1->right, "Float");
+				e1->exprRes = "Float";
+			}
+			else if (e1->right->exprRes == "Float")
+			{
+				e1->exprRes = "Float";
+			}
+			else
+			{
+				char message[200] = "EXCEPTION! Incorrect operator+ right operand with type";
+				exception e(strcat(strcat(strcat(message, e1->right->exprRes.c_str()),
+					" in method - "), methodKey.c_str()));
+				throw e;
+			}
+		}
+		else if (e1->left->exprRes == "Double")
+		{
+			if (e1->right->exprRes == "Float" || e1->right->exprRes == "Int")
+			{
+				castType(e1->right, e1->left->exprRes);
+			}
+			else if (e1->right->exprRes != "Double")
+			{
+				char message[200] = "EXCEPTION! Incorrect operator+ right operand with type";
+				exception e(strcat(strcat(strcat(message, e1->right->exprRes.c_str()),
+					" in method - "), methodKey.c_str()));
+				throw e;
+			}
+			e1->exprRes = e1->left->exprRes;
+		}
+		else
+		{
+			char message[200] = "EXCEPTION! Incorrect operator+ left operand with type";
+			exception e(strcat(strcat(strcat(message, e1->left->exprRes.c_str()),
+				" in method - "), methodKey.c_str()));
+		}
+	}
+	else if (e1->type == Sub)
+	{
+		calcType(e1->left, program, methodKey);
+		calcType(e1->right, program, methodKey);
+		checkUnitOperandsInExpr(e1, methodKey);
+		
+		if (e1->left->exprRes == "")
+		{
+
+		}
+	}
+	else if (e1->type == Mul)
+	{
+
+	}
+	else if (e1->type == Div)
+	{
+
+	}
+	else if (e1->type == Mod)
+	{
+
+	}
+	else if (e1->type == Less)
+	{
+
+	}
+	else if (e1->type == More)
+	{
+
+	}
+	else if (e1->type == Or)
+	{
+
+	}
+	else if (e1->type == And)
+	{
+
+	}
+	else if (e1->type == Eq)
+	{
+
+	}
+	else if (e1->type == Neq)
+	{
+
+	}
+	else if (e1->type == Loeq)
+	{
+
+	}
+	else if (e1->type == Moeq)
+	{
+
+	}
 }
 
 //type1 - к чему приводить, type2 - что приводить, return - тип к которому можно привести
@@ -1205,7 +1496,49 @@ bool canCastType(const char* type1, const char* type2)
 	return false;
 }
 
+void ClassFile::convertBasicTypeExprToString(exprS* e)
+{
+	string descr = "(";
+	if (e->exprRes == "Int")
+	{
+		descr += "I";
+	}
+	else if (e->exprRes != "Float")
+	{
+		descr += "F";
+	}
+	else if (e->exprRes != "Double")
+	{
+		descr += "D";
+	}
+	else if (e->exprRes != "Char")
+	{
+		descr += "C";
+	}
+	else if (e->exprRes != "Boolean")
+	{
+		descr += "Z";
+	}
+	else
+	{
+		return;
+	}
+	descr += ')';
 
+	e->factParams = createFactParamsList(createExprCopy(e));
+	e->type = MethodCalcExpr;
+	e->exprRes = "String";
+	e->isStaticCall = true;
+	char* tmp = new char[strlen("valueOf") + 1];
+	strcpy(tmp, "valueOf");
+	e->stringOrId = tmp;
+	tmp = new char[strlen("String") + 1];
+	strcpy(tmp, "String");
+	e->left = createExpr(tmp, Identificator);
+	e->left->exprRes = tmp;
+	e->left->exprRes = "String";
+	e->refInfo = findMethodRefOrAdd("java/lang/String", "valueOf", descr + "Ljava/lang/String;");
+}
 
 void ClassFile::addConstantsFrom(varOrValDeclS* v, programS* program, string methodKey)
 {
@@ -1405,8 +1738,22 @@ bool MethodTableElement::addLocalVar(varOrValDeclS* varOrValDecl)
 	return 0;
 }
 
+bool MethodTableElement::addLocalVar(LocalVariableInfo* varOrValDecl)
+{
+	return false;
+}
+
+void MethodTableElement::remove(int varOrValDeclIndex)
+{
+}
+
 
 int MethodTableElement::find(string varOrValName)
 {
 	return 0;
+}
+
+LocalVariableInfo MethodTableElement::find(int indexInTable)
+{
+	return LocalVariableInfo(false, false, "", "");
 }
