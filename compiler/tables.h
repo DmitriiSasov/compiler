@@ -35,6 +35,10 @@ bool isUserClass(const char* name, programS* program);
 
 string getPropertyType(const char* propName, const programS* const program, const string& currentClassName);
 
+string getMethodType(string methodSign, const programS* const program, const string& currentClassName);
+
+string createMethodSignature(methodS* meth);
+
 struct ShortClassInfo 
 {
 	string className = "";
