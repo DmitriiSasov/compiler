@@ -732,17 +732,20 @@ void checkConstructorsAndInits(classS* cl)
 	}
 	
 	classBodyElementS* cbe = cl->body->first;
+	int publicConstrCount = 0;
 	while (cbe != 0)
 	{
 		//Запрещены все конструкторы кроме public constructor() 
-		if (cbe->constructor != 0 && (cbe->constructor->anotherConstrParams != 0 
+		if (cbe->constructor != 0 && (cbe->constructor->anotherConstrParams != 0
 			|| cbe->constructor->anotherConstructorId != 0 || cbe->constructor->params != 0
 			|| cbe->constructor->stmts != 0 || cbe->constructor->mod != Public))
 		{
-			char message[200] = "EXCEPTION! Unsupported constructor in class \"";
+			char message[200] = "EXCEPTION! Unsupported not public not default constructor  in class \"";
 			exception e((strcat(strcat(message, cl->name), "\"")));
 			throw e;
 		}
+		else publicConstrCount++;
+
 		if (cbe->init != 0)
 		{
 			char message[200] = "EXCEPTION! Unsupported initializator in class \"";
@@ -752,6 +755,12 @@ void checkConstructorsAndInits(classS* cl)
 		cbe = cbe->next;
 	}
 
+	if (publicConstrCount > 1)
+	{
+		char message[200] = "EXCEPTION! Redefine of default contructor in class \"";
+		exception e((strcat(strcat(message, cl->name), "\"")));
+		throw e;
+	}
 }
 
 void checkConstructorsAndInits(programS* program)
