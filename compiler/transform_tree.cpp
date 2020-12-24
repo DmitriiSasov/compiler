@@ -997,30 +997,6 @@ void checkCirclesInInheritance(programS* program)
 
 void fillClassesFiles(list<ClassFile> files, programS* program)
 {
-	list<ShortClassInfo*> classesInfo;
-	for (programElementS* pe = program->first; pe != 0 ; pe = pe->next)
-	{
-		if (pe->clas != 0) 
-		{
-			ShortClassInfo* sci = new ShortClassInfo();
-			sci->className = pe->clas->name;
-			if (pe->clas->body != 0)
-			{
-				for (classBodyElementS* cbe = pe->clas->body->first; cbe != 0; cbe = cbe->next)
-				{
-					if (cbe->property != 0)
-					{
-						sci->propertiesInfo.push_back(createShortInfo(cbe->property));
-					}
-					else if (cbe->method != 0) 
-					{
-						sci->methodsInfo.push_back(createShortInfo(cbe->method));
-					}
-				}
-			}
-			classesInfo.push_back(sci);
-		}
-	}
 	for (programElementS* pe = program->first; pe != 0; pe = pe->next)
 	{
 		if (pe->clas != 0)
