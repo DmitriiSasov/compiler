@@ -499,6 +499,41 @@ void complementModifiers(programS* program)
 	}
 }
 
+void checkPropsNames(classS* clas, programS* program)
+{
+	if (clas == 0 || clas->body == 0)
+		return;
+
+	list<string> propertyNames;
+	for (auto cbe = clas->body->first; cbe != 0; cbe = cbe->next)
+	{
+		if (cbe->property != 0)
+		{
+			if (find(propertyNames.begin(), propertyNames.end(), cbe->property->varOrVal->id) 
+				!= propertyNames.end())
+			{
+				char message[200] = "EXCEPTION! property with name \"";
+				exception e((strcat(strcat(message, cbe->property->varOrVal->id), "\" is already declared")));
+				throw e;
+			}
+			if (clas->parentClassName != 0 && getPropertyType(cbe->property->varOrVal->id, 
+				program, clas->parentClassName) != "")
+			{
+				char message[200] = "EXCEPTION! Redefine of parent property \"";
+				exception e((strcat(strcat(message, cbe->property->varOrVal->id), "\"")));
+				throw e;
+			}
+		}
+	}
+}
+
+void checkMethodsNames(classS* clas)
+{
+	if (clas == 0 || clas->body == 0)
+		return;
+
+}
+
 void checkMethodsAndPropsNames(classS* clas) 
 {
 	if (clas == 0 || clas->body == 0)
@@ -514,7 +549,6 @@ void checkMethodsAndPropsNames(classS* clas)
 			if (res != propertyNames.end())
 			{
 				char message[200] = "EXCEPTION! property with name \"";
-
 				exception e((strcat(strcat(message, cbe->property->varOrVal->id), "\" is already declared")));
 				throw e;
 			}
@@ -526,7 +560,6 @@ void checkMethodsAndPropsNames(classS* clas)
 			if (res != methodNames.end())
 			{
 				char message[200] = "EXCEPTION! method with name \"";
-
 				exception e((strcat(strcat(message, cbe->method->func->delc->name), "\" is already declared")));
 				throw e;
 			}
@@ -535,7 +568,10 @@ void checkMethodsAndPropsNames(classS* clas)
 	}
 }
 
-void checkClassesNames(programS* program)
+
+/*ѕровер€ем, нет ли переобъ€влени€ пользовательских классов, переопределений полей 
+или польностью повтор€ющихс€ методов внутри 1 класса*/
+void checkClassesPropertiesMethodNames(programS* program)
 {
 	if (program == 0)
 		return;
@@ -550,7 +586,6 @@ void checkClassesNames(programS* program)
 			if (res != classNames.end())
 			{
 				char message[200] = "EXCEPTION! class with name \"";
-
 				exception e((strcat(strcat(message, pe->clas->name), "\" is already declared")));
 				throw e;
 			}
@@ -1023,14 +1058,26 @@ void checkCirclesInInheritance(programS* program)
 	}
 	for (programElementS* pe = program->first; pe != 0; pe = pe->next)
 	{
-		if (pe->clas != 0 && pe->clas->parentClassName != 0 
-			&& isParentClass(pe->clas->name, pe->clas->parentClassName, classesAndParents))
+		if (pe->clas != 0 && pe->clas->parentClassName != 0)
 		{
-			char message[200] = "EXCEPTION! Class \"";
-			exception e(strcat(strcat(strcat(message, pe->clas->name), "\" cannot be a child of class "),
-				pe->clas->parentClassName));
-			throw e;
+			if (isParentClass(pe->clas->name, pe->clas->parentClassName, classesAndParents))
+			{
+				char message[200] = "EXCEPTION! Class \"";
+				exception e(strcat(strcat(strcat(message, pe->clas->name), "\" cannot be a child of class "),
+					pe->clas->parentClassName));
+				throw e;
+
+			}
+			else if (!isUserClass(pe->clas->parentClassName, program) && )
+			{
+				char message[200] = "EXCEPTION! Class \"";
+				exception e(strcat(strcat(strcat(message, pe->clas->name), "\" cannot be a child of undeclared \
+					user class - "), pe->clas->parentClassName));
+				throw e;
+			}
+			
 		}
+
 	}
 }
 
@@ -1054,16 +1101,18 @@ programS* transformProgram(list<ClassFile> classesFiles, programS* program)
 	if (program == 0 || program->first == 0) return program;
 
 	program = transformProgramToClass(program);
-	addBaseClassAsParent(program);
+	checkClassesPropertiesMethodNames(program);
+	checkCirclesInInheritance(program);
+	transformTypes(program);
 	transformFuncsLikeExpr(program);
+	addBaseClassAsParent(program);
+	complementModifiers(program);
 	checkConstructorsAndInits(program);
+
+
 	checkPropertyInitialization(program);
 	transformAssignmentWithFieldAndArrays(program);
-	complementModifiers(program);
 	transformDestructAssign(program);
-	checkClassesNames(program);
-	transformTypes(program);
-	checkCirclesInInheritance(program);
 	fillClassesFiles(classesFiles, program);
 	return program;
 }
