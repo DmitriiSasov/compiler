@@ -571,7 +571,7 @@ struct exprS* createExprCopy(exprS* e1)
 	newE->floatV = e1->floatV;
 	newE->doubleV = e1->doubleV;
 	newE->booleanV = e1->booleanV;
-	newE->next = e1->next;
+	newE->next = 0;
 	newE->varInTableNum = e1->varInTableNum;
 	newE->refInfo = e1->refInfo;
 	newE->isStaticCall = e1->isStaticCall;
