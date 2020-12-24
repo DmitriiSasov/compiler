@@ -356,6 +356,101 @@ void transformInit(programS* program)
 	}
 }
 
+
+void complementModifiers(constructorS* constr)
+{
+	if (constr->mod != Public)
+	{
+		char message[200] = "EXCEPTION! Unsupported NOT PUBLIC contructors";
+		exception e(message);
+		throw e;
+	}
+}
+
+void complementModifiers(methodS* meth)
+{
+	if (meth->funcDecl != 0)
+	{
+		char message[200] = "EXCEPTION! Unsupported ABSTRACT method with name \"";
+
+		exception e((strcat(strcat(message, meth->funcDecl->name), "\"")));
+		throw e;
+	}
+
+	if (meth->mods != 0)
+	{
+		if (meth->mods->iMod == None) meth->mods->iMod = Final;
+		if (meth->mods->vMod == Unknown) meth->mods->vMod = Public;
+		else if (meth->mods->vMod == Internal)
+		{
+			char message[200] = "EXCEPTION! Unsupported INTERNAL visibility mod with method \"";
+
+			exception e((strcat(strcat(message, meth->func->delc->name), "\"")));
+			throw e;
+		}
+		if (meth->mods->isAbstract == true)
+		{
+			char message[200] = "EXCEPTION! Unsupported ABSTRACT mod with method \"";
+
+			exception e((strcat(strcat(message, meth->func->delc->name), "\"")));
+			throw e;
+		}
+
+		if (meth->mods->isOverride == true && meth->mods->vMod == Private)
+		{
+			char message[200] = "EXCEPTION! Method with name \"";
+
+			exception e((strcat(strcat(message, meth->func->delc->name), "\" cannot be OVERRIDE and PRIVATE")));
+			throw e;
+		}
+	}
+	else
+	{
+		meth->mods = createModifiers(0, 0, Public, Final);
+	}
+}
+
+void complementModifiers(propertyS* prop)
+{
+	if (prop->mods != 0)
+	{
+		if (prop->mods->iMod == Open || prop->mods->iMod == Final)
+		{
+			char message[200] = "EXCEPTION! Inheritance mods of properties are not supported. Property \"";
+
+			exception e((strcat(strcat(message, prop->varOrVal->id), "\" has inheritance mod")));
+			throw e;
+		}
+
+		if (prop->mods->vMod == Unknown) prop->mods->vMod = Public;
+		else if (prop->mods->vMod == Internal)
+		{
+			char message[200] = "EXCEPTION! Unsupported INTERNAL visibility mod with property \"";
+
+			exception e((strcat(strcat(message, prop->varOrVal->id), "\"")));
+			throw e;
+		}
+		if (prop->mods->isAbstract == true)
+		{
+			char message[200] = "EXCEPTION! Unsupported ABSTRACT mod with property \"";
+
+			exception e((strcat(strcat(message, prop->varOrVal->id), "\"")));
+			throw e;
+		}
+		if (prop->mods->isOverride == true)
+		{
+			char message[200] = "EXCEPTION! Unsupported OVERRIDE mod with property \"";
+
+			exception e((strcat(strcat(message, prop->varOrVal->id), "\"")));
+			throw e;
+		}
+	}
+	else
+	{
+		prop->mods = createModifiers(0, 0, Public, None);
+	}	
+}
+
 void complementModifiers(classS* cl)
 {
 	if (cl == 0)
@@ -363,87 +458,17 @@ void complementModifiers(classS* cl)
 
 	for (classBodyElementS* cbe = cl->body->first; cbe != 0; cbe = cbe->next) 
 	{
-		if (cbe->property )
+		if (cbe->property)
 		{
-			if (cbe->property->mods != 0)
-			{
-				if (cbe->property->mods->iMod == Open || cbe->property->mods->iMod == Final)
-				{
-					char message[200] = "EXCEPTION! Inheritance mods of properties are not supported. Property \"";
-
-					exception e((strcat(strcat(message, cbe->property->varOrVal->id), "\" has inheritance mod")));
-					throw e;
-				}
-				
-				if (cbe->property->mods->vMod == Unknown) cbe->property->mods->vMod = Public;
-				else if (cbe->property->mods->vMod == Internal)
-				{
-					char message[200] = "EXCEPTION! Unsupported INTERNAL visibility mod with property \"";
-
-					exception e((strcat(strcat(message, cbe->property->varOrVal->id), "\"")));
-					throw e;
-				}
-				if (cbe->property->mods->isAbstract == true)
-				{
-					char message[200] = "EXCEPTION! Unsupported ABSTRACT mod with property \"";
-
-					exception e((strcat(strcat(message, cbe->property->varOrVal->id), "\"")));
-					throw e;
-				}
-				if (cbe->property->mods->isOverride == true)
-				{
-					char message[200] = "EXCEPTION! Unsupported OVERRIDE mod with property \"";
-
-					exception e((strcat(strcat(message, cbe->property->varOrVal->id), "\"")));
-					throw e;
-				}
-			}
-			else
-			{
-				cbe->property->mods = createModifiers(0, 0, Public, None);
-			}
+			complementModifiers(cbe->property);
 		}
 		else if (cbe->method)
 		{
-			if (cbe->method->funcDecl != 0) 
-			{
-				char message[200] = "EXCEPTION! Unsupported ABSTRACT method with name \"";
-
-				exception e((strcat(strcat(message, cbe->method->funcDecl->name), "\"")));
-				throw e;
-			}
-
-			if (cbe->method->mods != 0)
-			{
-				if (cbe->method->mods->iMod == None) cbe->method->mods->iMod = Final;
-				if (cbe->method->mods->vMod == Unknown) cbe->method->mods->vMod = Public;
-				else if (cbe->method->mods->vMod == Internal)
-				{
-					char message[200] = "EXCEPTION! Unsupported INTERNAL visibility mod with method \"";
-
-					exception e((strcat(strcat(message, cbe->method->func->delc->name), "\"")));
-					throw e;
-				}
-				if (cbe->method->mods->isAbstract == true)
-				{
-					char message[200] = "EXCEPTION! Unsupported ABSTRACT mod with method \"";
-
-					exception e((strcat(strcat(message, cbe->method->func->delc->name), "\"")));
-					throw e;
-				}
-
-				if (cbe->method->mods->isOverride == true && cbe->method->mods->vMod == Private) 
-				{
-					char message[200] = "EXCEPTION! Method with name \"";
-
-					exception e((strcat(strcat(message, cbe->method->func->delc->name), "\" cannot be OVERRIDE and PRIVATE")));
-					throw e;
-				}
-			}
-			else
-			{
-				cbe->method->mods = createModifiers(0, 0, Public, Final);
-			}
+			complementModifiers(cbe->method);
+		}
+		else if (cbe->constructor)
+		{
+			complementModifiers(cbe->constructor);
 		}
 	}
 }
