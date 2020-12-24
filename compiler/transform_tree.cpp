@@ -4,7 +4,7 @@ void addBaseClassAsParent(programS* program)
 {
 	for (auto pe = program->first; pe != 0; pe = pe->next)
 	{
-		if (pe->clas != 0 && pe->clas->parentClassName == 0)
+		if (pe->clas != 0 && pe->clas->parentClassName == 0 && strcmp(pe->clas->name, "Main$") != 0)
 		{
 			char* tmp = new char[strlen("MyLib/Any") + 1];
 			strcpy(tmp, "MyLib/Any");
@@ -12,7 +12,6 @@ void addBaseClassAsParent(programS* program)
 		}
 	}
 }
-
 
 void transformAssignmentWithFieldAndArrays(stmtList* stmts);
 
@@ -598,6 +597,30 @@ void transformFuncsLikeExpr(programS* program)
 	}
 }
 
+void checkStaticFuncsLikeConstructors(programS* program)
+{
+	classS* mainClass = 0;
+	for (auto pe = program->first; pe != 0 && mainClass == 0; pe = pe->next)
+	{
+		if (pe->clas != 0 && strcmp(pe->clas->name, "Main$") == 0) mainClass = pe->clas;
+	}
+
+	if (mainClass != 0 && mainClass->body != 0)
+	{
+		for (auto cbe = mainClass->body->first; cbe != 0; cbe = cbe->next)
+		{
+			if (cbe->method != 0 && isUserClass(cbe->method->func->delc->name, program) 
+				&& cbe->method->func->delc->params == 0)
+			{
+				char message[200] = "EXCEPTION! Global function overlap constructor of class \"";
+				exception e((strcat(strcat(message, cbe->method->func->delc->name), "\"")));
+				throw e;
+			}
+		}
+	}
+	
+}
+
 void checkConstructorsAndInits(classS* cl)
 {
 	if (cl->body == 0)
@@ -614,19 +637,18 @@ void checkConstructorsAndInits(classS* cl)
 			|| cbe->constructor->stmts != 0 || cbe->constructor->mod != Public))
 		{
 			char message[200] = "EXCEPTION! Unsupported constructor in class \"";
-
 			exception e((strcat(strcat(message, cl->name), "\"")));
 			throw e;
 		}
 		if (cbe->init != 0)
 		{
 			char message[200] = "EXCEPTION! Unsupported initializator in class \"";
-
 			exception e((strcat(strcat(message, cl->name), "\"")));
 			throw e;
 		}
 		cbe = cbe->next;
 	}
+
 }
 
 void checkConstructorsAndInits(programS* program)
@@ -640,6 +662,8 @@ void checkConstructorsAndInits(programS* program)
 		if (pe->clas != 0) checkConstructorsAndInits(pe->clas);
 		pe = pe->next;
 	}
+
+	checkStaticFuncsLikeConstructors(program);
 }
 
 void checkPropertyInitialization(classS* cl)
@@ -1029,8 +1053,8 @@ programS* transformProgram(list<ClassFile> classesFiles, programS* program)
 {
 	if (program == 0 || program->first == 0) return program;
 
-	addBaseClassAsParent(program);
 	program = transformProgramToClass(program);
+	addBaseClassAsParent(program);
 	transformFuncsLikeExpr(program);
 	checkConstructorsAndInits(program);
 	checkPropertyInitialization(program);
