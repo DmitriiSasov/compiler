@@ -92,8 +92,8 @@ struct modifiersS
 enum visibilityMod 
 {
 	Public,
-	Private,
 	Protected,
+	Private,
 	Internal,
 	Local,
 	Unknown
