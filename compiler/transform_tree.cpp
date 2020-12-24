@@ -357,7 +357,7 @@ void transformInit(programS* program)
 }
 
 
-void complementModifiers(constructorS* constr)
+void checkConstructorMod(constructorS* constr)
 {
 	if (constr->mod != Public)
 	{
@@ -468,7 +468,7 @@ void complementModifiers(classS* cl)
 		}
 		else if (cbe->constructor)
 		{
-			complementModifiers(cbe->constructor);
+			checkConstructorMod(cbe->constructor);
 		}
 	}
 }
@@ -640,8 +640,7 @@ void checkMethodsAndPropsNames(classS* clas)
 }
 
 
-/*ѕровер€ем, нет ли переобъ€влени€ пользовательских классов, переопределений полей 
-или польностью повтор€ющихс€ методов внутри 1 класса*/
+/*ѕровер€ем, нет ли переобъ€влени€ пользовательских классов*/
 void checkClassesNames(programS* program)
 {
 	if (program == 0)
