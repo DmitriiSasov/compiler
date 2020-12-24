@@ -516,6 +516,7 @@ void checkPropsNames(classS* clas, programS* program)
 				exception e((strcat(strcat(message, cbe->property->varOrVal->id), "\" is already declared")));
 				throw e;
 			}
+			
 			if (clas->parentClassName != 0 && getPropertyType(cbe->property->varOrVal->id, 
 				program, clas->parentClassName) != "")
 			{
@@ -523,15 +524,60 @@ void checkPropsNames(classS* clas, programS* program)
 				exception e((strcat(strcat(message, cbe->property->varOrVal->id), "\"")));
 				throw e;
 			}
+			
+			propertyNames.push_back(cbe->property->varOrVal->id);
 		}
 	}
 }
 
-void checkMethodsNames(classS* clas)
+void checkMethodsNames(classS* clas, const programS* program)
 {
 	if (clas == 0 || clas->body == 0)
 		return;
 
+	list<string> methodSigns;
+	for (auto cbe = clas->body->first; cbe != 0; cbe = cbe->next)
+	{
+		if (cbe->method != 0)
+		{
+			string methodSign = createMethodSignature(cbe->method);
+			if (find(methodSigns.begin(), methodSigns.end(), methodSign)
+				!= methodSigns.end())
+			{
+				char message[200] = "EXCEPTION! Method with name \"";
+				exception e((strcat(strcat(message, cbe->method->func->delc->name), "\" is already declared")));
+				throw e;
+			}
+
+			//≈сли это не созданный статический класс
+			if (strcmp(clas->name, "Main$") != 0)
+			{
+				if (clas->parentClassName != 0 && getMethodType(methodSign, program,
+					clas->parentClassName) != "")
+				{
+					if (!cbe->method->mods->isOverride)
+					{
+						char message[200] = "EXCEPTION! Method with name \"";
+						exception e((strcat(strcat(message, cbe->method->func->delc->name), "\" hasn't modifier OVERRIDE")));
+						throw e;
+					}
+				}
+				else if (methodSign == "equals(MyLib/Any|)" && !cbe->method->mods->isOverride)
+				{
+					char message[200] = "EXCEPTION! Method with name \"";
+					exception e((strcat(strcat(message, cbe->method->func->delc->name), "\" hasn't modifier OVERRIDE")));
+					throw e;
+				}
+				else if (methodSign == "toString()" && !cbe->method->mods->isOverride)
+				{
+					char message[200] = "EXCEPTION! Method with name \"";
+					exception e((strcat(strcat(message, cbe->method->func->delc->name), "\" hasn't modifier OVERRIDE")));
+					throw e;
+				}
+			}
+			
+		}
+	}
 }
 
 void checkMethodsAndPropsNames(classS* clas) 
