@@ -1,5 +1,19 @@
 #include "transform_root.h"
 
+void addBaseClassAsParent(programS* program)
+{
+	for (auto pe = program->first; pe != 0; pe = pe->next)
+	{
+		if (pe->clas != 0 && pe->clas->parentClassName == 0)
+		{
+			char* tmp = new char[strlen("MyLib/Any") + 1];
+			strcpy(tmp, "MyLib/Any");
+			pe->clas->parentClassName = tmp;
+		}
+	}
+}
+
+
 void transformAssignmentWithFieldAndArrays(stmtList* stmts);
 
 void templateTypeFree(templateTypeS* type);
@@ -594,7 +608,10 @@ void checkConstructorsAndInits(classS* cl)
 	classBodyElementS* cbe = cl->body->first;
 	while (cbe != 0)
 	{
-		if (cbe->constructor != 0) 
+		//Запрещены все конструкторы кроме public constructor() 
+		if (cbe->constructor != 0 && (cbe->constructor->anotherConstrParams != 0 
+			|| cbe->constructor->anotherConstructorId != 0 || cbe->constructor->params != 0
+			|| cbe->constructor->stmts != 0 || cbe->constructor->mod != Public))
 		{
 			char message[200] = "EXCEPTION! Unsupported constructor in class \"";
 
@@ -1012,6 +1029,7 @@ programS* transformProgram(list<ClassFile> classesFiles, programS* program)
 {
 	if (program == 0 || program->first == 0) return program;
 
+	addBaseClassAsParent(program);
 	program = transformProgramToClass(program);
 	transformFuncsLikeExpr(program);
 	checkConstructorsAndInits(program);
