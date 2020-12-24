@@ -31,6 +31,10 @@ VisibilityMod translateVisibilityMod(visibilityMod vMod);
 
 string transformTypeToDescriptor(const char* type, const programS* program);
 
+bool isUserClass(const char* name, programS* program);
+
+string getPropertyType(const char* propName, const programS* const program, const string& currentClassName);
+
 struct ShortClassInfo 
 {
 	string className = "";
@@ -112,7 +116,7 @@ public:
 
 	LocalVariableInfo find(int indexInTable);
 
-	void addAttributes();
+	void addCode();
 
 
 };
@@ -253,6 +257,10 @@ class ClassFile
 	int calcType(factParamsList* fpl, programS* program, string& methodKey);
 
 	void convertToJavaBasicTypeClass(exprS* e1);
+
+	void convertBasicTypeExprToString(exprS* e);
+	
+	void addToStringCall(exprS* e, programS* program);
 
 public:
 
