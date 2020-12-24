@@ -617,7 +617,7 @@ void checkMethodsAndPropsNames(classS* clas)
 
 /*ѕровер€ем, нет ли переобъ€влени€ пользовательских классов, переопределений полей 
 или польностью повтор€ющихс€ методов внутри 1 класса*/
-void checkClassesPropertiesMethodNames(programS* program)
+void checkClassesNames(programS* program)
 {
 	if (program == 0)
 		return;
@@ -636,8 +636,6 @@ void checkClassesPropertiesMethodNames(programS* program)
 				throw e;
 			}
 			else	classNames.push_back(string(pe->clas->name));
-
-			checkMethodsAndPropsNames(pe->clas);
 		}
 	}
 }
@@ -1147,18 +1145,18 @@ programS* transformProgram(list<ClassFile> classesFiles, programS* program)
 	if (program == 0 || program->first == 0) return program;
 
 	program = transformProgramToClass(program);
-	checkClassesPropertiesMethodNames(program);
+	checkClassesNames(program);
 	checkCirclesInInheritance(program);
 	transformTypes(program);
-	transformFuncsLikeExpr(program);
 	addBaseClassAsParent(program);
+	transformFuncsLikeExpr(program);	
 	complementModifiers(program);
 	checkConstructorsAndInits(program);
+	transformDestructAssign(program);
 
 
 	checkPropertyInitialization(program);
 	transformAssignmentWithFieldAndArrays(program);
-	transformDestructAssign(program);
 	fillClassesFiles(classesFiles, program);
 	return program;
 }
