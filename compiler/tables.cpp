@@ -142,11 +142,10 @@ string createShortInfo(exprS* methodCall)
 	return methInfo + ')';
 }
 
-string createShortInfo(methodS* meth)
+string createMethodSignature(methodS* meth)
 {
+	string methInfo = string(meth->func->delc->name) + '(';
 
-	string methInfo = string(meth->func->delc->type->easyType) + "|"
-		+ string(meth->func->delc->name) + '(';
 	if (meth->func->delc->params != 0)
 	{
 		for (formalParamS* fp = meth->func->delc->params->first; fp != 0; fp = fp->next)
