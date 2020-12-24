@@ -81,7 +81,7 @@ string isObjectMethod(string methodSign)
 	else return "";
 }
 
-string getMethodType(string methodSign, programS* program, const string& currentClassName)
+string getMethodType(string methodSign, const programS* const program, const string& currentClassName)
 {
 	if (currentClassName == "")	return "";
 
@@ -406,7 +406,7 @@ void ClassFile::fillHighLevelObjectsConstants(propertyS* prop, programS* program
 	FieldTableElement fte(nameId, descId, translateVisibilityMod(prop->mods->vMod), prop->mods->isStatic, 
 		prop->varOrVal->isVal);
 	
-	fieldTable.insert(make_pair(createShortInfo(prop), fte));
+	fieldTable.insert(make_pair(prop->varOrVal->id, fte));
 }
 
 
