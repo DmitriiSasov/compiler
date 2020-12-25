@@ -70,6 +70,8 @@ programS* transformProgramToClass(programS* programTreeRoot)
 	newClass->body = createClassBody();
 	programElementS* pe = programTreeRoot->first;
 	
+	bool isCorrectTransformation = true;
+
 	//ƒобавили все глобальные пол€ и методы в новый класс
 	while (pe != 0)
 	{
@@ -79,9 +81,9 @@ programS* transformProgramToClass(programS* programTreeRoot)
 			{
 				if (pe->method->mods->isOverride)
 				{
-					char message[200] = "EXCEPTION! Top level function \"";
-					exception e((strcat(strcat(message, pe->method->funcDecl->name), "\" cannot be overriden")));
-					throw e;
+					printf("Error! Top level function \"%s\" cannot be overriden",
+						pe->method->funcDecl->name);
+					isCorrectTransformation = false;
 				}
 
 				pe->method->mods->isStatic = true;
@@ -97,9 +99,8 @@ programS* transformProgramToClass(programS* programTreeRoot)
 		{
 			if (pe->property->varOrVal->isVal)
 			{
-				char message[200] = "EXCEPTION! Unsupported static constant value \"";
-				exception e((strcat(strcat(message, pe->property->varOrVal->id), "\"")));
-				throw e;
+				printf("EXCEPTION!Unsupported static constant value \"%s\"", pe->property->varOrVal->id);
+				isCorrectTransformation = false;
 			}
 			if (pe->property->mods != 0)	pe->property->mods->isStatic = true;
 			else
@@ -120,6 +121,11 @@ programS* transformProgramToClass(programS* programTreeRoot)
 		if (programTreeRoot->first == 0)	programTreeRoot = createProgram(newClass);
 		else	programTreeRoot = addToProgram(programTreeRoot, newClass);
 	}	
+
+	if (!isCorrectTransformation)
+	{
+		throw exception("Exception! Error in transformation of global function and variables!");
+	}
 
 	return programTreeRoot;
 }
