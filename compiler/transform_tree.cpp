@@ -973,7 +973,11 @@ bool isStandartKotlinType(const char* typeName)
 	if (strcmp(typeName, "Int") == 0 || strcmp(typeName, "Float") == 0
 		|| strcmp(typeName, "Double") == 0 || strcmp(typeName, "String") == 0
 		|| strcmp(typeName, "Char") == 0 || strcmp(typeName, "Unit") == 0
-		|| strcmp(typeName, "Boolean") == 0 || strcmp(typeName, "Any") == 0)
+		|| strcmp(typeName, "Boolean") == 0 || strcmp(typeName, "Any") == 0
+		|| strcmp(typeName, "MyLib/Int") == 0 || strcmp(typeName, "MyLib/Float") == 0
+		|| strcmp(typeName, "MyLib/Double") == 0 || strcmp(typeName, "MyLib/MyString") == 0
+		|| strcmp(typeName, "MyLib/Char") == 0 || strcmp(typeName, "MyLib/Unit") == 0
+		|| strcmp(typeName, "MyLib/Boolean") == 0 || strcmp(typeName, "MyLib/Any") == 0)
 	{
 		return true;
 	}
@@ -982,17 +986,7 @@ bool isStandartKotlinType(const char* typeName)
 
 bool existsEasyType(char* typeName, const list<string>& classesNames)
 {
-	bool res = strcmp(typeName, "Int") != 0 && strcmp(typeName, "Float") != 0
-		&& strcmp(typeName, "Double") != 0 && strcmp(typeName, "String") != 0
-		&& strcmp(typeName, "Char") != 0 && strcmp(typeName, "Unit") != 0
-		&& strcmp(typeName, "Boolean") != 0;
-
-
-	for (auto className: classesNames)
-	{
-		res = res && strcmp(typeName, className.c_str()) != 0;
-	}
-	return !res;
+	return isStandartKotlinType(typeName) || isUserClass(typeName, classesNames);
 }
 
 char * collectArrayInfo(templateTypeS* type, const list<string>& classesNames, int& nestingLevel)
