@@ -8,7 +8,7 @@ bool isParentClass(const string& potentialParent, const string& potentialChild, 
 
 void templateTypeFree(templateTypeS* type);
 
-void transformTypes(stmtList* stmts, const list<string>& classesNames);
+bool transformTypes(stmtList* stmts, const list<string>& classesNames);
 
 void addBaseClassAsParent(programS* program)
 {
@@ -1121,26 +1121,22 @@ bool existsEasyType(char* typeName, const list<string>& classesNames)
 		|| isMyStandartClass(typeName);
 }
 
-char * collectArrayInfo(templateTypeS* type, const list<string>& classesNames, int& nestingLevel)
+char* collectArrayInfo(templateTypeS* type, const list<string>& classesNames, int& nestingLevel)
 {
 	if (type == 0)
 		return 0;
 
 	if (strcmp(type->type, "Array") != 0)
 	{
-		char message[200] = "EXCEPTION! Unsupported template type \"";
-		exception e(strcat(strcat(message, type->type), "\""));
-		throw e;
+		printf("Unsupported template type \"%s\"\n", type->type);
 	}
 	if (type->list->first != type->list->last)
 	{
-		char message[200] = "EXCEPTION! More than 1 array type \"";
-		exception e(message);
-		throw e;
+		printf("EXCEPTION! More than 1 array type\n");
 	}
 	if (type->list->first->easyType != 0)
 	{
-		char* typeOfArray;
+		char* typeOfArray = 0;
 		if (isStandartKotlinType(type->list->first->easyType)
 			&& !isUserClass(type->list->first->easyType, classesNames))
 		{
@@ -1152,9 +1148,7 @@ char * collectArrayInfo(templateTypeS* type, const list<string>& classesNames, i
 		}
 		else if (!isUserClass(type->list->first->easyType, classesNames))
 		{
-			char message[200] = "EXCEPTION! Unknown array type \"";
-			exception e(strcat(strcat(message, type->list->first->easyType), "\""));
-			throw e;
+			printf("EXCEPTION! Unknown array type \"%s\"\n", type->list->first->easyType);
 		}
 		return typeOfArray;
 	}
@@ -1185,8 +1179,10 @@ char* transformStdKotlinTypeToMyKotlinTypes(const char* type)
 	else return NULL;
 }
 
-void transformTypes(typeS* type, const list<string>& classesNames)
+bool transformTypes(typeS* type, const list<string>& classesNames)
 {
+	bool res = true;
+
 	//Если простой тип является стандартным котлин типом, то меняем его на свой котлин тип
 	if (type->easyType != 0)
 	{
@@ -1197,118 +1193,156 @@ void transformTypes(typeS* type, const list<string>& classesNames)
 		}
 		else if (!isUserClass(type->easyType, classesNames))
 		{
-			char message[200] = "EXCEPTION! Incorrect type \"";
-			exception e(strcat(strcat(message, type->easyType), "\""));
-			throw e;
+			printf("Error! Unknown type \"%s\"\n", type->easyType);
+			res = false;
 		}
 	}
 	else if (type->complexType != 0 )
 	{
 		int templateNestingLevel = 1;
-		char* arrayType = collectArrayInfo(type->complexType, classesNames, templateNestingLevel);;
-		char* newType = new char(strlen(arrayType) + templateNestingLevel * 2 + 1);
-		strcpy(newType, arrayType);
-		for (int i = 0; i < templateNestingLevel; ++i)
-			strcat(newType, "[]");
-		type->easyType = newType;
-		templateTypeFree(type->complexType);
-		free(type->complexType);
-		type->complexType = 0;
+		char* arrayType = collectArrayInfo(type->complexType, classesNames, templateNestingLevel);
+		if (arrayType != 0)
+		{
+			char* newType = new char(strlen(arrayType) + templateNestingLevel * 2 + 1);
+			strcpy(newType, arrayType);
+			for (int i = 0; i < templateNestingLevel; ++i)
+				strcat(newType, "[]");
+			type->easyType = newType;
+			templateTypeFree(type->complexType);
+			free(type->complexType);
+			type->complexType = 0;
+		}
+		else res = false;
 	}
 
+	return res;
 }
 
-void transformTypes(formalParamsList* fps, const list<string>& classesNames)
+bool transformTypes(formalParamsList* fps, const list<string>& classesNames)
 {
+	bool res = true;
+
 	if (fps != 0)
 	{
 		for (auto fp = fps->first; fp != 0; fp = fp->next)
 		{
-			transformTypes(fp->type, classesNames);
+			res = res && transformTypes(fp->type, classesNames);
 		}
 	}
+
+	return res;
 }
 
-void transformTypes(funcDeclS* decl, const list<string>& classesNames)
+bool transformTypes(funcDeclS* decl, const list<string>& classesNames)
 {
-	if (decl == 0) return;
+	if (decl == 0) return true;
 
-	transformTypes(decl->type, classesNames);
-	transformTypes(decl->params, classesNames);
+	bool res = true;
+
+	res = res && transformTypes(decl->type, classesNames);
+	res = res && transformTypes(decl->params, classesNames);
+
+	return res;
 }
 
-void transformTypes(methodS* meth, const list<string>& classesNames)
+bool transformTypes(methodS* meth, const list<string>& classesNames)
 {
 	if (meth == 0 || meth->func == 0)
 	{
-		return;
+		return true;
 	}
+
+	bool res = true;
 
 	if (meth->func->delc != 0)
 	{
-		transformTypes(meth->func->delc, classesNames);
+		res = res && transformTypes(meth->func->delc, classesNames);
 	}
 	
-	if (meth->func->stmts != 0) transformTypes(meth->func->stmts, classesNames);
+	if (meth->func->stmts != 0) res = res && transformTypes(meth->func->stmts, classesNames);
+
+	if (res == false)
+		printf("Errors in method \"%s\"\n", meth->func->delc->name);
+
+	return res;
 }
 
-void transformTypes(stmtS* stmt, const list<string>& classesNames)
+bool transformTypes(stmtS* stmt, const list<string>& classesNames)
 {
+	bool res = true;
+
 	switch (stmt->type) 
 	{
 	case VarOrVal:
 		if (stmt->varOrVal->type != 0)
-			transformTypes(stmt->varOrVal->type, classesNames);
+			res = res && transformTypes(stmt->varOrVal->type, classesNames);
 		else
-			transformTypes(stmt->varOrVal->namesAndTypes, classesNames);
+			res = res && transformTypes(stmt->varOrVal->namesAndTypes, classesNames);
 		break;
 	case WhileLoop:
 	case DoWhileLoop:
-		transformTypes(stmt->whileLoop->stmts, classesNames);
+		res = res && transformTypes(stmt->whileLoop->stmts, classesNames);
 		break;
 	case ForLoop:
-		transformTypes(stmt->forLoop->params, classesNames);
-		transformTypes(stmt->forLoop->stmts, classesNames);
+		res = res && transformTypes(stmt->forLoop->params, classesNames);
+		res = res && transformTypes(stmt->forLoop->stmts, classesNames);
 		break;
 	case IfStmt:
 		if (stmt->ifStmt->actions != 0)
-			transformTypes(stmt->ifStmt->actions, classesNames);
+			res = res && transformTypes(stmt->ifStmt->actions, classesNames);
 		else
-			transformTypes(stmt->ifStmt->altActions, classesNames);
+			res = res && transformTypes(stmt->ifStmt->altActions, classesNames);
 		break;
 	}
+
+	return res;
 }
 
-void transformTypes(stmtList* stmts, const list<string>& classesNames)
+bool transformTypes(stmtList* stmts, const list<string>& classesNames)
 {
-	if (stmts == 0) return;
+	if (stmts == 0) return true;
+
+	bool res = true;
 
 	for (stmtS* stmt = stmts->first; stmt != 0; stmt = stmt->next)
 	{
-		transformTypes(stmt, classesNames);
+		res = res && transformTypes(stmt, classesNames);
 	}
+
+	return res;
 }
 
-void transformTypes(propertyS* prop, const list<string>& classesNames)
+bool transformTypes(propertyS* prop, const list<string>& classesNames)
 {
-	if (prop == 0) return;
+	if (prop == 0) return true;
 
-	transformTypes(prop->varOrVal->type, classesNames);
+	if (transformTypes(prop->varOrVal->type, classesNames))
+		return true;
+	else
+	{
+		printf("Error in property declaration \"%s\"\n", prop->varOrVal->id);
+		return false;
+	}	
 }
 
-void transformTypes(classS* cl, const list<string>& classesNames)
+bool transformTypes(classS* cl, const list<string>& classesNames)
 {
 	if (cl == 0 || cl->body == 0)
 	{
-		return;
+		return true;
 	}
+
+	bool res = true;
+
 	classBodyElementS* cbe = cl->body->first;
 	while (cbe != 0)
 	{
-		if (cbe->method != 0) transformTypes(cbe->method, classesNames);
-		else if (cbe->property != 0) transformTypes(cbe->property, classesNames);
+		if (cbe->method != 0) res = res && transformTypes(cbe->method, classesNames);
+		else if (cbe->property != 0) res = res && transformTypes(cbe->property, classesNames);
 		cbe = cbe->next;
 	}
+
+	return res;
 }
 
 //Проверить типы на корректность, все ли указанные типы вообще существуют.
@@ -1319,6 +1353,8 @@ void transformTypes(programS* program)
 		return;
 	list<string> classesNames;
 
+	bool res = true;
+
 	programElementS* pe = program->first;
 	while (pe != 0)
 	{
@@ -1328,9 +1364,12 @@ void transformTypes(programS* program)
 	pe = program->first;
 	while (pe != 0)
 	{
-		if (pe->clas != 0)	transformTypes(pe->clas, classesNames);
+		if (pe->clas != 0)	res = res && transformTypes(pe->clas, classesNames);
 		pe = pe->next;
 	}
+
+	if (!res)
+		throw exception("Exception! Errors in types transformation\n");
 }
 
 bool isParentClass(const string& potentialParent, const string& potentialChild, const programS* const program) 
@@ -1390,6 +1429,9 @@ void checkInheritance(const programS* const program)
 			classesAndParents.push_back(classAndParent);
 		}
 	}
+
+	bool res = true;
+
 	for (programElementS* pe = program->first; pe != 0; pe = pe->next)
 	{
 		if (pe->clas != 0 && pe->clas->parentClassName != 0)
@@ -1397,32 +1439,26 @@ void checkInheritance(const programS* const program)
 			//Проверяем, что класс не наследуются от себя или своего дочернего класса
 			if (isParentClass(pe->clas->name, pe->clas->parentClassName, classesAndParents))
 			{
-				char message[200] = "EXCEPTION! Class \"";
-				exception e(strcat(strcat(strcat(message, pe->clas->name), "\" cannot be a child of class "),
-					pe->clas->parentClassName));
-				throw e;
-
+				printf("Error! Class \"%s\" cannot be a child of class \"%s\"\n", pe->clas->name, pe->clas->parentClassName);
+				res = false;
 			}
 			//Проверяем, что класс наследуется от открытого класса
 			else if (!isOpenClass(pe->clas->parentClassName, program))
 			{
-				char message[200] = "EXCEPTION! Class \"";
-				exception e(strcat(strcat(strcat(message, pe->clas->name), "\" cannot be a child of FINAL class "),
-					pe->clas->parentClassName));
-				throw e;
+				printf("Error! Class \"%s\" cannot be a child of FINAL class \"%s\"\n", pe->clas->name, pe->clas->parentClassName);
+				res = false;
 			}
 			//Проверяем, что класс, от которого наследуемся вообще существует
 			else if (!isUserClass(pe->clas->parentClassName, program) && pe->clas->parentClassName != "Any")
 			{
-				char message[200] = "EXCEPTION! Class \"";
-				exception e(strcat(strcat(strcat(message, pe->clas->name), "\" cannot be a child of undeclared or  \
-					class - "), pe->clas->parentClassName));
-				throw e;
+				printf("Error! Class \"%s\" cannot be a child of undeclared class \"%s\"\n", pe->clas->name, pe->clas->parentClassName);
+				res = false;
 			}
-			
 		}
-
 	}
+
+	if (!res)
+		throw exception("Exception! Errors in inheritance\n");
 }
 
 void fillClassesFiles(list<ClassFile> files, programS* program)
