@@ -1131,7 +1131,10 @@ void transformTypes(stmtS* stmt, const list<string>& classesNames)
 	switch (stmt->type) 
 	{
 	case VarOrVal:
-		transformTypes(stmt->varOrVal->type, classesNames);
+		if (stmt->varOrVal->type != 0)
+			transformTypes(stmt->varOrVal->type, classesNames);
+		else
+			transformTypes(stmt->varOrVal->namesAndTypes, classesNames);
 		break;
 	case WhileLoop:
 	case DoWhileLoop:
@@ -1311,7 +1314,6 @@ programS* transformProgram(list<ClassFile> classesFiles, programS* program)
 	complementModifiers(program);
 	checkConstructorsAndInits(program);
 	transformDestructAssign(program);
-
 
 	checkPropertyInitialization(program);
 	transformAssignmentWithFieldAndArrays(program);
