@@ -31,7 +31,7 @@ VisibilityMod translateVisibilityMod(visibilityMod vMod);
 
 string transformTypeToDescriptor(const char* type, const programS* program);
 
-bool isUserClass(const char* name, programS* program);
+bool isUserClass(const char* name, const programS * const program);
 
 string getPropertyType(const char* propName, const programS* const program, const string& currentClassName);
 

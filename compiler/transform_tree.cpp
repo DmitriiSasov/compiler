@@ -357,7 +357,7 @@ void transformInit(programS* program)
 }
 
 
-void checkConstructorMod(constructorS* constr)
+void checkConstructorMod(const constructorS* const constr)
 {
 	if (constr->mod != Public)
 	{
@@ -585,7 +585,7 @@ void checkMethodsVilibilityLevelIncreasing(const programS* const program)
 	}
 }
 
-void checkPropsNames(classS* clas, const  programS* program)
+void checkPropsNames(classS* clas, const  programS* const program)
 {
 	if (clas == 0 || clas->body == 0)
 		return;
@@ -616,7 +616,7 @@ void checkPropsNames(classS* clas, const  programS* program)
 	}
 }
 
-void checkMethodsNames(classS* clas, const programS* program)
+void checkMethodsNames(classS* clas, const programS* const program)
 {
 	if (clas == 0 || clas->body == 0)
 		return;
@@ -666,7 +666,7 @@ void checkMethodsNames(classS* clas, const programS* program)
 	}
 }
 
-void checkMethodsAndPropsNames(programS* program)
+void checkMethodsAndPropsNames(const programS* const program)
 {
 	for (auto pe = program->first; pe != 0; pe = pe->next)
 	{
@@ -680,7 +680,7 @@ void checkMethodsAndPropsNames(programS* program)
 
 
 /*Проверяем, нет ли переобъявления пользовательских классов*/
-void checkClassesNames(programS* program)
+void checkClassesNames(const programS* const program)
 {
 	if (program == 0)
 		return;
@@ -739,7 +739,7 @@ void transformFuncsLikeExpr(programS* program)
 	}
 }
 
-void checkStaticFuncsLikeConstructors(programS* program)
+void checkStaticFuncsLikeConstructors(const programS* const program)
 {
 	classS* mainClass = 0;
 	for (auto pe = program->first; pe != 0 && mainClass == 0; pe = pe->next)
@@ -763,7 +763,7 @@ void checkStaticFuncsLikeConstructors(programS* program)
 	
 }
 
-void checkConstructorsAndInits(classS* cl)
+void checkConstructorsAndInits(const classS* const cl)
 {
 	if (cl->body == 0)
 	{
@@ -802,7 +802,7 @@ void checkConstructorsAndInits(classS* cl)
 	}
 }
 
-void checkConstructorsAndInits(programS* program)
+void checkConstructorsAndInits(const programS* const program)
 {
 	if (program == 0)
 		return;
@@ -817,7 +817,7 @@ void checkConstructorsAndInits(programS* program)
 	checkStaticFuncsLikeConstructors(program);
 }
 
-void checkPropertyInitialization(classS* cl)
+void checkPropertyInitialization(const classS* const cl)
 {
 	if (cl->body == 0)
 	{
@@ -841,7 +841,7 @@ void checkPropertyInitialization(classS* cl)
 	}
 }
 
-void checkPropertyInitialization(programS* program)
+void checkPropertyInitialization(const programS* const program)
 {
 	if (program == 0)
 		return;
@@ -968,7 +968,7 @@ void templateTypeFree(templateTypeS* type)
 	free(type->list);
 }
 
-bool existsEasyType(char* typeName, list<string>& classesNames)
+bool existsEasyType(char* typeName, const list<string>& classesNames)
 {
 	bool res = strcmp(typeName, "Int") != 0 && strcmp(typeName, "Float") != 0
 		&& strcmp(typeName, "Double") != 0 && strcmp(typeName, "String") != 0
@@ -983,7 +983,7 @@ bool existsEasyType(char* typeName, list<string>& classesNames)
 	return !res;
 }
 
-char * collectArrayInfo(templateTypeS* type, list<string>& classesNames, int& nestingLevel)
+char * collectArrayInfo(templateTypeS* type, const list<string>& classesNames, int& nestingLevel)
 {
 	if (type == 0)
 		return 0;
@@ -1019,7 +1019,7 @@ char * collectArrayInfo(templateTypeS* type, list<string>& classesNames, int& ne
 	}
 }
 
-void transformTypes(typeS* type, list<string>& classesNames)
+void transformTypes(typeS* type, const list<string>& classesNames)
 {
 	//Проверяем простые типы
 	if (type->easyType != 0 && !existsEasyType(type->easyType, classesNames))
@@ -1043,14 +1043,14 @@ void transformTypes(typeS* type, list<string>& classesNames)
 	}
 }
 
-void transformTypes(funcDeclS* decl, list<string>& classesNames)
+void transformTypes(funcDeclS* decl, const list<string>& classesNames)
 {
 	if (decl == 0) return;
 
 	transformTypes(decl->type, classesNames);
 }
 
-void transformTypes(methodS* meth, list<string>& classesNames)
+void transformTypes(methodS* meth, const list<string>& classesNames)
 {
 	if (meth == 0 || meth->func == 0)
 	{
@@ -1065,7 +1065,7 @@ void transformTypes(methodS* meth, list<string>& classesNames)
 	if (meth->func->stmts != 0) transformTypes(meth->func->stmts, classesNames);
 }
 
-void transformTypes(stmtS* stmt, list<string>& classesNames)
+void transformTypes(stmtS* stmt, const list<string>& classesNames)
 {
 	switch (stmt->type) 
 	{
@@ -1088,7 +1088,7 @@ void transformTypes(stmtS* stmt, list<string>& classesNames)
 	}
 }
 
-void transformTypes(stmtList* stmts, list<string>& classesNames)
+void transformTypes(stmtList* stmts, const list<string>& classesNames)
 {
 	if (stmts == 0) return;
 
@@ -1098,14 +1098,14 @@ void transformTypes(stmtList* stmts, list<string>& classesNames)
 	}
 }
 
-void transformTypes(propertyS* prop, list<string>& classesNames)
+void transformTypes(propertyS* prop, const list<string>& classesNames)
 {
 	if (prop == 0) return;
 
 	transformTypes(prop->varOrVal->type, classesNames);
 }
 
-void transformTypes(classS* cl, list<string>& classesNames)
+void transformTypes(classS* cl, const list<string>& classesNames)
 {
 	if (cl == 0 || cl->body == 0)
 	{
@@ -1144,7 +1144,7 @@ void transformTypes(programS* program)
 
 
 
-bool isParentClass(string potentialParent, string potentialChild, list<pair<string, string>>& classesAndParents) {
+bool isParentClass(const string& potentialParent, const string& potentialChild, const list<pair<string, string>>& classesAndParents) {
 	
 	for (auto classAndParent : classesAndParents)
 	{
@@ -1159,7 +1159,7 @@ bool isParentClass(string potentialParent, string potentialChild, list<pair<stri
 }
 
 //Проверить, что у класса есть модификатор open
-bool isOpenClass(const string& className, const programS* program)
+bool isOpenClass(const string& className, const programS* const program)
 {
 	for (programElementS* pe = program->first; pe != 0; pe = pe->next)
 	{
@@ -1170,7 +1170,7 @@ bool isOpenClass(const string& className, const programS* program)
 	return false;
 }
 
-void checkCirclesInInheritance(programS* program)
+void checkInheritance(const programS* const program)
 {
 	list<pair<string, string>> classesAndParents;
 	for (programElementS* pe = program->first; pe != 0; pe = pe->next)
@@ -1240,7 +1240,7 @@ programS* transformProgram(list<ClassFile> classesFiles, programS* program)
 
 	program = transformProgramToClass(program);
 	checkClassesNames(program);
-	checkCirclesInInheritance(program);
+	checkInheritance(program);
 	transformTypes(program);
 	addBaseClassAsParent(program);
 	transformFuncsLikeExpr(program);	
