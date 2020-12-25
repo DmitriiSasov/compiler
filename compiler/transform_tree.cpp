@@ -1,5 +1,15 @@
 #include "transform_root.h"
 
+char* transformStdKotlinTypeToMyKotlinTypes(const char* type);
+
+void transformAssignmentWithFieldAndArrays(stmtList* stmts);
+
+bool isParentClass(const string& potentialParent, const string& potentialChild, const programS* const program);
+
+void templateTypeFree(templateTypeS* type);
+
+void transformTypes(stmtList* stmts, const list<string>& classesNames);
+
 void addBaseClassAsParent(programS* program)
 {
 	for (auto pe = program->first; pe != 0; pe = pe->next)
@@ -12,12 +22,6 @@ void addBaseClassAsParent(programS* program)
 		}
 	}
 }
-
-void transformAssignmentWithFieldAndArrays(stmtList* stmts);
-
-void templateTypeFree(templateTypeS* type);
-
-void transformTypes(stmtList* stmts, list<string>& classesNames);
 
 void freeMem(programElementS* firstElement, programElementS* stopElement)
 {
@@ -775,7 +779,7 @@ void checkMethodsAndPropsNames(programS* program)
 	}
 
 	if (!res)
-		throw exception("Exception! Errors in methods names or properties names");
+		throw exception("Exception! Errors in methods names or properties names\n");
 }
 
 
@@ -933,8 +937,10 @@ bool checkPropertyInitialization(const classS* const cl)
 {
 	if (cl->body == 0)
 	{
-		return;
+		return true;
 	}
+
+	bool res = true;
 
 	classBodyElementS* cbe = cl->body->first;
 	while (cbe != 0)
@@ -943,14 +949,15 @@ bool checkPropertyInitialization(const classS* const cl)
 		{
 			if (cbe->property->varOrVal->initValue != 0)
 			{
-				char message[200] = "EXCEPTION! Unsupported intialization of property \"";
-
-				exception e(strcat(strcat(strcat(message, cbe->property->varOrVal->id), "\"  in class - "), cl->name));
-				throw e;
+				printf("Error! Unsupported intialization of property \"%s\" in class - \"%s\"\n",
+					cbe->property->varOrVal->id, cl->name);
+				res = false;
 			}			
 		}
 		cbe = cbe->next;
 	}
+
+	return res;
 }
 
 void checkPropertyInitialization(const programS* const program)
@@ -971,12 +978,15 @@ void checkPropertyInitialization(const programS* const program)
 		throw exception("Exception! Errors in property initialization\n");
 }
 
-void transformDestructAssign(methodS* meth)
+bool transformDestructAssign(methodS* meth)
 {
 	if (meth->func == 0 || meth->func->stmts == 0)
 	{
-		return;
+		return true;
 	}
+
+	bool res = true;
+
 	stmtS* stmt = meth->func->stmts->first;
 	while (stmt != 0)
 	{
@@ -1009,10 +1019,8 @@ void transformDestructAssign(methodS* meth)
 				
 				if (fpCount > 100)
 				{
-					char message[200] = "EXCEPTION! Unsupported call of componentN in method \"";
-
-					exception e(strcat(strcat(message, meth->func->delc->name), "\""));
-					throw e;
+					printf("Unsupported call of componentN in method \"%s\"\n", meth->func->delc->name);
+					res = false;
 				}
 			}
 			
@@ -1023,30 +1031,35 @@ void transformDestructAssign(methodS* meth)
 		}
 		else if (stmt->forLoop != 0 && stmt->forLoop->isDestructing)
 		{
-			char message[200] = "EXCEPTION! Unsupported destruction in for loop in method \"";
-
-			exception e(strcat(strcat(message, meth->func->delc->name), "\""));
-			throw e;
+			printf("Unsupported destruction in for loop in method \"%s\"\n", meth->func->delc->name);
+			res = false;
 		}
 
 
 		if (currentStmt != 0)	stmt = currentStmt->next;
 		else					stmt = stmt->next;
 	}
+
+	return res;
 }
 
-void transformDestructAssign(classS* cl)
+bool transformDestructAssign(classS* cl)
 {
 	if (cl->body == 0)
 	{
-		return;
+		return true;
 	}
+
+	bool res = true;
+
 	classBodyElementS* cbe = cl->body->first;
 	while (cbe != 0)
 	{
-		if (cbe->method != 0) transformDestructAssign(cbe->method);
+		if (cbe->method != 0) res = res && transformDestructAssign(cbe->method);
 		cbe = cbe->next;
 	}
+
+	return res;
 }
 
 void transformDestructAssign(programS* program)
@@ -1054,12 +1067,18 @@ void transformDestructAssign(programS* program)
 	if (program == 0)
 		return;
 
+	bool res = true;
+
 	programElementS* pe = program->first;
 	while (pe != 0)
 	{
-		if (pe->clas != 0) transformDestructAssign(pe->clas);
+		if (pe->clas != 0) res = res && transformDestructAssign(pe->clas);
 		pe = pe->next;
 	}
+
+	if (!res)
+		throw exception("Exception! Errors in destructing assignment\n");
+	
 }
 
 void typeFree(typesList* type)
