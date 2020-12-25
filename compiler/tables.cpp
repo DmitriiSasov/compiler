@@ -99,7 +99,7 @@ string getMethodType(string methodSign, const programS* const program, const str
 					string methodInfo = createMethodSignature(cbe->method);
 					if (strstr(methodInfo.c_str(), methodSign.c_str()) != 0)
 					{
-						res = cbe->method->func->delc->type->easyType;
+						res = cbe->method->func->decl->type->easyType;
 					}
 				}
 				if (res == "" && pe->clas->parentClassName != 0)
@@ -146,11 +146,11 @@ string createShortInfo(exprS* methodCall)
 
 string createMethodSignature(methodS* meth)
 {
-	string methInfo = string(meth->func->delc->name) + '(';
+	string methInfo = string(meth->func->decl->name) + '(';
 
-	if (meth->func->delc->params != 0)
+	if (meth->func->decl->params != 0)
 	{
-		for (formalParamS* fp = meth->func->delc->params->first; fp != 0; fp = fp->next)
+		for (formalParamS* fp = meth->func->decl->params->first; fp != 0; fp = fp->next)
 		{
 			methInfo = methInfo + fp->type->easyType + '|';
 		}
@@ -414,19 +414,19 @@ void ClassFile::fillHighLevelObjectsConstants(propertyS* prop, programS* program
 
 void ClassFile::fillHighLevelObjectsConstants(methodS* meth, programS* program)
 {
-	uint16_t nameId = findUtf8OrAdd(meth->func->delc->name);
+	uint16_t nameId = findUtf8OrAdd(meth->func->decl->name);
 
 	string methodDescr = "(";
-	if (meth->func->delc->params != 0)
+	if (meth->func->decl->params != 0)
 	{
-		for (formalParamS* fp = meth->func->delc->params->first; fp != 0; fp = fp->next)
+		for (formalParamS* fp = meth->func->decl->params->first; fp != 0; fp = fp->next)
 		{
 			methodDescr += transformTypeToDescriptor(fp->type->easyType, program);
 		}
 	}
 	methodDescr = ')';
 
-	methodDescr += transformTypeToDescriptor(meth->func->delc->type->easyType,
+	methodDescr += transformTypeToDescriptor(meth->func->decl->type->easyType,
 		program);
 	uint16_t descId = findUtf8OrAdd(methodDescr);
 	
@@ -1714,9 +1714,9 @@ void ClassFile::addConstantsFrom(methodS* meth, programS* program)
 	}
 
 	//Загружаем локальные переменные
-	if (meth->func->delc->params != 0)
+	if (meth->func->decl->params != 0)
 	{
-		for (formalParamS* fp = meth->func->delc->params->first; fp != 0; fp = fp->next)
+		for (formalParamS* fp = meth->func->decl->params->first; fp != 0; fp = fp->next)
 		{
 			methodTable.at(methKey).addLocalVar(new LocalVariableInfo(false, false, fp->name, fp->type->easyType));
 		}

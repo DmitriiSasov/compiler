@@ -590,8 +590,8 @@ void print(struct funcS * f, FILE* file)
 {
 	fprintf(file, "Id%p [label=\"func\"]\n", f);
 	
-	fprintf(file, "Id%p->Id%p\n", f, f->delc);
-	print(f->delc, file);
+	fprintf(file, "Id%p->Id%p\n", f, f->decl);
+	print(f->decl, file);
 	
 	if (f->stmts != 0)
 	{

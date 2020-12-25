@@ -124,7 +124,7 @@ struct exprS
 	struct exprS * next;
 
 	int varInTableNum;
-	uint16_t refInfo;
+	int refInfo;
 	bool isStaticCall;
 	string exprRes;
 };
@@ -242,7 +242,7 @@ struct funcDeclS
 
 struct funcS 
 {
-	struct funcDeclS * delc;
+	struct funcDeclS * decl;
 	struct stmtList * stmts;
 	struct exprS * expr;
 };

@@ -86,13 +86,13 @@ programS* transformProgramToClass(programS* programTreeRoot)
 				if (pe->method->mods->isOverride)
 				{
 					printf("Error! Top level function \"%s\" cannot be overriden\n",
-						pe->method->funcDecl->name);
+						pe->method->func->decl->name);
 					isCorrectTransformation = false;
 				}
 				if (pe->method->mods->vMod == Protected)
 				{
 					printf("Error! Top level function \"%s\" cannot be protected\n",
-						pe->method->funcDecl->name);
+						pe->method->func->decl->name);
 					isCorrectTransformation = false;
 				}
 				else if (pe->method->mods->vMod == Private)
@@ -616,7 +616,7 @@ void checkMethodsVilibilityLevelIncreasing(const programS* const program)
 						createMethodSignature(cbe->method), pe->clas->parentClassName))
 				{
 					printf("Error! Method \"%s\" in class \"%s\"  has stricter visibility modifier than parent's method\n", 
-						cbe->method->func->delc->name, pe->clas->name);
+						cbe->method->func->decl->name, pe->clas->name);
 					res = false;
 				}
 			}
@@ -718,7 +718,7 @@ bool checkMethods(classS* clas, programS* program)
 				!= methodSigns.end())
 			{
 				printf("Error! Method with name \"%s\" is already declared in class \"%s\"\n",
-					cbe->method->func->delc->name, clas->name);
+					cbe->method->func->decl->name, clas->name);
 				res = false;
 			}
 
@@ -728,17 +728,17 @@ bool checkMethods(classS* clas, programS* program)
 				string retValue = getMethodType(methodSign, program, clas->parentClassName);
 				if (clas->parentClassName != 0 && retValue != "")
 				{
-					if (retValue != cbe->method->func->delc->type->easyType && 
-						!isChildType(cbe->method->func->delc->type->easyType, retValue, program))
+					if (retValue != cbe->method->func->decl->type->easyType && 
+						!isChildType(cbe->method->func->decl->type->easyType, retValue, program))
 					{
 						printf("Error! Return value of method \"%s\" in class \"%s\" is not a child \
-							of type - \"%s\"\n", cbe->method->func->delc->name, clas->name, retValue.c_str());
+							of type - \"%s\"\n", cbe->method->func->decl->name, clas->name, retValue.c_str());
 						res = false;
 					}
 					if (!cbe->method->mods->isOverride)
 					{
 						printf("Error! Method with name \"%s\" in class \"%s\" hasn't modifier OVERRIDE\n", 
-							cbe->method->func->delc->name, clas->name);
+							cbe->method->func->decl->name, clas->name);
 						res = false;
 					}
 				}
@@ -747,10 +747,10 @@ bool checkMethods(classS* clas, programS* program)
 					if (!cbe->method->mods->isOverride)
 					{
 						printf("Error! Method with name \"%s\" in class \"%s\" hasn't modifier OVERRIDE\n",
-							cbe->method->func->delc->name, clas->name);
+							cbe->method->func->decl->name, clas->name);
 						res = false;
 					}
-					else if (strcmp(cbe->method->func->delc->type->easyType, "MyLib/Boolean") != 0)
+					else if (strcmp(cbe->method->func->decl->type->easyType, "MyLib/Boolean") != 0)
 					{
 						printf("Error! Return value of method \"equals\" is not a child of Boolean in class \"%s\"\n",
 							clas->name);
@@ -763,10 +763,10 @@ bool checkMethods(classS* clas, programS* program)
 					if (!cbe->method->mods->isOverride)
 					{
 						printf("Error! Method with name \"%s\" in class \"%s\" hasn't modifier OVERRIDE\n",
-							cbe->method->func->delc->name, clas->name);
+							cbe->method->func->decl->name, clas->name);
 						res = false;
 					}
-					else if (strcmp(cbe->method->func->delc->type->easyType, "MyLib/String") != 0)
+					else if (strcmp(cbe->method->func->decl->type->easyType, "MyLib/String") != 0)
 					{
 						printf("Error!Return value of method \"toString\" is not a child of String in class \"%s\"\n",
 							clas->name);
@@ -776,7 +776,7 @@ bool checkMethods(classS* clas, programS* program)
 					{
 						char* tmp = new char[strlen("toMyString") + 1];
 						strcpy(tmp, "toMyString");
-						cbe->method->func->delc->name = tmp;
+						cbe->method->func->decl->name = tmp;
 					}					
 				}
 			}
@@ -883,10 +883,10 @@ bool checkStaticFuncsLikeConstructors(const programS* const program)
 	{
 		for (auto cbe = mainClass->body->first; cbe != 0; cbe = cbe->next)
 		{
-			if (cbe->method != 0 && isUserClass(cbe->method->func->delc->name, program) 
-				&& cbe->method->func->delc->params == 0)
+			if (cbe->method != 0 && isUserClass(cbe->method->func->decl->name, program) 
+				&& cbe->method->func->decl->params == 0)
 			{
-				printf("Error! Global function overlap constructor of class \"%s\"\n", cbe->method->func->delc->name);
+				printf("Error! Global function overlap constructor of class \"%s\"\n", cbe->method->func->decl->name);
 				res = false;
 			}
 		}
@@ -1041,7 +1041,7 @@ bool transformDestructAssign(methodS* meth)
 				
 				if (fpCount > 100)
 				{
-					printf("Unsupported call of componentN in method \"%s\"\n", meth->func->delc->name);
+					printf("Unsupported call of componentN in method \"%s\"\n", meth->func->decl->name);
 					res = false;
 				}
 			}
@@ -1053,7 +1053,7 @@ bool transformDestructAssign(methodS* meth)
 		}
 		else if (stmt->forLoop != 0 && stmt->forLoop->isDestructing)
 		{
-			printf("Unsupported destruction in for loop in method \"%s\"\n", meth->func->delc->name);
+			printf("Unsupported destruction in for loop in method \"%s\"\n", meth->func->decl->name);
 			res = false;
 		}
 
@@ -1276,15 +1276,15 @@ bool transformTypes(methodS* meth, const list<string>& classesNames)
 
 	bool res = true;
 
-	if (meth->func->delc != 0)
+	if (meth->func->decl != 0)
 	{
-		res = res && transformTypes(meth->func->delc, classesNames);
+		res = res && transformTypes(meth->func->decl, classesNames);
 	}
 	
 	if (meth->func->stmts != 0) res = res && transformTypes(meth->func->stmts, classesNames);
 
 	if (res == false)
-		printf("Errors in method \"%s\"\n", meth->func->delc->name);
+		printf("Errors in method \"%s\"\n", meth->func->decl->name);
 
 	return res;
 }

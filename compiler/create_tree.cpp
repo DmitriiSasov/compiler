@@ -353,7 +353,7 @@ struct modifiersS* createModifiers(int isAbstruct, int isOverride, enum visibili
 struct funcS* createFunc(struct funcDeclS* decl, struct stmtList* stmts, struct exprS* expr)
 {
 	struct funcS* f = (struct funcS*)malloc(sizeof(struct funcS));
-	f->delc = decl;
+	f->decl = decl;
 	f->stmts = stmts;
 	f->expr = expr;
 	return f;
@@ -594,7 +594,7 @@ struct exprS* createExpr(char* idOrString, int iVal, struct factParamsList* para
 	e->doubleV = dVal;
 	e->booleanV = bVar;
 	e->next = 0;
-	e->exprRes = "";
+	//e->exprRes = string("");
 	e->varInTableNum = -1;
 	e->refInfo = -1;
 	e->isStaticCall = false;
