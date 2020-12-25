@@ -52,7 +52,7 @@ struct ShortClassInfo
 
 string createShortInfo(propertyS* prop);
 
-string createShortInfo(methodS* meth);
+string createMethodSignature(methodS* meth);
 
 struct FieldTableElement
 {

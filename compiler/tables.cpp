@@ -96,7 +96,7 @@ string getMethodType(string methodSign, const programS* const program, const str
 			{
 				if (cbe->method != 0)
 				{
-					string methodInfo = createShortInfo(cbe->method);
+					string methodInfo = createMethodSignature(cbe->method);
 					if (strstr(methodInfo.c_str(), methodSign.c_str()) != 0)
 					{
 						res = cbe->method->func->delc->type->easyType;
@@ -433,7 +433,7 @@ void ClassFile::fillHighLevelObjectsConstants(methodS* meth, programS* program)
 	MethodTableElement mte(nameId, descId, translateVisibilityMod(meth->mods->vMod), 
 		meth->mods->iMod == Final, meth->mods->isStatic);
 
-	methodTable.insert(make_pair(createShortInfo(meth), mte));
+	methodTable.insert(make_pair(createMethodSignature(meth), mte));
 	addConstantsFrom(meth, program);
 }
 
@@ -1707,7 +1707,7 @@ void ClassFile::addConstantsFrom(stmtS* stmt, programS* program, string methodKe
 void ClassFile::addConstantsFrom(methodS* meth, programS* program)
 {
 	//Загружаем указатель на объект
-	string methKey = createShortInfo(meth);
+	string methKey = createMethodSignature(meth);
 	if (!methodTable.at(methKey).isStatic)
 	{
 		methodTable.at(methKey).addLocalVar(new LocalVariableInfo(true, true, "this", className));
