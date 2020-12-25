@@ -1314,7 +1314,8 @@ programS* transformProgram(list<ClassFile> classesFiles, programS* program)
 	complementModifiers(program);
 	checkConstructorsAndInits(program);
 	transformDestructAssign(program);
-
+	checkMethodsAndPropsNames(program);
+	checkMethodsVilibilityLevelIncreasing(program);
 	checkPropertyInitialization(program);
 	transformAssignmentWithFieldAndArrays(program);
 	fillClassesFiles(classesFiles, program);
