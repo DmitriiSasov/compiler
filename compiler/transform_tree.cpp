@@ -577,8 +577,9 @@ bool isParentMethodVisModWeaken(visibilityMod vMod, const programS* const progra
 	{
 		if ((methodSign == "equals(MyLib/Any)" || methodSign == "toMyString()") && vMod != Public)
 		{
-			return false;
+			return true;
 		}
+		else	return false;
 	}
 	else
 	{
@@ -601,6 +602,7 @@ bool isParentMethodVisModWeaken(visibilityMod vMod, const programS* const progra
 				}
 			}
 		}
+		return false;
 	}
 }
 
@@ -770,7 +772,7 @@ bool checkMethods(classS* clas, programS* program)
 							cbe->method->func->decl->name, clas->name);
 						res = false;
 					}
-					else if (strcmp(cbe->method->func->decl->type->easyType, "MyLib/String") != 0)
+					else if (strcmp(cbe->method->func->decl->type->easyType, "MyLib/MyString") != 0)
 					{
 						printf("Error!Return value of method \"toString\" is not a child of String in class \"%s\"\n",
 							clas->name);
