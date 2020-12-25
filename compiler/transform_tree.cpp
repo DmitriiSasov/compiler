@@ -400,7 +400,7 @@ bool complementModifiers(methodS* meth)
 
 		if (meth->mods->isOverride == true && meth->mods->vMod == Private)
 		{
-			printf("Error! Method with name \"%s\"\" cannot be OVERRIDE and PRIVATE", meth->funcDecl->name);
+			printf("Error! Method with name \"%s\" cannot be OVERRIDE and PRIVATE", meth->funcDecl->name);
 			res = false;
 		}
 	}
@@ -771,6 +771,8 @@ void checkClassesNames(const programS* const program)
 
 	list<string> classNames;
 	
+	bool checkingRes = true;
+
 	for (programElementS* pe = program->first; pe != 0; pe = pe->next) 
 	{
 		if (pe->clas != 0)
@@ -778,13 +780,15 @@ void checkClassesNames(const programS* const program)
 			auto res = find(classNames.begin(), classNames.end(), string(pe->clas->name));
 			if (res != classNames.end())
 			{
-				char message[200] = "EXCEPTION! class with name \"";
-				exception e((strcat(strcat(message, pe->clas->name), "\" is already declared")));
-				throw e;
+				printf("Error! Class with name \"%s\" is already declared", pe->clas->name);
+				checkingRes = false;
 			}
 			else	classNames.push_back(string(pe->clas->name));
 		}
 	}
+
+	if (checkingRes)
+		throw exception("Exception! Errors in checking of class names");
 }
 
 void transformFuncsLikeExpr(methodS* meth)
@@ -823,13 +827,15 @@ void transformFuncsLikeExpr(programS* program)
 	}
 }
 
-void checkStaticFuncsLikeConstructors(const programS* const program)
+bool checkStaticFuncsLikeConstructors(const programS* const program)
 {
 	classS* mainClass = 0;
 	for (auto pe = program->first; pe != 0 && mainClass == 0; pe = pe->next)
 	{
 		if (pe->clas != 0 && strcmp(pe->clas->name, "Main$") == 0) mainClass = pe->clas;
 	}
+
+	bool res = false;
 
 	if (mainClass != 0 && mainClass->body != 0)
 	{
@@ -838,22 +844,24 @@ void checkStaticFuncsLikeConstructors(const programS* const program)
 			if (cbe->method != 0 && isUserClass(cbe->method->func->delc->name, program) 
 				&& cbe->method->func->delc->params == 0)
 			{
-				char message[200] = "EXCEPTION! Global function overlap constructor of class \"";
-				exception e((strcat(strcat(message, cbe->method->func->delc->name), "\"")));
-				throw e;
+				printf("Error! Global function overlap constructor of class \"%s\"", cbe->method->func->delc->name);
+				res = false;
 			}
 		}
 	}
 	
+	return res;
 }
 
-void checkConstructorsAndInits(const classS* const cl)
+bool checkConstructorsAndInits(const classS* const cl)
 {
 	if (cl->body == 0)
 	{
-		return;
+		return true;
 	}
 	
+	bool res = true;
+
 	classBodyElementS* cbe = cl->body->first;
 	int publicConstrCount = 0;
 	while (cbe != 0)
@@ -863,27 +871,26 @@ void checkConstructorsAndInits(const classS* const cl)
 			|| cbe->constructor->anotherConstructorId != 0 || cbe->constructor->params != 0
 			|| cbe->constructor->stmts != 0 || cbe->constructor->mod != Public))
 		{
-			char message[200] = "EXCEPTION! Unsupported not public not default constructor  in class \"";
-			exception e((strcat(strcat(message, cl->name), "\"")));
-			throw e;
+			printf("Error! Unsupported not public not default constructor in class \"%s\"", cl->name);
+			res = false;
 		}
 		else publicConstrCount++;
 
 		if (cbe->init != 0)
 		{
-			char message[200] = "EXCEPTION! Unsupported initializator in class \"";
-			exception e((strcat(strcat(message, cl->name), "\"")));
-			throw e;
+			printf("Error! Unsupported initializator in class \"%s\"", cl->name);
+			res = false;
 		}
 		cbe = cbe->next;
 	}
 
 	if (publicConstrCount > 1)
 	{
-		char message[200] = "EXCEPTION! Redefine of default contructor in class \"";
-		exception e((strcat(strcat(message, cl->name), "\"")));
-		throw e;
+		printf("Error! Redefine of default contructor in class \"%s\"", cl->name);
+		res = false;
 	}
+
+	return res;
 }
 
 void checkConstructorsAndInits(const programS* const program)
@@ -891,14 +898,19 @@ void checkConstructorsAndInits(const programS* const program)
 	if (program == 0)
 		return;
 
+	bool res = true;
+
 	programElementS* pe = program->first;
 	while (pe != 0)
 	{
-		if (pe->clas != 0) checkConstructorsAndInits(pe->clas);
+		if (pe->clas != 0) res = res && checkConstructorsAndInits(pe->clas);
 		pe = pe->next;
 	}
 
-	checkStaticFuncsLikeConstructors(program);
+	res = res && checkStaticFuncsLikeConstructors(program);
+
+	if (!res)
+		throw exception("Exception! Errors in ckecking of constructors and initializers");
 }
 
 void checkPropertyInitialization(const classS* const cl)
