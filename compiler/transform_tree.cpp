@@ -616,7 +616,7 @@ void checkPropsNames(classS* clas, const  programS* const program)
 	}
 }
 
-void checkMethodsNames(classS* clas, const programS* const program)
+void checkMethodsNames(classS* clas, programS* program)
 {
 	if (clas == 0 || clas->body == 0)
 		return;
@@ -654,11 +654,20 @@ void checkMethodsNames(classS* clas, const programS* const program)
 					exception e((strcat(strcat(message, cbe->method->func->delc->name), "\" hasn't modifier OVERRIDE")));
 					throw e;
 				}
-				else if (methodSign == "toString()" && !cbe->method->mods->isOverride)
+				else if (methodSign == "toString()" )
 				{
-					char message[200] = "EXCEPTION! Method with name \"";
-					exception e((strcat(strcat(message, cbe->method->func->delc->name), "\" hasn't modifier OVERRIDE")));
-					throw e;
+					if (!cbe->method->mods->isOverride)
+					{
+						char message[200] = "EXCEPTION! Method with name \"";
+						exception e((strcat(strcat(message, cbe->method->func->delc->name), "\" hasn't modifier OVERRIDE")));
+						throw e;
+					}
+					else
+					{
+						char* tmp = new char[strlen("toMyString") + 1];
+						strcpy(tmp, "toMyString");
+						cbe->method->func->delc->name = tmp;
+					}					
 				}
 			}
 			
@@ -666,7 +675,7 @@ void checkMethodsNames(classS* clas, const programS* const program)
 	}
 }
 
-void checkMethodsAndPropsNames(const programS* const program)
+void checkMethodsAndPropsNames(programS* program)
 {
 	for (auto pe = program->first; pe != 0; pe = pe->next)
 	{
