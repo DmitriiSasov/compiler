@@ -21,10 +21,12 @@ VisibilityMod translateVisibilityMod(visibilityMod vMod)
 
 
 
-bool isStandartClass(const string& className)
+bool isMyStandartClass(const string& className)
 {
-	if (className == "String" || className == "Int" || className == "Float"
-		 || className == "Char" || className == "Double" || className == "Boolean")
+	if (className == "MyLib/Int" || className == "MyLib/Float"
+		|| className == "MyLib/Double"  || className == "MyLib/MyString"
+		|| className == "MyLib/Char" || className == "MyLib/Unit"
+		|| className == "MyLib/Boolean" || className == "MyLib/Any")
 		return true;
 	return false;
 }
@@ -953,7 +955,7 @@ void ClassFile::calcType(exprS* e1, programS* program, string& methodKey)
 		{
 			if (strcmp(e1->stringOrId, "equals") && paramsCount == 1)
 			{
-				if (isStandartClass(e1->factParams->first->exprRes))
+				if (isMyStandartClass(e1->factParams->first->exprRes))
 				{
 					convertToJavaBasicTypeClass(e1->factParams->first);
 				}
@@ -1078,11 +1080,11 @@ void ClassFile::calcType(exprS* e1, programS* program, string& methodKey)
 		//Обращение к методу equals
 		else if (strcmp(e1->stringOrId, "equals") == 0 && paramsCount == 1)
 		{
-			if (isStandartClass(e1->left->exprRes))
+			if (isMyStandartClass(e1->left->exprRes))
 			{
 				convertToJavaBasicTypeClass(e1->left);
 			}
-			if (isStandartClass(e1->factParams->first->exprRes))
+			if (isMyStandartClass(e1->factParams->first->exprRes))
 			{
 				convertToJavaBasicTypeClass(e1->factParams->first);
 			}
@@ -1091,7 +1093,7 @@ void ClassFile::calcType(exprS* e1, programS* program, string& methodKey)
 				"(Ljava/lang/Object;)Z");
 		}
 		//Если объект - базовый класс Kotlin + toString для базовых типов
-		else if (isStandartClass(e1->left->exprRes))
+		else if (isMyStandartClass(e1->left->exprRes))
 		{
 			if (e1->left->exprRes == "String" && strcmp(e1->stringOrId, "get") == 0 
 				&& paramsCount == 1 && e1->factParams->first->exprRes == "Integer")
@@ -1221,7 +1223,7 @@ void ClassFile::calcType(exprS* e1, programS* program, string& methodKey)
 		//Если метод equals
 		if (strcmp(e1->stringOrId, "equals") == 0 && paramsCount == 1)
 		{
-			if (isStandartClass(e1->factParams->first->exprRes))
+			if (isMyStandartClass(e1->factParams->first->exprRes))
 			{
 				convertToJavaBasicTypeClass(e1->factParams->first);
 			}
@@ -1322,7 +1324,7 @@ void ClassFile::calcType(exprS* e1, programS* program, string& methodKey)
 		{
 			if (e1->right->exprRes != "String");
 			{
-				if (isStandartClass(e1->right->exprRes))
+				if (isMyStandartClass(e1->right->exprRes))
 				{ 
 					convertBasicTypeExprToString(e1->right);
 				}

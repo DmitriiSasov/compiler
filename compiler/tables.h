@@ -33,6 +33,8 @@ string transformTypeToDescriptor(const char* type, const programS* program);
 
 bool isUserClass(const char* name, const list<string>& classesNames);
 
+bool isMyStandartClass(const string& className);
+
 bool isUserClass(const char* name, const programS * const program);
 
 string getPropertyType(const char* propName, const programS* const program, const string& currentClassName);
