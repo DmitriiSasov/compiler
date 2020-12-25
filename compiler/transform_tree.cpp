@@ -1143,6 +1143,7 @@ void transformTypes(programS* program)
 }
 
 
+
 bool isParentClass(string potentialParent, string potentialChild, list<pair<string, string>>& classesAndParents) {
 	
 	for (auto classAndParent : classesAndParents)
@@ -1153,6 +1154,18 @@ bool isParentClass(string potentialParent, string potentialChild, list<pair<stri
 			else if (classAndParent.second == potentialParent)	 return true;
 			else	return isParentClass(potentialParent, classAndParent.second, classesAndParents);
 		}		
+	}
+	return false;
+}
+
+//ѕроверить, что у класса есть модификатор open
+bool isOpenClass(const string& className, const programS* program)
+{
+	for (programElementS* pe = program->first; pe != 0; pe = pe->next)
+	{
+		if (pe->clas != 0 && pe->clas->name == className && pe->clas->mods != 0
+			&& pe->clas->mods->iMod == Open || className == "Any")
+			return true;
 	}
 	return false;
 }
@@ -1175,6 +1188,7 @@ void checkCirclesInInheritance(programS* program)
 	{
 		if (pe->clas != 0 && pe->clas->parentClassName != 0)
 		{
+			//ѕровер€ем, что класс не наследуютс€ от себ€ или своего дочернего класса
 			if (isParentClass(pe->clas->name, pe->clas->parentClassName, classesAndParents))
 			{
 				char message[200] = "EXCEPTION! Class \"";
@@ -1183,11 +1197,20 @@ void checkCirclesInInheritance(programS* program)
 				throw e;
 
 			}
-			else if (!isUserClass(pe->clas->parentClassName, program) && )
+			//ѕровер€ем, что класс наследуетс€ от открытого класса
+			else if (!isOpenClass(pe->clas->parentClassName, program))
 			{
 				char message[200] = "EXCEPTION! Class \"";
-				exception e(strcat(strcat(strcat(message, pe->clas->name), "\" cannot be a child of undeclared \
-					user class - "), pe->clas->parentClassName));
+				exception e(strcat(strcat(strcat(message, pe->clas->name), "\" cannot be a child of FINAL class "),
+					pe->clas->parentClassName));
+				throw e;
+			}
+			//ѕровер€ем, что класс, от которого наследуемс€ вообще существует
+			else if (!isUserClass(pe->clas->parentClassName, program) && pe->clas->parentClassName != "Any")
+			{
+				char message[200] = "EXCEPTION! Class \"";
+				exception e(strcat(strcat(strcat(message, pe->clas->name), "\" cannot be a child of undeclared or  \
+					class - "), pe->clas->parentClassName));
 				throw e;
 			}
 			
