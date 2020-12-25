@@ -968,6 +968,18 @@ void templateTypeFree(templateTypeS* type)
 	free(type->list);
 }
 
+bool isStandartKotlinType(const char* typeName)
+{
+	if (strcmp(typeName, "Int") == 0 || strcmp(typeName, "Float") == 0
+		|| strcmp(typeName, "Double") == 0 || strcmp(typeName, "String") == 0
+		|| strcmp(typeName, "Char") == 0 || strcmp(typeName, "Unit") == 0
+		|| strcmp(typeName, "Boolean") == 0 || strcmp(typeName, "Any") == 0)
+	{
+		return true;
+	}
+	return false;
+}
+
 bool existsEasyType(char* typeName, const list<string>& classesNames)
 {
 	bool res = strcmp(typeName, "Int") != 0 && strcmp(typeName, "Float") != 0
@@ -990,26 +1002,34 @@ char * collectArrayInfo(templateTypeS* type, const list<string>& classesNames, i
 
 	if (strcmp(type->type, "Array") != 0)
 	{
-		char message[200] = "EXCEPTION! Unsupported type \"";
+		char message[200] = "EXCEPTION! Unsupported template type \"";
 		exception e(strcat(strcat(message, type->type), "\""));
 		throw e;
 	}
 	if (type->list->first != type->list->last)
 	{
-		char message[200] = "EXCEPTION! invalid array type \"";
+		char message[200] = "EXCEPTION! More than 1 array type \"";
 		exception e(message);
 		throw e;
 	}
 	if (type->list->first->easyType != 0)
 	{
-		if (!existsEasyType(type->list->first->easyType, classesNames))
+		char* typeOfArray;
+		if (isStandartKotlinType(type->list->first->easyType)
+			&& !isUserClass(type->list->first->easyType, classesNames))
 		{
-			char message[200] = "EXCEPTION! Incorrect array type \"";
+			typeOfArray = transformStdKotlinTypeToMyKotlinTypes(type->list->first->easyType);
+		}
+		else if (isUserClass(type->list->first->easyType, classesNames))
+		{
+			typeOfArray = type->list->first->easyType;
+		}
+		else if (!isUserClass(type->list->first->easyType, classesNames))
+		{
+			char message[200] = "EXCEPTION! Unknown array type \"";
 			exception e(strcat(strcat(message, type->list->first->easyType), "\""));
 			throw e;
 		}
-		char * typeOfArray = new char[strlen(type->list->first->easyType) + 1];
-		strcpy(typeOfArray, type->list->first->easyType);
 		return typeOfArray;
 	}
 	else
@@ -1019,14 +1039,42 @@ char * collectArrayInfo(templateTypeS* type, const list<string>& classesNames, i
 	}
 }
 
+char* transformStdKotlinTypeToMyKotlinTypes(const char* type)
+{
+	if (isStandartKotlinType(type))
+	{
+		char* myTypeName;
+		if (strcmp(type, "String") == 0)
+		{
+			myTypeName = new char[strlen("MyLib/MyString") + 1];
+			strcpy(myTypeName, "MyLib/MyString");
+		}
+		else
+		{
+			myTypeName = new char[strlen("MyLib/") + strlen(type) + 1];
+			strcat(strcpy(myTypeName, "MyLib/"), type);
+		}
+		return myTypeName;
+	}
+	else return NULL;
+}
+
 void transformTypes(typeS* type, const list<string>& classesNames)
 {
-	//ѕровер€ем простые типы
-	if (type->easyType != 0 && !existsEasyType(type->easyType, classesNames))
+	//≈сли простой тип €вл€етс€ стандартным котлин типом, то мен€ем его на свой котлин тип
+	if (type->easyType != 0)
 	{
-		char message[200] = "EXCEPTION! Incorrect type \"";
-		exception e(strcat(strcat(message, type->easyType), "\""));
-		throw e;
+		if (isStandartKotlinType(type->easyType)
+			&& !isUserClass(type->easyType, classesNames))
+		{
+			type->easyType = transformStdKotlinTypeToMyKotlinTypes(type->easyType);
+		}
+		else if (!isUserClass(type->easyType, classesNames))
+		{
+			char message[200] = "EXCEPTION! Incorrect type \"";
+			exception e(strcat(strcat(message, type->easyType), "\""));
+			throw e;
+		}
 	}
 	else if (type->complexType != 0 )
 	{
@@ -1041,6 +1089,18 @@ void transformTypes(typeS* type, const list<string>& classesNames)
 		free(type->complexType);
 		type->complexType = 0;
 	}
+
+}
+
+void transformTypes(formalParamsList* fps, const list<string>& classesNames)
+{
+	if (fps != 0)
+	{
+		for (auto fp = fps->first; fp != 0; fp = fp->next)
+		{
+			transformTypes(fp->type, classesNames);
+		}
+	}
 }
 
 void transformTypes(funcDeclS* decl, const list<string>& classesNames)
@@ -1048,6 +1108,7 @@ void transformTypes(funcDeclS* decl, const list<string>& classesNames)
 	if (decl == 0) return;
 
 	transformTypes(decl->type, classesNames);
+	transformTypes(decl->params, classesNames);
 }
 
 void transformTypes(methodS* meth, const list<string>& classesNames)
@@ -1077,6 +1138,7 @@ void transformTypes(stmtS* stmt, const list<string>& classesNames)
 		transformTypes(stmt->whileLoop->stmts, classesNames);
 		break;
 	case ForLoop:
+		transformTypes(stmt->forLoop->params, classesNames);
 		transformTypes(stmt->forLoop->stmts, classesNames);
 		break;
 	case IfStmt:
@@ -1144,6 +1206,8 @@ void transformTypes(programS* program)
 
 
 
+
+
 bool isParentClass(const string& potentialParent, const string& potentialChild, const list<pair<string, string>>& classesAndParents) {
 	
 	for (auto classAndParent : classesAndParents)
@@ -1164,7 +1228,7 @@ bool isOpenClass(const string& className, const programS* const program)
 	for (programElementS* pe = program->first; pe != 0; pe = pe->next)
 	{
 		if (pe->clas != 0 && pe->clas->name == className && pe->clas->mods != 0
-			&& pe->clas->mods->iMod == Open || className == "Any")
+			&& pe->clas->mods->iMod == Open || className == "Any" && !isUserClass("Any", program))
 			return true;
 	}
 	return false;
