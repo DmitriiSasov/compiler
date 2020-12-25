@@ -601,10 +601,12 @@ void checkMethodsVilibilityLevelIncreasing(const programS* const program)
 		throw exception("Exception! Errors in methods visibility modifiers\n");
 }
 
-void checkPropsNames(classS* clas, const  programS* const program)
+bool checkPropsNames(classS* clas, const  programS* const program)
 {
 	if (clas == 0 || clas->body == 0)
-		return;
+		return true;
+
+	bool res = true;
 
 	list<string> propertyNames;
 	for (auto cbe = clas->body->first; cbe != 0; cbe = cbe->next)
@@ -614,22 +616,24 @@ void checkPropsNames(classS* clas, const  programS* const program)
 			if (find(propertyNames.begin(), propertyNames.end(), cbe->property->varOrVal->id) 
 				!= propertyNames.end())
 			{
-				char message[200] = "EXCEPTION! property with name \"";
-				exception e((strcat(strcat(message, cbe->property->varOrVal->id), "\" is already declared")));
-				throw e;
+				printf("Error! Property with name \"%s\" is already declared in class \"%s\"\n",
+					cbe->property->varOrVal->id, clas->name);
+				res = false;
 			}
 			
 			if (clas->parentClassName != 0 && getPropertyType(cbe->property->varOrVal->id, 
 				program, clas->parentClassName) != "")
 			{
-				char message[200] = "EXCEPTION! Redefine of parent property \"";
-				exception e((strcat(strcat(message, cbe->property->varOrVal->id), "\"")));
-				throw e;
+				printf("Error!  Redefine of parent property \"%s\" in class \"%s\"\n",
+					cbe->property->varOrVal->id, clas->name);
+				res = false;
 			}
 			
 			propertyNames.push_back(cbe->property->varOrVal->id);
 		}
 	}
+
+	return res;
 }
 
 
@@ -671,10 +675,12 @@ bool isChildType(const string& potentialChildType, const string& potentialParent
 }
 
 
-void checkMethods(classS* clas, programS* program)
+bool checkMethods(classS* clas, programS* program)
 {
 	if (clas == 0 || clas->body == 0)
-		return;
+		return true;
+
+	bool res = true;
 
 	list<string> methodSigns;
 	for (auto cbe = clas->body->first; cbe != 0; cbe = cbe->next)
@@ -685,9 +691,9 @@ void checkMethods(classS* clas, programS* program)
 			if (find(methodSigns.begin(), methodSigns.end(), methodSign)
 				!= methodSigns.end())
 			{
-				char message[200] = "EXCEPTION! Method with name \"";
-				exception e((strcat(strcat(message, cbe->method->func->delc->name), "\" is already declared")));
-				throw e;
+				printf("Error! Method with name \"%s\" is already declared in class \"%s\"\n",
+					cbe->method->func->delc->name, clas->name);
+				res = false;
 			}
 
 			//≈сли это не созданный статический класс
@@ -699,31 +705,30 @@ void checkMethods(classS* clas, programS* program)
 					if (retValue != cbe->method->func->delc->type->easyType && 
 						!isChildType(cbe->method->func->delc->type->easyType, retValue, program))
 					{
-						char message[200] = "EXCEPTION! Return value of method \"";
-						exception e(strcat(strcat(strcat(message, cbe->method->func->delc->name), 
-							"\" is not a child of type - "), retValue.c_str()));
-						throw e;
+						printf("Error! Return value of method \"%s\" in class \"%s\" is not a child \
+							of type - \"%s\"\n", cbe->method->func->delc->name, clas->name, retValue.c_str());
+						res = false;
 					}
 					if (!cbe->method->mods->isOverride)
 					{
-						char message[200] = "EXCEPTION! Method with name \"";
-						exception e((strcat(strcat(message, cbe->method->func->delc->name), "\" hasn't modifier OVERRIDE")));
-						throw e;
+						printf("Error! Method with name \"%s\" in class \"%s\" hasn't modifier OVERRIDE\n", 
+							cbe->method->func->delc->name, clas->name);
+						res = false;
 					}
 				}
 				else if (methodSign == "equals(MyLib/Any|)")
 				{
 					if (!cbe->method->mods->isOverride)
 					{
-						char message[200] = "EXCEPTION! Method with name \"";
-						exception e((strcat(strcat(message, cbe->method->func->delc->name), "\" hasn't modifier OVERRIDE")));
-						throw e;
+						printf("Error! Method with name \"%s\" in class \"%s\" hasn't modifier OVERRIDE\n",
+							cbe->method->func->delc->name, clas->name);
+						res = false;
 					}
 					else if (strcmp(cbe->method->func->delc->type->easyType, "MyLib/Boolean") != 0)
 					{
-						char message[200] = "EXCEPTION! Method \"equals\" return value is not a child of Boolean in class \"";
-						exception e(strcat(strcat(message, clas->name), "\""));
-						throw e;
+						printf("Error! Return value of method \"equals\" is not a child of Boolean in class \"%s\"\n",
+							clas->name);
+						res = false;
 					}
 					
 				}
@@ -731,15 +736,15 @@ void checkMethods(classS* clas, programS* program)
 				{
 					if (!cbe->method->mods->isOverride)
 					{
-						char message[200] = "EXCEPTION! Method with name \"";
-						exception e((strcat(strcat(message, cbe->method->func->delc->name), "\" hasn't modifier OVERRIDE")));
-						throw e;
+						printf("Error! Method with name \"%s\" in class \"%s\" hasn't modifier OVERRIDE\n",
+							cbe->method->func->delc->name, clas->name);
+						res = false;
 					}
 					else if (strcmp(cbe->method->func->delc->type->easyType, "MyLib/String") != 0)
 					{
-						char message[200] = "EXCEPTION! Method \"toString\" return value is not a child of String in class \"";
-						exception e(strcat(strcat(message, clas->name), "\""));
-						throw e;
+						printf("Error!Return value of method \"toString\" is not a child of String in class \"%s\"\n",
+							clas->name);
+						res = false;
 					}
 					else
 					{
@@ -752,18 +757,25 @@ void checkMethods(classS* clas, programS* program)
 			
 		}
 	}
+
+	return res;
 }
 
 void checkMethodsAndPropsNames(programS* program)
 {
+	bool res = true;
+
 	for (auto pe = program->first; pe != 0; pe = pe->next)
 	{
 		if (pe->clas != 0)
 		{
-			checkMethods(pe->clas, program);
-			checkPropsNames(pe->clas, program);
+			res = res && checkMethods(pe->clas, program);
+			res = res && checkPropsNames(pe->clas, program);
 		}
 	}
+
+	if (!res)
+		throw exception("Exception! Errors in methods names or properties names");
 }
 
 
