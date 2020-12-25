@@ -89,7 +89,16 @@ programS* transformProgramToClass(programS* programTreeRoot)
 						pe->method->funcDecl->name);
 					isCorrectTransformation = false;
 				}
-
+				if (pe->method->mods->vMod == Protected)
+				{
+					printf("Error! Top level function \"%s\" cannot be protected\n",
+						pe->method->funcDecl->name);
+					isCorrectTransformation = false;
+				}
+				else if (pe->method->mods->vMod == Private)
+				{
+					pe->method->mods->vMod = Public;
+				}
 				pe->method->mods->isStatic = true;
 			}
 			else
@@ -103,10 +112,23 @@ programS* transformProgramToClass(programS* programTreeRoot)
 		{
 			if (pe->property->varOrVal->isVal)
 			{
-				printf("EXCEPTION!Unsupported static constant value \"%s\"\n", pe->property->varOrVal->id);
+				printf("Error! Unsupported static constant value \"%s\"\n", pe->property->varOrVal->id);
 				isCorrectTransformation = false;
 			}
-			if (pe->property->mods != 0)	pe->property->mods->isStatic = true;
+			if (pe->property->mods != 0)
+			{
+				pe->property->mods->isStatic = true;
+				if (pe->property->mods->vMod == Protected)
+				{
+					printf("Error! Top level property \"%s\" cannot be protected\n",
+						pe->property->varOrVal->id);
+					isCorrectTransformation = false;
+				}
+				else if (pe->property->mods->vMod == Private)
+				{
+					pe->property->mods->vMod = Public;
+				}
+			}
 			else
 			{
 				pe->property->mods = createModifiers(0, 0, Public, None);
