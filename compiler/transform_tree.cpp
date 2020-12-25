@@ -616,6 +616,45 @@ void checkPropsNames(classS* clas, const  programS* const program)
 	}
 }
 
+
+bool isChildType(const string& potentialChildType, const string& potentialParentType,
+	const programS* const program)
+{
+	if (potentialChildType == "" || potentialParentType == "")
+		return false;
+
+	//≈сли в качестве дочернего класса указан базовый класс
+	if (potentialChildType == "MyLib/Any")
+		return false;
+
+	//≈сли в качестве родительского типа выступает Any, т.е. базовый класс
+	if (potentialParentType == "MyLib/Any")
+		return true;
+
+	//≈сли родителем €вл€етс€ стандартный тип (они все final) кроме Any
+	if (isMyStandartClass(potentialParentType))
+		return false;
+
+	//≈сли родителем €вл€етс€ массив
+	if (potentialParentType.find("[]") != -1)
+		return false;
+
+	//≈сли дочений класс - стандартный тип и родитель не Any
+	if (isMyStandartClass(potentialChildType))
+		return false;
+
+	//≈сли дочерний класс - массив и родитель не Any
+	if (potentialChildType.find("[]") != -1)
+		return false;
+
+	//≈сли оба класса - пользовательские, то провер€ем их
+	if (isUserClass(potentialChildType.c_str(), program))
+	{
+		return isParentClass(potentialParentType, potentialChildType, program);
+	}
+}
+
+
 void checkMethodsNames(classS* clas, programS* program)
 {
 	if (clas == 0 || clas->body == 0)
@@ -1207,7 +1246,24 @@ void transformTypes(programS* program)
 	}
 }
 
-bool isParentClass(const string& potentialParent, const string& potentialChild, const list<pair<string, string>>& classesAndParents) {
+bool isParentClass(const string& potentialParent, const string& potentialChild, const programS* const program) 
+{
+
+	for (auto pe = program->first; pe != 0; pe = pe->next)
+	{
+		if (pe->clas != 0 && pe->clas->name == potentialChild)
+		{
+			if (pe->clas->parentClassName == 0) return false;
+			else if (pe->clas->parentClassName == potentialParent) return true;
+			else	return isParentClass(potentialParent, pe->clas->parentClassName, program);
+		}
+	}
+
+	return false;
+}
+
+bool isParentClass(const string& potentialParent, const string& potentialChild, const list<pair<string, string>>& classesAndParents) 
+{
 	
 	for (auto classAndParent : classesAndParents)
 	{
@@ -1281,8 +1337,6 @@ void checkInheritance(const programS* const program)
 
 	}
 }
-
-
 
 void fillClassesFiles(list<ClassFile> files, programS* program)
 {
