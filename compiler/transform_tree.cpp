@@ -655,7 +655,7 @@ bool isChildType(const string& potentialChildType, const string& potentialParent
 }
 
 
-void checkMethodsNames(classS* clas, programS* program)
+void checkMethods(classS* clas, programS* program)
 {
 	if (clas == 0 || clas->body == 0)
 		return;
@@ -677,9 +677,17 @@ void checkMethodsNames(classS* clas, programS* program)
 			//≈сли это не созданный статический класс
 			if (strcmp(clas->name, "Main$") != 0)
 			{
-				if (clas->parentClassName != 0 && getMethodType(methodSign, program,
-					clas->parentClassName) != "")
+				string retValue = getMethodType(methodSign, program, clas->parentClassName);
+				if (clas->parentClassName != 0 && retValue != "")
 				{
+					if (retValue != cbe->method->func->delc->type->easyType && 
+						!isChildType(cbe->method->func->delc->type->easyType, retValue, program))
+					{
+						char message[200] = "EXCEPTION! Return value of method \"";
+						exception e(strcat(strcat(strcat(message, cbe->method->func->delc->name), 
+							"\" is not a child of type - "), retValue.c_str()));
+						throw e;
+					}
 					if (!cbe->method->mods->isOverride)
 					{
 						char message[200] = "EXCEPTION! Method with name \"";
@@ -687,11 +695,21 @@ void checkMethodsNames(classS* clas, programS* program)
 						throw e;
 					}
 				}
-				else if (methodSign == "equals(MyLib/Any|)" && !cbe->method->mods->isOverride)
+				else if (methodSign == "equals(MyLib/Any|)")
 				{
-					char message[200] = "EXCEPTION! Method with name \"";
-					exception e((strcat(strcat(message, cbe->method->func->delc->name), "\" hasn't modifier OVERRIDE")));
-					throw e;
+					if (!cbe->method->mods->isOverride)
+					{
+						char message[200] = "EXCEPTION! Method with name \"";
+						exception e((strcat(strcat(message, cbe->method->func->delc->name), "\" hasn't modifier OVERRIDE")));
+						throw e;
+					}
+					else if (strcmp(cbe->method->func->delc->type->easyType, "MyLib/Boolean") != 0)
+					{
+						char message[200] = "EXCEPTION! Method \"equals\" return value is not a child of Boolean in class \"";
+						exception e(strcat(strcat(message, clas->name), "\""));
+						throw e;
+					}
+					
 				}
 				else if (methodSign == "toString()" )
 				{
@@ -699,6 +717,12 @@ void checkMethodsNames(classS* clas, programS* program)
 					{
 						char message[200] = "EXCEPTION! Method with name \"";
 						exception e((strcat(strcat(message, cbe->method->func->delc->name), "\" hasn't modifier OVERRIDE")));
+						throw e;
+					}
+					else if (strcmp(cbe->method->func->delc->type->easyType, "MyLib/String") != 0)
+					{
+						char message[200] = "EXCEPTION! Method \"toString\" return value is not a child of String in class \"";
+						exception e(strcat(strcat(message, clas->name), "\""));
 						throw e;
 					}
 					else
@@ -720,7 +744,7 @@ void checkMethodsAndPropsNames(programS* program)
 	{
 		if (pe->clas != 0)
 		{
-			checkMethodsNames(pe->clas, program);
+			checkMethods(pe->clas, program);
 			checkPropsNames(pe->clas, program);
 		}
 	}
