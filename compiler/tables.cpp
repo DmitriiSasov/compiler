@@ -824,6 +824,18 @@ void ClassFile::convertToJavaBasicTypeClass(exprS* e)
 	e->varInTableNum = -1;
 }
 
+bool isUserClass(const char* name, const list<string>& classesNames)
+{
+	bool res = false;
+
+	for (auto clName : classesNames)
+	{
+		if (name == clName && name != "Main$")	res = true;
+	}
+
+	return res;
+}
+
 bool isUserClass(const char* name, const programS * const program)
 {
 
