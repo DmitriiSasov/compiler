@@ -829,7 +829,7 @@ void checkClassesNames(const programS* const program)
 		}
 	}
 
-	if (checkingRes)
+	if (!checkingRes)
 		throw exception("Exception! Errors in checking of class names\n");
 }
 
@@ -916,7 +916,12 @@ bool checkConstructorsAndInits(const classS* const cl)
 			printf("Error! Unsupported not public not default constructor in class \"%s\"\n", cl->name);
 			res = false;
 		}
-		else publicConstrCount++;
+		else if (cbe->constructor != 0 && cbe->constructor->anotherConstrParams == 0
+			&& cbe->constructor->anotherConstructorId == 0 && cbe->constructor->params == 0
+			&& cbe->constructor->stmts == 0 && cbe->constructor->mod == Public)
+		{
+			publicConstrCount++;
+		}
 
 		if (cbe->init != 0)
 		{
