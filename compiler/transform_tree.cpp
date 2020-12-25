@@ -1186,7 +1186,7 @@ void transformTypes(classS* cl, const list<string>& classesNames)
 }
 
 //ѕроверить типы на корректность, все ли указанные типы вообще существуют.
-//ѕреобразовать типы Kotlin к базовым в java
+//ѕреобразовать типы Kotlin к моим базовым типам
 void transformTypes(programS* program) 
 {
 	if (program == 0)
@@ -1206,10 +1206,6 @@ void transformTypes(programS* program)
 		pe = pe->next;
 	}
 }
-
-
-
-
 
 bool isParentClass(const string& potentialParent, const string& potentialChild, const list<pair<string, string>>& classesAndParents) {
 	
