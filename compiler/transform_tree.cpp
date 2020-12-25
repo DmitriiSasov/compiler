@@ -393,7 +393,7 @@ bool checkConstructorMod(const constructorS* const constr)
 {
 	if (constr->mod != Public)
 	{
-		printf("Error! Unsupported NOT PUBLIC contructors");
+		printf("Error! Unsupported NOT PUBLIC contructors\n");
 		return false;
 	}
 	return true;
@@ -415,18 +415,18 @@ bool complementModifiers(methodS* meth)
 		if (meth->mods->vMod == Unknown) meth->mods->vMod = Public;
 		else if (meth->mods->vMod == Internal)
 		{
-			printf("Error! Unsupported INTERNAL visibility mod with method \"%s\"\n", meth->funcDecl->name);
+			printf("Error! Unsupported INTERNAL visibility mod with method \"%s\"\n", meth->func->decl->name);
 			res = false;
 		}
 		if (meth->mods->isAbstract == true)
 		{
-			printf("Error! Unsupported ABSTRACT mod with method \"%s\"\n", meth->funcDecl->name);
+			printf("Error! Unsupported ABSTRACT mod with method \"%s\"\n", meth->func->decl->name);
 			res = false;
 		}
 
 		if (meth->mods->isOverride == true && meth->mods->vMod == Private)
 		{
-			printf("Error! Method with name \"%s\" cannot be OVERRIDE and PRIVATE\n", meth->funcDecl->name);
+			printf("Error! Method with name \"%s\" cannot be OVERRIDE and PRIVATE\n", meth->func->decl->name);
 			res = false;
 		}
 	}
@@ -488,26 +488,30 @@ bool complementModifiers(classS* cl)
 	
 	for (classBodyElementS* cbe = cl->body->first; cbe != 0; cbe = cbe->next) 
 	{
+		bool tmp = true;
 		if (cbe->property)
 		{
-			res = res && complementModifiers(cbe->property);
+			tmp = complementModifiers(cbe->property);
+			res = res && tmp;
 		}
 		else if (cbe->method)
 		{
-			res = res && complementModifiers(cbe->method);
+			tmp = complementModifiers(cbe->method);
+			res = res && tmp;
 		}
 		else if (cbe->constructor)
 		{
-			res = res && checkConstructorMod(cbe->constructor);
+			tmp = checkConstructorMod(cbe->constructor);
+			res = res && tmp;
 		}
 	}
 
 	if (res == false)
 	{
 		if (strcmp(cl->name, "Main$") == 0)
-			printf("Errors in class - %s\n", cl->name);
-		else
 			printf("Errors in global scope\n");
+		else
+			printf("Errors in class - %s\n", cl->name);
 		return res;
 	}
 	
@@ -795,8 +799,10 @@ void checkMethodsAndPropsNames(programS* program)
 	{
 		if (pe->clas != 0)
 		{
-			res = res && checkMethods(pe->clas, program);
-			res = res && checkPropsNames(pe->clas, program);
+			bool tmp = checkMethods(pe->clas, program);
+			res = res && tmp;
+			tmp = checkPropsNames(pe->clas, program);
+			res = res && tmp;
 		}
 	}
 
@@ -877,7 +883,7 @@ bool checkStaticFuncsLikeConstructors(const programS* const program)
 		if (pe->clas != 0 && strcmp(pe->clas->name, "Main$") == 0) mainClass = pe->clas;
 	}
 
-	bool res = false;
+	bool res = true;
 
 	if (mainClass != 0 && mainClass->body != 0)
 	{
@@ -946,15 +952,22 @@ void checkConstructorsAndInits(const programS* const program)
 		return;
 
 	bool res = true;
+	bool tmp = true;
 
 	programElementS* pe = program->first;
 	while (pe != 0)
 	{
-		if (pe->clas != 0) res = res && checkConstructorsAndInits(pe->clas);
+		
+		if (pe->clas != 0)
+		{
+			tmp = checkConstructorsAndInits(pe->clas);
+			res = res && tmp;
+		}
 		pe = pe->next;
 	}
 
-	res = res && checkStaticFuncsLikeConstructors(program);
+	tmp = checkStaticFuncsLikeConstructors(program);
+	res = res && tmp;
 
 	if (!res)
 		throw exception("Exception! Errors in ckecking of constructors and initializers");
@@ -1253,7 +1266,8 @@ bool transformTypes(formalParamsList* fps, const list<string>& classesNames)
 	{
 		for (auto fp = fps->first; fp != 0; fp = fp->next)
 		{
-			res = res && transformTypes(fp->type, classesNames);
+			bool tmp = transformTypes(fp->type, classesNames);
+			res = res && tmp;
 		}
 	}
 
@@ -1265,9 +1279,10 @@ bool transformTypes(funcDeclS* decl, const list<string>& classesNames)
 	if (decl == 0) return true;
 
 	bool res = true;
-
-	res = res && transformTypes(decl->type, classesNames);
-	res = res && transformTypes(decl->params, classesNames);
+	bool tmp = transformTypes(decl->type, classesNames);
+	res = res && tmp;
+	tmp = transformTypes(decl->params, classesNames);
+	res = res && tmp;
 
 	return res;
 }
@@ -1283,10 +1298,15 @@ bool transformTypes(methodS* meth, const list<string>& classesNames)
 
 	if (meth->func->decl != 0)
 	{
-		res = res && transformTypes(meth->func->decl, classesNames);
+		bool tmp = transformTypes(meth->func->decl, classesNames);
+		res = res && tmp;
 	}
 	
-	if (meth->func->stmts != 0) res = res && transformTypes(meth->func->stmts, classesNames);
+	if (meth->func->stmts != 0)
+	{
+		bool tmp = transformTypes(meth->func->stmts, classesNames);
+		res = res && tmp;
+	}
 
 	if (res == false)
 		printf("Errors in method \"%s\"\n", meth->func->decl->name);
@@ -1297,28 +1317,43 @@ bool transformTypes(methodS* meth, const list<string>& classesNames)
 bool transformTypes(stmtS* stmt, const list<string>& classesNames)
 {
 	bool res = true;
-
+	bool tmp = true;
 	switch (stmt->type) 
 	{
 	case VarOrVal:
 		if (stmt->varOrVal->type != 0)
-			res = res && transformTypes(stmt->varOrVal->type, classesNames);
+		{
+			tmp = transformTypes(stmt->varOrVal->type, classesNames);
+			res = res && tmp;
+		}
 		else
-			res = res && transformTypes(stmt->varOrVal->namesAndTypes, classesNames);
+		{
+			tmp = transformTypes(stmt->varOrVal->namesAndTypes, classesNames);
+			res = res && tmp;
+		}			
 		break;
 	case WhileLoop:
 	case DoWhileLoop:
-		res = res && transformTypes(stmt->whileLoop->stmts, classesNames);
+		tmp = transformTypes(stmt->whileLoop->stmts, classesNames);
+		res = res && tmp;
 		break;
 	case ForLoop:
-		res = res && transformTypes(stmt->forLoop->params, classesNames);
-		res = res && transformTypes(stmt->forLoop->stmts, classesNames);
+		tmp = transformTypes(stmt->forLoop->params, classesNames);
+		res = res && tmp;
+		tmp = transformTypes(stmt->forLoop->stmts, classesNames);
+		res = res && tmp;
 		break;
 	case IfStmt:
 		if (stmt->ifStmt->actions != 0)
-			res = res && transformTypes(stmt->ifStmt->actions, classesNames);
+		{
+			tmp = transformTypes(stmt->ifStmt->actions, classesNames);
+			res = res && tmp;
+		}
 		else
-			res = res && transformTypes(stmt->ifStmt->altActions, classesNames);
+		{
+			tmp = transformTypes(stmt->ifStmt->altActions, classesNames);
+			res = res && tmp;
+		}			
 		break;
 	}
 
@@ -1333,7 +1368,8 @@ bool transformTypes(stmtList* stmts, const list<string>& classesNames)
 
 	for (stmtS* stmt = stmts->first; stmt != 0; stmt = stmt->next)
 	{
-		res = res && transformTypes(stmt, classesNames);
+		bool tmp = transformTypes(stmt, classesNames);
+		res = res && tmp;
 	}
 
 	return res;
@@ -1364,8 +1400,17 @@ bool transformTypes(classS* cl, const list<string>& classesNames)
 	classBodyElementS* cbe = cl->body->first;
 	while (cbe != 0)
 	{
-		if (cbe->method != 0) res = res && transformTypes(cbe->method, classesNames);
-		else if (cbe->property != 0) res = res && transformTypes(cbe->property, classesNames);
+		bool tmp = true;
+		if (cbe->method != 0) 
+		{
+			tmp = transformTypes(cbe->method, classesNames);
+			res = res && tmp;
+		}
+		else if (cbe->property != 0)
+		{
+			tmp = transformTypes(cbe->property, classesNames);
+			res = res && tmp;
+		}
 		cbe = cbe->next;
 	}
 
@@ -1391,7 +1436,12 @@ void transformTypes(programS* program)
 	pe = program->first;
 	while (pe != 0)
 	{
-		if (pe->clas != 0)	res = res && transformTypes(pe->clas, classesNames);
+		bool tmp = true;
+		if (pe->clas != 0)
+		{
+			tmp = transformTypes(pe->clas, classesNames);
+			res = res && tmp;
+		}
 		pe = pe->next;
 	}
 
@@ -1476,7 +1526,7 @@ void checkInheritance(const programS* const program)
 				res = false;
 			}
 			//Проверяем, что класс, от которого наследуемся вообще существует
-			else if (!isUserClass(pe->clas->parentClassName, program) && pe->clas->parentClassName != "Any")
+			else if (!isUserClass(pe->clas->parentClassName, program) && strcmp(pe->clas->parentClassName, "Any"))
 			{
 				printf("Error! Class \"%s\" cannot be a child of undeclared class \"%s\"\n", pe->clas->name, pe->clas->parentClassName);
 				res = false;
