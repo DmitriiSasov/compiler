@@ -363,24 +363,24 @@ void transformInit(programS* program)
 }
 
 
-void checkConstructorMod(const constructorS* const constr)
+bool checkConstructorMod(const constructorS* const constr)
 {
 	if (constr->mod != Public)
 	{
-		char message[200] = "EXCEPTION! Unsupported NOT PUBLIC contructors";
-		exception e(message);
-		throw e;
+		printf("Error! Unsupported NOT PUBLIC contructors");
+		return false;
 	}
+	return true;
 }
 
-void complementModifiers(methodS* meth)
+bool complementModifiers(methodS* meth)
 {
+	bool res = true;
+
 	if (meth->funcDecl != 0)
 	{
-		char message[200] = "EXCEPTION! Unsupported ABSTRACT method with name \"";
-
-		exception e((strcat(strcat(message, meth->funcDecl->name), "\"")));
-		throw e;
+		printf("Error! Unsupported ABSTRACT method with name \"%s\"", meth->funcDecl->name);
+		res = false;
 	}
 
 	if (meth->mods != 0)
@@ -389,137 +389,140 @@ void complementModifiers(methodS* meth)
 		if (meth->mods->vMod == Unknown) meth->mods->vMod = Public;
 		else if (meth->mods->vMod == Internal)
 		{
-			char message[200] = "EXCEPTION! Unsupported INTERNAL visibility mod with method \"";
-
-			exception e((strcat(strcat(message, meth->func->delc->name), "\"")));
-			throw e;
+			printf("Error! Unsupported INTERNAL visibility mod with method \"%s\"", meth->funcDecl->name);
+			res = false;
 		}
 		if (meth->mods->isAbstract == true)
 		{
-			char message[200] = "EXCEPTION! Unsupported ABSTRACT mod with method \"";
-
-			exception e((strcat(strcat(message, meth->func->delc->name), "\"")));
-			throw e;
+			printf("Error! Unsupported ABSTRACT mod with method \"%s\"", meth->funcDecl->name);
+			res = false;
 		}
 
 		if (meth->mods->isOverride == true && meth->mods->vMod == Private)
 		{
-			char message[200] = "EXCEPTION! Method with name \"";
-
-			exception e((strcat(strcat(message, meth->func->delc->name), "\" cannot be OVERRIDE and PRIVATE")));
-			throw e;
+			printf("Error! Method with name \"%s\"\" cannot be OVERRIDE and PRIVATE", meth->funcDecl->name);
+			res = false;
 		}
 	}
 	else
 	{
 		meth->mods = createModifiers(0, 0, Public, Final);
 	}
+
+	return res;
 }
 
-void complementModifiers(propertyS* prop)
+bool complementModifiers(propertyS* prop)
 {
+	bool res = true;
+
 	if (prop->mods != 0)
 	{
 		if (prop->mods->iMod == Open || prop->mods->iMod == Final)
 		{
-			char message[200] = "EXCEPTION! Inheritance mods of properties are not supported. Property \"";
-
-			exception e((strcat(strcat(message, prop->varOrVal->id), "\" has inheritance mod")));
-			throw e;
+			printf("Error! Inheritance mods of properties are not supported. Property \"%s\" \
+				has inheritance mod", prop->varOrVal->id);
+			res = false;
 		}
 
 		if (prop->mods->vMod == Unknown) prop->mods->vMod = Public;
 		else if (prop->mods->vMod == Internal)
 		{
-			char message[200] = "EXCEPTION! Unsupported INTERNAL visibility mod with property \"";
-
-			exception e((strcat(strcat(message, prop->varOrVal->id), "\"")));
-			throw e;
+			printf("Error! Unsupported INTERNAL visibility mod with property \"%s\"", 
+				prop->varOrVal->id);
+			res = false;
 		}
 		if (prop->mods->isAbstract == true)
 		{
-			char message[200] = "EXCEPTION! Unsupported ABSTRACT mod with property \"";
-
-			exception e((strcat(strcat(message, prop->varOrVal->id), "\"")));
-			throw e;
+			printf("Error! Unsupported ABSTRACT mod with property \"%s\"",
+				prop->varOrVal->id);
+			res = false;
 		}
 		if (prop->mods->isOverride == true)
 		{
-			char message[200] = "EXCEPTION! Unsupported OVERRIDE mod with property \"";
-
-			exception e((strcat(strcat(message, prop->varOrVal->id), "\"")));
-			throw e;
+			printf("Error! Unsupported OVERRIDE mod with property \"%s\"",
+				prop->varOrVal->id);
+			res = false;
 		}
 	}
 	else
 	{
 		prop->mods = createModifiers(0, 0, Public, None);
 	}	
+
+	return res;
 }
 
-void complementModifiers(classS* cl)
+bool complementModifiers(classS* cl)
 {
 	if (cl == 0)
-		return;
-
+		return true;
+	
+	bool res = true;
+	
 	for (classBodyElementS* cbe = cl->body->first; cbe != 0; cbe = cbe->next) 
 	{
 		if (cbe->property)
 		{
-			complementModifiers(cbe->property);
+			res = res && complementModifiers(cbe->property);
 		}
 		else if (cbe->method)
 		{
-			complementModifiers(cbe->method);
+			res = res && complementModifiers(cbe->method);
 		}
 		else if (cbe->constructor)
 		{
-			checkConstructorMod(cbe->constructor);
+			res = res && checkConstructorMod(cbe->constructor);
 		}
 	}
+
+	if (res == false)
+	{
+		if (strcmp(cl->name, "Main$") == 0)
+			printf("Errors in class - %s", cl->name);
+		else
+			printf("Errors in global scope");
+		return res;
+	}
+	
+	return res;
 }
 
 void complementModifiers(programS* program)
 {
 	if (program == 0)
-		return;
+		return ;
+
+	bool res = true;
 
 	for (programElementS* pe = program->first; pe != 0; pe = pe->next) 
 	{
 		if (pe->clas != 0)
 		{
-			complementModifiers(pe->clas);
+			res = res && complementModifiers(pe->clas);
 			if (pe->clas->mods != 0)
 			{
 				if (pe->clas->mods->iMod == None) pe->clas->mods->iMod = Final;
 				if (pe->clas->mods->vMod == Unknown) pe->clas->mods->vMod = Public;
 				else if (pe->clas->mods->vMod == Internal) 
 				{
-					char message[200] = "EXCEPTION! Unsupported INTERNAL visibility mod with class \"";
-
-					exception e((strcat(strcat(message, pe->clas->name), "\"")));
-					throw e;
+					printf("Error! Unsupported INTERNAL visibility mod with class \"%s\"", pe->clas->name);
+					res = false;
 				}
 				else if (pe->clas->mods->vMod == Protected || pe->clas->mods->vMod == Private)
 				{
-					char message[200] = "EXCEPTION! Invalid visibility mod with no inner class \"";
-
-					exception e((strcat(strcat(message, pe->clas->name), "\"")));
-					throw e;
+					printf("Error! Invalid visibility mod with no inner class \"%s\"", pe->clas->name);
+					res = false;
 				}
 				if (pe->clas->mods->isAbstract == true) 
 				{
-					char message[200] = "EXCEPTION! Unsupported ABSTRACT mod with class \"";
-
-					exception e((strcat(strcat(message, pe->clas->name), "\"")));
-					throw e;
+					printf("Error! Unsupported ABSTRACT mod with class \"%s\"", pe->clas->name);
+					res = false;
 				}
 				if (pe->clas->mods->isOverride == true)
 				{
-					char message[200] = "EXCEPTION! Invalid OVERRIDE mod with class \"";
-
-					exception e((strcat(strcat(message, pe->clas->name), "\"")));
-					throw e;
+					printf("Error! Invalid OVERRIDE mod with class \"%s\"", pe->clas->name);
+					res = false;
 				}
 			}
 			else
@@ -528,6 +531,9 @@ void complementModifiers(programS* program)
 			}
 		}
 	}
+
+	if (res == false)
+		throw exception("Exception! Error in modifiers complementing");
 }
 
 //Проверяем, что у родительского метода менее строгий уровень доступа
