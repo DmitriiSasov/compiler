@@ -81,7 +81,7 @@ programS* transformProgramToClass(programS* programTreeRoot)
 			{
 				if (pe->method->mods->isOverride)
 				{
-					printf("Error! Top level function \"%s\" cannot be overriden",
+					printf("Error! Top level function \"%s\" cannot be overriden\n",
 						pe->method->funcDecl->name);
 					isCorrectTransformation = false;
 				}
@@ -99,7 +99,7 @@ programS* transformProgramToClass(programS* programTreeRoot)
 		{
 			if (pe->property->varOrVal->isVal)
 			{
-				printf("EXCEPTION!Unsupported static constant value \"%s\"", pe->property->varOrVal->id);
+				printf("EXCEPTION!Unsupported static constant value \"%s\"\n", pe->property->varOrVal->id);
 				isCorrectTransformation = false;
 			}
 			if (pe->property->mods != 0)	pe->property->mods->isStatic = true;
@@ -124,7 +124,7 @@ programS* transformProgramToClass(programS* programTreeRoot)
 
 	if (!isCorrectTransformation)
 	{
-		throw exception("Exception! Error in transformation of global function and variables!");
+		throw exception("Exception! Error in transformation of global function and variables!\n");
 	}
 
 	return programTreeRoot;
@@ -379,7 +379,7 @@ bool complementModifiers(methodS* meth)
 
 	if (meth->funcDecl != 0)
 	{
-		printf("Error! Unsupported ABSTRACT method with name \"%s\"", meth->funcDecl->name);
+		printf("Error! Unsupported ABSTRACT method with name \"%s\"\n", meth->funcDecl->name);
 		res = false;
 	}
 
@@ -389,18 +389,18 @@ bool complementModifiers(methodS* meth)
 		if (meth->mods->vMod == Unknown) meth->mods->vMod = Public;
 		else if (meth->mods->vMod == Internal)
 		{
-			printf("Error! Unsupported INTERNAL visibility mod with method \"%s\"", meth->funcDecl->name);
+			printf("Error! Unsupported INTERNAL visibility mod with method \"%s\"\n", meth->funcDecl->name);
 			res = false;
 		}
 		if (meth->mods->isAbstract == true)
 		{
-			printf("Error! Unsupported ABSTRACT mod with method \"%s\"", meth->funcDecl->name);
+			printf("Error! Unsupported ABSTRACT mod with method \"%s\"\n", meth->funcDecl->name);
 			res = false;
 		}
 
 		if (meth->mods->isOverride == true && meth->mods->vMod == Private)
 		{
-			printf("Error! Method with name \"%s\" cannot be OVERRIDE and PRIVATE", meth->funcDecl->name);
+			printf("Error! Method with name \"%s\" cannot be OVERRIDE and PRIVATE\n", meth->funcDecl->name);
 			res = false;
 		}
 	}
@@ -421,26 +421,26 @@ bool complementModifiers(propertyS* prop)
 		if (prop->mods->iMod == Open || prop->mods->iMod == Final)
 		{
 			printf("Error! Inheritance mods of properties are not supported. Property \"%s\" \
-				has inheritance mod", prop->varOrVal->id);
+				has inheritance mod\n", prop->varOrVal->id);
 			res = false;
 		}
 
 		if (prop->mods->vMod == Unknown) prop->mods->vMod = Public;
 		else if (prop->mods->vMod == Internal)
 		{
-			printf("Error! Unsupported INTERNAL visibility mod with property \"%s\"", 
+			printf("Error! Unsupported INTERNAL visibility mod with property \"%s\"\n", 
 				prop->varOrVal->id);
 			res = false;
 		}
 		if (prop->mods->isAbstract == true)
 		{
-			printf("Error! Unsupported ABSTRACT mod with property \"%s\"",
+			printf("Error! Unsupported ABSTRACT mod with property \"%s\"\n",
 				prop->varOrVal->id);
 			res = false;
 		}
 		if (prop->mods->isOverride == true)
 		{
-			printf("Error! Unsupported OVERRIDE mod with property \"%s\"",
+			printf("Error! Unsupported OVERRIDE mod with property \"%s\"\n",
 				prop->varOrVal->id);
 			res = false;
 		}
@@ -479,9 +479,9 @@ bool complementModifiers(classS* cl)
 	if (res == false)
 	{
 		if (strcmp(cl->name, "Main$") == 0)
-			printf("Errors in class - %s", cl->name);
+			printf("Errors in class - %s\n", cl->name);
 		else
-			printf("Errors in global scope");
+			printf("Errors in global scope\n");
 		return res;
 	}
 	
@@ -506,22 +506,22 @@ void complementModifiers(programS* program)
 				if (pe->clas->mods->vMod == Unknown) pe->clas->mods->vMod = Public;
 				else if (pe->clas->mods->vMod == Internal) 
 				{
-					printf("Error! Unsupported INTERNAL visibility mod with class \"%s\"", pe->clas->name);
+					printf("Error! Unsupported INTERNAL visibility mod with class \"%s\"\n", pe->clas->name);
 					res = false;
 				}
 				else if (pe->clas->mods->vMod == Protected || pe->clas->mods->vMod == Private)
 				{
-					printf("Error! Invalid visibility mod with no inner class \"%s\"", pe->clas->name);
+					printf("Error! Invalid visibility mod with no inner class \"%s\"\n", pe->clas->name);
 					res = false;
 				}
 				if (pe->clas->mods->isAbstract == true) 
 				{
-					printf("Error! Unsupported ABSTRACT mod with class \"%s\"", pe->clas->name);
+					printf("Error! Unsupported ABSTRACT mod with class \"%s\"\n", pe->clas->name);
 					res = false;
 				}
 				if (pe->clas->mods->isOverride == true)
 				{
-					printf("Error! Invalid OVERRIDE mod with class \"%s\"", pe->clas->name);
+					printf("Error! Invalid OVERRIDE mod with class \"%s\"\n", pe->clas->name);
 					res = false;
 				}
 			}
@@ -533,7 +533,7 @@ void complementModifiers(programS* program)
 	}
 
 	if (res == false)
-		throw exception("Exception! Error in modifiers complementing");
+		throw exception("Exception! Error in modifiers complementing\n");
 }
 
 //Проверяем, что у родительского метода менее строгий уровень доступа
@@ -545,7 +545,7 @@ bool isParentMethodVisModWeaken(visibilityMod vMod, const programS* const progra
 
 	if (parentClassName == "MyLib/Any")
 	{
-		if ((methodSign == "equals(MyLib/Any)" || methodSign == "toString()") && vMod != Public)
+		if ((methodSign == "equals(MyLib/Any)" || methodSign == "toMyString()") && vMod != Public)
 		{
 			return false;
 		}
@@ -577,6 +577,8 @@ bool isParentMethodVisModWeaken(visibilityMod vMod, const programS* const progra
 //Проверяем понижение уровня доступа для методов класса, которые переопределяются
 void checkMethodsVilibilityLevelIncreasing(const programS* const program)
 {
+	bool res = true;
+
 	for (auto pe = program->first; pe != 0; pe = pe->next)
 	{
 		if (pe->clas != 0 && pe->clas->body != 0 && strcmp(pe->clas->name, "Main$") != 0)
@@ -587,14 +589,16 @@ void checkMethodsVilibilityLevelIncreasing(const programS* const program)
 					&& isParentMethodVisModWeaken(cbe->method->mods->vMod, program, 
 						createMethodSignature(cbe->method), pe->clas->parentClassName))
 				{
-					char message[200] = "EXCEPTION! Method \"";
-					exception e(strcat(strcat(strcat(message, pe->clas->name), "\" has stricter visibility modifier than parent's method"),
-						pe->clas->parentClassName));
-					throw e;
+					printf("Error! Method \"%s\" in class \"%s\"  has stricter visibility modifier than parent's method\n", 
+						cbe->method->func->delc->name, pe->clas->name);
+					res = false;
 				}
 			}
 		}
 	}
+
+	if (!res)
+		throw exception("Exception! Errors in methods visibility modifiers\n");
 }
 
 void checkPropsNames(classS* clas, const  programS* const program)
@@ -780,7 +784,7 @@ void checkClassesNames(const programS* const program)
 			auto res = find(classNames.begin(), classNames.end(), string(pe->clas->name));
 			if (res != classNames.end())
 			{
-				printf("Error! Class with name \"%s\" is already declared", pe->clas->name);
+				printf("Error! Class with name \"%s\" is already declared\n", pe->clas->name);
 				checkingRes = false;
 			}
 			else	classNames.push_back(string(pe->clas->name));
@@ -788,7 +792,7 @@ void checkClassesNames(const programS* const program)
 	}
 
 	if (checkingRes)
-		throw exception("Exception! Errors in checking of class names");
+		throw exception("Exception! Errors in checking of class names\n");
 }
 
 void transformFuncsLikeExpr(methodS* meth)
@@ -844,7 +848,7 @@ bool checkStaticFuncsLikeConstructors(const programS* const program)
 			if (cbe->method != 0 && isUserClass(cbe->method->func->delc->name, program) 
 				&& cbe->method->func->delc->params == 0)
 			{
-				printf("Error! Global function overlap constructor of class \"%s\"", cbe->method->func->delc->name);
+				printf("Error! Global function overlap constructor of class \"%s\"\n", cbe->method->func->delc->name);
 				res = false;
 			}
 		}
@@ -871,14 +875,14 @@ bool checkConstructorsAndInits(const classS* const cl)
 			|| cbe->constructor->anotherConstructorId != 0 || cbe->constructor->params != 0
 			|| cbe->constructor->stmts != 0 || cbe->constructor->mod != Public))
 		{
-			printf("Error! Unsupported not public not default constructor in class \"%s\"", cl->name);
+			printf("Error! Unsupported not public not default constructor in class \"%s\"\n", cl->name);
 			res = false;
 		}
 		else publicConstrCount++;
 
 		if (cbe->init != 0)
 		{
-			printf("Error! Unsupported initializator in class \"%s\"", cl->name);
+			printf("Error! Unsupported initializator in class \"%s\"\n", cl->name);
 			res = false;
 		}
 		cbe = cbe->next;
@@ -886,7 +890,7 @@ bool checkConstructorsAndInits(const classS* const cl)
 
 	if (publicConstrCount > 1)
 	{
-		printf("Error! Redefine of default contructor in class \"%s\"", cl->name);
+		printf("Error! Redefine of default contructor in class \"%s\"\n", cl->name);
 		res = false;
 	}
 
@@ -913,7 +917,7 @@ void checkConstructorsAndInits(const programS* const program)
 		throw exception("Exception! Errors in ckecking of constructors and initializers");
 }
 
-void checkPropertyInitialization(const classS* const cl)
+bool checkPropertyInitialization(const classS* const cl)
 {
 	if (cl->body == 0)
 	{
@@ -942,13 +946,17 @@ void checkPropertyInitialization(const programS* const program)
 	if (program == 0)
 		return;
 
+	bool res = true;
+
 	programElementS* pe = program->first;
 	while (pe != 0)
 	{
-		if (pe->clas != 0) checkPropertyInitialization(pe->clas);
+		if (pe->clas != 0) res = res && checkPropertyInitialization(pe->clas);
 		pe = pe->next;
 	}
 
+	if (!res)
+		throw exception("Exception! Errors in property initialization\n");
 }
 
 void transformDestructAssign(methodS* meth)
