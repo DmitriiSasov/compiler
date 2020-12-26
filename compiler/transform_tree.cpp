@@ -706,6 +706,42 @@ bool isChildType(const string& potentialChildType, const string& potentialParent
 	}
 }
 
+//Находит модификаторы ближайшего родительского метода с идентичной сигнатурой или метода указанного класса
+const modifiersS* findMethodModifiers(const string& methodSign, 
+	const programS* const program, const string& startClassName)
+{
+	if (startClassName == "")
+		return 0;
+
+	if (startClassName == "MyLib/Any")
+	{
+		if (methodSign == "equals(MyLib/Any|)")
+			return createModifiers(0, 0, Public, Open);
+
+		if (methodSign == "toMyString()")
+			return createModifiers(0, 0, Public, Open);
+
+		return 0;
+	}
+	else
+	{
+		auto method = findMethod(methodSign, program, startClassName);
+		if (method != 0)
+		{
+			const modifiersS* resMods;
+			if (method->mods->isOverride)
+				resMods = createModifiers(method->mods->isAbstract, method->mods->isOverride,
+					method->mods->vMod, Open);
+			else
+				resMods = method->mods;
+
+			return resMods;
+		}
+			
+		else
+			return 0;
+	}	
+}
 
 bool checkMethods(classS* clas, programS* program)
 {
@@ -720,6 +756,16 @@ bool checkMethods(classS* clas, programS* program)
 		if (cbe->method != 0)
 		{
 			string methodSign = createMethodSignature(cbe->method);
+
+			//Заменяем имя на имя стандартной функции моей библиотеки
+			if (methodSign == "toString()" && strcmp(clas->name, "Main$") != 0)
+			{
+				char* tmp = new char[strlen("toMyString") + 1];
+				strcpy(tmp, "toMyString");
+				cbe->method->func->decl->name = tmp;
+				methodSign = "toMyString()";
+			}
+
 			if (find(methodSigns.begin(), methodSigns.end(), methodSign)
 				!= methodSigns.end())
 			{
@@ -747,46 +793,22 @@ bool checkMethods(classS* clas, programS* program)
 							cbe->method->func->decl->name, clas->name);
 						res = false;
 					}
-				}
-				else if (methodSign == "equals(MyLib/Any|)")
-				{
-					if (!cbe->method->mods->isOverride)
-					{
-						printf("Error! Method with name \"%s\" in class \"%s\" hasn't modifier OVERRIDE\n",
-							cbe->method->func->decl->name, clas->name);
-						res = false;
-					}
-					else if (strcmp(cbe->method->func->decl->type->easyType, "MyLib/Boolean") != 0)
-					{
-						printf("Error! Return value of method \"equals\" is not a child of Boolean in class \"%s\"\n",
-							clas->name);
-						res = false;
-					}
 					
-				}
-				else if (methodSign == "toString()" )
-				{
-					if (!cbe->method->mods->isOverride)
+					const modifiersS* parentMethodMods = findMethodModifiers(methodSign, program, clas->parentClassName);
+					if (parentMethodMods != 0 && parentMethodMods->iMod == Final)
 					{
-						printf("Error! Method with name \"%s\" in class \"%s\" hasn't modifier OVERRIDE\n",
+						printf("Error! Parent's method of method with name \"%s\" in class \"%s\" is NOT OPEN\n",
 							cbe->method->func->decl->name, clas->name);
 						res = false;
 					}
-					else if (strcmp(cbe->method->func->decl->type->easyType, "MyLib/MyString") != 0)
+					if (parentMethodMods != 0 && parentMethodMods->vMod == Private)
 					{
-						printf("Error!Return value of method \"toString\" is not a child of String in class \"%s\"\n",
-							clas->name);
+						printf("Error! Parent's method of method with name \"%s\" in class \"%s\" has modifier PRIVATE\n",
+							cbe->method->func->decl->name, clas->name);
 						res = false;
 					}
-					else
-					{
-						char* tmp = new char[strlen("toMyString") + 1];
-						strcpy(tmp, "toMyString");
-						cbe->method->func->decl->name = tmp;
-					}					
 				}
-			}
-			
+			}			
 		}
 	}
 
