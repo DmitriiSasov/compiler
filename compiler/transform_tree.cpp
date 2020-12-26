@@ -1007,7 +1007,32 @@ void checkConstructorsAndInits(const programS* const program)
 		throw exception("Exception! Errors in ckecking of constructors and initializers");
 }
 
-bool checkPropertyInitialization(const classS* const cl)
+constructorS* findDefaultConstructorOrAdd(classS* cl)
+{
+	//Ищем конструктор по умолчанию
+	constructorS* constr = 0;
+	if (cl->body != 0)
+	{
+		for (auto cbe = cl->body->first; cbe != 0 && constr == 0; cbe = cbe->next)
+		{
+			if (cbe->constructor != 0) constr = cbe->constructor;
+		}
+	}
+	
+	//Если не нашли - создаем
+	if (constr == 0)
+	{
+		constr = createConstructor(Public, 0);
+		if (cl->body == 0)
+			cl->body = createClassBody(constr);
+		else
+			cl->body = addToClassBody(cl->body, constr);
+	}
+	
+	return constr;
+}
+
+bool checkPropertyInitialization(classS* cl)
 {
 	if (cl->body == 0)
 	{
@@ -1016,17 +1041,34 @@ bool checkPropertyInitialization(const classS* const cl)
 
 	bool res = true;
 
+	auto constr = findDefaultConstructorOrAdd(cl);
+
 	classBodyElementS* cbe = cl->body->first;
 	while (cbe != 0)
 	{
 		if (cbe->property != 0)
 		{
-			if (cbe->property->varOrVal->initValue != 0)
+			//Запрещаем деструктивное присваивание
+			if (cbe->property->varOrVal->namesAndTypes != 0) 
 			{
-				printf("Error! Unsupported intialization of property \"%s\" in class - \"%s\"\n",
-					cbe->property->varOrVal->id, cl->name);
+				printf("Error! Destructing assignment in property declaration in class - \"%s\"\n",
+					cl->name);
 				res = false;
-			}			
+			}
+
+			//Перемещаем присваивание в конструктор
+			if (res != 0 && cbe->property->varOrVal->initValue != 0)
+			{
+				stmtS* stmt = createStmt(createAssignment(createExpr(cbe->property->varOrVal->id,
+					Identificator), cbe->property->varOrVal->initValue, Assign), Assignment);
+				//Если конструктор пустой
+				if (constr->stmts == 0)	constr->stmts = createStmtList(stmt);
+				//Если в конструкторе были инструкции
+				else	constr->stmts = addToStmtList(constr->stmts, stmt);
+				
+				//Убираем инициализацию из объявления поля
+				cbe->property->varOrVal->initValue = 0;
+			}
 		}
 		cbe = cbe->next;
 	}
@@ -1602,6 +1644,6 @@ programS* transformProgram(list<ClassFile> classesFiles, programS* program)
 	checkMethodsVilibilityLevelIncreasing(program);
 	checkPropertyInitialization(program);
 	transformAssignmentWithFieldAndArrays(program);
-	//fillClassesFiles(classesFiles, program);
+	fillClassesFiles(classesFiles, program);
 	return program;
 }
