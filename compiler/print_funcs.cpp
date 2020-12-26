@@ -626,7 +626,10 @@ void print(struct constructorS * c, FILE* file)
 	{
 		fprintf(file, "%s ", visModToStr(c->mod));	
 	}
-	
+	if (c->isStatic)
+	{
+		fprintf(file, "static ");
+	}
 	fprintf(file, "constructor");
 	
 	if (c->anotherConstructorId != 0)
