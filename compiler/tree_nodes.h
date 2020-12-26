@@ -40,7 +40,8 @@ enum exprType
 	ParentFieldCall,
 	ParentMethodCall,
 	Range,
-	TypeCast
+	TypeCast,
+	ArrayCreating
 };
 
 enum assignmentType
