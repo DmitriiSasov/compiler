@@ -278,6 +278,7 @@ struct constructorS* createConstructor(enum visibilityMod mod, struct formalPara
 	c->mod = mod;
 	c->params = params;
 	c->stmts = stmts;
+	c->isStatic = false;
 	if (parentOrAnotherConstr != 0)
 	{
 		c->anotherConstructorId = (char*)malloc(strlen(parentOrAnotherConstr));

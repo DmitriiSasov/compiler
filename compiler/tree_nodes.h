@@ -250,6 +250,7 @@ struct funcS
 struct constructorS
 {
 	enum visibilityMod mod;
+	bool isStatic;
 	struct formalParamsList * params;
 	struct stmtList * stmts;
 	char * anotherConstructorId;
