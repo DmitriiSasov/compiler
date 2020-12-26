@@ -1256,11 +1256,11 @@ char* collectArrayInfo(templateTypeS* type, const list<string>& classesNames, in
 
 	if (strcmp(type->type, "Array") != 0)
 	{
-		printf("Unsupported template type \"%s\"\n", type->type);
+		printf("Error! Unsupported template type \"%s\"\n", type->type);
 	}
 	if (type->list->first != type->list->last)
 	{
-		printf("EXCEPTION! More than 1 array type\n");
+		printf("Error! More than 1 array type\n");
 	}
 	if (type->list->first->easyType != 0)
 	{
@@ -1268,6 +1268,10 @@ char* collectArrayInfo(templateTypeS* type, const list<string>& classesNames, in
 		if (isStandartKotlinType(type->list->first->easyType)
 			&& !isUserClass(type->list->first->easyType, classesNames))
 		{
+			if (strcmp(type->list->first->easyType, "Unit")== 0)
+			{
+				printf("Error! Array type cannot be Unit\n");
+			}
 			typeOfArray = transformStdKotlinTypeToMyKotlinTypes(type->list->first->easyType);
 		}
 		else if (isUserClass(type->list->first->easyType, classesNames))
@@ -1355,6 +1359,11 @@ bool transformTypes(formalParamsList* fps, const list<string>& classesNames)
 		for (auto fp = fps->first; fp != 0; fp = fp->next)
 		{
 			bool tmp = transformTypes(fp->type, classesNames);
+			if (strcmp(fp->type->easyType, "MyLib/Unit") == 0)
+			{
+				printf("Error! Formal parameter type is MyLib/Unit\n");
+				tmp = false;
+			}
 			res = res && tmp;
 		}
 	}
@@ -1412,6 +1421,11 @@ bool transformTypes(stmtS* stmt, const list<string>& classesNames)
 		if (stmt->varOrVal->type != 0)
 		{
 			tmp = transformTypes(stmt->varOrVal->type, classesNames);
+			if (strcmp(stmt->varOrVal->type->easyType, "MyLib/Unit") == 0)
+			{
+				printf("Error! Variable \"%s\" has type MyLib/Unit\n", stmt->varOrVal->id);
+				tmp = false;
+			}
 			res = res && tmp;
 		}
 		else
@@ -1476,10 +1490,18 @@ bool transformTypes(propertyS* prop, const list<string>& classesNames)
 		return false;
 	}
 	if (res)
+	{
+		if (strcmp(prop->varOrVal->type->easyType, "MyLib/Unit") == 0)
+		{
+			printf("Error! Property \"%s\" has type MyLib/Unit\n", prop->varOrVal->id);
+			return false;
+		}
 		return true;
+	}
+		
 	else
 	{
-		printf("Error in property declaration \"%s\"\n", prop->varOrVal->id);
+		printf("Error! In declaration of property \"%s\"\n", prop->varOrVal->id);
 		return false;
 	}
 }
