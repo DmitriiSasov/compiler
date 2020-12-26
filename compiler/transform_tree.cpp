@@ -778,6 +778,16 @@ bool checkMethods(classS* clas, programS* program)
 			if (strcmp(clas->name, "Main$") != 0)
 			{
 				string retValue = getMethodType(methodSign, program, clas->parentClassName);
+				
+				//” метода нет родительского аналога
+				if (retValue == "" && cbe->method->mods->isOverride)
+				{
+					printf("Error! Method \"%s\" in class \"%s\" doesn't overrides any parent's method\n", 
+						cbe->method->func->decl->name, clas->name);
+					res = false;
+				}
+
+				//ѕровер€ем модификаторы дл€ случаев, когда у метода есть родительский аналог
 				if (clas->parentClassName != 0 && retValue != "")
 				{
 					if (retValue != cbe->method->func->decl->type->easyType && 
@@ -1592,6 +1602,6 @@ programS* transformProgram(list<ClassFile> classesFiles, programS* program)
 	checkMethodsVilibilityLevelIncreasing(program);
 	checkPropertyInitialization(program);
 	transformAssignmentWithFieldAndArrays(program);
-	fillClassesFiles(classesFiles, program);
+	//fillClassesFiles(classesFiles, program);
 	return program;
 }
