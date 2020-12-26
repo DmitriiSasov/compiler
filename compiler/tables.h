@@ -239,6 +239,8 @@ class ClassFile
 
 	void fillHighLevelObjectsConstants(methodS* meth, programS* program);
 
+	void fillHighLevelObjectsConstants(constructorS* constr, programS* program);
+
 	void addConstantsFrom(methodS* meth, programS* program);
 	
 	void addConstantsFrom(stmtS* stmt, programS* program, string methodKey);
@@ -258,6 +260,8 @@ class ClassFile
 	void addConstantsFrom(ifStmtS* i, programS* program, string methodKey);
 	
 	void addConstantsFrom(exprS* e, programS* program, string methodKey);
+
+	void addConstantsFrom(stmtList* stmts, programS* program);
 
 	void calcType(exprS* e1, programS* program, string& methodKey);
 

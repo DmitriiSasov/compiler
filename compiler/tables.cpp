@@ -448,6 +448,25 @@ void ClassFile::fillHighLevelObjectsConstants(propertyS* prop, programS* program
 	fieldTable.insert(make_pair(prop->varOrVal->id, fte));
 }
 
+void ClassFile::fillHighLevelObjectsConstants(constructorS* constr, programS* program)
+{
+	uint16_t nameId = 0;
+	string constrName;
+	if (!constr->isStatic)
+		constrName = "<init>";
+		
+	else
+		constrName = "<clinit>";
+
+	nameId = findUtf8OrAdd(constrName);
+	uint16_t descr = findUtf8OrAdd("()V");
+
+	MethodTableElement mte(nameId, descr, translateVisibilityMod(constr->mod),
+		false, constr->isStatic);
+	methodTable.insert(make_pair(constrName, mte));
+	
+	addConstantsFrom(constr->stmts, program);
+}
 
 void ClassFile::fillHighLevelObjectsConstants(methodS* meth, programS* program)
 {
@@ -485,15 +504,13 @@ void ClassFile::fillHighLevelObjectsConstants(classS* clas, programS* program)
 	if (isFinal) accessFlags |= 0x0010; //Устанавливаю флаг FINAL
 	accessFlags |= 0x0020; //Устанавливаю флаг SUPER !Он устанавливается для совместимости
 
-	findUtf8OrAdd("<init>");
-	findUtf8OrAdd("()V");
-
 	if (clas->body != 0)
 	{
 		for (auto cbe = clas->body->first; cbe != 0; cbe = cbe->next)
 		{
 			if (cbe->method != 0)	fillHighLevelObjectsConstants(cbe->method, program);
 			else if (cbe->property != 0) fillHighLevelObjectsConstants(cbe->property, program);
+			else if (cbe->constructor != 0) fillHighLevelObjectsConstants(cbe->constructor, program);
 		}
 	}
 }
@@ -1738,6 +1755,11 @@ void ClassFile::addConstantsFrom(stmtS* stmt, programS* program, string methodKe
 		addConstantsFrom(stmt->expr, program, methodKey);
 		break;
 	}
+
+}
+
+void ClassFile::addConstantsFrom(stmtList* stmts, programS* program)
+{
 
 }
 
