@@ -754,7 +754,7 @@ struct forLoopS* createForLoop(char* id, struct typeS* type, struct exprS* itera
 	{
 		l->stmts = createStmtList(stmt);
 	}
-	l->isDestructing = false;
+	l->isDestructing = isDestructing;
 	return l;
 }
 
