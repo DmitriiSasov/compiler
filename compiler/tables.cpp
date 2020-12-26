@@ -58,19 +58,20 @@ string getPropertyType(const char* propName, const programS* const program, cons
 //явл€етс€ ли метод библиотечным
 string isStandartStaticMethod(string methodSign)
 {
-	if (methodSign == "print(Int|)" || methodSign == "print(Float|)" || methodSign == "print(Double|)"
-		|| methodSign == "print(Char|)" || methodSign == "print(MyString|)" || methodSign == "print(Boolean|)"
-		|| methodSign == "print(Any|)")
-		return "Unit";
-	else if (methodSign == "readInt()")	return "Int";
-	else if (methodSign == "readLine()") return "MyString";
-	else if (methodSign == "readDouble()") return "Double";
-	else if (methodSign == "readChar()") return "Char";
-	else if (methodSign == "readFloat()") return "Float";
-	else if (methodSign == "readBoolean()") return "Boolean";
+	if (methodSign == "print(MyLib/Int|)" || methodSign == "print(MyLib/Float|)" 
+		|| methodSign == "print(MyLib/Double|)" || methodSign == "print(MyLib/Char|)" 
+		|| methodSign == "print(MyLib/MyString|)" || methodSign == "print(MyLib/Boolean|)"
+		|| methodSign == "print(MyLib/Any|)")
+		return "MyLib/Unit";
+	else if (methodSign == "readInt()")	return "MyLib/Int";
+	else if (methodSign == "readLine()") return "MyLib/MyString";
+	else if (methodSign == "readDouble()") return "MyLib/Double";
+	else if (methodSign == "readChar()") return "MyLib/Char";
+	else if (methodSign == "readFloat()") return "MyLib/Float";
+	else if (methodSign == "readBoolean()") return "MyLib/Boolean";
 	else if (methodSign.find("arrayOf(") == 0)
 	{
-		//??????„“о возвращать???
+		return "MyLib/Array";
 	}
 	else return "";
 
@@ -123,6 +124,8 @@ const methodS* findMethod(const string& methodSign, const programS* const progra
 
 	return res;
 }
+
+
 
 string getMethodType(string methodSign, const programS* const program, const string& currentClassName)
 {
