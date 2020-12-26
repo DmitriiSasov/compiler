@@ -74,16 +74,7 @@ string isStandartStaticMethod(string methodSign)
 		return "MyLib/Array";
 	}
 	else return "";
-
 }
-
-string isObjectMethod(string methodSign)
-{
-	if (methodSign == "toString()") return "String";
-	else if (methodSign == "equals(Object)") return "Boolean";
-	else return "";
-}
-
 
 const methodS* findMethod(const string& methodSign, const programS* const program,
 	const string& currentClassName)
