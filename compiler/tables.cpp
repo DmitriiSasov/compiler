@@ -274,6 +274,7 @@ ClassFile::ClassFile(classS* clas, programS* program)
 	this->vMod = translateVisibilityMod(clas->mods->vMod);
 	className = clas->name;
 	if (clas->parentClassName != 0)	parentClassName = clas->parentClassName;
+	fillHighLevelObjectsConstants(clas, program);
 }
 
 IdT ClassFile::findUtf8OrAdd(std::string const& utf8)
@@ -405,31 +406,20 @@ string transformMethodCallToDescriptor(exprS* e, const programS* program)
 
 string transformTypeToDescriptor(const char* type, const programS* program)
 {
-	
-	if (strcmp(type, "Int") == 0)	return string("I");
-	else if (strcmp(type, "Boolean") == 0)	return string("Z");
-	else if (strcmp(type, "Double") == 0)	return string("D");
-	else if (strcmp(type, "Float") == 0)	return string("F");
-	else if (strcmp(type, "Char") == 0)	return string("C");
-	else if (strcmp(type, "String") == 0)	return string("Ljava/lang/String;");
-	else if (strcmp(type, "Unit") == 0)	return string("V");
+	if (isUserClass(type, program) || isMyStandartClass(type))	return string("L") + type + ';';
 	else
 	{
-		if (isUserClass(type, program))	return string("L") + type + ';';
-		else
+		string typeName = type;
+		int typeNameEndIndex = typeName.find_first_of('[');
+		int countOfDementions = (typeName.length() - typeNameEndIndex) / 2;
+		string descriptor;
+		for (int i = 0; i < countOfDementions; ++i) descriptor.push_back('[');
+		typeName = "";
+		for (int i = 0; i < typeNameEndIndex; ++i)
 		{
-			string typeName = type;
-			int typeNameEndIndex = typeName.find_first_of('[');
-			int countOfDementions = (typeName.length() - typeNameEndIndex) / 2;
-			string descriptor;
-			for (int i = 0; i < countOfDementions; ++i) descriptor.push_back('[');
-			typeName = "";
-			for (int i = 0; i < typeNameEndIndex; ++i)
-			{
-				typeName.push_back(type[i]);
-			}
-			return descriptor + transformTypeToDescriptor(typeName.c_str(), program) + ';';
+			typeName.push_back(type[i]);
 		}
+		return descriptor + transformTypeToDescriptor(typeName.c_str(), program) + ';';
 	}
 }
 
