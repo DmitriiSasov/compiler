@@ -1545,22 +1545,6 @@ void transformTypes(programS* program)
 		throw exception("Exception! Errors in types transformation\n");
 }
 
-bool isParentClass(const string& potentialParent, const string& potentialChild, const programS* const program) 
-{
-
-	for (auto pe = program->first; pe != 0; pe = pe->next)
-	{
-		if (pe->clas != 0 && pe->clas->name == potentialChild)
-		{
-			if (pe->clas->parentClassName == 0) return false;
-			else if (pe->clas->parentClassName == potentialParent) return true;
-			else	return isParentClass(potentialParent, pe->clas->parentClassName, program);
-		}
-	}
-
-	return false;
-}
-
 bool isParentClass(const string& potentialParent, const string& potentialChild, const list<pair<string, string>>& classesAndParents) 
 {
 	
