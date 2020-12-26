@@ -43,6 +43,9 @@ string getMethodType(string methodSign, const programS* const program, const str
 
 string createMethodSignature(methodS* meth);
 
+const methodS* findMethod(const string& methodSign, const programS* const program,
+	const string& currentClassName);
+
 struct ShortClassInfo 
 {
 	string className = "";

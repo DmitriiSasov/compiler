@@ -83,32 +83,67 @@ string isObjectMethod(string methodSign)
 	else return "";
 }
 
+
+const methodS* findMethod(const string& methodSign, const programS* const program,
+	const string& currentClassName)
+{
+	if (currentClassName == "" || methodSign == "")
+		return 0;
+
+	const methodS* res = 0;
+
+	if (currentClassName == "MyLib/Any")
+	{
+		return res;
+	}
+	else
+	{
+		for (auto pe = program->first; pe != 0; pe = pe->next)
+		{
+			if (pe->clas != 0 && pe->clas->name == currentClassName && pe->clas->body != 0)
+			{
+				for (auto cbe = pe->clas->body->first; cbe != 0; cbe = cbe->next)
+				{
+					if (cbe->method != 0)
+					{
+						string methodInfo = createMethodSignature(cbe->method);
+						if (strstr(methodInfo.c_str(), methodSign.c_str()) != 0)
+						{
+							res = cbe->method;
+						}
+					}
+					if (res == 0 && pe->clas->parentClassName != 0)
+					{
+						res = findMethod(methodSign, program, pe->clas->parentClassName);
+					}
+				}
+			}
+		}
+	}
+
+	return res;
+}
+
 string getMethodType(string methodSign, const programS* const program, const string& currentClassName)
 {
 	if (currentClassName == "")	return "";
 
 	string res = "";
-	for (auto pe = program->first; pe != 0; pe = pe->next)
+
+	if (methodSign == "equals(MyLib/Any|)")
 	{
-		if (pe->clas != 0 && pe->clas->name == currentClassName && pe->clas->body != 0)
-		{
-			for (auto cbe = pe->clas->body->first; cbe != 0; cbe = cbe->next)
-			{
-				if (cbe->method != 0)
-				{
-					string methodInfo = createMethodSignature(cbe->method);
-					if (strstr(methodInfo.c_str(), methodSign.c_str()) != 0)
-					{
-						res = cbe->method->func->decl->type->easyType;
-					}
-				}
-				if (res == "" && pe->clas->parentClassName != 0)
-				{
-					res = getMethodType(methodSign, program, pe->clas->parentClassName);
-				}
-			}
-		}
+		res = "MyLib/Boolean";
 	}
+	else if (methodSign == "toMyString()")
+	{
+		res = "MyLib/MyString";
+	}
+	else
+	{
+		auto method = findMethod(methodSign, program, currentClassName);
+		if (method != 0)
+			res = method->func->decl->type->easyType;
+	}	
 	return res;
 }
 
