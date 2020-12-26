@@ -1056,6 +1056,13 @@ bool checkPropertyInitialization(classS* cl)
 				res = false;
 			}
 
+			if (res && cbe->property->varOrVal->initValue == 0)
+			{
+				printf("Error! property \"%s\" of class \"%s\" must be initialized\n",
+					cbe->property->varOrVal->id, cl->name);
+				res = false;
+			}
+
 			//Перемещаем присваивание в конструктор
 			if (res != 0 && cbe->property->varOrVal->initValue != 0)
 			{
@@ -1071,6 +1078,11 @@ bool checkPropertyInitialization(classS* cl)
 			}
 		}
 		cbe = cbe->next;
+	}
+
+	if (strcmp(cl->name, "Main$") == 0)
+	{
+		constr->isStatic = true;
 	}
 
 	return res;
@@ -1455,13 +1467,21 @@ bool transformTypes(propertyS* prop, const list<string>& classesNames)
 {
 	if (prop == 0) return true;
 
-	if (transformTypes(prop->varOrVal->type, classesNames))
+	bool res;
+	if (prop->varOrVal->id != 0)
+		res = transformTypes(prop->varOrVal->type, classesNames);
+	else
+	{
+		printf("Error! Property multideclaration\n");
+		return false;
+	}
+	if (res)
 		return true;
 	else
 	{
 		printf("Error in property declaration \"%s\"\n", prop->varOrVal->id);
 		return false;
-	}	
+	}
 }
 
 bool transformTypes(classS* cl, const list<string>& classesNames)
