@@ -129,15 +129,17 @@ string getMethodType(string methodSign, const programS* const program, const str
 	if (currentClassName == "")	return "";
 
 	string res = "";
-
-	if (methodSign == "equals(MyLib/Any|)")
+	if (currentClassName == "MyLib/Any")
 	{
-		res = "MyLib/Boolean";
-	}
-	else if (methodSign == "toMyString()")
-	{
-		res = "MyLib/MyString";
-	}
+		if (methodSign == "equals(MyLib/Any|)")
+		{
+			res = "MyLib/Boolean";
+		}
+		else if (methodSign == "toMyString()")
+		{
+			res = "MyLib/MyString";
+		}
+	}	
 	else
 	{
 		auto method = findMethod(methodSign, program, currentClassName);
