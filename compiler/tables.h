@@ -43,6 +43,8 @@ string getMethodType(string methodSign, const programS* const program, const str
 
 string createMethodSignature(methodS* meth);
 
+bool isParentClass(const string& potentialParent, const string& potentialChild, const programS* const program);
+
 const methodS* findMethod(const string& methodSign, const programS* const program,
 	const string& currentClassName);
 
@@ -264,6 +266,10 @@ class ClassFile
 	void addConstantsFrom(stmtList* stmts, programS* program);
 
 	void calcType(exprS* e1, programS* program, string& methodKey);
+
+	void calcTypeOfIdentifier(exprS* e1, programS* program, string& methodKey);
+
+	void calcTypeOfMethodCall(exprS* e1, programS* program, string& methodKey);
 
 	bool transformKotlinTypeCastOperators(exprS* e);
 	

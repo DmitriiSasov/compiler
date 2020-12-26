@@ -116,7 +116,21 @@ const methodS* findMethod(const string& methodSign, const programS* const progra
 	return res;
 }
 
+bool isParentClass(const string& potentialParent, const string& potentialChild, const programS* const program)
+{
 
+	for (auto pe = program->first; pe != 0; pe = pe->next)
+	{
+		if (pe->clas != 0 && pe->clas->name == potentialChild)
+		{
+			if (pe->clas->parentClassName == 0) return false;
+			else if (pe->clas->parentClassName == potentialParent) return true;
+			else	return isParentClass(potentialParent, pe->clas->parentClassName, program);
+		}
+	}
+
+	return false;
+}
 
 string getMethodType(string methodSign, const programS* const program, const string& currentClassName)
 {
@@ -939,36 +953,209 @@ void ClassFile::addToStringCall(exprS* e, programS* program)
 	e->refInfo = findMethodRefOrAdd(basicToStringClass, "toString", "()Ljava/lang/String;");
 }
 
+
+void ClassFile::calcTypeOfIdentifier(exprS* e1, programS* program, string& methodKey)
+{
+	if (e1->type != Identificator)
+	{
+		return;
+	}
+	
+	MethodTableElement method = methodTable.at(methodKey);
+	e1->varInTableNum = method.find(e1->stringOrId);
+	string res;
+	//Если переменная есть в таблице переменных
+	if (e1->varInTableNum != -1)
+	{
+		res = method.find(e1->varInTableNum).type;
+		e1->exprRes = res;
+		return;
+	}
+
+	//Ищем среди полей класса и его родителей
+	res = getPropertyType(e1->stringOrId, program, className);
+	if (res != "")
+	{
+		e1->exprRes = res;
+		e1->refInfo = e1->refInfo = findFieldRefOrAdd(className, e1->stringOrId, 
+			transformTypeToDescriptor(res.c_str(), program));
+		return;
+	}
+	
+	//Ищем среди глобальных переменных
+	res = getPropertyType(e1->stringOrId, program, "Main$");
+	if (res != "")
+	{
+		e1->exprRes = res;
+		e1->isStaticCall = true;
+		e1->refInfo = findFieldRefOrAdd("Main$", e1->stringOrId, 
+			transformTypeToDescriptor(res.c_str(), program));
+		return;
+	}
+
+	//Поле не локальная переменная, не поле класса, не глобалка
+	char message[200] = "EXCEPTION! Undefined variable or property name \"";
+	exception e((strcat(strcat(message, e1->stringOrId), "\"")));
+	throw e;
+}
+
+
+string calcParentClass(const string& class1, const string& class2, programS* program)
+{
+	//Если классы одинаковые
+	if (class1 == class2)
+		return class1;
+
+	//Если один из классов базовый
+	if (class1 == "MyLib/Any" || class2 == "MyLib/Any")
+		return class1;
+
+	//Если один из классов мой базовый
+	if (isMyStandartClass(class1) || isMyStandartClass(class2))
+		return "MyLib/Any";
+
+
+
+	//Если оба класса пользовательские
+	if (isUserClass(class1.c_str(), program) && isUserClass(class2.c_str(), program))
+	{
+		if (isParentClass(class1, class2, program))
+			return class1;
+
+		if (isParentClass(class2, class1, program))
+			return class2;
+	}
+
+	//Если пользовательский класс сравнивается с массивом, сравниваются разные массивы и т.д.
+	return "MyLib/Any";
+}
+
+//Рассчитывает по типу параметров тип создаваемого массива
+/*
+e - вызов функции arrayOf
+*/
+void calcArrayOfType(exprS* e, programS* program, string& methodKey)
+{
+	if (e->factParams == 0)
+	{
+		char message[200] = "EXCEPTION! Creating of array without elements and type in method\"";
+		exception e((strcat(strcat(message, methodKey.c_str()), "\"")));
+		throw e;
+	}
+
+	e->type = ArrayCreating;
+
+	if (e->factParams->first == e->factParams->last)
+	{
+		e->exprRes = e->factParams->first->exprRes;
+		return;
+	}
+
+	string fp1Type = e->factParams->first->exprRes;
+	exprS* fp2 = e->factParams->first->next;
+	for (; fp2 != 0; fp2 = fp2->next)
+	{
+		fp1Type = calcParentClass(fp1Type, fp2->exprRes, program);
+	}
+
+	e->exprRes = fp1Type;
+}
+
+void ClassFile::calcTypeOfMethodCall(exprS* e1, programS* program, string& methodKey)
+{
+	if (e1->type != MethodCall)
+		return;
+
+	//Рассчитать типы для параметров
+	int paramsCount = calcType(e1->factParams, program, methodKey);
+	checkUnitOperandsInExpr(e1, methodKey);
+
+	string res = "";
+
+	//Если метод динамический
+	res = getMethodType(createShortInfo(e1), program, className);
+	if (res != "")
+	{
+		e1->exprRes = res;
+		e1->varInTableNum = 0;
+		e1->refInfo = findMethodRefOrAdd(className, e1->stringOrId,
+			transformMethodCallToDescriptor(e1, program));
+		return;
+	}
+
+	//Если вызывается неизмененный метод toString
+	if (className != "Main$" && e1->stringOrId == "toString" && paramsCount == 0)
+	{
+		char* tmp = new char[strlen("toMyString") + 1];
+		strcpy(tmp, "toMyString");
+		e1->stringOrId = tmp;
+		e1->exprRes = "MyLib/MyString";
+		e1->refInfo = findMethodRefOrAdd("MyLib/Any", "toMyString", "()LMyLib/MyString;");
+		return;
+	}
+
+	//Если вызывается конструктор базового класса или пользовательского класса
+	if (paramsCount == 0)
+	{
+		if (isUserClass(e1->stringOrId, program))
+		{
+			e1->exprRes = e1->stringOrId;
+			e1->type = ConstructorCall;
+			e1->refInfo = findMethodRefOrAdd(e1->stringOrId, "<init>", "()V");
+			return;
+		}
+		else if (strcmp(e1->stringOrId, "Any") == 0)
+		{
+			char* tmp = new char[strlen("MyLib/Any") + 1];
+			strcpy(tmp, "MyLib/Any");
+			e1->type = ConstructorCall;
+			e1->stringOrId = tmp;
+			e1->exprRes = tmp;
+			e1->refInfo = findMethodRefOrAdd(tmp, "<init>", "()V");
+			return;
+		}
+	}
+	
+	//Вызов глобального метода
+	res = getMethodType(createShortInfo(e1), program, "Main$");
+	if (res != "")
+	{
+		e1->isStaticCall = true;
+		e1->exprRes = res;
+		e1->refInfo = findMethodRefOrAdd("Main$", e1->stringOrId,
+			transformMethodCallToDescriptor(e1, program));
+		return;
+	}
+
+	//Вызов метода моей библиотеки
+	res = isStandartStaticMethod(createShortInfo(e1));
+	if (res != "")
+	{
+		e1->isStaticCall = true;
+		if (res == "MyLib/Array")
+		{
+			calcArrayOfType(e1, program, methodKey);
+			e1->refInfo = findMethodRefOrAdd("MyLib/Array", e1->stringOrId, "([Ljava/lang/Object;)LMyLib/Array;");
+		}
+		else
+		{
+			e1->exprRes = res;
+			e1->refInfo = findMethodRefOrAdd("MyLib/MyIO", e1->stringOrId,
+				transformMethodCallToDescriptor(e1, program));
+		}
+	}
+
+	char message[200] = "EXCEPTION! Call of unknown method \"";
+	exception e((strcat(strcat(message, methodKey.c_str()), "\"")));
+	throw e;
+}
+
+
 void ClassFile::calcType(exprS* e1, programS* program, string& methodKey)
 {
 	if (e1->type == Identificator)
 	{
-		MethodTableElement method = methodTable.at(methodKey);
-		e1->varInTableNum = method.find(e1->stringOrId);
-		string res;
-		if (e1->varInTableNum == -1)
-		{
-			res = getPropertyType(e1->stringOrId, program, className);
-			if (res == "")
-			{
-				res = getPropertyType(e1->stringOrId, program, "Main$");
-				if (res == "")
-				{
-					char message[200] = "EXCEPTION! Undefined variable or property name \"";
-					exception e((strcat(strcat(message, e1->stringOrId), "\"")));
-					throw e;
-				}
-				e1->isStaticCall = true;
-				e1->refInfo = findFieldRefOrAdd("Main$", e1->stringOrId, transformTypeToDescriptor(res.c_str(), program));
-			}
-			else	e1->refInfo = findFieldRefOrAdd(className, e1->stringOrId, transformTypeToDescriptor(res.c_str(), program));
-		}
-		else
-		{
-			res = method.find(e1->varInTableNum).type;
-			
-		}
-		e1->exprRes = res;
+		calcTypeOfIdentifier(e1, program, methodKey);
 	}
 	else if (e1->type == This)
 	{
@@ -984,84 +1171,7 @@ void ClassFile::calcType(exprS* e1, programS* program, string& methodKey)
 	}
 	else if (e1->type == MethodCall)
 	{
-		//Рассчитать типы для параметров
-		int paramsCount = calcType(e1->factParams, program, methodKey);
-		checkUnitOperandsInExpr(e1, methodKey);
-
-		//Проверка на методы equals and toString()
-		if (className != "Main$")	//Если вызов вне статического класса
-		{
-			if (strcmp(e1->stringOrId, "equals") && paramsCount == 1)
-			{
-				if (isMyStandartClass(e1->factParams->first->exprRes))
-				{
-					convertToJavaBasicTypeClass(e1->factParams->first);
-				}
-				e1->varInTableNum = 0;
-				e1->exprRes = "Boolean";
-				e1->refInfo = findMethodRefOrAdd(className, "equals",
-					"(Ljava/lang/Object;)Z");
-			}
-			else if (strcmp(e1->stringOrId, "toString") && paramsCount == 0)
-			{
-				e1->varInTableNum = 0;
-				e1->exprRes = "String";
-				e1->refInfo = findMethodRefOrAdd(className, "equals",
-					"()Ljava/lang/String;");
-			}
-		}
-		
-		if (e1->exprRes == "")
-		{
-			//Проверить, существует ли такой метод
-			string res = getMethodType(createShortInfo(e1), program, className);
-
-			if (res == "")
-			{
-				//Вызов конструктора
-				if (isUserClass(e1->stringOrId, program) && paramsCount == 0)
-				{
-					e1->type = ConstructorCall;
-					e1->exprRes = e1->stringOrId;
-					e1->refInfo = findMethodRefOrAdd(e1->stringOrId, "<init>", "()V");
-				}
-				else
-				{
-					//Вызов глобального метода
-					res = getMethodType(createShortInfo(e1), program, "Main$");
-					if (res == "")
-					{
-						//Вызов метода моей библиотеки
-						res = isStandartStaticMethod(createShortInfo(e1));
-						if (res == "")
-						{
-							char message[200] = "EXCEPTION! Call of unknown method \"";
-							exception e((strcat(strcat(message, methodKey.c_str()), "\"")));
-							throw e;
-						}
-						e1->exprRes = res;
-						e1->refInfo = findMethodRefOrAdd("MyLib/MyIO", e1->stringOrId,
-							transformMethodCallToDescriptor(e1, program));
-					}
-					else
-					{
-						e1->exprRes = res;
-						e1->refInfo = findMethodRefOrAdd("Main$", e1->stringOrId,
-							transformMethodCallToDescriptor(e1, program));
-					}
-
-					e1->isStaticCall = true;
-				}				
-			}
-			else
-			{
-				e1->varInTableNum = 0;
-				e1->exprRes = res;
-				e1->refInfo = findMethodRefOrAdd(className, e1->stringOrId,
-					transformMethodCallToDescriptor(e1, program));
-			}
-		}
-
+		calcTypeOfMethodCall(e1, program, methodKey);
 	}
 	else if (e1->type == FieldCalcExpr)
 	{
