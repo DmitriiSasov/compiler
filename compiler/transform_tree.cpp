@@ -1159,7 +1159,7 @@ bool transformDestructAssign(methodS* meth)
 		}
 		else if (stmt->forLoop != 0 && stmt->forLoop->isDestructing)
 		{
-			printf("Unsupported destruction in for loop in method \"%s\"\n", meth->func->decl->name);
+			printf("Unsupported destruction assignment in for loop in method \"%s\"\n", meth->func->decl->name);
 			res = false;
 		}
 
