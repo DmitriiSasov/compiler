@@ -271,6 +271,8 @@ class ClassFile
 
 	void calcTypeOfMethodCall(exprS* e1, programS* program, string& methodKey);
 
+	void calcTypeOfFieldCalsExpr(exprS* e1, programS* program, string& methodKey);
+
 	bool transformKotlinTypeCastOperators(exprS* e);
 	
 	void transformTypeCastToValueOf(exprS* e, const char* staticClassName);

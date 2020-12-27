@@ -34,23 +34,38 @@ bool isMyStandartClass(const string& className)
 string getPropertyType(const char* propName, const programS* const program, const string& currentClassName) 
 {
 	string res = "";
-	for (auto pe = program->first; pe != 0; pe = pe->next)
+
+	//≈сли обращаютс€ к стандартному полю массива
+	if (currentClassName.find("[]") != -1 && strcmp(propName, "size") == 0)
 	{
-		if (pe->clas != 0 && pe->clas->name == currentClassName  && pe->clas->body != 0)
+		res = "MyLib/Int";
+	}
+	//≈сли обращаютс€ к стандартному полю строки моего класса
+	else if (currentClassName == "MyLib/MyString" && strcmp(propName, "length") == 0)
+	{
+		res = "MyLib/Int";
+	}	
+	else
+	{
+		for (auto pe = program->first; pe != 0 && res == ""; pe = pe->next)
 		{
-			for (auto cbe = pe->clas->body->first; cbe != 0; cbe = cbe->next)
+			if (pe->clas != 0 && pe->clas->name == currentClassName && pe->clas->body != 0)
 			{
-				if (cbe->property != 0 && strcmp(cbe->property->varOrVal->id, propName) == 0)
-				{				
-					res = cbe->property->varOrVal->id;
+				for (auto cbe = pe->clas->body->first; cbe != 0 && res == ""; cbe = cbe->next)
+				{
+					if (cbe->property != 0 && strcmp(cbe->property->varOrVal->id, propName) == 0)
+					{
+						res = cbe->property->varOrVal->type->easyType;
+					}
 				}
-			}
-			if (res == "" && pe->clas->parentClassName != 0 && strcmp(pe->clas->parentClassName, "MyLib/Any") != 0)
-			{
-				res = getPropertyType(propName, program, pe->clas->parentClassName);
+				if (res == "" && pe->clas->parentClassName != 0 && strcmp(pe->clas->parentClassName, "MyLib/Any") != 0)
+				{
+					res = getPropertyType(propName, program, pe->clas->parentClassName);
+				}
 			}
 		}
 	}
+	
 	return res;
 
 }
@@ -1150,6 +1165,31 @@ void ClassFile::calcTypeOfMethodCall(exprS* e1, programS* program, string& metho
 	throw e;
 }
 
+void ClassFile::calcTypeOfFieldCalsExpr(exprS* e1, programS* program, string& methodKey)
+{
+	if (e1->type != FieldCalcExpr)
+		return;
+
+	calcType(e1->left, program, methodKey);
+	checkUnitOperandsInExpr(e1, methodKey);
+
+	string res = getPropertyType(e1->stringOrId, program, e1->left->exprRes);
+	if (res != "")
+	{
+		e1->exprRes = res;
+		string clName = res;
+		if (res.find("[]") != -1)
+			clName = "MyLib/Array";
+		e1->refInfo = findFieldRefOrAdd(clName, e1->stringOrId,
+			transformTypeToDescriptor(res.c_str(), program));
+		return;
+	}
+
+	char message[200] = "EXCEPTION! Call of unknown field \"";
+	exception e(strcat(strcat(strcat(message, methodKey.c_str()), "\" in method - "),
+		methodKey.c_str()));
+	throw e;
+}
 
 void ClassFile::calcType(exprS* e1, programS* program, string& methodKey)
 {
@@ -1175,41 +1215,7 @@ void ClassFile::calcType(exprS* e1, programS* program, string& methodKey)
 	}
 	else if (e1->type == FieldCalcExpr)
 	{
-		calcType(e1->left, program, methodKey);
-		checkUnitOperandsInExpr(e1, methodKey);
-		//Ќайти поле в классе
-		string res = getPropertyType(e1->stringOrId, program, e1->left->exprRes);
-		if (res == "")
-		{
-			//≈сли пользователь хочет узнать длину массива
-			if (strstr(e1->left->exprRes.c_str(), "[]") != 0 && strcmp(e1->stringOrId, "size"))
-			{
-				char* tmp = new char[strlen("length") + 1];
-				strcpy(tmp, "length");
-				e1->stringOrId = tmp;
-				e1->exprRes = "Int";
-			}
-			else if (e1->left->exprRes == "String" && strcmp(e1->stringOrId, "length"))
-			{
-				e1->type = MethodCalcExpr;
-				e1->exprRes = "Int";
-				e1->refInfo = findMethodRefOrAdd("java/lang/String", "length", "()I");
-			}
-			else
-			{
-				char message[200] = "EXCEPTION! Call of unknown field \"";
-				exception e(strcat(strcat(strcat(message, methodKey.c_str()), "\" in method - "),
-					methodKey.c_str()));
-				throw e;
-			}			
-		}
-		else
-		{
-			e1->exprRes = res;
-			e1->refInfo = findFieldRefOrAdd(e1->left->exprRes, e1->stringOrId,
-				transformTypeToDescriptor(res.c_str(), program));
-		}
-		
+		calcTypeOfFieldCalsExpr(e1, program, methodKey);
 	}
 	else if (e1->type == MethodCalcExpr)
 	{
