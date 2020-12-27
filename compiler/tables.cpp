@@ -309,7 +309,7 @@ string getOperatorTypeForBoolean(const string& methodSign)
 		methodSign == "or(MyLib/Boolean|)" || methodSign == "and(MyLib/Boolean|)" ||
 		methodSign == "equal(MyLib/Boolean|)" || methodSign == "notEqual(MyLib/Boolean|)" ||
 		methodSign == "lessOrEqual(MyLib/Boolean|)" || methodSign == "moreOrEqual(MyLib/Boolean|)" ||
-		methodSign == "not(MyLib/Boolean|)")
+		methodSign == "not()")
 	{
 		res = "MyLib/Boolean";
 	}
@@ -1769,6 +1769,118 @@ void ClassFile::calcTypeOfParentMethodCall(exprS* e1, programS* program, string&
 	throw e;
 }
 
+void ClassFile::calcTypeOfLiterals(exprS* e1, string& methodKey)
+{
+	if (e1->type != Int && e1->type != Double && e1->type != Float &&
+		e1->type != String && e1->type != Char && e1->type != Boolean)
+		return;
+
+	string exprRes = "";
+	string descr = "";
+	exprS* newOperand = 0;
+
+	if (e1->type == Int)
+	{
+		exprRes = "MyLib/Int";
+		newOperand = createExpr(e1->intV, Int);
+		if (e1->intV > 65535)
+			newOperand->refInfo = findIntOrAdd(e1->intV);
+		newOperand->exprRes = "int";
+		descr = "(I)V";
+		e1->intV = 0;
+	}
+	else if (e1->type == Double)
+	{
+		exprRes = "MyLib/Double";
+		newOperand = createExpr(e1->doubleV, Double);
+		newOperand->refInfo = findDoubleOrAdd(e1->doubleV);
+		newOperand->exprRes = "double";
+		descr = "(D)V";
+		e1->doubleV = 0;
+	}
+	else if (e1->type == Float)
+	{
+		exprRes = "MyLib/Float";
+		newOperand = createExpr(e1->floatV, Float);
+		newOperand->refInfo = findFloatOrAdd(e1->floatV);
+		newOperand->exprRes = "Float";
+		descr = "(F)V";
+		e1->floatV = 0;
+	}
+	else if (e1->type == Char)
+	{
+		exprRes = "MyLib/Char";
+		newOperand = createExpr(e1->charV, Char);
+		newOperand->exprRes = "Char";
+		descr = "(C)V";
+		e1->charV = 0;
+	}
+	else if (e1->type == String)
+	{
+		exprRes = "MyLib/MyString";
+		newOperand = createExpr(e1->stringOrId, String);
+		newOperand->refInfo = findStringOrAdd(e1->stringOrId);
+		newOperand->exprRes = "String";
+		descr = "(Ljava/lang/String;)V";
+		e1->stringOrId = 0;
+	}
+	else if (e1->type == Boolean)
+	{
+		exprRes = "MyLib/Boolean";
+		newOperand = createExpr(e1->booleanV, Boolean);
+		newOperand->exprRes = "Boolean";
+		descr = "(Z)V";
+		e1->booleanV = 0;
+	}
+	e1->type = ConstructorCall;
+	e1->exprRes = exprRes;
+	e1->factParams = createFactParamsList(newOperand);
+	e1->refInfo = findMethodRefOrAdd(exprRes, "<init>", descr);
+}
+
+void ClassFile::calcTypeOfUnaryOperators(exprS* e1, programS* program, string& methodKey)
+{
+	calcType(e1->left, program, methodKey);
+	checkUnitOperandsInExpr(e1, methodKey);
+
+	string res = getOperatorTypeForStandartClass(createShortInfo(e1), e1->left->exprRes);
+	if (res != "")
+	{
+		e1->exprRes = res;
+		e1->type = MethodCalcExpr;
+		string* params;
+		string methodName;
+		if (e1->type == LogicalNot)
+			methodName = "not";
+		else if (e1->type == UnaryPlusExpr)
+			methodName = "unaryPlus";
+		else
+			methodName = "unaryMinus";
+		params = generateMethodRefParams(methodName, e1->left->exprRes, 0);
+		if (params[0] == "" || params[1] == "" || params[2] == "")
+		{
+			throw exception("EXCEPTION! Unknown my std method name\n");
+		}
+		char* tmp = new char[methodName.size() + 1];
+		strcpy(tmp, methodName.c_str());
+		e1->stringOrId = tmp;
+		e1->refInfo = findMethodRefOrAdd(params[0], params[1], params[2]);
+		return;
+	}
+
+	//Ошибки
+	if (e1->type == LogicalNot)
+	{
+		char message[200] = "EXCEPTION! Incorrect operator! operand with not boolean type in method - ";
+		exception e(strcat(message, methodKey.c_str()));
+		throw e;
+	}
+	
+	char message[200] = "EXCEPTION! Incorrect operator+ (unary) operand with not number type in method - ";
+	exception e(strcat(message, methodKey.c_str()));
+	throw e;
+}
+
 void ClassFile::calcType(exprS* e1, programS* program, string& methodKey)
 {
 	if (e1->type == Identificator)
@@ -1811,50 +1923,38 @@ void ClassFile::calcType(exprS* e1, programS* program, string& methodKey)
 	{
 		calcTypeOfParentMethodCall(e1, program, methodKey);
 	}
-	else if (e1->type == Int)
+	else if (e1->type == Int || e1->type == Double || e1->type == Float ||
+		e1->type == String || e1->type == Char || e1->type == Boolean)
 	{
-		e1->exprRes = "Int";
-		e1->refInfo = findIntOrAdd(e1->intV);
-	}
-	else if (e1->type == Double)
-	{
-		e1->exprRes = "Double";
-		e1->refInfo = findDoubleOrAdd(e1->doubleV);
-	}
-	else if (e1->type == Float)
-	{
-		e1->exprRes = "Float";
-		e1->refInfo = findFloatOrAdd(e1->floatV);
-	}
-	else if (e1->type == String)
-	{
-		e1->exprRes = "String";
-		e1->refInfo = findStringOrAdd(e1->stringOrId);
-	}
-	else if (e1->type == Char)
-	{
-		e1->exprRes = "Char";
-	}
-	else if (e1->type == Boolean)
-	{
-		e1->exprRes = "Boolean";
+		calcTypeOfLiterals(e1, methodKey);
 	}
 	else if (e1->type == Range)
 	{
-		char message[200] = "EXCEPTION! Unsupported range out of For loop in method - ";
+		char message[200] = "EXCEPTION! Unsupported range out of FOR loop in method - ";
 		exception e(strcat(message,methodKey.c_str()));
 		throw e;
+	}
+	else if (e1->type == LogicalNot || e1->type == UnaryPlusExpr || e1->type == UnaryMinusExpr)
+	{
+		calcTypeOfUnaryOperators(e1, program, methodKey);
 	}
 	else if (e1->type == LogicalNot)
 	{
 		calcType(e1->left, program, methodKey);
-		if (e1->left->exprRes != "Boolean")
+		checkUnitOperandsInExpr(e1, methodKey);
+
+		if (e1->left->exprRes != "MyLib/Boolean")
 		{
 			char message[200] = "EXCEPTION! Incorrect operator! operand with not boolean type in method - ";
 			exception e(strcat(message, methodKey.c_str()));
 			throw e;
 		}
-		e1->exprRes = "Boolean";
+		
+		//Переделать операцию как вызов метода
+		//Поместить в текущий узел информацию о том, какой метод вызывать
+		//Поместить результат вычисления выражения
+		
+		e1->exprRes = "MyLib/Boolean";
 	}
 	else if (e1->type == UnaryPlusExpr || e1->type == UnaryMinusExpr)
 	{
@@ -2006,7 +2106,9 @@ void ClassFile::calcType(exprS* e1, programS* program, string& methodKey)
 	}
 	else if (e1->type == Mod)
 	{
-
+		char message[200] = "EXCEPTION! Unsupported operator% in method - ";
+		exception e(strcat(message, methodKey.c_str()));
+		throw e;
 	}
 	else if (e1->type == Less)
 	{

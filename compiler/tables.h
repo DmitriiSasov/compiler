@@ -281,6 +281,10 @@ class ClassFile
 
 	void calcTypeOfParentMethodCall(exprS* e1, programS* program, string& methodKey);
 
+	void calcTypeOfLiterals(exprS* e1, string& methodKey);
+
+	void calcTypeOfUnaryOperators(exprS* e1, string& methodKey);
+
 	bool transformKotlinTypeCastOperators(exprS* e);
 	
 	void transformTypeCastToValueOf(exprS* e, const char* staticClassName);
