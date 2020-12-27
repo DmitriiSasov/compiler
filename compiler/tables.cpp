@@ -1,6 +1,9 @@
 #include "tables.h"
 
 
+string* generateMethodRefParams(const string& methodName, const string& className,
+	int paramsCount);
+
 VisibilityMod translateVisibilityMod(visibilityMod vMod)
 {
 	switch (vMod)
@@ -242,7 +245,16 @@ string getMethodType(const string& methodSign, const programS* const program, co
 {
 	if (currentClassName == "")	return "";
 
-	string res = getMethodTypeForStandartClass(methodSign, currentClassName);
+	string res = "";
+
+	//Поскольку у Main класс не является наследником Any, в нем не могут использоваться
+	//Методы equals и toString, базового класса
+	if (currentClassName != "Main$")
+	{
+		res = getMethodTypeForStandartClass(methodSign, currentClassName);
+	}	
+	
+	
 	if (res == "")
 	{
 		auto method = findMethod(methodSign, program, currentClassName);
@@ -1351,25 +1363,33 @@ void ClassFile::calcTypeOfMethodCall(exprS* e1, programS* program, string& metho
 
 	string res = "";
 
-	//Если метод динамический
+	//Если метод класса вызывается
 	res = getMethodType(createShortInfo(e1), program, className);
 	if (res != "")
 	{
 		e1->exprRes = res;
-		e1->varInTableNum = 0;
+		//Если метод динамический
+		if (className != "Main$")
+		{
+			e1->varInTableNum = 0;
+			if (strcmp(e1->stringOrId, "toString") == 0 && paramsCount == 0)
+			{
+				char* tmp = new char[strlen("toMyString") + 1];
+				strcpy(tmp, "toMyString");
+				e1->stringOrId = tmp;
+			}
+			//Если это метод базового класса
+			if (strcmp(e1->stringOrId, "toMyString") == 0 && paramsCount == 0 ||
+				strcmp(e1->stringOrId, "equals") == 0 && paramsCount == 1)
+			{
+				string* params = generateMethodRefParams(e1->stringOrId, className, 
+					paramsCount);
+				e1->refInfo = findMethodRefOrAdd(params[0], params[1], params[2]);
+				return;
+			}			
+		}
 		e1->refInfo = findMethodRefOrAdd(className, e1->stringOrId,
 			transformMethodCallToDescriptor(e1, program));
-		return;
-	}
-
-	//Если вызывается неизмененный метод toString
-	if (className != "Main$" && e1->stringOrId == "toString" && paramsCount == 0)
-	{
-		char* tmp = new char[strlen("toMyString") + 1];
-		strcpy(tmp, "toMyString");
-		e1->stringOrId = tmp;
-		e1->exprRes = "MyLib/MyString";
-		e1->refInfo = findMethodRefOrAdd("MyLib/Any", "toMyString", "()LMyLib/MyString;");
 		return;
 	}
 
@@ -1566,8 +1586,8 @@ void ClassFile::calcTypeOfMethodCalcExpr(exprS* e1, programS* program, string& m
 		}
 
 		if ((e1->stringOrId, "equals") == 0 && paramsCount == 1 || 
-			(e1->stringOrId, "toMyString") == 0 && paramsCount == 1 ||
-			res == "MyLib/Array")
+			(e1->stringOrId, "toMyString") == 0 && paramsCount == 1 || 
+			e1->left->exprRes.find('[') != -1)
 		{
 			string* params = generateMethodRefParams(e1->stringOrId, res, paramsCount);
 			if (params[0] == "" || params[1] == "" || params[2] == "")
