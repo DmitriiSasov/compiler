@@ -147,23 +147,294 @@ bool isParentClass(const string& potentialParent, const string& potentialChild, 
 	return false;
 }
 
-string getMethodType(string methodSign, const programS* const program, const string& currentClassName)
+
+string getMethodTypeForArray(const string& methodSign, const string& currentClassName)
+{
+	string res = "";
+	//Если класс - массив
+	if (currentClassName.find('[') != -1)
+	{
+		//Вызывается метод get
+		if (methodSign == "get(MyLib/Int|)")
+		{
+			res = currentClassName;
+			res.pop_back();
+			res.pop_back();
+		}
+		
+		//set
+		if (methodSign == "get(MyLib/Int|)")
+		{
+			res = "MyLib/Unit";
+		}
+
+		//add
+		if (methodSign.find("add(") == 0 && methodSign.find_first_of('|') == methodSign.find_last_of('|'))
+		{
+			res = "MyLib/Array";
+		}
+
+		//addAssign
+		if (methodSign.find("addAssign(") == 0 && methodSign.find_first_of('|') == methodSign.find_last_of('|'))
+		{
+			res = "MyLib/Unit";
+		}
+
+		//component
+		if (methodSign == "component1()" || methodSign == "component2()" || methodSign == "component3()" || 
+			methodSign == "component4()" || methodSign == "component5()")
+		{
+			res = currentClassName;
+			res.pop_back();
+			res.pop_back();
+		}
+	}
+
+	return res;
+}
+
+string getMethodTypeForBoolean(const string& methodSign)
+{
+	string res = "";
+
+	if (methodSign == "less(MyLib/Boolean|)" || methodSign == "more(MyLib/Boolean|)" || 
+		methodSign == "or(MyLib/Boolean|)" || methodSign == "and(MyLib/Boolean|)" || 
+		methodSign == "equal(MyLib/Boolean|)" || methodSign == "notEqual(MyLib/Boolean|)" || 
+		methodSign == "lessOrEqual(MyLib/Boolean|)" || methodSign == "moreOrEqual(MyLib/Boolean|)" || 
+		methodSign == "not(MyLib/Boolean|)")
+	{
+		res = "MyLib/Boolean";
+	}
+
+	return res;
+}
+
+string getMethodTypeForChar(const string& methodSign)
+{
+	string res = "";
+
+	if (methodSign == "toInt()" || methodSign == "sub(MyLib/Char|)")
+		res = "MyLib/Int";
+
+	if (methodSign == "toFloat()")
+		res = "MyLib/Float";
+
+	if (methodSign == "toDouble()")
+		res = "MyLib/Double";
+
+	if (methodSign == "toChar()" || methodSign == "add(MyLib/Int|)" ||
+		methodSign == "sub(MyLib/Int|)")
+		res = "MyLib/Char";
+
+	if (methodSign == "add(MyLib/MyString|)")
+		res = "MyLib/MyString";
+
+	if (methodSign == "less(MyLib/Char|)" || methodSign == "more(MyLib/Char|)" ||
+		methodSign == "equal(MyLib/Char|)" || methodSign == "notEqual(MyLib/Char|)" ||
+		methodSign == "lessOrEqual(MyLib/Char|)" || methodSign == "notmoreOrEqualEqual(MyLib/Char|)")
+		res = "MyLib/Boolean";
+
+	return res;
+}
+
+string getMethodTypeForDouble(const string& methodSign)
+{
+	if (methodSign == "add(MyLib/Int|)" || methodSign == "add(MyLib/Double|)" ||
+		methodSign == "add(MyLib/Float|)" || methodSign == "sub(MyLib/Int|)" || 
+		methodSign == "sub(MyLib/Double|)" || methodSign == "sub(MyLib/Float|)" ||
+		methodSign == "mul(MyLib/Int|)" || methodSign == "mul(MyLib/Double|)" ||
+		methodSign == "mul(MyLib/Float|)" || methodSign == "div(MyLib/Int|)" ||
+		methodSign == "div(MyLib/Double|)" || methodSign == "div(MyLib/Float|)" ||
+		methodSign == "unaryPlus()" || methodSign == "unaryPlus()" ||
+		methodSign == "ToDouble()")
+		return "MyLib/Double";
+
+	if (methodSign == "toInt()")
+		return "MyLib/Int";
+
+	if (methodSign == "toFloat()")
+		return "MyLib/Float";
+
+	if (methodSign == "toChar()")
+		return "MyLib/Char";
+	
+	if (methodSign == "less(MyLib/Int|)" || methodSign == "less(MyLib/Double|)" ||
+		methodSign == "less(MyLib/Float|)" || methodSign == "more(MyLib/Int|)" ||
+		methodSign == "more(MyLib/Double|)" || methodSign == "more(MyLib/Float|)" ||
+		methodSign == "equal(MyLib/Int|)" || methodSign == "equal(MyLib/Double|)" ||
+		methodSign == "equal(MyLib/Float|)" || methodSign == "notEqual(MyLib/Int|)" ||
+		methodSign == "notEqual(MyLib/Double|)" || methodSign == "notEqual(MyLib/Float|)" ||
+		methodSign == "lessOrEqual(MyLib/Int|)" || methodSign == "lessOrEqual(MyLib/Double|)" ||
+		methodSign == "lessOrEqual(MyLib/Float|)" || methodSign == "moreOrEqual(MyLib/Int|)" ||
+		methodSign == "moreOrEqual(MyLib/Double|)" || methodSign == "moreOrEqual(MyLib/Float|)")
+		return "MyLib/Boolean";
+
+	return "";
+}
+
+string getMethodTypeForFloat(const string& methodSign)
+{
+	if (methodSign == "add(MyLib/Int|)" || methodSign == "add(MyLib/Float|)" || 
+		methodSign == "sub(MyLib/Int|)" || methodSign == "sub(MyLib/Float|)" ||
+		methodSign == "mul(MyLib/Int|)" || methodSign == "mul(MyLib/Float|)" || 
+		methodSign == "div(MyLib/Int|)" || methodSign == "div(MyLib/Float|)" ||
+		methodSign == "unaryPlus()" || methodSign == "unaryPlus()" ||
+		methodSign == "toFloat()")
+		return "MyLib/Float";
+
+	if (methodSign == "toInt()")
+		return "MyLib/Int";
+
+	if (methodSign == "toChar()")
+		return "MyLib/Char";
+
+	if (methodSign == "add(MyLib/Double|)" || methodSign == "sub(MyLib/Double|)" ||
+		methodSign == "mul(MyLib/Double|)" || methodSign == "div(MyLib/Double|)" ||
+		methodSign == "ToDouble()")
+		return "MyLib/Double";
+
+	if (methodSign == "less(MyLib/Int|)" || methodSign == "less(MyLib/Double|)" ||
+		methodSign == "less(MyLib/Float|)" || methodSign == "more(MyLib/Int|)" ||
+		methodSign == "more(MyLib/Double|)" || methodSign == "more(MyLib/Float|)" ||
+		methodSign == "equal(MyLib/Int|)" || methodSign == "equal(MyLib/Double|)" ||
+		methodSign == "equal(MyLib/Float|)" || methodSign == "notEqual(MyLib/Int|)" ||
+		methodSign == "notEqual(MyLib/Double|)" || methodSign == "notEqual(MyLib/Float|)" ||
+		methodSign == "lessOrEqual(MyLib/Int|)" || methodSign == "lessOrEqual(MyLib/Double|)" ||
+		methodSign == "lessOrEqual(MyLib/Float|)" || methodSign == "moreOrEqual(MyLib/Int|)" ||
+		methodSign == "moreOrEqual(MyLib/Double|)" || methodSign == "moreOrEqual(MyLib/Float|)")
+		return "MyLib/Boolean";
+
+	return "";
+}
+
+string getMethodTypeForInt(const string& methodSign)
+{
+	if (methodSign == "add(MyLib/Int|)" || methodSign == "sub(MyLib/Int|)" || 
+		methodSign == "mul(MyLib/Int|)" || methodSign == "div(MyLib/Int|)" || 
+		methodSign == "unaryPlus()" || methodSign == "unaryPlus()" ||
+		methodSign == "toInt()")
+		return "MyLib/Int";
+
+	if (methodSign == "add(MyLib/Float|)" || methodSign == "sub(MyLib/Float|)" ||
+		methodSign == "mul(MyLib/Float|)" || methodSign == "div(MyLib/Float|)" ||
+		methodSign == "toFloat()")
+		return "MyLib/Float";
+
+	if (methodSign == "toChar()")
+		return "MyLib/Char";
+
+	if (methodSign == "add(MyLib/Double|)" || methodSign == "sub(MyLib/Double|)" ||
+		methodSign == "mul(MyLib/Double|)" || methodSign == "div(MyLib/Double|)" ||
+		methodSign == "ToDouble()")
+		return "MyLib/Double";
+
+	if (methodSign == "less(MyLib/Int|)" || methodSign == "less(MyLib/Double|)" ||
+		methodSign == "less(MyLib/Float|)" || methodSign == "more(MyLib/Int|)" ||
+		methodSign == "more(MyLib/Double|)" || methodSign == "more(MyLib/Float|)" ||
+		methodSign == "equal(MyLib/Int|)" || methodSign == "equal(MyLib/Double|)" ||
+		methodSign == "equal(MyLib/Float|)" || methodSign == "notEqual(MyLib/Int|)" ||
+		methodSign == "notEqual(MyLib/Double|)" || methodSign == "notEqual(MyLib/Float|)" ||
+		methodSign == "lessOrEqual(MyLib/Int|)" || methodSign == "lessOrEqual(MyLib/Double|)" ||
+		methodSign == "lessOrEqual(MyLib/Float|)" || methodSign == "moreOrEqual(MyLib/Int|)" ||
+		methodSign == "moreOrEqual(MyLib/Double|)" || methodSign == "moreOrEqual(MyLib/Float|)")
+		return "MyLib/Boolean";
+
+	return "";
+}
+
+string getMethodTypeForMyString(const string& methodSign)
+{
+	if (methodSign == "get(MyLib/Int|)")
+		return "MyLib/Char";
+
+	if (methodSign == "toInt()")
+		return "MyLib/Int";
+
+	if (methodSign == "toFloat()")
+		return "MyLib/Float";
+
+	if (methodSign == "toBoolean()")
+		return "MyLib/Boolean";
+
+	if (methodSign == "ToDouble()")
+		return "MyLib/Double";
+
+	if (methodSign.find("add(") == 0 && methodSign.find_first_of('|') == methodSign.find_last_of('|'))
+		return "MyLib/MyString";
+
+	if (methodSign == "less(MyLib/MyString|)"|| methodSign == "more(MyLib/MyString|)" ||
+		methodSign == "equal(MyLib/MyString|)"  || methodSign == "notEqual(MyLib/MyString|)" ||
+		methodSign == "lessOrEqual(MyLib/MyString|)" || methodSign == "moreOrEqual(MyLib/MyString|)")
+		return "MyLib/Boolean";
+
+	return "";
+}
+
+string getMethodTypeForStandartClass(const string& methodSign, const string& currentClassName)
 {
 	if (currentClassName == "")	return "";
 
-	string res = "";
-	if (currentClassName == "MyLib/Any")
+	//Если класс - базовый
+	if (isMyStandartClass(currentClassName) || currentClassName.find('[') != -1)
 	{
-		if (methodSign == "equals(MyLib/Any|)")
+		//В equals один параметр
+		if (methodSign.find("equals(") == 0 && methodSign.find_last_of('|')
+			== methodSign.find_first_of('|'))
 		{
-			res = "MyLib/Boolean";
+			return "MyLib/Boolean";
 		}
-		else if (methodSign == "toMyString()")
+		else if (methodSign == "toMyString()" || methodSign == "toString()")
 		{
-			res = "MyLib/MyString";
+			return "MyLib/MyString";
 		}
-	}	
-	else
+	}
+
+	//Если класс - массив
+	if (currentClassName.find('[') != -1)
+	{
+		return getMethodTypeForArray(methodSign, currentClassName);
+	}
+
+	//Если класс - boolean
+	if (currentClassName == "MyLib/Boolean")
+	{
+		return getMethodTypeForBoolean(methodSign);
+	}
+
+	if (currentClassName == "MyLib/Char")
+	{
+		return getMethodTypeForChar(methodSign);
+	}
+
+	if (currentClassName == "MyLib/Double")
+	{
+		return getMethodTypeForDouble(methodSign);
+	}
+
+	if (currentClassName == "MyLib/Float")
+	{
+		return getMethodTypeForFloat(methodSign);
+	}
+
+	if (currentClassName == "MyLib/Int")
+	{
+		return getMethodTypeForInt(methodSign);
+	}
+
+	if (currentClassName == "MyLib/MyString")
+	{
+		return getMethodTypeForMyString(methodSign);
+	}
+
+	return "";
+}
+
+string getMethodType(const string& methodSign, const programS* const program, const string& currentClassName)
+{
+	if (currentClassName == "")	return "";
+
+	string res = getMethodTypeForStandartClass(methodSign, currentClassName);
+	if (res == "")
 	{
 		auto method = findMethod(methodSign, program, currentClassName);
 		if (method != 0)
@@ -1191,6 +1462,130 @@ void ClassFile::calcTypeOfFieldCalsExpr(exprS* e1, programS* program, string& me
 	throw e;
 }
 
+//Генерирует параметр className для methodRef 
+string* generateMethodOriginalClassName(const string& methodName, const string& className, 
+	int paramsCount)
+{
+	string* res = new string[3];
+	if (methodName == "equals" && paramsCount == 1)
+	{
+		res[0] = "MyLib/Any";
+		res[1] = methodName;
+		res[2] = "(LMyLib/Any;)LMyLib/Boolean;";
+		return res;
+	}
+
+	if (methodName == "toMyString" && paramsCount == 0)
+	{
+		res[0] = "MyLib/Any";
+		res[1] = methodName;
+		res[2] = "()LMyLib/MyString;";
+		return res;
+	}
+
+	if (className == "MyLib/Char" || className == "MyLib/Boolean" ||
+		className == "MyLib/Double" || className == "MyLib/Float" || 
+		className == "MyLib/Int" || className == "MyLib/MyString")
+	{
+		if ((methodName == "less" || methodName == "more" || 
+			methodName == "or" || methodName == "and" || 
+			methodName == "equal" || methodName == "notEqual" || 
+			methodName == "lessOrEqual" || methodName == "moreOrEqual")
+			&& paramsCount == 1)
+		{
+			res[0] = "MyLib/CalculatedClass";
+			res[1] = methodName;
+			res[2] = "(LMyLib/CalculatedClass;)LMyLib/Boolean;";
+			return res;
+		}
+		else if ((methodName == "not" || methodName == "unaryPlus" || methodName == "unaryMinus")
+			&& paramsCount == 0)
+		{
+			res[0] = "MyLib/CalculatedClass";
+			res[1] = methodName;
+			res[2] = "(LMyLib/CalculatedClass;)L";
+			res[2] += className + ';';
+			return res;
+		}
+	}
+
+	if (className == "MyLib/Array")
+	{
+		if (methodName == "add" && paramsCount == 1)
+		{
+			res[0] = "MyLib/Array";
+			res[1] = methodName;
+			res[2] = "(Ljava/lang/Object;)LMyLib/Array;";
+			return res;
+		}
+		else if (methodName == "addAssign" && paramsCount == 1)
+		{
+			res[0] = "MyLib/Array";
+			res[1] = methodName;
+			res[2] = "(Ljava/lang/Object;)V";
+			return res;
+		}
+	}
+
+	return res;
+}
+
+void ClassFile::calcTypeOfMethodCalcExpr(exprS* e1, programS* program, string& methodKey)
+{
+	int paramsCount = calcType(e1->factParams, program, methodKey);
+	calcType(e1->left, program, methodKey);
+	checkUnitOperandsInExpr(e1, methodKey);
+
+	string res = getMethodType(createShortInfo(e1), program, className);
+	//Если у класса есть такой метода
+	if (res != "")
+	{
+		e1->exprRes = res;
+		if ((e1->stringOrId, "equals") == 0 && paramsCount == 1)
+			e1->refInfo = findMethodRefOrAdd("MyLib/Any", e1->stringOrId, 
+				"(LMyLib/Any;)LMyLib/Boolean;");
+		else if (strcmp(e1->stringOrId, "toString") == 0 && paramsCount == 0)
+		{
+			char* tmp = new char[strlen("toMyString") + 1];
+			strcpy(tmp, "toMyString");
+			e1->stringOrId = tmp;
+			e1->refInfo = findMethodRefOrAdd("MyLib/Any", tmp, "()LMyLib/MyString;");
+		}
+		else
+			e1->refInfo = findMethodRefOrAdd(e1->left->exprRes, e1->stringOrId,
+				transformMethodCallToDescriptor(e1, program));
+		return;
+	}
+	
+	//Если объект - базовый класс Kotlin + toString для базовых типов
+	
+	//Если объект - базовый класс Kotlin + toString для базовых типов
+	else if (isMyStandartClass(e1->left->exprRes))
+	{
+		if (e1->left->exprRes == "String" && strcmp(e1->stringOrId, "get") == 0
+			&& paramsCount == 1 && e1->factParams->first->exprRes == "Integer")
+		{
+			char* tmp = new char[strlen("charAt") + 1];
+			strcpy(tmp, "charAt");
+			e1->stringOrId = tmp;
+			e1->refInfo = findMethodRefOrAdd("java/lang/String", e1->stringOrId,
+				"(I)C");
+		}
+		else if (!transformKotlinTypeCastOperators(e1))
+		{
+			char message[200] = "EXCEPTION! Call of unknown method \"";
+			exception e(strcat(strcat(strcat(message, e1->stringOrId), "\" in method - "),
+				methodKey.c_str()));
+			throw e;
+		}
+	}	
+	
+	char message[200] = "EXCEPTION! Call of unknown method \"";
+	exception e(strcat(strcat(strcat(message, e1->right->stringOrId), "\" in method - "),
+		methodKey.c_str()));
+	throw e;
+}
+
 void ClassFile::calcType(exprS* e1, programS* program, string& methodKey)
 {
 	if (e1->type == Identificator)
@@ -1219,91 +1614,7 @@ void ClassFile::calcType(exprS* e1, programS* program, string& methodKey)
 	}
 	else if (e1->type == MethodCalcExpr)
 	{
-		int paramsCount = calcType(e1->factParams, program, methodKey);
-		calcType(e1->left, program, methodKey);
-		checkUnitOperandsInExpr(e1, methodKey);
 		
-		string res = getMethodType(createShortInfo(e1), program, className);
-		//Если метод у объекта такого типа существует:
-		if (res != "")
-		{
-			e1->exprRes = res;
-			e1->refInfo = findMethodRefOrAdd(e1->left->exprRes, e1->stringOrId,
-				transformMethodCallToDescriptor(e1, program));
-		}
-		//Обращение к методу equals
-		else if (strcmp(e1->stringOrId, "equals") == 0 && paramsCount == 1)
-		{
-			if (isMyStandartClass(e1->left->exprRes))
-			{
-				convertToJavaBasicTypeClass(e1->left);
-			}
-			if (isMyStandartClass(e1->factParams->first->exprRes))
-			{
-				convertToJavaBasicTypeClass(e1->factParams->first);
-			}
-			e1->exprRes = "Boolean";
-			e1->refInfo = findMethodRefOrAdd(e1->left->exprRes, "equals",
-				"(Ljava/lang/Object;)Z");
-		}
-		//Если объект - базовый класс Kotlin + toString для базовых типов
-		else if (isMyStandartClass(e1->left->exprRes))
-		{
-			if (e1->left->exprRes == "String" && strcmp(e1->stringOrId, "get") == 0 
-				&& paramsCount == 1 && e1->factParams->first->exprRes == "Integer")
-			{
-				char* tmp = new char[strlen("charAt") + 1];
-				strcpy(tmp, "charAt");
-				e1->stringOrId = tmp;
-				e1->refInfo = findMethodRefOrAdd("java/lang/String", e1->stringOrId,
-					"(I)C");
-			}
-			else if (!transformKotlinTypeCastOperators(e1))
-			{
-				char message[200] = "EXCEPTION! Call of unknown method \"";
-				exception e(strcat(strcat(strcat(message, e1->stringOrId), "\" in method - "), 
-					methodKey.c_str()));
-				throw e;
-			}
-		}
-		//Обращение к методу toString для нестандартных классов
-		else if (strcmp(e1->stringOrId, "toString") == 0 && paramsCount == 0)
-		{
-			e1->exprRes = "String";
-			string basicToStringClass = e1->left->exprRes;
-			if (strstr(e1->left->exprRes.c_str(), "[]") != 0)
-			{
-				basicToStringClass = "java/lang/Object";
-			}
-			e1->refInfo = findMethodRefOrAdd(e1->left->exprRes, "toString",
-				"()Ljava/lang/String;");
-		}
-		//Если объект массив и у него берут одну из компонент
-		else if (strstr(e1->left->exprRes.c_str(), "[]") != 0
-			&& paramsCount == 0)
-		{
-			int componntNum = isComponent(e1->stringOrId);
-			if (componntNum != 0)
-			{
-				e1->type = ArrayElementCall;
-				e1->right = createExpr(componntNum - 1, Int);
-				e1->stringOrId = 0;
-			}
-			else
-			{
-				char message[200] = "EXCEPTION! Call of incorrect component method \"";
-				exception e(strcat(strcat(strcat(message, e1->stringOrId), "\" in method - "),
-					methodKey.c_str()));
-				throw e;
-			}
-		}
-		else
-		{
-			char message[200] = "EXCEPTION! Call of unknown method \"";
-			exception e(strcat(strcat(strcat(message, e1->right->stringOrId), "\" in method - "),
-				methodKey.c_str()));
-			throw e;
-		}
 	}
 	else if (e1->type == ArrayElementCall)
 	{

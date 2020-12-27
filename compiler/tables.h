@@ -39,7 +39,7 @@ bool isUserClass(const char* name, const programS * const program);
 
 string getPropertyType(const char* propName, const programS* const program, const string& currentClassName);
 
-string getMethodType(string methodSign, const programS* const program, const string& currentClassName);
+string getMethodType(const string& methodSign, const programS* const program, const string& currentClassName);
 
 string createMethodSignature(methodS* meth);
 
@@ -272,6 +272,8 @@ class ClassFile
 	void calcTypeOfMethodCall(exprS* e1, programS* program, string& methodKey);
 
 	void calcTypeOfFieldCalsExpr(exprS* e1, programS* program, string& methodKey);
+
+	void calcTypeOfMethodCalcExpr(exprS* e1, programS* program, string& methodKey);
 
 	bool transformKotlinTypeCastOperators(exprS* e);
 	
