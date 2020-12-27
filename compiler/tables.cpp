@@ -1611,6 +1611,54 @@ void ClassFile::calcTypeOfMethodCalcExpr(exprS* e1, programS* program, string& m
 	throw e;
 }
 
+void ClassFile::calcTypeOfArrayElementCall(exprS* e1, programS* program, string& methodKey)
+{
+	if (e1->type != ArrayElementCall)
+		return;
+
+	calcType(e1->left, program, methodKey);
+	calcType(e1->right, program, methodKey);
+	checkUnitOperandsInExpr(e1, methodKey);
+
+	if (e1->right->exprRes != "MyLib/Int")
+	{
+		char message[200] = "EXCEPTION! Not integer index  in method \"";
+		exception e(strcat(strcat(message, methodKey.c_str()), "\""));
+		throw e;
+	}
+
+
+	if (strstr(e1->left->exprRes.c_str(), "[]") != 0 || e1->left->exprRes == "MyLib/MyString")
+	{
+		e1->type = MethodCalcExpr;
+		e1->factParams = createFactParamsList(e1->right);
+		e1->right = 0;
+
+		if (strstr(e1->left->exprRes.c_str(), "[]") != 0)
+		{
+			//¬ возвращаемом значении уменьшить количество []
+			string res = e1->left->exprRes;
+			res.pop_back();
+			res.pop_back();
+			e1->exprRes = res;
+			e1->refInfo = findMethodRefOrAdd("MyLib/Array", "get", "(LMyLib/Int;)Ljava/lang/Object;");
+		}
+
+		if (e1->left->exprRes == "MyLib/MyString")
+		{
+			e1->exprRes = "MyLib/Char";
+			e1->refInfo = findMethodRefOrAdd("MyLib/MyString", "get", "(LMyLib/Int;)LMyLib/Char;")
+		}
+
+		return;
+	}
+			
+	char message[200] = "EXCEPTION! Try to get index of not array or string object in method \"";
+	exception e(strcat(strcat(message, methodKey.c_str()), "\""));
+	throw e;
+
+}
+
 void ClassFile::calcType(exprS* e1, programS* program, string& methodKey)
 {
 	if (e1->type == Identificator)
@@ -1639,46 +1687,11 @@ void ClassFile::calcType(exprS* e1, programS* program, string& methodKey)
 	}
 	else if (e1->type == MethodCalcExpr)
 	{
-		
+		calcTypeOfMethodCalcExpr(e1, program, methodKey);
 	}
 	else if (e1->type == ArrayElementCall)
 	{
-		calcType(e1->left, program, methodKey);
-		calcType(e1->right, program, methodKey);
-		if (e1->right->exprRes == "Int")
-		{
-			if (strstr(e1->left->exprRes.c_str(), "[]") != 0)
-			{
-				//¬ возвращаемом значении уменьшить количество []
-				string res = e1->left->exprRes;
-				res.pop_back();
-				res.pop_back();
-				e1->exprRes = res;
-			}
-			else if (e1->left->exprRes == "String")
-			{
-				e1->factParams = createFactParamsList(e1->right);
-				e1->right->stringOrId = 0;
-				e1->right = 0;
-				char* tmp = new char[strlen("charAt") + 1];
-				strcpy(tmp, "charAt");
-				e1->stringOrId = tmp;
-				e1->exprRes = "Char";
-				e1->refInfo = findMethodRefOrAdd("java/lang/String", tmp, "(I)C");
-			}
-			else
-			{
-				char message[200] = "EXCEPTION! Try to get index of not array or string object in method \"";
-				exception e(strcat(strcat(message, methodKey.c_str()), "\""));
-				throw e;
-			}
-		}
-		else 
-		{
-			char message[200] = "EXCEPTION! Not integer index  in method \"";
-			exception e(strcat(strcat(message, methodKey.c_str()), "\""));
-			throw e;
-		}
+		
 	}
 	else if (e1->type == ParentFieldCall)
 	{
