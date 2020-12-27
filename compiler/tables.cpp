@@ -1204,7 +1204,7 @@ bool checkUnitOperandsInExpr(exprS* e, const string& methodKey)
 	{
 		for (auto fp = e->factParams->first; fp != 0; fp = fp->next)
 		{
-			if (fp->exprRes == "Unit")
+			if (fp->exprRes == "MyLib/Unit")
 			{
 				char message[200] = "EXCEPTION! Incorrect operand with UNIT (void) type in method - ";
 				exception e(strcat(message, methodKey.c_str()));
@@ -1212,8 +1212,8 @@ bool checkUnitOperandsInExpr(exprS* e, const string& methodKey)
 			}
 		}
 	}
-	if (e->left != 0 && e->left->exprRes == "Unit" 
-		|| e->right != 0 && e->right->exprRes == "Unit")
+	if (e->left != 0 && e->left->exprRes == "MyLib/Unit" 
+		|| e->right != 0 && e->right->exprRes == "MyLib/Unit")
 	{
 		char message[200] = "EXCEPTION! Incorrect operand with UNIT (void) type in method - ";
 		exception e(strcat(message, methodKey.c_str()));
