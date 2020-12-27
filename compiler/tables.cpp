@@ -166,7 +166,7 @@ string getMethodTypeForArray(const string& methodSign, const string& currentClas
 		}
 		
 		//set
-		if (methodSign == "get(MyLib/Int|)")
+		if (methodSign == "set(MyLib/Int|)")
 		{
 			res = "MyLib/Unit";
 		}
@@ -1378,33 +1378,41 @@ void ClassFile::calcTypeOfMethodCall(exprS* e1, programS* program, string& metho
 
 	string res = "";
 
-	//Если метод класса вызывается
-	res = getMethodType(createShortInfo(e1), program, className);
+	//Если вызван метод класса или его родителя (пользовательского класса)
+	res = getMethodTypeForUserClass(createShortInfo(e1), program, className);
 	if (res != "")
 	{
 		e1->exprRes = res;
 		//Если метод динамический
 		if (className != "Main$")
-		{
 			e1->varInTableNum = 0;
-			if (strcmp(e1->stringOrId, "toString") == 0 && paramsCount == 0)
-			{
-				char* tmp = new char[strlen("toMyString") + 1];
-				strcpy(tmp, "toMyString");
-				e1->stringOrId = tmp;
-			}
-			//Если это метод базового класса
-			if (strcmp(e1->stringOrId, "toMyString") == 0 && paramsCount == 0 ||
-				strcmp(e1->stringOrId, "equals") == 0 && paramsCount == 1)
-			{
-				string* params = generateMethodRefParams(e1->stringOrId, className, 
-					paramsCount);
-				e1->refInfo = findMethodRefOrAdd(params[0], params[1], params[2]);
-				return;
-			}			
-		}
+		else 
+			e1->isStaticCall = true;
+
 		e1->refInfo = findMethodRefOrAdd(className, e1->stringOrId,
 			transformMethodCallToDescriptor(e1, program));
+		return;
+	}
+
+	//Если вызван метод родительского класса (базового класса Any)
+	res = getMethodTypeForStandartClass(createShortInfo(e1), parentClassName);
+	if (res != "")
+	{
+		e1->varInTableNum = 0;
+		if (strcmp(e1->stringOrId, "toString") == 0 && paramsCount == 0)
+		{
+			char* tmp = new char[strlen("toMyString") + 1];
+			strcpy(tmp, "toMyString");
+			e1->stringOrId = tmp;
+		}
+		
+		string* params = generateMethodRefParams(e1->stringOrId, parentClassName,
+			paramsCount);
+		if (params[0] == "" || params[1] == "" || params[2] == "")
+		{
+			throw exception("EXCEPTION! Unknown my std method name\n");
+		}
+		e1->refInfo = findMethodRefOrAdd(params[0], params[1], params[2]);
 		return;
 	}
 
@@ -1587,12 +1595,19 @@ void ClassFile::calcTypeOfMethodCalcExpr(exprS* e1, programS* program, string& m
 	calcType(e1->left, program, methodKey);
 	checkUnitOperandsInExpr(e1, methodKey);
 
-	string res = getMethodType(createShortInfo(e1), program, className);
+	string res = getMethodTypeForUserClass(createShortInfo(e1), program, e1->left->exprRes);
 	//Если у класса есть такой метода
 	if (res != "")
 	{
 		e1->exprRes = res;
-
+		e1->refInfo = findMethodRefOrAdd(e1->left->exprRes, e1->stringOrId,
+			transformMethodCallToDescriptor(e1, program));
+		return;
+	}
+	
+	res = getMethodTypeForStandartClass(createShortInfo(e1), e1->left->exprRes);
+	if (res != "")
+	{
 		if (strcmp(e1->stringOrId, "toString") == 0 && paramsCount == 0)
 		{
 			char* tmp = new char[strlen("toMyString") + 1];
@@ -1600,26 +1615,28 @@ void ClassFile::calcTypeOfMethodCalcExpr(exprS* e1, programS* program, string& m
 			e1->stringOrId = tmp;
 		}
 
-		if ((e1->stringOrId, "equals") == 0 && paramsCount == 1 || 
-			(e1->stringOrId, "toMyString") == 0 && paramsCount == 1 || 
+		//Если метод toMyString, Equals или метод массива
+		if (strcmp(e1->stringOrId, "toMyString") == 0 && paramsCount == 0 ||
+			strcmp(e1->stringOrId, "toMyString") == 0 && paramsCount == 0 || 
 			e1->left->exprRes.find('[') != -1)
 		{
-			string* params = generateMethodRefParams(e1->stringOrId, res, paramsCount);
+			string* params = generateMethodRefParams(e1->stringOrId, e1->left->exprRes, paramsCount);
 			if (params[0] == "" || params[1] == "" || params[2] == "")
 			{
 				throw exception("EXCEPTION! Unknown my std method name\n");
 			}
 			e1->refInfo = findMethodRefOrAdd(params[0], params[1], params[2]);
 		}
+		//Если методы toChar(), toInt()...
 		else
 		{
+			e1->exprRes = res;
 			e1->refInfo = findMethodRefOrAdd(e1->left->exprRes, e1->stringOrId,
 				transformMethodCallToDescriptor(e1, program));
 		}
-
 		return;
 	}
-		
+
 	char message[200] = "EXCEPTION! Call of unknown method \"";
 	exception e(strcat(strcat(strcat(message, e1->right->stringOrId), "\" in method - "),
 		methodKey.c_str()));
@@ -1792,7 +1809,7 @@ void ClassFile::calcType(exprS* e1, programS* program, string& methodKey)
 	}
 	else if (e1->type == ParentMethodCall)
 	{
-		
+		calcTypeOfParentMethodCall(e1, program, methodKey);
 	}
 	else if (e1->type == Int)
 	{

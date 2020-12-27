@@ -1,108 +1,64 @@
 digraph G {
-Id0131BC78 [label="program"]
-Id0131BC78->Id0131BC00
-Id0131BC00 [label="property"]
-Id0131BC00->Id0131BBC8
-Id0131BBC8 [label="modifiers\npublic\n"]
-Id0131BC00->Id0131BB88
-Id0131BB88 [label="value - a"]
-Id0131BB88->Id0131BB50
-Id0131BB50 [label="type - String"]
-Id0131BC78->Id01324180
-Id01324180 [label="property"]
-Id01324180->Id013240D8
-Id013240D8 [label="modifiers\nprivate\n"]
-Id01324180->Id01310538
-Id01310538 [label="value - b"]
-Id01310538->Id01324148
-Id01324148 [label="type"]
-Id01324148->Id013240A0
-Id013240A0 [label="template type - Array"]
-Id013240A0->Id013242D0
-Id013242D0 [label="type - String"]
-Id013240A0->Id01324298
-Id01324298 [label="type - Int"]
-Id0131BC78->Id013254E8
-Id013254E8 [label="method"]
-Id013254E8->Id013241F0
-Id013241F0 [label="modifiers\npublic\n"]
-Id013254E8->Id01325910
-Id01325910 [label="func"]
-Id01325910->Id01324308
-Id01324308 [label="declaration of func f"]
-Id01324308->Id01324068
-Id01324068 [label="type - T"]
-Id01325910->Id013255C8
-Id013255C8 [label="statements list"]
-Id013255C8->Id01325A98
-Id01325A98 [label="if statement"]
-Id01325A98->Id01324830
-Id01324830 [label="a"]
-Id01325A98->Id01323FC0
-Id01323FC0 [label="statements list"]
-Id01323FC0->Id01324920
-Id01324920 [label="print( ... )"]
-Id01324920->Id01324340
-Id01324340 [label="actual parameters"]
-Id01324340->Id013248C0
-Id013248C0 [label="a"]
-Id01325A98->Id01325590
-Id01325590 [label="statements list"]
-Id01325590->Id01323FF8
-Id01323FF8 [label="if statement"]
-Id01323FF8->Id01324A00
-Id01324A00 [label="m"]
-Id01323FF8->Id01324260
-Id01324260 [label="statements list"]
-Id01324260->Id01324AF0
-Id01324AF0 [label="print( ... )"]
-Id01324AF0->Id01324228
-Id01324228 [label="actual parameters"]
-Id01324228->Id01324A90
-Id01324A90 [label="m"]
-Id01323FF8->Id01325558
-Id01325558 [label="statements list"]
-Id01325558->Id01324110
-Id01324110 [label="+="]
-Id01324110->Id01325388
-Id01325388 [label="a"]
-Id01324110->Id013253E8
-Id013253E8 [label="1"]
-Id013255C8->Id013258A0
-Id013258A0 [label="while loop"]
-Id013258A0->Id01326058
-Id01326058 [label="f"]
-Id013258A0->Id01325A28
-Id01325A28 [label="statements list"]
-Id01325A28->Id01326118
-Id01326118 [label="print( ... )"]
-Id01326118->Id01325600
-Id01325600 [label="actual parameters"]
-Id01325600->Id013260B8
-Id013260B8 [label="f"]
-Id013255C8->Id01325670
-Id01325670 [label="do while loop"]
-Id01325670->Id013266E0
-Id013266E0 [label="a"]
-Id01325670->Id013258D8
-Id013258D8 [label="statements list"]
-Id013258D8->Id013261D8
-Id013261D8 [label="calc( ... )"]
-Id013261D8->Id01325638
-Id01325638 [label="actual parameters"]
-Id01325638->Id01326178
-Id01326178 [label="f"]
-Id0131BC78->Id013259F0
-Id013259F0 [label="property"]
-Id013259F0->Id01326A80
-Id01326A80 [label="value - c"]
-Id01326A80->Id01325B08
-Id01325B08 [label="type - String"]
-Id0131BC78->Id01325718
-Id01325718 [label="property"]
-Id01325718->Id01326B00
-Id01326B00 [label="value - d"]
-Id01326B00->Id013256E0
-Id013256E0 [label="type - String"]
+Id012F0440 [label="program"]
+Id012F0440->Id012F05C8
+Id012F05C8 [label="property"]
+Id012F05C8->Id012EBDF8
+Id012EBDF8 [label="variable - i"]
+Id012EBDF8->Id012F04E8
+Id012F04E8 [label="type - Unit"]
+Id012EBDF8->Id012EBD70
+Id012EBD70 [label="565"]
+Id012F0440->Id012F00F8
+Id012F00F8 [label="property"]
+Id012F00F8->Id012EBEA8
+Id012EBEA8 [label="variable - i2"]
+Id012EBEA8->Id012F0018
+Id012F0018 [label="type - Float"]
+Id012EBEA8->Id012F58A0
+Id012F58A0 [label="."]
+Id012F58A0->Id012F5818
+Id012F5818 [label="565"]
+Id012F58A0->Id012F0210
+Id012F0210 [label="components"]
+Id012F0440->Id012F02B8
+Id012F02B8 [label="property"]
+Id012F02B8->Id012F5A50
+Id012F5A50 [label="variable - m"]
+Id012F5A50->Id012F0558
+Id012F0558 [label="type - Int"]
+Id012F5A50->Id012F59C8
+Id012F59C8 [label="8"]
+Id012F0440->Id012F0750
+Id012F0750 [label="method"]
+Id012F0750->Id012F0718
+Id012F0718 [label="func"]
+Id012F0718->Id012EFFE0
+Id012EFFE0 [label="declaration of func f1"]
+Id012EFFE0->Id012F0248
+Id012F0248 [label="type - Unit"]
+Id012F0718->Id012F0408
+Id012F0408 [label="statements list"]
+Id012F0408->Id012F5CA0
+Id012F5CA0 [label="for loop"]
+Id012F5CA0->Id012F02F0
+Id012F02F0 [label="formal params"]
+Id012F02F0->Id012F00C0
+Id012F00C0 [label="formal param - i"]
+Id012F00C0->Id012F0088
+Id012F0088 [label="type - Int"]
+Id012F02F0->Id012F0360
+Id012F0360 [label="formal param - f"]
+Id012F0360->Id012F0398
+Id012F0398 [label="type - Unit"]
+Id012F5CA0->Id012F5C18
+Id012F5C18 [label="."]
+Id012F5C18->Id012F5B90
+Id012F5B90 [label="expr1"]
+Id012F5C18->Id012F0130
+Id012F0130 [label="comp3"]
+Id012F0408->Id012F6518
+Id012F6518 [label="variable - i"]
+Id012F6518->Id012F04B0
+Id012F04B0 [label="type - Unit"]
 
 }
