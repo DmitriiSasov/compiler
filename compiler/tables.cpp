@@ -1523,6 +1523,14 @@ string* generateMethodRefParams(const string& methodName, const string& classNam
 		className == "MyLib/Double" || className == "MyLib/Float" || 
 		className == "MyLib/Int" || className == "MyLib/MyString")
 	{
+		if (className == "MyLib/MyString" && methodName == "add" && paramsCount == 1)
+		{
+			res[0] = "MyLib/MyString";
+			res[1] = methodName;
+			res[2] = "(LMyLib/Any;)LMyLib/MyString;";
+			return res;
+		}
+
 		if ((methodName == "less" || methodName == "more" || 
 			methodName == "or" || methodName == "and" || 
 			methodName == "equal" || methodName == "notEqual" || 
@@ -1872,12 +1880,77 @@ void ClassFile::calcTypeOfUnaryOperators(exprS* e1, programS* program, string& m
 	if (e1->type == LogicalNot)
 	{
 		char message[200] = "EXCEPTION! Incorrect operator! operand with not boolean type in method - ";
-		exception e(strcat(message, methodKey.c_str()));
+		exception e(strcat(message, (methodKey + "\n").c_str()));
 		throw e;
 	}
 	
 	char message[200] = "EXCEPTION! Incorrect operator+ (unary) operand with not number type in method - ";
-	exception e(strcat(message, methodKey.c_str()));
+	exception e(strcat(message, (methodKey + "\n").c_str()));
+	throw e;
+}
+
+void ClassFile::calcTypeOfSum(exprS* e1, programS* program, string& methodKey)
+{
+	calcType(e1->left, program, methodKey);
+	calcType(e1->right, program, methodKey);
+	checkUnitOperandsInExpr(e1, methodKey);
+
+	string res = getOperatorTypeForStandartClass(createShortInfo(e1), e1->left->exprRes);
+	e1->type = MethodCalcExpr;
+	//Если в результате операции появился массив
+	if (res == "MyLib/Array")
+	{
+		string arrayType = e1->left->exprRes;
+		arrayType.pop_back();
+		arrayType.pop_back();
+
+		e1->exprRes = calcParentClass(arrayType, e1->right->exprRes, program);
+
+		string* params = generateMethodRefParams("add", e1->left->exprRes, 1);
+		if (params[0] == "" || params[1] == "" || params[2] == "")
+		{
+			throw exception("EXCEPTION! Unknown my std method name\n");
+		}
+		char* tmp = new char[strlen("add") + 1];
+		strcpy(tmp, "add");
+		e1->stringOrId = tmp;
+		e1->refInfo = findMethodRefOrAdd(params[0], params[1], params[2]);
+		e1->factParams = createFactParamsList(e1->right);
+		e1->right = 0;
+		return;
+	}
+
+	if (res != "")
+	{
+		e1->exprRes = res;
+		char* tmp = new char[strlen("add") + 1];
+		strcpy(tmp, "add");
+		e1->stringOrId = tmp;
+		e1->factParams = createFactParamsList(e1->right);
+		e1->right = 0;
+		string* params;
+		if (e1->left->exprRes == "MyLib/MyString")
+		{
+			string* params = generateMethodRefParams("add", e1->left->exprRes, 1);
+			if (params[0] == "" || params[1] == "" || params[2] == "")
+			{
+				throw exception("EXCEPTION! Unknown my std method name\n");
+			}
+			e1->refInfo = findMethodRefOrAdd(params[0], params[1], params[2]);
+		}
+		else
+		{
+			params = new string[3];
+			params[0] = e1->left->exprRes;
+			params[1] = "add";
+			params[2] = transformMethodCallToDescriptor(e1, program);
+		}
+		e1->refInfo = findMethodRefOrAdd(params[0], params[1], params[2]);
+		return;
+	}
+
+	char message[200] = "EXCEPTION! Incorrect operator+ operands";
+	exception e(strcat(strcat(message, " in method - "), (methodKey + "\n").c_str()));
 	throw e;
 }
 
@@ -1938,152 +2011,9 @@ void ClassFile::calcType(exprS* e1, programS* program, string& methodKey)
 	{
 		calcTypeOfUnaryOperators(e1, program, methodKey);
 	}
-	else if (e1->type == LogicalNot)
-	{
-		calcType(e1->left, program, methodKey);
-		checkUnitOperandsInExpr(e1, methodKey);
-
-		if (e1->left->exprRes != "MyLib/Boolean")
-		{
-			char message[200] = "EXCEPTION! Incorrect operator! operand with not boolean type in method - ";
-			exception e(strcat(message, methodKey.c_str()));
-			throw e;
-		}
-		
-		//Переделать операцию как вызов метода
-		//Поместить в текущий узел информацию о том, какой метод вызывать
-		//Поместить результат вычисления выражения
-		
-		e1->exprRes = "MyLib/Boolean";
-	}
-	else if (e1->type == UnaryPlusExpr || e1->type == UnaryMinusExpr)
-	{
-		calcType(e1->left, program, methodKey);
-
-		if (e1->left->exprRes != "Int" && e1->left->exprRes != "Double" && e1->left->exprRes != "Float")
-		{
-			char message[200] = "EXCEPTION! Incorrect operator+ (unary) operand with not number type in method - ";
-			exception e(strcat(message, methodKey.c_str()));
-			throw e;
-		}
-		e1->exprRes = e1->left->exprRes;
-	}
 	else if (e1->type == Sum)
 	{
-		calcType(e1->left, program, methodKey);
-		calcType(e1->right, program, methodKey);
-		checkUnitOperandsInExpr(e1, methodKey);
-
-		if (e1->left->exprRes == "String")
-		{
-			if (e1->right->exprRes != "String");
-			{
-				if (isMyStandartClass(e1->right->exprRes))
-				{ 
-					convertBasicTypeExprToString(e1->right);
-				}
-				else
-				{
-					addToStringCall(e1, program);
-				}
-			}
-			e1->type = MethodCalcExpr;
-			e1->exprRes = "String";
-			char* tmp = new char[strlen("concat") + 1];
-			strcpy(tmp, "concat");
-			e1->stringOrId = tmp;
-			e1->factParams = createFactParamsList(e1->right);
-			e1->right = 0;
-			e1->refInfo = findMethodRefOrAdd("java/lang/String", "concat", "(Ljava/lang/String;)Ljava/lang/String;");
-		}
-		else if (e1->left->exprRes == "Int")
-		{
-			if (e1->right->exprRes == "Float" || e1->right->exprRes == "Double")
-			{
-				castType(e1->left, e1->right->exprRes);
-			}
-			else if(e1->right->exprRes != "Int")
-			{
-				char message[200] = "EXCEPTION! Incorrect operator+ right operand with type";
-				exception e(strcat(strcat(strcat(message, e1->right->exprRes.c_str()), 
-					" in method - "), methodKey.c_str()));
-				throw e;
-			}
-			e1->exprRes = e1->right->exprRes;
-		}
-		else if (e1->left->exprRes == "Char")
-		{
-			if (e1->right->exprRes == "String")
-			{
-				convertBasicTypeExprToString(e1->left);
-				e1->type = MethodCalcExpr;
-				e1->exprRes = "String";
-				char* tmp = new char[strlen("concat") + 1];
-				strcpy(tmp, "concat");
-				e1->stringOrId = tmp;
-				e1->factParams = createFactParamsList(e1->right);
-				e1->right = 0;
-				e1->refInfo = findMethodRefOrAdd("java/lang/String", "concat", "(Ljava/lang/String;)Ljava/lang/String;");
-			}
-			else if (e1->right->exprRes != "Int")
-			{
-				char message[200] = "EXCEPTION! Incorrect operator+ right operand with type";
-				exception e(strcat(strcat(strcat(message, e1->right->exprRes.c_str()),
-					" in method - "), methodKey.c_str()));
-				throw e;
-			}
-			else
-			{
-				castType(e1->left, "Int");
-				e1->exprRes = "Int";
-				castType(e1, "Char");
-			}			
-		}
-		else if (e1->left->exprRes == "Float")
-		{
-			if (e1->right->exprRes == "Double")
-			{
-				castType(e1->left, "Double");
-				e1->exprRes = "Double";
-			}
-			else if (e1->right->exprRes == "Int")
-			{
-				castType(e1->right, "Float");
-				e1->exprRes = "Float";
-			}
-			else if (e1->right->exprRes == "Float")
-			{
-				e1->exprRes = "Float";
-			}
-			else
-			{
-				char message[200] = "EXCEPTION! Incorrect operator+ right operand with type";
-				exception e(strcat(strcat(strcat(message, e1->right->exprRes.c_str()),
-					" in method - "), methodKey.c_str()));
-				throw e;
-			}
-		}
-		else if (e1->left->exprRes == "Double")
-		{
-			if (e1->right->exprRes == "Float" || e1->right->exprRes == "Int")
-			{
-				castType(e1->right, e1->left->exprRes);
-			}
-			else if (e1->right->exprRes != "Double")
-			{
-				char message[200] = "EXCEPTION! Incorrect operator+ right operand with type";
-				exception e(strcat(strcat(strcat(message, e1->right->exprRes.c_str()),
-					" in method - "), methodKey.c_str()));
-				throw e;
-			}
-			e1->exprRes = e1->left->exprRes;
-		}
-		else
-		{
-			char message[200] = "EXCEPTION! Incorrect operator+ left operand with type";
-			exception e(strcat(strcat(strcat(message, e1->left->exprRes.c_str()),
-				" in method - "), methodKey.c_str()));
-		}
+		calcTypeOfSum(e1, program, methodKey);
 	}
 	else if (e1->type == Sub)
 	{
