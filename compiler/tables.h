@@ -277,6 +277,8 @@ class ClassFile
 
 	void calcTypeOfArrayElementCall(exprS* e1, programS* program, string& methodKey);
 
+	void calcTypeOfParentFieldCall(exprS* e1, programS* program, string& methodKey);
+
 	bool transformKotlinTypeCastOperators(exprS* e);
 	
 	void transformTypeCastToValueOf(exprS* e, const char* staticClassName);

@@ -1647,7 +1647,7 @@ void ClassFile::calcTypeOfArrayElementCall(exprS* e1, programS* program, string&
 		if (e1->left->exprRes == "MyLib/MyString")
 		{
 			e1->exprRes = "MyLib/Char";
-			e1->refInfo = findMethodRefOrAdd("MyLib/MyString", "get", "(LMyLib/Int;)LMyLib/Char;")
+			e1->refInfo = findMethodRefOrAdd("MyLib/MyString", "get", "(LMyLib/Int;)LMyLib/Char;");
 		}
 
 		return;
@@ -1657,6 +1657,37 @@ void ClassFile::calcTypeOfArrayElementCall(exprS* e1, programS* program, string&
 	exception e(strcat(strcat(message, methodKey.c_str()), "\""));
 	throw e;
 
+}
+
+void ClassFile::calcTypeOfParentFieldCall(exprS* e1, programS* program, string& methodKey)
+{
+	if (e1->type != ParentFieldCall)
+		return;
+
+	if (parentClassName == "MyLib/Any" || parentClassName == "")
+	{
+		char message[200] = "EXCEPTION! Call of unknown parent field \"";
+		exception e(strcat(strcat(strcat(message, methodKey.c_str()), "\" in method - "),
+			methodKey.c_str()));
+		throw e;
+	}
+
+	//Найти поле в классе
+	string res = getPropertyType(e1->stringOrId, program, parentClassName);
+	if (res != "")
+	{
+		e1->exprRes = res;
+		e1->refInfo = findFieldRefOrAdd(parentClassName, e1->stringOrId,
+			transformTypeToDescriptor(res.c_str(), program));
+		e1->varInTableNum = 0;
+		return;
+	}
+
+	char message[200] = "EXCEPTION! Call of unknown parent field \"";
+	exception e(strcat(strcat(strcat(message, methodKey.c_str()), "\" in method - "),
+		methodKey.c_str()));
+	throw e;
+	
 }
 
 void ClassFile::calcType(exprS* e1, programS* program, string& methodKey)
@@ -1691,31 +1722,11 @@ void ClassFile::calcType(exprS* e1, programS* program, string& methodKey)
 	}
 	else if (e1->type == ArrayElementCall)
 	{
-		
+		calcTypeOfArrayElementCall(e1, program, methodKey);
 	}
 	else if (e1->type == ParentFieldCall)
 	{
-		if (parentClassName == "")
-		{
-			char message[200] = "EXCEPTION! Call of unknown parent field \"";
-			exception e(strcat(strcat(strcat(message, methodKey.c_str()), "\" in method - "),
-				methodKey.c_str()));
-			throw e;
-		}
-
-		//Найти поле в классе
-		string res = getPropertyType(e1->stringOrId, program, parentClassName);
-		if (res == "")
-		{
-			char message[200] = "EXCEPTION! Call of unknown parent field \"";
-			exception e(strcat(strcat(strcat(message, methodKey.c_str()), "\" in method - "),
-				methodKey.c_str()));
-			throw e;
-		}
-		e1->exprRes = res;
-		e1->refInfo = findFieldRefOrAdd(parentClassName, e1->stringOrId,
-			transformTypeToDescriptor(res.c_str(), program));
-		e1->varInTableNum = 0;
+		
 	}
 	else if (e1->type == ParentMethodCall)
 	{
