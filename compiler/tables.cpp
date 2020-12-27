@@ -241,6 +241,23 @@ string getMethodTypeForStandartClass(const string& methodSign, const string& cur
 	return "";
 }
 
+//Ищет метод только в пользовательских классах с учетом наследования
+string getMethodTypeForUserClass(const string& methodSign, const programS* const program, 
+	const string& currentClassName)
+{
+	if (currentClassName == "")	return "";
+
+	string res = "";
+
+	if (res == "")
+	{
+		auto method = findMethod(methodSign, program, currentClassName);
+		if (method != 0)
+			res = method->func->decl->type->easyType;
+	}
+	return res;
+}
+
 string getMethodType(const string& methodSign, const programS* const program, const string& currentClassName)
 {
 	if (currentClassName == "")	return "";
@@ -257,9 +274,7 @@ string getMethodType(const string& methodSign, const programS* const program, co
 	
 	if (res == "")
 	{
-		auto method = findMethod(methodSign, program, currentClassName);
-		if (method != 0)
-			res = method->func->decl->type->easyType;
+		res = getMethodTypeForUserClass(methodSign, program, currentClassName);
 	}	
 	return res;
 }
@@ -1475,7 +1490,7 @@ void ClassFile::calcTypeOfFieldCalsExpr(exprS* e1, programS* program, string& me
 	throw e;
 }
 
-//Генерирует параметр className для methodRef 
+//Генерирует параметр className для methodRef для стандартных методов с особенностями
 string* generateMethodRefParams(const string& methodName, const string& className, 
 	int paramsCount)
 {
@@ -1690,6 +1705,53 @@ void ClassFile::calcTypeOfParentFieldCall(exprS* e1, programS* program, string& 
 	
 }
 
+void ClassFile::calcTypeOfParentMethodCall(exprS* e1, programS* program, string& methodKey)
+{
+	if (e1->type != ParentMethodCall)
+		return;
+
+	int paramsCount = calcType(e1->factParams, program, methodKey);
+	checkUnitOperandsInExpr(e1, methodKey);
+
+	if (parentClassName == "")
+	{
+		char message[200] = "EXCEPTION! Call of unknown parent method \"";
+		exception e(strcat(strcat(strcat(message, methodKey.c_str()), "\" in method - "),
+			methodKey.c_str()));
+		throw e;
+	}
+
+	e1->varInTableNum = 0;
+	string res = getMethodTypeForUserClass(createShortInfo(e1), program, parentClassName);
+	if (res != "")
+	{
+		e1->exprRes = res;
+		e1->refInfo = findMethodRefOrAdd(parentClassName, e1->stringOrId, "");
+		return;
+	}
+
+	res = getMethodTypeForStandartClass(createShortInfo(e1), parentClassName);
+	if (res != "")
+	{
+		//заменить вызов toString
+		if (strcmp(e1->stringOrId, "toString") == 0 && paramsCount == 0)
+		{
+			char* tmp = new char[strlen("toMyString") + 1];
+			strcpy(tmp, "toMyString");
+			e1->stringOrId = tmp;
+		}
+		e1->exprRes = res;
+		string* params = generateMethodRefParams(e1->stringOrId, parentClassName, paramsCount);
+		e1->refInfo = findMethodRefOrAdd(parentClassName, e1->stringOrId, params[2]);
+		return;
+	}
+
+	char message[200] = "EXCEPTION! Call of unknown parent method \"";
+	exception e(strcat(strcat(strcat(message, e1->stringOrId), "\" in method - "),
+		methodKey.c_str()));
+	throw e;
+}
+
 void ClassFile::calcType(exprS* e1, programS* program, string& methodKey)
 {
 	if (e1->type == Identificator)
@@ -1726,50 +1788,11 @@ void ClassFile::calcType(exprS* e1, programS* program, string& methodKey)
 	}
 	else if (e1->type == ParentFieldCall)
 	{
-		
+		calcTypeOfParentFieldCall(e1, program, methodKey);
 	}
 	else if (e1->type == ParentMethodCall)
 	{
-		int paramsCount = calcType(e1->factParams, program, methodKey);
-		checkUnitOperandsInExpr(e1, methodKey);
-
-		e1->varInTableNum = 0;
-		//Если метод equals
-		if (strcmp(e1->stringOrId, "equals") == 0 && paramsCount == 1)
-		{
-			if (isMyStandartClass(e1->factParams->first->exprRes))
-			{
-				convertToJavaBasicTypeClass(e1->factParams->first);
-			}
-			e1->exprRes = "Boolean";
-			e1->refInfo = findMethodRefOrAdd(parentClassName, "equals",
-				"(Ljava/lang/Object;)Z");
-		}
-		//Если метод toString
-		else if(strcmp(e1->stringOrId, "toString") == 0 && paramsCount == 0)
-		{
-			e1->exprRes = "String";
-			e1->refInfo = findMethodRefOrAdd(parentClassName, "equals",
-				"()Ljava/lang/String;");
-		}
-		//Если метод у объекта такого типа существует:
-		else
-		{
-			string res = getMethodType(createShortInfo(e1), program, parentClassName);
-			if (res != "")
-			{
-				e1->exprRes = res;
-				e1->refInfo = findMethodRefOrAdd(parentClassName, e1->stringOrId,
-					transformMethodCallToDescriptor(e1, program));
-			}
-			else
-			{
-				char message[200] = "EXCEPTION! Call of unknown parent method \"";
-				exception e(strcat(strcat(strcat(message, e1->stringOrId), "\" in method - "),
-					methodKey.c_str()));
-				throw e;
-			}
-		}
+		
 	}
 	else if (e1->type == Int)
 	{

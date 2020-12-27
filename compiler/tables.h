@@ -279,6 +279,8 @@ class ClassFile
 
 	void calcTypeOfParentFieldCall(exprS* e1, programS* program, string& methodKey);
 
+	void calcTypeOfParentMethodCall(exprS* e1, programS* program, string& methodKey);
+
 	bool transformKotlinTypeCastOperators(exprS* e);
 	
 	void transformTypeCastToValueOf(exprS* e, const char* staticClassName);
