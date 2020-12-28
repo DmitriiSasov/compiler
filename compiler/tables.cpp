@@ -1186,6 +1186,9 @@ string* generateMethodRefParams(const string& methodName, const string& classNam
 	int paramsCount)
 {
 	string* res = new string[3];
+	res[0] = "";
+	res[1] = "";
+	res[2] = "";
 	if (methodName == "equals" && paramsCount == 1)
 	{
 		res[0] = "MyLib/Any";
