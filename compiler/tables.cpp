@@ -1950,7 +1950,7 @@ void ClassFile::addConstantsFrom(assignmentS* a, programS* program, const string
 		throw e;
 	}
 	
-	if (a->type != Assignment && a->type != AssignToArray && a->type != AssignToField)
+	if (a->type != Assign && a->type != AssignToArray && a->type != AssignToField)
 	{
 		char message[100] = "EXCEPTION! Unsupported +=, -=, /=, *=, %= operators \n";
 		exception e(message);
