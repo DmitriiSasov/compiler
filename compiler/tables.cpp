@@ -789,7 +789,7 @@ bool ClassFile::fillHighLevelObjectsConstants(methodS* meth, programS* program)
 			methodDescr += transformTypeToDescriptor(fp->type->easyType, program);
 		}
 	}
-	methodDescr = ')';
+	methodDescr += ')';
 
 	methodDescr += transformTypeToDescriptor(meth->func->decl->type->easyType,
 		program);
