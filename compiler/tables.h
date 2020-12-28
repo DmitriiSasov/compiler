@@ -257,52 +257,50 @@ class ClassFile
 
 	void addConstantsFrom(methodS* meth, programS* program);
 	
-	void addConstantsFrom(stmtS* stmt, programS* program, string methodKey);
+	void addConstantsFrom(stmtS* stmt, programS* program, const string& methodKey);
 
-	void addConstantsFrom(varOrValDeclS* v, programS* program, string methodKey);
+	void addConstantsFrom(varOrValDeclS* v, programS* program, const string& methodKey);
 	
 
-	void addConstantsFrom(assignmentS* a, programS* program, string methodKey);
+	void addConstantsFrom(assignmentS* a, programS* program, const string& methodKey);
 	
 
-	void addConstantsFrom(whileLoopS* w, programS* program, string methodKey);
+	void addConstantsFrom(whileLoopS* w, programS* program, const string& methodKey);
 	
 
-	void addConstantsFrom(forLoopS* f, programS* program, string methodKey);
+	void addConstantsFrom(forLoopS* f, programS* program, const string& methodKey);
 	
 
-	void addConstantsFrom(ifStmtS* i, programS* program, string methodKey);
+	void addConstantsFrom(ifStmtS* i, programS* program, const string& methodKey);
 	
-	void addConstantsFrom(exprS* e, programS* program, string methodKey);
-
 	void addConstantsFrom(stmtList* stmts, programS* program);
 
-	void calcType(exprS* e1, programS* program, string& methodKey);
+	void calcType(exprS* e1, programS* program, const string& methodKey);
 
-	void calcTypeOfIdentifier(exprS* e1, programS* program, string& methodKey);
+	void calcTypeOfIdentifier(exprS* e1, programS* program, const string& methodKey);
 
-	void calcTypeOfMethodCall(exprS* e1, programS* program, string& methodKey);
+	void calcTypeOfMethodCall(exprS* e1, programS* program, const string& methodKey);
 
-	void calcTypeOfFieldCalsExpr(exprS* e1, programS* program, string& methodKey);
+	void calcTypeOfFieldCalsExpr(exprS* e1, programS* program, const string& methodKey);
 
-	void calcTypeOfMethodCalcExpr(exprS* e1, programS* program, string& methodKey);
+	void calcTypeOfMethodCalcExpr(exprS* e1, programS* program, const string& methodKey);
 
-	void calcTypeOfArrayElementCall(exprS* e1, programS* program, string& methodKey);
+	void calcTypeOfArrayElementCall(exprS* e1, programS* program, const string& methodKey);
 
-	void calcTypeOfParentFieldCall(exprS* e1, programS* program, string& methodKey);
+	void calcTypeOfParentFieldCall(exprS* e1, programS* program, const string& methodKey);
 
-	void calcTypeOfParentMethodCall(exprS* e1, programS* program, string& methodKey);
+	void calcTypeOfParentMethodCall(exprS* e1, programS* program, const string& methodKey);
 
-	void calcTypeOfLiterals(exprS* e1, string& methodKey);
+	void calcTypeOfLiterals(exprS* e1, const string& methodKey);
 
-	void calcTypeOfUnaryOperators(exprS* e1, programS* program, string& methodKey);
+	void calcTypeOfUnaryOperators(exprS* e1, programS* program, const string& methodKey);
 
-	void calcTypeOfSum(exprS* e1, programS* program, string& methodKey);
+	void calcTypeOfSum(exprS* e1, programS* program, const string& methodKey);
 	
 	void calcTypeOfOtherArithmeticOperations(exprS* e1, programS* program,
-		string& methodKey);
+		const string& methodKey);
 	
-	int calcType(factParamsList* fpl, programS* program, string& methodKey);
+	int calcType(factParamsList* fpl, programS* program, const string& methodKey);
 
 	void convertBasicTypeExprToString(exprS* e);
 	
@@ -327,15 +325,15 @@ public:
 
 	IdT findDoubleOrAdd(double i);
 
-	IdT findStringOrAdd(string v);
+	IdT findStringOrAdd(string& v);
 
-	IdT findClassOrAdd(std::string const& className);
+	IdT findClassOrAdd(string const& className);
 
-	IdT findNameAndTypeOrAdd(std::string const& name, std::string const& type);
+	IdT findNameAndTypeOrAdd(string const& name, string const& type);
 
-	IdT findFieldRefOrAdd(std::string const& className, std::string const& name, std::string const& type);
+	IdT findFieldRefOrAdd(string const& className, string const& name, string const& type);
 
-	IdT findMethodRefOrAdd(std::string const& className, std::string const& name, std::string const& type);
+	IdT findMethodRefOrAdd(string const& className, string const& name, string const& type);
 
 };
 

@@ -642,7 +642,7 @@ IdT ClassFile::findDoubleOrAdd(double i)
 	return foundIter - constsTable.begin() + 1;
 }
 
-IdT ClassFile::findStringOrAdd(string v)
+IdT ClassFile::findStringOrAdd(string& v)
 {
 	ConstantsTableElement constant(_STRING, v);
 	const auto foundIter = std::find(constsTable.begin(), constsTable.end(), constant);
@@ -821,7 +821,7 @@ void ClassFile::fillHighLevelObjectsConstants(classS* clas, programS* program)
 	}
 }
 
-int ClassFile::calcType(factParamsList* fpl, programS* program, string& methodKey)
+int ClassFile::calcType(factParamsList* fpl, programS* program, const string & methodKey)
 {
 	int paramsCount = 0;
 	if (fpl != 0)
@@ -911,7 +911,7 @@ void ClassFile::addToStringCall(exprS* e, programS* program)
 }
 
 
-void ClassFile::calcTypeOfIdentifier(exprS* e1, programS* program, string& methodKey)
+void ClassFile::calcTypeOfIdentifier(exprS* e1, programS* program, const string& methodKey)
 {
 	if (e1->type != Identificator)
 	{
@@ -991,7 +991,7 @@ string calcParentClass(const string& class1, const string& class2, const program
 /*
 e - вызов функции arrayOf
 */
-void calcArrayOfType(exprS* e, programS* program, string& methodKey)
+void calcArrayOfType(exprS* e, programS* program, const string& methodKey)
 {
 	if (e->factParams == 0)
 	{
@@ -1018,7 +1018,7 @@ void calcArrayOfType(exprS* e, programS* program, string& methodKey)
 	e->exprRes = fp1Type;
 }
 
-void ClassFile::calcTypeOfMethodCall(exprS* e1, programS* program, string& methodKey)
+void ClassFile::calcTypeOfMethodCall(exprS* e1, programS* program, const string& methodKey)
 {
 	if (e1->type != MethodCall)
 		return;
@@ -1123,7 +1123,7 @@ void ClassFile::calcTypeOfMethodCall(exprS* e1, programS* program, string& metho
 	throw e;
 }
 
-void ClassFile::calcTypeOfFieldCalsExpr(exprS* e1, programS* program, string& methodKey)
+void ClassFile::calcTypeOfFieldCalsExpr(exprS* e1, programS* program, const string& methodKey)
 {
 	if (e1->type != FieldCalcExpr)
 		return;
@@ -1248,7 +1248,7 @@ string* generateMethodRefParams(const string& methodName, const string& classNam
 	return res;
 }
 
-void ClassFile::calcTypeOfMethodCalcExpr(exprS* e1, programS* program, string& methodKey)
+void ClassFile::calcTypeOfMethodCalcExpr(exprS* e1, programS* program, const string& methodKey)
 {
 	int paramsCount = calcType(e1->factParams, program, methodKey);
 	calcType(e1->left, program, methodKey);
@@ -1302,7 +1302,7 @@ void ClassFile::calcTypeOfMethodCalcExpr(exprS* e1, programS* program, string& m
 	throw e;
 }
 
-void ClassFile::calcTypeOfArrayElementCall(exprS* e1, programS* program, string& methodKey)
+void ClassFile::calcTypeOfArrayElementCall(exprS* e1, programS* program, const string& methodKey)
 {
 	if (e1->type != ArrayElementCall)
 		return;
@@ -1350,7 +1350,7 @@ void ClassFile::calcTypeOfArrayElementCall(exprS* e1, programS* program, string&
 
 }
 
-void ClassFile::calcTypeOfParentFieldCall(exprS* e1, programS* program, string& methodKey)
+void ClassFile::calcTypeOfParentFieldCall(exprS* e1, programS* program, const string& methodKey)
 {
 	if (e1->type != ParentFieldCall)
 		return;
@@ -1381,7 +1381,7 @@ void ClassFile::calcTypeOfParentFieldCall(exprS* e1, programS* program, string& 
 	
 }
 
-void ClassFile::calcTypeOfParentMethodCall(exprS* e1, programS* program, string& methodKey)
+void ClassFile::calcTypeOfParentMethodCall(exprS* e1, programS* program, const string& methodKey)
 {
 	if (e1->type != ParentMethodCall)
 		return;
@@ -1428,7 +1428,7 @@ void ClassFile::calcTypeOfParentMethodCall(exprS* e1, programS* program, string&
 	throw e;
 }
 
-void ClassFile::calcTypeOfLiterals(exprS* e1, string& methodKey)
+void ClassFile::calcTypeOfLiterals(exprS* e1, const string& methodKey)
 {
 	if (e1->type != Int && e1->type != Double && e1->type != Float &&
 		e1->type != String && e1->type != Char && e1->type != Boolean)
@@ -1478,7 +1478,8 @@ void ClassFile::calcTypeOfLiterals(exprS* e1, string& methodKey)
 	{
 		exprRes = "MyLib/MyString";
 		newOperand = createExpr(e1->stringOrId, String);
-		newOperand->refInfo = findStringOrAdd(e1->stringOrId);
+		string value = string(e1->stringOrId);
+		newOperand->refInfo = findStringOrAdd(value);
 		newOperand->exprRes = "String";
 		descr = "(Ljava/lang/String;)V";
 		e1->stringOrId = 0;
@@ -1497,7 +1498,7 @@ void ClassFile::calcTypeOfLiterals(exprS* e1, string& methodKey)
 	e1->refInfo = findMethodRefOrAdd(exprRes, "<init>", descr);
 }
 
-void ClassFile::calcTypeOfUnaryOperators(exprS* e1, programS* program, string& methodKey)
+void ClassFile::calcTypeOfUnaryOperators(exprS* e1, programS* program, const string& methodKey)
 {
 	calcType(e1->left, program, methodKey);
 	checkUnitOperandsInExpr(e1, methodKey);
@@ -1639,7 +1640,7 @@ char* transformOperatorToMethod(exprType type)
 }
 
 
-void ClassFile::calcTypeOfSum(exprS* e1, programS* program, string& methodKey)
+void ClassFile::calcTypeOfSum(exprS* e1, programS* program, const string & methodKey)
 {
 	if (e1->type != Sum)
 		return;
@@ -1703,7 +1704,7 @@ void ClassFile::calcTypeOfSum(exprS* e1, programS* program, string& methodKey)
 }
 
 void ClassFile::calcTypeOfOtherArithmeticOperations(exprS* e1, programS* program,
-	string& methodKey)
+	const string& methodKey)
 {
 	if (e1->type != Sub && e1->type != Mul && e1->type != Div && e1->type != Less &&
 		e1->type != More && e1->type != Or && e1->type != And && e1->type != Eq &&
@@ -1753,7 +1754,7 @@ void ClassFile::calcTypeOfOtherArithmeticOperations(exprS* e1, programS* program
 	throw e;
 }
 
-void ClassFile::calcType(exprS* e1, programS* program, string& methodKey)
+void ClassFile::calcType(exprS* e1, programS* program, const string& methodKey)
 {
 	if (e1->type == Identificator)
 	{
@@ -1893,7 +1894,7 @@ void ClassFile::convertBasicTypeExprToString(exprS* e)
 	e->refInfo = findMethodRefOrAdd("java/lang/String", "valueOf", descr + "Ljava/lang/String;");
 }
 
-void ClassFile::addConstantsFrom(varOrValDeclS* v, programS* program, string methodKey)
+void ClassFile::addConstantsFrom(varOrValDeclS* v, programS* program, const string& methodKey)
 {
 	MethodTableElement res = methodTable.at(methodKey);
 	if (res.addLocalVar(v))
@@ -1904,7 +1905,7 @@ void ClassFile::addConstantsFrom(varOrValDeclS* v, programS* program, string met
 	}
 	if (v->initValue != 0)
 	{
-		addConstantsFrom(v->initValue, program, methodKey);
+		calcType(v->initValue, program, methodKey);
 		if (strcmp(v->type->easyType, v->initValue->exprRes.c_str()) != 0)
 		{
 			if (canCastType(v->type->easyType, v->initValue->exprRes.c_str()))
@@ -1924,7 +1925,7 @@ void ClassFile::addConstantsFrom(varOrValDeclS* v, programS* program, string met
 }
 
 
-void ClassFile::addConstantsFrom(assignmentS* a, programS* program, string methodKey)
+void ClassFile::addConstantsFrom(assignmentS* a, programS* program, const string& methodKey)
 {
 	if (a->left->type != Identificator && a->subLeft == 0)
 	{
@@ -1932,8 +1933,8 @@ void ClassFile::addConstantsFrom(assignmentS* a, programS* program, string metho
 		exception e(message);
 		throw e;
 	}
-	addConstantsFrom(a->left, program, methodKey);
-	addConstantsFrom(a->right, program, methodKey);
+	calcType(a->left, program, methodKey);
+	calcType(a->right, program, methodKey);
 
 	if (a->subLeft == 0)
 	{
@@ -1978,26 +1979,26 @@ void ClassFile::addConstantsFrom(assignmentS* a, programS* program, string metho
 	}
 }
 
-void ClassFile::addConstantsFrom(whileLoopS* w, programS* program, string methodKey)
+void ClassFile::addConstantsFrom(whileLoopS* w, programS* program, const string& methodKey)
 {
 	//Проверить условие цикла
 	//Проверить все stmt цикла
 }
 
-void ClassFile::addConstantsFrom(forLoopS* f, programS* program, string methodKey)
+void ClassFile::addConstantsFrom(forLoopS* f, programS* program, const string& methodKey)
 {
 	//Проверить переменную
 	//Проверить условие
 	//Проверить все stmt цикла
 }
 
-void ClassFile::addConstantsFrom(ifStmtS* i, programS* program, string methodKey)
+void ClassFile::addConstantsFrom(ifStmtS* i, programS* program, const string& methodKey)
 {
 	//Проверить условие
 	//Проверить все ветви
 }
 
-void ClassFile::addConstantsFrom(stmtS* stmt, programS* program, string methodKey)
+void ClassFile::addConstantsFrom(stmtS* stmt, programS* program, const string& methodKey)
 {
 
 	if (stmt->type == Continue)
@@ -2091,11 +2092,16 @@ bool MethodTableElement::addLocalVar(varOrValDeclS* varOrValDecl)
 {
 	auto varInfo = new LocalVariableInfo(varOrValDecl->isVal, varOrValDecl->initValue != 0,
 		varOrValDecl->id, varOrValDecl->type->easyType, nestingLevel);
-	if (std::find(localVarsAndConsts.begin(), localVarsAndConsts.end(), *varInfo)
+	return addLocalVar(varInfo);
+}
+
+bool MethodTableElement::addLocalVar(LocalVariableInfo* varOrValDecl)
+{
+	if (std::find(localVarsAndConsts.begin(), localVarsAndConsts.end(), *varOrValDecl)
 		!= localVarsAndConsts.end())
 		return false;
 
-	localVarsAndConsts.push_back(*varInfo);
+	localVarsAndConsts.push_back(*varOrValDecl);
 	return true;
 }
 
