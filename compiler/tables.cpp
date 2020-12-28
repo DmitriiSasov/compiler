@@ -1718,7 +1718,7 @@ void ClassFile::calcTypeOfSum(exprS* e1, programS* program, const string & metho
 		string* params = new string[3];
 		if (e1->left->exprRes == "MyLib/MyString")
 		{
-			string* params = generateMethodRefParams("add", e1->left->exprRes, 1);
+			params = generateMethodRefParams("add", e1->left->exprRes, 1);
 			if (params[0] == "" || params[1] == "" || params[2] == "")
 			{
 				throw exception("EXCEPTION! Unknown my std method name\n");
@@ -2235,17 +2235,19 @@ bool ClassFile::addConstantsFrom(methodS* meth, programS* program)
 		auto methodTableElement = methodTable.at(methKey);
 		methodTableElement.addLocalVar(new LocalVariableInfo(true, true, "this$", className, 
 			methodTableElement.getNestingLevel()));
+		methodTable.at(methKey) = methodTableElement;
 	}
 
 	//Загружаем локальные переменные
 	if (meth->func->decl->params != 0)
 	{
+		auto methodTableElement = methodTable.at(methKey);
 		for (formalParamS* fp = meth->func->decl->params->first; fp != 0; fp = fp->next)
 		{
-			auto methodTableElement = methodTable.at(methKey);
 			methodTableElement.addLocalVar(new LocalVariableInfo(true, true, fp->name, 
 				fp->type->easyType, methodTableElement.getNestingLevel()));
 		}
+		methodTable.at(methKey) = methodTableElement;
 	}
 
 	if (meth->func->stmts != 0)
