@@ -2068,10 +2068,33 @@ void ClassFile::addConstantsFrom(forLoopS* f, programS* program, const string& m
 	//Проверить все stmt цикла
 }
 
-void ClassFile::addConstantsFrom(ifStmtS* i, programS* program, const string& methodKey)
+bool ClassFile::addConstantsFrom(ifStmtS* i, programS* program, const string& methodKey)
 {
-	//Проверить условие
-	//Проверить все ветви
+	methodTable.at(methodKey).incNestingLevel();
+	calcType(i->condition, program, methodKey);
+
+	bool res = true;
+
+	if (i->condition->exprRes != "MyLib/Boolean")
+	{
+		string message = "EXCEPTION! If statment condition is not Boolean";
+		exception e(message.c_str());
+		throw e;
+	}
+
+	if (i->actions != 0)
+	{
+		bool tmp = addConstantsFrom(i->actions, program, methodKey);
+		res = res && tmp;
+	}
+
+	if (i->altActions != 0)
+	{
+		bool tmp = addConstantsFrom(i->altActions, program, methodKey);
+		res = res && tmp;
+	}
+	methodTable.at(methodKey).decNestingLevel();
+	return res;
 }
 
 void ClassFile::addConstantsFrom(stmtS* stmt, programS* program, const string& methodKey)

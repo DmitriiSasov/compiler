@@ -275,7 +275,7 @@ class ClassFile
 	void addConstantsFrom(forLoopS* f, programS* program, const string& methodKey);
 	
 
-	void addConstantsFrom(ifStmtS* i, programS* program, const string& methodKey);
+	bool addConstantsFrom(ifStmtS* i, programS* program, const string& methodKey);
 	
 	bool addConstantsFrom(stmtList* stmts, programS* program, const string& methodKey);
 
