@@ -882,6 +882,18 @@ bool isUserClass(const char* name, const programS * const program)
 	return res;
 }
 
+bool checkUnitOperandsInExpr(assignmentS* a, const string& methodKey)
+{
+	if (a->left != 0 && a->left->exprRes == "MyLib/Unit"|| 
+		a->right != 0 && a->right->exprRes == "MyLib/Unit" ||
+		a->subLeft != 0 && a->subLeft->exprRes == "MyLib/Unit")
+	{
+		char message[200] = "EXCEPTION! Incorrect operand with UNIT (void) type in method - ";
+		exception e(strcat(message, methodKey.c_str()));
+		throw e;
+	}
+}
+
 bool checkUnitOperandsInExpr(exprS* e, const string& methodKey)
 {
 	if (e->factParams != 0)
@@ -1914,13 +1926,10 @@ void ClassFile::addConstantsFrom(varOrValDeclS* v, programS* program, const stri
 	if (v->initValue != 0)
 	{
 		calcType(v->initValue, program, methodKey);
+		checkUnitOperandsInExpr(v->initValue, methodKey);
 		if (strcmp(v->type->easyType, v->initValue->exprRes.c_str()) != 0)
 		{
-			if (canCastType(v->type->easyType, v->initValue->exprRes.c_str()))
-			{
-				//Создать узел с новым типом
-			}
-			else
+			if (!canCastType(v->type->easyType, v->initValue->exprRes, program))
 			{
 				char message[300] = "EXCEPTION! Cast error. Cannot cast \"";
 				exception e(strcat(strcat(strcat(strcat(strcat(strcat(message, v->type->easyType), 
@@ -1935,45 +1944,93 @@ void ClassFile::addConstantsFrom(varOrValDeclS* v, programS* program, const stri
 
 void ClassFile::addConstantsFrom(assignmentS* a, programS* program, const string& methodKey)
 {
-	if (a->left->type != Identificator && a->subLeft == 0)
+	if (a->left->type != Identificator && a->subLeft == 0 && a->fieldName == 0)
 	{
-		char message[100] = "EXCEPTION! Not l-value expr in assignment \"";
+		char message[100] = "EXCEPTION! Not l-value expr in assignment \n";
 		exception e(message);
 		throw e;
 	}
+	
+	if (a->type != Assignment && a->type != AssignToArray && a->type != AssignToField)
+	{
+		char message[100] = "EXCEPTION! Unsupported +=, -=, /=, *=, %= operators \n";
+		exception e(message);
+		throw e;
+	}
+
 	calcType(a->left, program, methodKey);
 	calcType(a->right, program, methodKey);
+	if (a->subLeft != 0)
+		calcType(a->subLeft, program, methodKey);
+	checkUnitOperandsInExpr(a, methodKey);
 
 	if (a->subLeft == 0)
 	{
 		if (a->left->exprRes != a->right->exprRes)
 		{
-			if (canCastType(a->left->exprRes.c_str(), a->right->exprRes.c_str()))
+			//Если типы можно привести
+			if (!canCastType(a->left->exprRes, a->right->exprRes, program))
 			{
-				//Создать узел с новым типом
-			}
-			else
-			{
-				char message[300] = "EXCEPTION! Cast error. Cannot cast \"";
-				exception e(strcat(strcat(strcat(strcat(message, a->left->exprRes.c_str()),
-					"\" to type \""), a->right->exprRes.c_str()), "\" in assignment"));
+				string message = "EXCEPTION! Cast error. Cannot cast \"" + a->left->exprRes + 
+					"\" to type \"" + a->right->exprRes + "\" in assignment in method \"" +
+					methodKey + "\"\n";
+				exception e(message.c_str());
 				throw e;
-			}
+			}			
+		}
+		//Cлева не константа, у которой уже есть значение
+		LocalVariableInfo varInfo = methodTable.at(methodKey).find(a->left->varInTableNum);
+		if (varInfo.isConst && varInfo.hasValue)
+		{
+			string message = "EXCEPTION! Assignment to contant value in method \"" + methodKey + "\"\n";
+			exception e(message.c_str());
+			throw e;
 		}
 	}
 	else
 	{
 		if (a->type == AssignToField || a->type == AsumToField || a->type == AsubToField
-			|| a->type == AdivToField || a->type == AmulToField || a->type == AmodToField)
+			|| a->type == AdivToField || a->type == AmulToField)
 		{
-			//Найти поле в классе
-			//Если есть, создаем fieldRef
-			//Если нет - ошибка - обращение к несуществующему полю
+			string res = getPropertyType(a->fieldName, program, a->left->exprRes);
 			
+			if (res == "")
+			{
+				string message = "EXCEPTION! Assignment to unknown property \"" + string(a->fieldName) +
+					"\" in method - \"" + methodKey + "\"\n";
+				exception e(message.c_str());
+				throw e;
+			}
+
+			//Если типы найденного поля и правой части не совпадают
+			if (res != a->right->exprRes)
+			{
+				//Если типы можно привести
+				if (!canCastType(res, a->right->exprRes, program))
+				{
+					string message = "EXCEPTION! Cast error. Cannot cast \"" + res +
+						"\" to type \"" + a->right->exprRes + "\" in assignment in method \"" + 
+						methodKey + "\"\n";
+					exception e(message.c_str());
+					throw e;
+				}
+			}
+
+			//Если пытаются присвоить значение полю массива или строки с длинной
+			if (a->left->exprRes.find('[') != -1 || a->left->exprRes == "MyLib/MyString")
+			{
+				string message = "EXCEPTION! Assignment to constant property \"" + string(a->fieldName) +
+					"\" in method - \"" + methodKey + "\"\n";
+				exception e(message.c_str());
+				throw e;
+			}
+
+			a->refInfo = findFieldRefOrAdd(a->left->exprRes, a->fieldName, 
+				transformTypeToDescriptor(res.c_str(), program));			
 		}
 		else
 		{
-			if (a->subLeft->exprRes != "Int")
+			if (a->subLeft->exprRes != "MyLib/Int")
 			{
 				char message[300] = "EXCEPTION! Not integer array index in assignment ";
 				exception e(message);
@@ -1981,8 +2038,19 @@ void ClassFile::addConstantsFrom(assignmentS* a, programS* program, const string
 			}
 
 			//Сравнить тип левой части без [] с правой частью
-			//Если не равны, то привести
-				//Если не равны опять - ошибка
+			string exprRes = a->left->exprRes;
+			exprRes.pop_back();
+			exprRes.pop_back();
+			if (!canCastType(exprRes, a->right->exprRes, program))
+			{
+				string message = "EXCEPTION! Cast error. Cannot cast \"" + exprRes +
+					"\" to type \"" + a->right->exprRes + "\" in assignment in method \"" +
+					methodKey + "\"\n";
+				exception e(message.c_str());
+				throw e;
+			}
+
+			a->refInfo = findMethodRefOrAdd("MyLib/Array", "set", "(LMyLib/Int;Ljava/lang/Object;)V");
 		}
 	}
 }

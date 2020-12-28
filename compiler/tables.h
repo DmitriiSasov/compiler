@@ -97,6 +97,15 @@ struct LocalVariableInfo
 		this->nestingLevel = nestingLevel;
 	}
 
+	LocalVariableInfo& operator=(LocalVariableInfo other)
+	{
+		this->isConst = other.isConst;
+		this->hasValue = other.hasValue;
+		this->name = other.name;
+		this->type = other.type;
+		this->nestingLevel = other.nestingLevel;
+	}
+
 	friend bool operator==(LocalVariableInfo i1, LocalVariableInfo i2);
 };
 
