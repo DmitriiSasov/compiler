@@ -286,6 +286,9 @@ class ClassFile
 	void calcTypeOfUnaryOperators(exprS* e1, programS* program, string& methodKey);
 
 	void calcTypeOfSum(exprS* e1, programS* program, string& methodKey);
+	
+	void calcTypeOfOtherArithmeticOperations(exprS* e1, programS* program,
+		string& methodKey);
 
 	bool transformKotlinTypeCastOperators(exprS* e);
 	

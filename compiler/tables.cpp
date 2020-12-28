@@ -826,7 +826,6 @@ void castType(exprS* e1, string type)
 {
 	exprS* newE = createExprCopy(e1);
 	e1->exprRes = type;
-	e1->type = TypeCast;
 	e1->left = newE;
 	e1->right = 0;
 	e1->factParams = 0;
@@ -1889,14 +1888,118 @@ void ClassFile::calcTypeOfUnaryOperators(exprS* e1, programS* program, string& m
 	throw e;
 }
 
+
+//Преобразуем операцию в аналогичный метод
+char* transformOperatorToString(exprType type)
+{
+	char* res = new char[3];
+	res[0] = 0;
+	switch (type)
+	{
+	case Sum:
+		strcpy(res, "+");
+		break;
+	case Sub:
+		strcpy(res, "-");
+		break;
+	case Mul:
+		strcpy(res, "*");
+		break;
+	case Div:
+		strcpy(res, "/");
+		break;
+	case Less:
+		strcpy(res, "<");
+		break;
+	case More:
+		strcpy(res, ">");
+		break;
+	case Or:
+		strcpy(res, "||");
+		break;
+	case And:
+		strcpy(res, "&&");
+		break;
+	case Eq:
+		strcpy(res, "==");
+		break;
+	case Neq:
+		strcpy(res, "!=");
+		break;
+	case Loeq:
+		strcpy(res, "<=");
+		break;
+	case Moeq:
+		strcpy(res, ">=");
+		break;
+	}
+
+	return res;
+}
+
+//Преобразуем операцию в аналогичный метод
+char* transformOperatorToMethod(exprType type)
+{
+	string res = "";
+	switch (type)
+	{
+	case Sum:
+		res = "add";
+		break;
+	case Sub:
+		res = "sub";
+		break;
+	case Mul:
+		res = "mul";
+		break;
+	case Div:
+		res = "div";
+		break;
+	case Less:
+		res = "less";
+		break;
+	case More:
+		res = "more";
+		break;
+	case Or:
+		res = "or";
+		break;
+	case And:
+		res = "and";
+		break;
+	case Eq:
+		res = "equal";
+		break;
+	case Neq:
+		res = "notEqual";
+		break;
+	case Loeq:
+		res = "lessOrEqual";
+		break;
+	case Moeq:
+		res = "moreOrEqual";
+		break;
+	}
+
+	char* str = new char[res.size() + 1];
+	strcpy(str, res.c_str());
+	return str;
+}
+
+
 void ClassFile::calcTypeOfSum(exprS* e1, programS* program, string& methodKey)
 {
+	if (e1->type != Sum)
+		return;
+
 	calcType(e1->left, program, methodKey);
 	calcType(e1->right, program, methodKey);
 	checkUnitOperandsInExpr(e1, methodKey);
 
 	string res = getOperatorTypeForStandartClass(createShortInfo(e1), e1->left->exprRes);
+	e1->stringOrId = transformOperatorToMethod(e1->type);
 	e1->type = MethodCalcExpr;
+	
 	//Если в результате операции появился массив
 	if (res == "MyLib/Array")
 	{
@@ -1911,9 +2014,6 @@ void ClassFile::calcTypeOfSum(exprS* e1, programS* program, string& methodKey)
 		{
 			throw exception("EXCEPTION! Unknown my std method name\n");
 		}
-		char* tmp = new char[strlen("add") + 1];
-		strcpy(tmp, "add");
-		e1->stringOrId = tmp;
 		e1->refInfo = findMethodRefOrAdd(params[0], params[1], params[2]);
 		e1->factParams = createFactParamsList(e1->right);
 		e1->right = 0;
@@ -1923,12 +2023,9 @@ void ClassFile::calcTypeOfSum(exprS* e1, programS* program, string& methodKey)
 	if (res != "")
 	{
 		e1->exprRes = res;
-		char* tmp = new char[strlen("add") + 1];
-		strcpy(tmp, "add");
-		e1->stringOrId = tmp;
 		e1->factParams = createFactParamsList(e1->right);
 		e1->right = 0;
-		string* params;
+		string* params = new string[3];
 		if (e1->left->exprRes == "MyLib/MyString")
 		{
 			string* params = generateMethodRefParams("add", e1->left->exprRes, 1);
@@ -1940,7 +2037,6 @@ void ClassFile::calcTypeOfSum(exprS* e1, programS* program, string& methodKey)
 		}
 		else
 		{
-			params = new string[3];
 			params[0] = e1->left->exprRes;
 			params[1] = "add";
 			params[2] = transformMethodCallToDescriptor(e1, program);
@@ -1951,6 +2047,57 @@ void ClassFile::calcTypeOfSum(exprS* e1, programS* program, string& methodKey)
 
 	char message[200] = "EXCEPTION! Incorrect operator+ operands";
 	exception e(strcat(strcat(message, " in method - "), (methodKey + "\n").c_str()));
+	throw e;
+}
+
+void ClassFile::calcTypeOfOtherArithmeticOperations(exprS* e1, programS* program,
+	string& methodKey)
+{
+	if (e1->type != Sub && e1->type != Mul && e1->type != Div && e1->type != Less &&
+		e1->type != More && e1->type != Or && e1->type != And && e1->type != Eq &&
+		e1->type != Neq && e1->type != Loeq && e1->type != Moeq)
+		return;
+
+	calcType(e1->left, program, methodKey);
+	calcType(e1->right, program, methodKey);
+	checkUnitOperandsInExpr(e1, methodKey);
+
+	string* params = new string[3];
+	char* operatorName = transformOperatorToMethod(e1->type);
+	char* operanorSymbol = transformOperatorToString(e1->type);
+
+	string res = getOperatorTypeForStandartClass(createShortInfo(e1), e1->left->exprRes);
+	if (res != "")
+	{
+		e1->type = MethodCalcExpr;
+		e1->exprRes = res;
+		e1->factParams = createFactParamsList(e1->right);
+		e1->right = 0;
+		e1->stringOrId = operatorName;
+		if (e1->type != Sub && e1->type != Mul && e1->type != Div)
+		{
+			params = generateMethodRefParams(operatorName, e1->left->exprRes, 1);
+			if (params[0] == "" || params[1] == "" || params[2] == "")
+			{
+				throw exception("EXCEPTION! Unknown my std method name\n");
+			}
+		}
+		else
+		{
+			params[0] = e1->left->exprRes;
+			params[1] = e1->stringOrId;
+			params[2] = transformMethodCallToDescriptor(e1, program);
+		}
+		e1->refInfo = findMethodRefOrAdd(params[0], params[1],
+			params[2]);
+
+		return;
+	}
+
+	string message = "EXCEPTION! Incorrect operator";
+	message += operanorSymbol;
+	message += " operands in method - " + methodKey + "\n";
+	exception e(message.c_str());
 	throw e;
 }
 
@@ -2015,62 +2162,17 @@ void ClassFile::calcType(exprS* e1, programS* program, string& methodKey)
 	{
 		calcTypeOfSum(e1, program, methodKey);
 	}
-	else if (e1->type == Sub)
+	else if (e1->type == Sub || e1->type == Mul || e1->type == Div || e1->type == Less ||
+		e1->type == More || e1->type == Or || e1->type == And || e1->type == Eq ||
+		e1->type == Neq || e1->type == Loeq || e1->type == Moeq)
 	{
-		calcType(e1->left, program, methodKey);
-		calcType(e1->right, program, methodKey);
-		checkUnitOperandsInExpr(e1, methodKey);
-		
-		if (e1->left->exprRes == "")
-		{
-
-		}
-	}
-	else if (e1->type == Mul)
-	{
-
-	}
-	else if (e1->type == Div)
-	{
-
+		calcTypeOfOtherArithmeticOperations(e1, program, methodKey);
 	}
 	else if (e1->type == Mod)
 	{
 		char message[200] = "EXCEPTION! Unsupported operator% in method - ";
 		exception e(strcat(message, methodKey.c_str()));
 		throw e;
-	}
-	else if (e1->type == Less)
-	{
-
-	}
-	else if (e1->type == More)
-	{
-
-	}
-	else if (e1->type == Or)
-	{
-
-	}
-	else if (e1->type == And)
-	{
-
-	}
-	else if (e1->type == Eq)
-	{
-
-	}
-	else if (e1->type == Neq)
-	{
-
-	}
-	else if (e1->type == Loeq)
-	{
-
-	}
-	else if (e1->type == Moeq)
-	{
-
 	}
 }
 
