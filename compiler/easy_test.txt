@@ -1,28 +1,53 @@
-
-class A {
-
-	
-	protected override fun f1():Unit {}
-	fun f2(i1:Int, i2:Int):Unit = i1 + i2
-
+open class A{
+    
+    private var v1:Int = 5
+    
+    var v2:String = "Hello"
+    
+    constructor()
+    
+    public fun getV1():Int{
+        return v1;
+    }
+    
+    public open fun calcFieldSum():String {
+        return v2+v1
+    }
+    
 }
 
-fun a():Unit
-{
+class B:A{
 
-	val arr:Array<Int> = arrayOf(1,2,3,4)
-	var (a1:Int,a2:Int,a3:Int) = arr
-	
-
+    constructor()
+    
+    public var v3: Double = 3254235.2;
+    
+    override fun calcFieldSum():String{
+        var res:String = super.calcFieldSum()
+        return res + v3;
+    }
+    
+    fun calcFieldSub():Double{
+        return v3 - super.getV1();
+    }
 }
 
-fun b():Unit
-{
 
-	val arr:Array<Int> = arrayOf(1,2,3,4)
-	var (a1:Int,a2:Int,a3:Int) = arr
 
-	var (b1:Int,b2:Int,b3:Int) = arr
-	calc(b1)
-
+fun main():Unit {
+    
+    val a :Int = 5;
+    
+    var arr: Array<Any> = arrayOf(1, 3, 4, 5,)
+    arr = arr + "Hello"
+    arr = arr + B()
+    
+    var b :A = B()
+    b.calcFieldSum();
+    
+    var index:Int = 0
+    while(index < a){
+        print(arr[index + 5 - 6 + 1])        
+    }
+    
 }
