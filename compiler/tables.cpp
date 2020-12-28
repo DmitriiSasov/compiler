@@ -510,6 +510,11 @@ string createMethodSignature(methodS* meth)
 	return methInfo;
 }
 
+bool operator==(LocalVariableInfo i1, LocalVariableInfo i2)
+{
+	return i1.name == i2.name && i1.nestingLevel == i2.nestingLevel;
+}
+
 FieldTableElement::FieldTableElement(uint16_t fieldName, uint16_t descriptor, VisibilityMod vMod, bool isStatic, bool isFinal)
 {
 	this->fieldName = fieldName;
@@ -2345,14 +2350,6 @@ void ClassFile::addConstantsFrom(ifStmtS* i, programS* program, string methodKey
 	//Проверить все ветви
 }
 
-
-void ClassFile::addConstantsFrom(exprS* e, programS* program, string methodKey)
-{
-	//Собрать инфу для таблицы
-	//Преобразовать типы
-
-}
-
 void ClassFile::addConstantsFrom(stmtS* stmt, programS* program, string methodKey)
 {
 
@@ -2383,10 +2380,10 @@ void ClassFile::addConstantsFrom(stmtS* stmt, programS* program, string methodKe
 		addConstantsFrom(stmt->ifStmt, program, methodKey);
 		break;
 	case Expr:
-		addConstantsFrom(stmt->expr, program, methodKey);
+		calcType(stmt->expr, program, methodKey);
 		break;
 	case ReturnValue:
-		addConstantsFrom(stmt->expr, program, methodKey);
+		calcType(stmt->expr, program, methodKey);
 		break;
 	}
 
@@ -2403,7 +2400,9 @@ void ClassFile::addConstantsFrom(methodS* meth, programS* program)
 	string methKey = createMethodSignature(meth);
 	if (!methodTable.at(methKey).isStatic)
 	{
-		methodTable.at(methKey).addLocalVar(new LocalVariableInfo(true, true, "this", className));
+		auto methodTableElement = methodTable.at(methKey);
+		methodTableElement.addLocalVar(new LocalVariableInfo(true, true, "this", className, 
+			methodTableElement.getNestingLevel()));
 	}
 
 	//Загружаем локальные переменные
@@ -2411,7 +2410,9 @@ void ClassFile::addConstantsFrom(methodS* meth, programS* program)
 	{
 		for (formalParamS* fp = meth->func->decl->params->first; fp != 0; fp = fp->next)
 		{
-			methodTable.at(methKey).addLocalVar(new LocalVariableInfo(false, false, fp->name, fp->type->easyType));
+			auto methodTableElement = methodTable.at(methKey);
+			methodTableElement.addLocalVar(new LocalVariableInfo(false, false, fp->name, 
+				fp->type->easyType, methodTableElement.getNestingLevel()));
 		}
 	}
 
@@ -2441,25 +2442,67 @@ void ClassFile::addConstantsFrom(methodS* meth, programS* program)
 
 bool MethodTableElement::addLocalVar(varOrValDeclS* varOrValDecl)
 {
-	return 0;
+	auto varInfo = new LocalVariableInfo(varOrValDecl->isVal, varOrValDecl->initValue != 0,
+		varOrValDecl->id, varOrValDecl->type->easyType, nestingLevel);
+	if (std::find(localVarsAndConsts.begin(), localVarsAndConsts.end(), *varInfo)
+		!= localVarsAndConsts.end())
+		return false;
+
+	localVarsAndConsts.push_back(*varInfo);
+	return true;
 }
 
-bool MethodTableElement::addLocalVar(LocalVariableInfo* varOrValDecl)
+
+void MethodTableElement::incNestingLevel()
 {
-	return false;
+	this->nestingLevel++;
 }
 
-void MethodTableElement::remove(int varOrValDeclIndex)
+void MethodTableElement::decNestingLevel()
 {
+	if (this->nestingLevel > 0)
+	{
+
+		for (auto i = localVarsAndConsts.begin(); i != localVarsAndConsts.end(); ++i)
+		{
+			if ((*i).nestingLevel == nestingLevel)
+			{
+				(*i).name = "";
+			}
+		}
+
+		this->nestingLevel--;
+	}
 }
 
 
 int MethodTableElement::find(string varOrValName)
 {
-	return 0;
+	LocalVariableInfo tmp(0, 0, varOrValName, 0, nestingLevel);
+	
+	int num = 0;
+	for (auto i = localVarsAndConsts.begin(); i != localVarsAndConsts.end() &&
+		!(*i == tmp); ++i)
+	{
+		num++;
+	}
+
+	if (num >= localVarsAndConsts.size())
+		num = -1;
+	return num;
 }
 
 LocalVariableInfo MethodTableElement::find(int indexInTable)
 {
-	return LocalVariableInfo(false, false, "", "");
+	LocalVariableInfo tmp(0, 0, "", 0, nestingLevel);
+
+	int index = 0;
+	for (auto i : localVarsAndConsts)
+	{
+		index++;
+		if (index == indexInTable)
+			tmp = i;
+	}
+
+	return tmp;
 }

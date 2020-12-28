@@ -85,14 +85,19 @@ struct LocalVariableInfo
 	bool hasValue;
 	string name;
 	string type;
+	int nestingLevel;
 
-	LocalVariableInfo(bool isConst, bool hasValue, string name, string type)
+	LocalVariableInfo(bool isConst, bool hasValue, string name, string type, 
+		int nestingLevel)
 	{
 		this->isConst = isConst;
 		this->hasValue = hasValue;
 		this->name = name;
 		this->type = type;
+		this->nestingLevel = nestingLevel;
 	}
+
+	friend bool operator==(LocalVariableInfo i1, LocalVariableInfo i2);
 };
 
 class MethodTableElement
@@ -102,6 +107,8 @@ class MethodTableElement
 
 	//Type and name
 	list<LocalVariableInfo> localVarsAndConsts;
+
+	int nestingLevel = 0; //Уровень вложенности блоков (нужен для правильного поиска переменных в таблице)
 
 	attribute code;
 
@@ -124,10 +131,15 @@ public:
 
 	void remove(int varOrValDeclIndex);
 
+	void incNestingLevel();
+
+	void decNestingLevel();
 
 	int find(string varOrValName);
 
 	LocalVariableInfo find(int indexInTable);
+
+	int getNestingLevel() { return nestingLevel; }
 
 	void addCode();
 
