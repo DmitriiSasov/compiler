@@ -212,6 +212,36 @@ public:
 		valueI = value;
 	}
 
+	string to_str() {
+		if (this->type == _INT) {
+			return "INT " + to_string(valueI)+"\n";
+		}
+		else if (this->type == _FLOAT) {
+			return "FLOAT " + to_string(valueF) + "\n";
+		}
+		else if (this->type == _DOUBLE) {
+			return "DOUBLE " + to_string(valueD) + "\n";
+		}
+		else if (this->type == UTF_8) {
+			return "UTF-8 " + value + "\n";
+		}
+		else if (this->type == _STRING) {
+			return "STRING " + value + "\n";
+		}
+		else if (this->type == _CLASS) {
+			return "CLASS " + to_string(refValue[0]) + "\n";
+		}
+		else if (this->type == NAME_AND_TYPE) {
+			return "NAME_AND_TYPE " + to_string(refValue[0]) + (refValue[1] == 0 ? to_string(refValue[1]) : "") + "\n";
+		}
+		else if (this->type == METHOD_REF) {
+			return "METHOD_REF " + to_string(refValue[0]) + (refValue[1] == 0 ? to_string(refValue[1]) : "") + "\n";
+		}
+		else if (this->type == FIELD_REF) {
+			return "FIELD_REF " + to_string(refValue[0]) + (refValue[1] == 0 ? to_string(refValue[1]) : "") + "\n";
+		}
+
+	}
 	int getConstType() { return type; }
 	
 	string getValue() { return value; }
@@ -341,6 +371,8 @@ public:
 	IdT findFieldRefOrAdd(string const& className, string const& name, string const& type);
 
 	IdT findMethodRefOrAdd(string const& className, string const& name, string const& type);
+
+	string constsTableToStr();
 
 };
 

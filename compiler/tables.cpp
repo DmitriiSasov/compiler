@@ -2244,12 +2244,20 @@ bool ClassFile::addConstantsFrom(methodS* meth, programS* program)
 
 	if (meth->func->stmts != 0)
 	{
+
 		return addConstantsFrom(meth->func->stmts, program, methKey);
 	}	
-
 	return true;
 }
 
+string ClassFile::constsTableToStr() {
+	string result = "";
+	int len = constsTable.size();
+	for (int i = 0; i < len; i++) {
+		result.append(constsTable[i].to_str());
+	}
+	return result;
+}
 
 int MethodTableElement::addLocalVar(varOrValDeclS* varOrValDecl)
 {
