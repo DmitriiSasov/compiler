@@ -125,11 +125,9 @@ public:
 	MethodTableElement(uint16_t methName, uint16_t descriptor,
 		VisibilityMod vMod, bool isFinal, bool isStatic);
 
-	bool addLocalVar(varOrValDeclS* varOrValDecl);
+	int addLocalVar(varOrValDeclS* varOrValDecl);
 
-	bool addLocalVar(LocalVariableInfo* varOrValDecl);
-
-	void remove(int varOrValDeclIndex);
+	int addLocalVar(LocalVariableInfo* varOrValDecl);
 
 	void incNestingLevel();
 
@@ -140,9 +138,6 @@ public:
 	LocalVariableInfo find(int indexInTable);
 
 	int getNestingLevel() { return nestingLevel; }
-
-	void addCode();
-
 
 };
 
@@ -247,15 +242,15 @@ class ClassFile
 
 	map<string, MethodTableElement> methodTable;
 
-	void fillHighLevelObjectsConstants(classS* clas, programS* program);
+	bool fillHighLevelObjectsConstants(classS* clas, programS* program);
 
 	void fillHighLevelObjectsConstants(propertyS* prop, programS* program);
 
-	void fillHighLevelObjectsConstants(methodS* meth, programS* program);
+	bool fillHighLevelObjectsConstants(methodS* meth, programS* program);
 
-	void fillHighLevelObjectsConstants(constructorS* constr, programS* program);
+	bool fillHighLevelObjectsConstants(constructorS* constr, programS* program);
 
-	void addConstantsFrom(methodS* meth, programS* program);
+	bool addConstantsFrom(methodS* meth, programS* program);
 	
 	void addConstantsFrom(stmtS* stmt, programS* program, const string& methodKey);
 
@@ -273,7 +268,7 @@ class ClassFile
 
 	void addConstantsFrom(ifStmtS* i, programS* program, const string& methodKey);
 	
-	void addConstantsFrom(stmtList* stmts, programS* program);
+	bool addConstantsFrom(stmtList* stmts, programS* program, const string& methodKey);
 
 	void calcType(exprS* e1, programS* program, const string& methodKey);
 

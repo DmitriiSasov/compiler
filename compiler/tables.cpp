@@ -591,7 +591,10 @@ ClassFile::ClassFile(classS* clas, programS* program)
 	this->vMod = translateVisibilityMod(clas->mods->vMod);
 	className = clas->name;
 	if (clas->parentClassName != 0)	parentClassName = clas->parentClassName;
-	fillHighLevelObjectsConstants(clas, program);
+	if (!fillHighLevelObjectsConstants(clas, program))
+	{
+		throw exception("Exception! Errors in class file creating");
+	}
 }
 
 IdT ClassFile::findUtf8OrAdd(std::string const& utf8)
@@ -754,7 +757,7 @@ void ClassFile::fillHighLevelObjectsConstants(propertyS* prop, programS* program
 	fieldTable.insert(make_pair(prop->varOrVal->id, fte));
 }
 
-void ClassFile::fillHighLevelObjectsConstants(constructorS* constr, programS* program)
+bool ClassFile::fillHighLevelObjectsConstants(constructorS* constr, programS* program)
 {
 	uint16_t nameId = 0;
 	string constrName;
@@ -771,10 +774,10 @@ void ClassFile::fillHighLevelObjectsConstants(constructorS* constr, programS* pr
 		false, constr->isStatic);
 	methodTable.insert(make_pair(constrName, mte));
 	
-	addConstantsFrom(constr->stmts, program);
+	return addConstantsFrom(constr->stmts, program, constrName + "()V");
 }
 
-void ClassFile::fillHighLevelObjectsConstants(methodS* meth, programS* program)
+bool ClassFile::fillHighLevelObjectsConstants(methodS* meth, programS* program)
 {
 	uint16_t nameId = findUtf8OrAdd(meth->func->decl->name);
 
@@ -796,10 +799,10 @@ void ClassFile::fillHighLevelObjectsConstants(methodS* meth, programS* program)
 		meth->mods->iMod == Final, meth->mods->isStatic);
 
 	methodTable.insert(make_pair(createMethodSignature(meth), mte));
-	addConstantsFrom(meth, program);
+	return addConstantsFrom(meth, program);
 }
 
-void ClassFile::fillHighLevelObjectsConstants(classS* clas, programS* program)
+bool ClassFile::fillHighLevelObjectsConstants(classS* clas, programS* program)
 {
 	findUtf8OrAdd("Code");
 	thisClass = findClassOrAdd(clas->name);
@@ -810,15 +813,30 @@ void ClassFile::fillHighLevelObjectsConstants(classS* clas, programS* program)
 	if (isFinal) accessFlags |= 0x0010; //Устанавливаю флаг FINAL
 	accessFlags |= 0x0020; //Устанавливаю флаг SUPER !Он устанавливается для совместимости
 
+	bool res = true;
+	bool tmp = true;
 	if (clas->body != 0)
 	{
 		for (auto cbe = clas->body->first; cbe != 0; cbe = cbe->next)
 		{
-			if (cbe->method != 0)	fillHighLevelObjectsConstants(cbe->method, program);
-			else if (cbe->property != 0) fillHighLevelObjectsConstants(cbe->property, program);
-			else if (cbe->constructor != 0) fillHighLevelObjectsConstants(cbe->constructor, program);
+			if (cbe->method != 0)
+			{
+				tmp = fillHighLevelObjectsConstants(cbe->method, program);
+				res = res && tmp;
+			}
+			else if (cbe->property != 0)
+			{
+				fillHighLevelObjectsConstants(cbe->property, program);
+			}
+			else if (cbe->constructor != 0)
+			{
+				tmp = fillHighLevelObjectsConstants(cbe->constructor, program);
+				res = res && tmp;
+			}
 		}
 	}
+
+	return res;
 }
 
 int ClassFile::calcType(factParamsList* fpl, programS* program, const string & methodKey)
@@ -1897,12 +1915,8 @@ void ClassFile::convertBasicTypeExprToString(exprS* e)
 void ClassFile::addConstantsFrom(varOrValDeclS* v, programS* program, const string& methodKey)
 {
 	MethodTableElement res = methodTable.at(methodKey);
-	if (res.addLocalVar(v))
-	{
-		char message[200] = "EXCEPTION! Redefine of variable \"";
-		exception e((strcat(strcat(message, v->id), "\"")));
-		throw e;
-	}
+	
+	v->varNumber = res.addLocalVar(v);
 	if (v->initValue != 0)
 	{
 		calcType(v->initValue, program, methodKey);
@@ -2000,13 +2014,13 @@ void ClassFile::addConstantsFrom(ifStmtS* i, programS* program, const string& me
 
 void ClassFile::addConstantsFrom(stmtS* stmt, programS* program, const string& methodKey)
 {
-
+	
 	if (stmt->type == Continue)
 	{
 		exception e("EXCEPTION! Unsupported CONTINUE operator");
 		throw e;
 	}
-		
+
 	switch (stmt->type)
 	{
 	case VarOrVal:
@@ -2032,24 +2046,43 @@ void ClassFile::addConstantsFrom(stmtS* stmt, programS* program, const string& m
 		break;
 	case ReturnValue:
 		calcType(stmt->expr, program, methodKey);
+		checkUnitOperandsInExpr(stmt->expr, methodKey);
 		break;
 	}
+	
 
 }
 
-void ClassFile::addConstantsFrom(stmtList* stmts, programS* program)
+bool ClassFile::addConstantsFrom(stmtList* stmts, programS* program, const string& methodKey)
 {
+	bool res = true;
 
+	if (stmts != 0)
+		for (stmtS* stmt = stmts->first; stmt != 0; stmt = stmt->next)
+		{
+			try
+			{
+				addConstantsFrom(stmt, program, methodKey);
+			}
+			catch (exception e)
+			{
+				printf(e.what());
+				res = false;
+			}
+			
+		}
+
+	return res;
 }
 
-void ClassFile::addConstantsFrom(methodS* meth, programS* program)
+bool ClassFile::addConstantsFrom(methodS* meth, programS* program)
 {
 	//Загружаем указатель на объект
 	string methKey = createMethodSignature(meth);
 	if (!methodTable.at(methKey).isStatic)
 	{
 		auto methodTableElement = methodTable.at(methKey);
-		methodTableElement.addLocalVar(new LocalVariableInfo(true, true, "this", className, 
+		methodTableElement.addLocalVar(new LocalVariableInfo(true, true, "this$", className, 
 			methodTableElement.getNestingLevel()));
 	}
 
@@ -2066,12 +2099,10 @@ void ClassFile::addConstantsFrom(methodS* meth, programS* program)
 
 	if (meth->func->stmts != 0)
 	{
-		for (stmtS* stmt = meth->func->stmts->first; stmt != 0; stmt = stmt->next)
-		{
-			addConstantsFrom(stmt, program, methKey);
-		}
-	}
-	
+		return addConstantsFrom(meth->func->stmts, program, methKey);
+	}	
+
+	return true;
 }
 
 
@@ -2088,21 +2119,25 @@ void ClassFile::addConstantsFrom(methodS* meth, programS* program)
 
 
 
-bool MethodTableElement::addLocalVar(varOrValDeclS* varOrValDecl)
+int MethodTableElement::addLocalVar(varOrValDeclS* varOrValDecl)
 {
 	auto varInfo = new LocalVariableInfo(varOrValDecl->isVal, varOrValDecl->initValue != 0,
 		varOrValDecl->id, varOrValDecl->type->easyType, nestingLevel);
 	return addLocalVar(varInfo);
 }
 
-bool MethodTableElement::addLocalVar(LocalVariableInfo* varOrValDecl)
+int MethodTableElement::addLocalVar(LocalVariableInfo* varOrValDecl)
 {
 	if (std::find(localVarsAndConsts.begin(), localVarsAndConsts.end(), *varOrValDecl)
 		!= localVarsAndConsts.end())
-		return false;
+	{
+		char message[200] = "EXCEPTION! Redefine of variable \"";
+		exception e((strcat(strcat(message, varOrValDecl->name.c_str()), "\"")));
+		throw e;
+	}
 
 	localVarsAndConsts.push_back(*varOrValDecl);
-	return true;
+	return localVarsAndConsts.size() - 1;
 }
 
 
