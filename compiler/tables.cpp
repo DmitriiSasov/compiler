@@ -1847,22 +1847,16 @@ void ClassFile::calcType(exprS* e1, programS* program, const string& methodKey)
 	}
 }
 
-//type1 - к чему приводить, type2 - что приводить, return - тип к которому можно привести
-bool canCastType(const char* type1, const char* type2)
+//type1 - к чему приводить, type2 - что приводить
+bool canCastType(const string& type1, const string& type2, const programS* const program)
 {
-	if (strcmp(type1, type2) == 0)
+	if (type1 == "MyLib/Any")
 		return true;
 
-	if (strcmp(type1, "Float") == 0 && strcmp(type1, "Int") || strcmp(type1, "Int") == 0 && strcmp(type1, "Float"))
-		return true;
-	
-	if (strcmp(type1, "Double") == 0 && strcmp(type1, "Int") || strcmp(type1, "Int") == 0 && strcmp(type1, "Double"))
+	if (type1 == type2)
 		return true;
 
-	if (strcmp(type1, "Double") == 0 && strcmp(type1, "Float") || strcmp(type1, "Float") == 0 && strcmp(type1, "Double"))
-		return true;
-
-	if (strcmp(type1, "Double") == 0 && strcmp(type1, "Float") || strcmp(type1, "Float") == 0 && strcmp(type1, "Double"))
+	if (isParentClass(type1, type2, program))
 		return true;
 
 	return false;
@@ -2104,19 +2098,6 @@ bool ClassFile::addConstantsFrom(methodS* meth, programS* program)
 
 	return true;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 int MethodTableElement::addLocalVar(varOrValDeclS* varOrValDecl)
