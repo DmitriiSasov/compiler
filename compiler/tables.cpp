@@ -480,7 +480,7 @@ string createShortInfo(exprS* methodCall)
 	{
 		return "";
 	}
-	string methInfo = methodCall->stringOrId + '(';
+	string methInfo = string(methodCall->stringOrId) + '(';
 
 	if (methodCall->factParams != 0)
 	{
@@ -772,6 +772,8 @@ bool ClassFile::fillHighLevelObjectsConstants(constructorS* constr, programS* pr
 
 	MethodTableElement mte(nameId, descr, translateVisibilityMod(constr->mod),
 		false, constr->isStatic);
+	mte.addLocalVar(new LocalVariableInfo(true, true, "this$", className,
+		mte.getNestingLevel()));
 	methodTable.insert(make_pair(constrName + "()V", mte));
 	
 	return addConstantsFrom(constr->stmts, program, constrName + "()V");
