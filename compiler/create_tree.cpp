@@ -596,7 +596,6 @@ struct exprS* createExpr(char* idOrString, int iVal, struct factParamsList* para
 	e->doubleV = dVal;
 	e->booleanV = bVar;
 	e->next = 0;
-	//e->exprRes = string("");
 	e->varInTableNum = -1;
 	e->refInfo = -1;
 	e->isStaticCall = false;
@@ -686,6 +685,7 @@ struct assignmentS* createAssignment(struct exprS* left, struct exprS* right, en
 	a->right = right;
 	a->subLeft = 0;
 	a->fieldName = 0;
+	a->refInfo = -1;
 	return a;
 }
 

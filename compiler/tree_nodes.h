@@ -181,6 +181,7 @@ struct assignmentS
 	struct exprS * right;
 	struct exprS* subLeft;
 	char* fieldName;
+	int refInfo;
 };
 
 struct propertyS 
