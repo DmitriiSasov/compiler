@@ -2241,15 +2241,15 @@ int MethodTableElement::find(string varOrValName)
 	LocalVariableInfo tmp(0, 0, varOrValName, 0, nestingLevel);
 	
 	int num = 0;
-	for (auto i = localVarsAndConsts.begin(); i != localVarsAndConsts.end() &&
-		!(*i == tmp); ++i)
+	int index = -1;
+	for (auto i = localVarsAndConsts.begin(); i != localVarsAndConsts.end(); ++i)
 	{
+		if ((*i).nestingLevel <= nestingLevel && (*i).name == tmp.name)
+			index = num;
 		num++;
 	}
 
-	if (num >= localVarsAndConsts.size())
-		num = -1;
-	return num;
+	return index;
 }
 
 LocalVariableInfo MethodTableElement::find(int indexInTable)
