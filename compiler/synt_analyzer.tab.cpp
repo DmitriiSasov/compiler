@@ -3929,6 +3929,7 @@ void main(int argc, char **argv )
 		fprintf(file, "digraph G {\n");
 		print(root, file);
 		fprintf(file, "\n}");
+		fclose(file);
 	}
 	catch(exception& e)
 	{
@@ -3936,6 +3937,12 @@ void main(int argc, char **argv )
 		return;
 	}
 	
+	file = fopen("const_table.txt", "w");
+	for (auto i : classesFiles)
+	{
+		fprintf(file, "%s", i.constsTableToStr().c_str());
+	}
+	fclose(file);
 
 
     return;
