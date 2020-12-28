@@ -1769,6 +1769,14 @@ void ClassFile::addConstantsFrom(methodS* meth, programS* program)
 	
 }
 
+string ClassFile::constsTableToStr() {
+	string result = "";
+	int len = constsTable.size();
+	for (int i = 0; i < len; i++) {
+		result.append(constsTable[i].to_str());
+	}
+	return result;
+}
 
 
 

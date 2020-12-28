@@ -332,5 +332,7 @@ public:
 
 	IdT findMethodRefOrAdd(std::string const& className, std::string const& name, std::string const& type);
 
+	string constsTableToStr();
+
 };
 
