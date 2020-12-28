@@ -2306,7 +2306,7 @@ void MethodTableElement::decNestingLevel()
 
 int MethodTableElement::find(string varOrValName)
 {
-	LocalVariableInfo tmp(0, 0, varOrValName, 0, nestingLevel);
+	LocalVariableInfo tmp(0, 0, varOrValName, "", nestingLevel);
 	
 	int num = 0;
 	int index = -1;
@@ -2322,7 +2322,7 @@ int MethodTableElement::find(string varOrValName)
 
 LocalVariableInfo MethodTableElement::find(int indexInTable)
 {
-	LocalVariableInfo tmp(0, 0, "", 0, nestingLevel);
+	LocalVariableInfo tmp(0, 0, "", "", nestingLevel);
 
 	int index = 0;
 	for (auto i : localVarsAndConsts)
