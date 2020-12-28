@@ -196,6 +196,7 @@ struct varOrValDeclS
 	struct typeS * type;
 	struct formalParamsList * namesAndTypes;
 	struct exprS * initValue;
+	int varNumber;
 };
 
 struct typeS 

@@ -405,6 +405,7 @@ struct varOrValDeclS* createVarOrValDecl(char* id, struct typeS* type, struct fo
 	v->type = type;
 	v->namesAndTypes = idsAndTypes;
 	v->initValue = initValue;
+	v->varNumber = -1;
 	return v;
 }
 
