@@ -420,7 +420,7 @@ void print(struct assignmentS * a, FILE* file)
 	switch(a->type)
 	{
 		case Assign:
-			fprintf(file, "Id%p [label=\"=\"]\n", a);			
+			fprintf(file, "Id%p [label=\"=\n%d\"]\n", a, a->refInfo);			
 		break;
 		case Asum:
 			fprintf(file, "Id%p [label=\"+=\"]\n", a);
@@ -438,7 +438,7 @@ void print(struct assignmentS * a, FILE* file)
 			fprintf(file, "Id%p [label=\"%=\"]\n", a);
 		break;
 		case AssignToField:
-			fprintf(file, "Id%p [label=\".=\"]\n", a);
+			fprintf(file, "Id%p [label=\".=\n%d\"]\n", a, a->refInfo);
 			break;
 		case AsumToField:
 			fprintf(file, "Id%p [label=\".+=\"]\n", a);
@@ -456,7 +456,7 @@ void print(struct assignmentS * a, FILE* file)
 			fprintf(file, "Id%p [label=\".%=\"]\n", a);
 			break;
 		case AssignToArray:
-			fprintf(file, "Id%p [label=\"[]=\"]\n", a);
+			fprintf(file, "Id%p [label=\"[]=\n%d\"]\n", a, a->refInfo);
 			break;
 		case AsumToArray:
 			fprintf(file, "Id%p [label=\"[].+=\"]\n", a);
@@ -506,11 +506,11 @@ void print(struct varOrValDeclS * vd, FILE* file)
 	{
 		if (vd->isVal)
 		{
-			fprintf(file, "Id%p [label=\"value - %s\"]\n", vd, vd->id);
+			fprintf(file, "Id%p [label=\"value - %s\n%d\"]\n", vd, vd->id, vd->varNumber);
 		}
 		else
 		{
-			fprintf(file, "Id%p [label=\"variable - %s\"]\n", vd, vd->id);
+			fprintf(file, "Id%p [label=\"variable - %s\n%d\"]\n", vd, vd->id, vd->varNumber);
 		}
 		
 		fprintf(file, "Id%p->Id%p\n", vd, vd->type);
