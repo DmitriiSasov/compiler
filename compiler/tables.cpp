@@ -1530,30 +1530,35 @@ void ClassFile::calcTypeOfLiterals(exprS* e1, const string& methodKey)
 
 void ClassFile::calcTypeOfUnaryOperators(exprS* e1, programS* program, const string& methodKey)
 {
+	if (e1->type != LogicalNot && e1->type != UnaryMinusExpr &&
+		e1->type != UnaryPlusExpr)
+		return;
+
 	calcType(e1->left, program, methodKey);
 	checkUnitOperandsInExpr(e1, methodKey);
+	
+	e1->type = MethodCalcExpr;
+	string methodName;
+	if (e1->type == LogicalNot)
+		methodName = "not";
+	else if (e1->type == UnaryPlusExpr)
+		methodName = "unaryPlus";
+	else
+		methodName = "unaryMinus";
+	char* tmp = new char[methodName.size() + 1];
+	strcpy(tmp, methodName.c_str());
+	e1->stringOrId = tmp;
 
 	string res = getOperatorTypeForStandartClass(createShortInfo(e1), e1->left->exprRes);
 	if (res != "")
 	{
 		e1->exprRes = res;
-		e1->type = MethodCalcExpr;
 		string* params;
-		string methodName;
-		if (e1->type == LogicalNot)
-			methodName = "not";
-		else if (e1->type == UnaryPlusExpr)
-			methodName = "unaryPlus";
-		else
-			methodName = "unaryMinus";
 		params = generateMethodRefParams(methodName, e1->left->exprRes, 0);
 		if (params[0] == "" || params[1] == "" || params[2] == "")
 		{
 			throw exception("EXCEPTION! Unknown my std method name\n");
 		}
-		char* tmp = new char[methodName.size() + 1];
-		strcpy(tmp, methodName.c_str());
-		e1->stringOrId = tmp;
 		e1->refInfo = findMethodRefOrAdd(params[0], params[1], params[2]);
 		return;
 	}
@@ -1679,35 +1684,32 @@ void ClassFile::calcTypeOfSum(exprS* e1, programS* program, const string & metho
 	calcType(e1->right, program, methodKey);
 	checkUnitOperandsInExpr(e1, methodKey);
 
-	string res = getOperatorTypeForStandartClass(createShortInfo(e1), e1->left->exprRes);
+	
 	e1->stringOrId = transformOperatorToMethod(e1->type);
 	e1->type = MethodCalcExpr;
-	
+	e1->factParams = createFactParamsList(e1->right);
+	e1->right = 0;
+
 	//Если в результате операции появился массив
+	string res = getOperatorTypeForStandartClass(createShortInfo(e1), e1->left->exprRes);
 	if (res == "MyLib/Array")
 	{
 		string arrayType = e1->left->exprRes;
 		arrayType.pop_back();
 		arrayType.pop_back();
-
 		e1->exprRes = calcParentClass(arrayType, e1->right->exprRes, program);
-
 		string* params = generateMethodRefParams("add", e1->left->exprRes, 1);
 		if (params[0] == "" || params[1] == "" || params[2] == "")
 		{
 			throw exception("EXCEPTION! Unknown my std method name\n");
 		}
-		e1->refInfo = findMethodRefOrAdd(params[0], params[1], params[2]);
-		e1->factParams = createFactParamsList(e1->right);
-		e1->right = 0;
+		e1->refInfo = findMethodRefOrAdd(params[0], params[1], params[2]);		
 		return;
 	}
 
 	if (res != "")
 	{
 		e1->exprRes = res;
-		e1->factParams = createFactParamsList(e1->right);
-		e1->right = 0;
 		string* params = new string[3];
 		if (e1->left->exprRes == "MyLib/MyString")
 		{
@@ -1716,7 +1718,6 @@ void ClassFile::calcTypeOfSum(exprS* e1, programS* program, const string & metho
 			{
 				throw exception("EXCEPTION! Unknown my std method name\n");
 			}
-			e1->refInfo = findMethodRefOrAdd(params[0], params[1], params[2]);
 		}
 		else
 		{
@@ -1748,15 +1749,15 @@ void ClassFile::calcTypeOfOtherArithmeticOperations(exprS* e1, programS* program
 	string* params = new string[3];
 	char* operatorName = transformOperatorToMethod(e1->type);
 	char* operanorSymbol = transformOperatorToString(e1->type);
+	e1->type = MethodCalcExpr;
+	e1->factParams = createFactParamsList(e1->right);
+	e1->right = 0;
+	e1->stringOrId = operatorName;
 
 	string res = getOperatorTypeForStandartClass(createShortInfo(e1), e1->left->exprRes);
 	if (res != "")
 	{
-		e1->type = MethodCalcExpr;
 		e1->exprRes = res;
-		e1->factParams = createFactParamsList(e1->right);
-		e1->right = 0;
-		e1->stringOrId = operatorName;
 		if (e1->type != Sub && e1->type != Mul && e1->type != Div)
 		{
 			params = generateMethodRefParams(operatorName, e1->left->exprRes, 1);
