@@ -1989,8 +1989,7 @@ void ClassFile::addConstantsFrom(assignmentS* a, programS* program, const string
 	}
 	else
 	{
-		if (a->type == AssignToField || a->type == AsumToField || a->type == AsubToField
-			|| a->type == AdivToField || a->type == AmulToField)
+		if (a->type == AssignToField)
 		{
 			string res = getPropertyType(a->fieldName, program, a->left->exprRes);
 			
