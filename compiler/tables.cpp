@@ -772,7 +772,7 @@ bool ClassFile::fillHighLevelObjectsConstants(constructorS* constr, programS* pr
 
 	MethodTableElement mte(nameId, descr, translateVisibilityMod(constr->mod),
 		false, constr->isStatic);
-	methodTable.insert(make_pair(constrName, mte));
+	methodTable.insert(make_pair(constrName + "()V", mte));
 	
 	return addConstantsFrom(constr->stmts, program, constrName + "()V");
 }
