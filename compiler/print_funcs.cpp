@@ -99,11 +99,6 @@ void print(struct exprS * e, FILE* file)
 			if (e->booleanV) fprintf(file, "Id%p [label=\"true\"]\n", e);
 			else fprintf(file, "Id%p [label=\"false\"]\n", e);			
 		break;
-		case ExprInBrackets:
-			fprintf(file, "Id%p [label=\"( ... )\"]\n", e);
-			fprintf(file, "Id%p->Id%p\n", e, e->left);
-			print(e->left, file);
-		break;
 		case LogicalNot:
 			fprintf(file, "Id%p [label=\"!\"]\n", e);
 			fprintf(file, "Id%p->Id%p\n", e, e->left);

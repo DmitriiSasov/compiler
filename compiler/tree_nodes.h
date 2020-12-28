@@ -1,4 +1,3 @@
-
 #include <string>
 
 using namespace std;
@@ -15,7 +14,6 @@ enum exprType
 	Char,
 	Double,
 	Boolean,
-	ExprInBrackets,
 	LogicalNot,
 	UnaryPlusExpr,
 	UnaryMinusExpr,
@@ -40,7 +38,6 @@ enum exprType
 	ParentFieldCall,
 	ParentMethodCall,
 	Range,
-	TypeCast,
 	ArrayCreating
 };
 
