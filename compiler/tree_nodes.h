@@ -124,7 +124,7 @@ struct exprS
 	int varInTableNum;
 	int refInfo;
 	bool isStaticCall;
-	string exprRes;
+	string exprRes = "";
 };
 
 struct factParamsList 

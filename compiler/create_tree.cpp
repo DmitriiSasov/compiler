@@ -584,7 +584,7 @@ struct exprS* createExprCopy(exprS* e1)
 
 struct exprS* createExpr(char* idOrString, int iVal, struct factParamsList* params, float fVal, double dVal, char cVar, bool bVar, struct exprS* exprL, struct exprS* exprR, enum exprType type)
 {
-	struct exprS* e = (struct exprS*)malloc(sizeof(struct exprS));
+	struct exprS* e = new exprS();
 	e->type = type;
 	e->left = exprL;
 	e->right = exprR;
