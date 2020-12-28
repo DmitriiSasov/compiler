@@ -806,7 +806,7 @@ bool ClassFile::fillHighLevelObjectsConstants(classS* clas, programS* program)
 {
 	findUtf8OrAdd("Code");
 	thisClass = findClassOrAdd(clas->name);
-	if (clas->parentClassName != 0)	superClass = findClassOrAdd(clas->name);
+	if (clas->parentClassName != 0)	superClass = findClassOrAdd(clas->parentClassName);
 	
 	//Заполняю флаги доступа к классу
 	accessFlags |= 0x0001; //Устанавливаю флаг PUBLIC
