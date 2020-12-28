@@ -442,6 +442,12 @@ bool complementModifiers(propertyS* prop)
 {
 	bool res = true;
 
+	if (prop->varOrVal->isVal)
+	{
+		printf("Error! Unsupported class constant \"%s\"\n", prop->varOrVal->id);
+		res = false;
+	}
+
 	if (prop->mods != 0)
 	{
 		if (prop->mods->iMod == Open || prop->mods->iMod == Final)
