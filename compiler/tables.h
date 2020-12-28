@@ -48,6 +48,8 @@ bool isParentClass(const string& potentialParent, const string& potentialChild, 
 const methodS* findMethod(const string& methodSign, const programS* const program,
 	const string& currentClassName);
 
+void transformForLoop(stmtS* forLoop);
+
 struct ShortClassInfo 
 {
 	string className = "";
@@ -104,6 +106,7 @@ struct LocalVariableInfo
 		this->name = other.name;
 		this->type = other.type;
 		this->nestingLevel = other.nestingLevel;
+		return *this;
 	}
 
 	friend bool operator==(LocalVariableInfo i1, LocalVariableInfo i2);
@@ -261,7 +264,7 @@ class ClassFile
 
 	bool addConstantsFrom(methodS* meth, programS* program);
 	
-	void addConstantsFrom(stmtS* stmt, programS* program, const string& methodKey);
+	bool addConstantsFrom(stmtS* stmt, programS* program, const string& methodKey);
 
 	void addConstantsFrom(varOrValDeclS* v, programS* program, const string& methodKey);
 	
@@ -269,7 +272,7 @@ class ClassFile
 	void addConstantsFrom(assignmentS* a, programS* program, const string& methodKey);
 	
 
-	void addConstantsFrom(whileLoopS* w, programS* program, const string& methodKey);
+	bool addConstantsFrom(whileLoopS* w, programS* program, const string& methodKey);
 	
 
 	void addConstantsFrom(forLoopS* f, programS* program, const string& methodKey);

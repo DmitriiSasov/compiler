@@ -1941,7 +1941,6 @@ void ClassFile::addConstantsFrom(varOrValDeclS* v, programS* program, const stri
 	
 }
 
-
 void ClassFile::addConstantsFrom(assignmentS* a, programS* program, const string& methodKey)
 {
 	if (a->left->type != Identificator && a->subLeft == 0 && a->fieldName == 0)
@@ -2054,17 +2053,45 @@ void ClassFile::addConstantsFrom(assignmentS* a, programS* program, const string
 	}
 }
 
-void ClassFile::addConstantsFrom(whileLoopS* w, programS* program, const string& methodKey)
+bool ClassFile::addConstantsFrom(whileLoopS* w, programS* program, const string& methodKey)
 {
-	//Проверить условие цикла
-	//Проверить все stmt цикла
+	methodTable.at(methodKey).incNestingLevel();
+	calcType(w->cond, program, methodKey);
+
+	bool res = true;
+
+	if (w->cond->exprRes != "MyLib/Boolean")
+	{
+		string message = "EXCEPTION! If statment condition is not Boolean";
+		exception e(message.c_str());
+		throw e;
+	}
+
+	if (w->stmts != 0)
+	{
+		bool tmp = addConstantsFrom(w->stmts, program, methodKey);
+		res = res && tmp;
+	}
+
+	methodTable.at(methodKey).decNestingLevel();
+	return res;
 }
 
 void ClassFile::addConstantsFrom(forLoopS* f, programS* program, const string& methodKey)
 {
+	exception e("EXCEPTION! Unsupported FOR loop \n");
+	throw e;
+
+	/*methodTable.at(methodKey).incNestingLevel();
+	if (f->iterableExpr->type == Range)
+	{
+
+	}
+	calcType(f->iterableExpr, program, methodKey);
+
 	//Проверить переменную
 	//Проверить условие
-	//Проверить все stmt цикла
+	//Проверить все stmt цикла*/
 }
 
 bool ClassFile::addConstantsFrom(ifStmtS* i, programS* program, const string& methodKey)
@@ -2096,7 +2123,35 @@ bool ClassFile::addConstantsFrom(ifStmtS* i, programS* program, const string& me
 	return res;
 }
 
-void ClassFile::addConstantsFrom(stmtS* stmt, programS* program, const string& methodKey)
+void transformForLoop(stmtS* forLoop)
+{
+	/*//Если цикл с range
+	stmtS* newStmt;
+	if (forLoop->forLoop->iterableExpr->type == Range)
+	{
+		
+
+		varOrValDeclS* loopVar = createVarOrValDecl(forLoop->forLoop->params->first->name,
+			forLoop->forLoop->params->first->type, forLoop->forLoop->iterableExpr->left, 1);
+		char* tmp = new char[4];
+		strcpy(tmp, "Inc");
+		auto newExpr = createExpr(tmp, 0, Inc);
+		forLoop->forLoop->stmts = addToStmtList(forLoop->forLoop->stmts, createStmt(newExpr, Expr));
+		tmp = new char[6];
+		strcpy(tmp, "cond$");
+		varOrValDeclS* condition = createVarOrValDecl(,
+			forLoop->forLoop->params->first->type, forLoop->forLoop->iterableExpr->left, 1);
+
+		newStmt = createStmt(forLoop->)
+	}
+	else
+	{
+
+	}
+	*/
+}
+
+bool ClassFile::addConstantsFrom(stmtS* stmt, programS* program, const string& methodKey)
 {
 	
 	if (stmt->type == Continue)
@@ -2105,6 +2160,8 @@ void ClassFile::addConstantsFrom(stmtS* stmt, programS* program, const string& m
 		throw e;
 	}
 
+	bool res = true;
+	bool tmp = true;
 	switch (stmt->type)
 	{
 	case VarOrVal:
@@ -2114,16 +2171,19 @@ void ClassFile::addConstantsFrom(stmtS* stmt, programS* program, const string& m
 		addConstantsFrom(stmt->assignment, program, methodKey);
 		break;
 	case WhileLoop:
-		addConstantsFrom(stmt->whileLoop, program, methodKey);
+		tmp = addConstantsFrom(stmt->whileLoop, program, methodKey);
+		res = res && tmp;
 		break;
 	case ForLoop:
 		addConstantsFrom(stmt->forLoop, program, methodKey);
 		break;
 	case DoWhileLoop:
-		addConstantsFrom(stmt->whileLoop, program, methodKey);
+		tmp = addConstantsFrom(stmt->whileLoop, program, methodKey);
+		res = res && tmp;
 		break;
 	case IfStmt:
-		addConstantsFrom(stmt->ifStmt, program, methodKey);
+		tmp = addConstantsFrom(stmt->ifStmt, program, methodKey);
+		res = res && tmp;
 		break;
 	case Expr:
 		calcType(stmt->expr, program, methodKey);
@@ -2134,19 +2194,20 @@ void ClassFile::addConstantsFrom(stmtS* stmt, programS* program, const string& m
 		break;
 	}
 	
-
+	return res;
 }
 
 bool ClassFile::addConstantsFrom(stmtList* stmts, programS* program, const string& methodKey)
 {
 	bool res = true;
-
+	bool tmp = true;
 	if (stmts != 0)
 		for (stmtS* stmt = stmts->first; stmt != 0; stmt = stmt->next)
 		{
 			try
 			{
-				addConstantsFrom(stmt, program, methodKey);
+				tmp = addConstantsFrom(stmt, program, methodKey);
+				res = res && tmp;
 			}
 			catch (exception e)
 			{
@@ -2176,7 +2237,7 @@ bool ClassFile::addConstantsFrom(methodS* meth, programS* program)
 		for (formalParamS* fp = meth->func->decl->params->first; fp != 0; fp = fp->next)
 		{
 			auto methodTableElement = methodTable.at(methKey);
-			methodTableElement.addLocalVar(new LocalVariableInfo(false, false, fp->name, 
+			methodTableElement.addLocalVar(new LocalVariableInfo(true, true, fp->name, 
 				fp->type->easyType, methodTableElement.getNestingLevel()));
 		}
 	}
