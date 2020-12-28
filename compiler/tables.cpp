@@ -604,7 +604,7 @@ IdT ClassFile::findUtf8OrAdd(std::string const& utf8)
 	if (foundIter == constsTable.end())
 	{
 		constsTable.push_back(constant);
-		return constsTable.end() - constsTable.begin() + 1;
+		return constsTable.end() - constsTable.begin();
 	}
 	return foundIter - constsTable.begin() + 1;
 }
@@ -616,7 +616,7 @@ IdT ClassFile::findIntOrAdd(IntT i)
 	if (foundIter == constsTable.end())
 	{
 		constsTable.push_back(constant);
-		return constsTable.end() - constsTable.begin() + 1;
+		return constsTable.end() - constsTable.begin();
 	}
 	return foundIter - constsTable.begin() + 1;
 }
@@ -628,7 +628,7 @@ IdT ClassFile::findFloatOrAdd(float i)
 	if (foundIter == constsTable.end())
 	{
 		constsTable.push_back(constant);
-		return constsTable.end() - constsTable.begin() + 1;
+		return constsTable.end() - constsTable.begin();
 	}
 	return foundIter - constsTable.begin() + 1;
 }
@@ -640,7 +640,7 @@ IdT ClassFile::findDoubleOrAdd(double i)
 	if (foundIter == constsTable.end())
 	{
 		constsTable.push_back(constant);
-		return constsTable.end() - constsTable.begin() + 1;
+		return constsTable.end() - constsTable.begin();
 	}
 	return foundIter - constsTable.begin() + 1;
 }
@@ -652,7 +652,7 @@ IdT ClassFile::findStringOrAdd(string& v)
 	if (foundIter == constsTable.end())
 	{
 		constsTable.push_back(constant);
-		return constsTable.end() - constsTable.begin() + 1;
+		return constsTable.end() - constsTable.begin();
 	}
 	return foundIter - constsTable.begin() + 1;
 }
@@ -665,7 +665,7 @@ IdT ClassFile::findClassOrAdd(std::string const& className)
 	if (foundIter == constsTable.end())
 	{
 		constsTable.push_back(constant);
-		return constsTable.end() - constsTable.begin() + 1;
+		return constsTable.end() - constsTable.begin();
 	}
 	return foundIter - constsTable.begin() + 1;
 }
@@ -678,7 +678,7 @@ IdT ClassFile::findNameAndTypeOrAdd(std::string const& name, std::string const& 
 	if (foundIter == constsTable.end())
 	{
 		constsTable.push_back(constant);
-		return constsTable.end() - constsTable.begin() + 1;
+		return constsTable.end() - constsTable.begin();
 	}
 	return foundIter - constsTable.begin() + 1;
 }
@@ -692,7 +692,7 @@ IdT ClassFile::findFieldRefOrAdd(std::string const& className, std::string const
 	if (foundIter == constsTable.end())
 	{
 		constsTable.push_back(constant);
-		return constsTable.end() - constsTable.begin() + 1;
+		return constsTable.end() - constsTable.begin();
 	}
 	return foundIter - constsTable.begin() + 1;
 }
@@ -705,7 +705,7 @@ IdT ClassFile::findMethodRefOrAdd(std::string const& className, std::string cons
 	if (foundIter == constsTable.end())
 	{
 		constsTable.push_back(constant);
-		return constsTable.end() - constsTable.begin() + 1;
+		return constsTable.end() - constsTable.begin();
 	}
 	return foundIter - constsTable.begin() + 1;
 }
@@ -964,7 +964,7 @@ void ClassFile::calcTypeOfIdentifier(exprS* e1, programS* program, const string&
 	if (res != "")
 	{
 		e1->exprRes = res;
-		e1->refInfo = e1->refInfo = findFieldRefOrAdd(className, e1->stringOrId, 
+		e1->refInfo = findFieldRefOrAdd(className, e1->stringOrId, 
 			transformTypeToDescriptor(res.c_str(), program));
 		return;
 	}
