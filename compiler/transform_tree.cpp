@@ -1648,14 +1648,25 @@ void checkInheritance(const programS* const program)
 
 void fillClassesFiles(list<ClassFile>& files, programS* program)
 {
+	bool res = true;
 	for (programElementS* pe = program->first; pe != 0; pe = pe->next)
 	{
 		if (pe->clas != 0)
 		{
-			ClassFile* file = new ClassFile(pe->clas, program);
-			files.push_back(*file);
+			try 
+			{
+				ClassFile* file = new ClassFile(pe->clas, program);
+				files.push_back(*file);
+			}
+			catch (exception e)
+			{
+				res = false;
+			}			
 		}
 	}
+
+	if (!res)
+		throw exception("Errors in compilation!\n");
 }
 
 
