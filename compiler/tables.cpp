@@ -1233,7 +1233,7 @@ string* generateMethodRefParams(const string& methodName, const string& classNam
 		}
 	}
 
-	if (className == "MyLib/Array")
+	if (className == "MyLib/Array" || className.find('[') != -1)
 	{
 		if (methodName == "add" && paramsCount == 1)
 		{
@@ -1702,6 +1702,8 @@ void ClassFile::calcTypeOfSum(exprS* e1, programS* program, const string & metho
 		arrayType.pop_back();
 		arrayType.pop_back();
 		e1->exprRes = calcParentClass(arrayType, e1->factParams->first->exprRes, program);
+		e1->exprRes.push_back('[');
+		e1->exprRes.push_back(']');
 		string* params = generateMethodRefParams("add", e1->left->exprRes, 1);
 		if (params[0] == "" || params[1] == "" || params[2] == "")
 		{
