@@ -66,13 +66,13 @@ fun main():Unit {
     }*/
 
     if (a == 5){
-        var a:Int = 5
+        var f:Int = 5
         print(a)
         if (a == 6) {
             var a:String = readLine()
         }
     }
-    
+    f = 5
     while (a == 6)
         print(a)
     
