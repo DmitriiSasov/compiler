@@ -1702,7 +1702,7 @@ void ClassFile::calcTypeOfSum(exprS* e1, programS* program, const string & metho
 		string arrayType = e1->left->exprRes;
 		arrayType.pop_back();
 		arrayType.pop_back();
-		e1->exprRes = calcParentClass(arrayType, e1->right->exprRes, program);
+		e1->exprRes = calcParentClass(arrayType, e1->factParams->first->exprRes, program);
 		string* params = generateMethodRefParams("add", e1->left->exprRes, 1);
 		if (params[0] == "" || params[1] == "" || params[2] == "")
 		{
