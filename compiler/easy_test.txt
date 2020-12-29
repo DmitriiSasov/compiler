@@ -12,10 +12,10 @@ open class A{
     
     public fun addValueToV1():Int {
         var res1: Int = v1 + value
-        if (res1 == addValue(v1, B()))
+        if (res1 == addValue(v1))
             return res1
         else
-            return addValue(v1, B())
+            return addValue(v1)
     }
     
     public open fun calcFieldSum():String {
@@ -33,7 +33,6 @@ class B:A{
     override fun calcFieldSum():String{
         var res:String = super.calcFieldSum() + super.v2
         super.v2 = "sdad"
-	this = B()
         return v2 + v3;
     }
     
@@ -44,17 +43,14 @@ class B:A{
 
 public var value:Int = 5;
 
-fun addValue(v1:Int, b:B):Int{
+fun addValue(v1:Int):Int{
     var res:Double = (v1 + value).toDouble()
-    b = B()
-    b.v3 = 12f.toDouble().toInt().toFloat().toString().toDouble()
     return res.toInt();
 }
 
 fun main():Unit {
     
     val a :Int = 5;
-    /*
     var arr: Array<Any> = arrayOf(1, 3, 4, 5)
     arr = arr + "Hello"
     arr = arr + B()
@@ -66,7 +62,7 @@ fun main():Unit {
     while(index < a){
         print(arr[index + 5 - 6 + 1])   
         index = index + 1
-    }*/
+    }
 
     if (a == 5){
         var f:Int = 5
