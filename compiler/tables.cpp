@@ -1448,6 +1448,10 @@ void ClassFile::calcTypeOfParentMethodCall(exprS* e1, programS* program, const s
 		}
 		e1->exprRes = res;
 		string* params = generateMethodRefParams(e1->stringOrId, parentClassName, paramsCount);
+		if (params[0] == "" || params[1] == "" || params[2] == "")
+		{
+			throw exception("EXCEPTION! Unknown my std method name\n");
+		}
 		e1->refInfo = findMethodRefOrAdd(parentClassName, e1->stringOrId, params[2]);
 		return;
 	}
