@@ -811,6 +811,7 @@ bool ClassFile::fillHighLevelObjectsConstants(classS* clas, programS* program)
 	thisClass = findClassOrAdd(clas->name);
 	if (clas->parentClassName != 0)	superClass = findClassOrAdd(clas->parentClassName);
 	
+
 	//Заполняю флаги доступа к классу
 	accessFlags |= 0x0001; //Устанавливаю флаг PUBLIC
 	if (isFinal) accessFlags |= 0x0010; //Устанавливаю флаг FINAL
@@ -838,6 +839,9 @@ bool ClassFile::fillHighLevelObjectsConstants(classS* clas, programS* program)
 			}
 		}
 	}
+
+	if (clas->parentClassName == 0 && strcmp(clas->name, "Main$") == 0)
+		superClass = findClassOrAdd("java/lang/Object");
 
 	return res;
 }
