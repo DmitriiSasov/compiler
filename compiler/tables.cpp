@@ -593,7 +593,8 @@ ClassFile::ClassFile(classS* clas, programS* program)
 	if (clas->parentClassName != 0)	parentClassName = clas->parentClassName;
 	if (!fillHighLevelObjectsConstants(clas, program))
 	{
-		throw exception("Exception! Errors in class file creating");
+		string error = "Exception! Errors in class file creating in class ";
+		throw exception((error + clas->name).c_str());
 	}
 }
 
@@ -1987,15 +1988,15 @@ void ClassFile::addConstantsFrom(assignmentS* a, programS* program, const string
 {
 	if (a->left->type != Identificator && a->subLeft == 0 && a->fieldName == 0)
 	{
-		char message[] = "EXCEPTION! Not l-value expr in assignment \n";
-		exception e(message);
+		string message = "EXCEPTION! Not l-value expr in assignment in method -" + methodKey + "\n";
+		exception e(message.c_str());
 		throw e;
 	}
 	
 	if (a->type != Assign && a->type != AssignToArray && a->type != AssignToField)
 	{
-		char message[] = "EXCEPTION! Unsupported +=, -=, /=, *=, %= operators \n";
-		exception e(message);
+		string message = "EXCEPTION! Unsupported +=, -=, /=, *=, %= operators in method -" + methodKey + "\n";
+		exception e(message.c_str());
 		throw e;
 	}
 
