@@ -2011,37 +2011,39 @@ void ClassFile::addConstantsFrom(assignmentS* a, programS* program, const string
 		calcType(a->subLeft, program, methodKey);
 	checkUnitOperandsInExpr(a, methodKey);
 
-	if (a->subLeft == 0)
+	if (a->subLeft == 0 && a->fieldName == 0)
 	{
-		if (a->left->exprRes != a->right->exprRes)
-		{
-			//Если типы можно привести
-			if (!canCastType(a->left->exprRes, a->right->exprRes, program))
-			{
-				string message = "EXCEPTION! Cast error. Cannot cast \"" + a->left->exprRes + 
-					"\" to type \"" + a->right->exprRes + "\" in assignment in method \"" +
-					methodKey + "\"\n";
-				exception e(message.c_str());
-				throw e;
-			}			
-		}
-		//Cлева не константа, у которой уже есть значение
-		LocalVariableInfo varInfo = methodTable.at(methodKey).find(a->left->varInTableNum);
-		if (varInfo.isConst && varInfo.hasValue)
-		{
-			string message = "EXCEPTION! Assignment to contant value in method \"" + methodKey + "\"\n";
-			exception e(message.c_str());
-			throw e;
-		}
-
 		if (a->left->type == FieldCalcExpr)
 		{
 			a->type = AssignToField;
 			a->fieldName = a->left->stringOrId;
 			a->left = a->left->left;
 		}
+		else
+		{
+			if (a->left->exprRes != a->right->exprRes)
+			{
+				//Если типы можно привести
+				if (!canCastType(a->left->exprRes, a->right->exprRes, program))
+				{
+					string message = "EXCEPTION! Cast error. Cannot cast \"" + a->left->exprRes +
+						"\" to type \"" + a->right->exprRes + "\" in assignment in method \"" +
+						methodKey + "\"\n";
+					exception e(message.c_str());
+					throw e;
+				}
+			}
+			//Cлева не константа, у которой уже есть значение
+			LocalVariableInfo varInfo = methodTable.at(methodKey).find(a->left->varInTableNum);
+			if (varInfo.isConst && varInfo.hasValue)
+			{
+				string message = "EXCEPTION! Assignment to contant value in method \"" + methodKey + "\"\n";
+				exception e(message.c_str());
+				throw e;
+			}
+		}		
 	}
-	else
+	if(a->subLeft != 0 || a->fieldName != 0)
 	{
 		if (a->type == AssignToField)
 		{
