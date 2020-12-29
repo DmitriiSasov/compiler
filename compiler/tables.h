@@ -300,6 +300,7 @@ class ClassFile
 
 	void addConstantsFrom(varOrValDeclS* v, programS* program, const string& methodKey);
 	
+	void checkReturnValue(const string& res, const string& methodSign, const programS* const program);
 
 	void addConstantsFrom(assignmentS* a, programS* program, const string& methodKey);
 	

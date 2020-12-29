@@ -2165,6 +2165,36 @@ void transformForLoop(stmtS* forLoop)
 	*/
 }
 
+void ClassFile::checkReturnValue(const string& res, const string& methodSign, 
+	const programS* const program)
+{
+	if (methodSign.find('<') != -1 && res != "")
+	{
+		string message = "EXCEPTION! Return value of " + methodSign + " is not Unit";
+		exception e(message.c_str());
+		throw e;
+	}
+	else
+	{
+		string methodRetValue = getMethodType(methodSign, program, className);
+		if (methodRetValue == "MyLib/Unit" && res != "")
+		{
+			string message = "EXCEPTION! Return value of " + methodSign + " is not Unit";
+			exception e(message.c_str());
+			throw e;
+		}
+
+		if (methodRetValue != "MyLib/Unit" && !canCastType(methodRetValue, res, program))
+		{
+			string message = "EXCEPTION! Return value of " + methodSign + " cannot be cast to - " + 
+				methodRetValue;
+			exception e(message.c_str());
+			throw e;
+		}
+	}
+	
+}
+
 bool ClassFile::addConstantsFrom(stmtS* stmt, programS* program, const string& methodKey)
 {
 	
@@ -2205,6 +2235,10 @@ bool ClassFile::addConstantsFrom(stmtS* stmt, programS* program, const string& m
 	case ReturnValue:
 		calcType(stmt->expr, program, methodKey);
 		checkUnitOperandsInExpr(stmt->expr, methodKey);
+		checkReturnValue(stmt->expr->exprRes, methodKey, program);
+		break;
+	case Return:
+		checkReturnValue("", methodKey, program);
 		break;
 	}
 	
