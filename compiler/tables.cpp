@@ -919,6 +919,16 @@ bool checkUnitOperandsInExpr(exprS* e, const string& methodKey)
 	}
 }
 
+//Добавляем неявное обращение к this 
+void addThisToExpr(exprS* e, const string& className)
+{
+	char* tmp = new char[5];
+	strcpy(tmp, "this");
+	e->left = createExpr(tmp, This);
+	e->left->varInTableNum = 0;
+	e->left->exprRes = className;
+}
+
 void ClassFile::calcTypeOfIdentifier(exprS* e1, programS* program, const string& methodKey)
 {
 	if (e1->type != Identificator)
@@ -941,7 +951,8 @@ void ClassFile::calcTypeOfIdentifier(exprS* e1, programS* program, const string&
 	res = getPropertyType(e1->stringOrId, program, className);
 	if (res != "")
 	{
-		e1->varInTableNum = 0;
+		e1->type = FieldCalcExpr;
+		addThisToExpr(e1, className);
 		e1->exprRes = res;
 		e1->refInfo = findFieldRefOrAdd(className, e1->stringOrId, 
 			transformTypeToDescriptor(res.c_str(), program));
@@ -1045,7 +1056,10 @@ void ClassFile::calcTypeOfMethodCall(exprS* e1, programS* program, const string&
 		e1->exprRes = res;
 		//Если метод динамический
 		if (className != "Main$")
-			e1->varInTableNum = 0;
+		{
+			e1->type = MethodCalcExpr;
+			addThisToExpr(e1, className);
+		}			
 		else 
 			e1->isStaticCall = true;
 
@@ -1058,7 +1072,8 @@ void ClassFile::calcTypeOfMethodCall(exprS* e1, programS* program, const string&
 	res = getMethodTypeForStandartClass(createShortInfo(e1), parentClassName);
 	if (res != "")
 	{
-		e1->varInTableNum = 0;
+		e1->type = MethodCalcExpr;
+		addThisToExpr(e1, className);
 		if (strcmp(e1->stringOrId, "toString") == 0 && paramsCount == 0)
 		{
 			char* tmp = new char[strlen("toMyString") + 1];
@@ -1382,7 +1397,7 @@ void ClassFile::calcTypeOfParentFieldCall(exprS* e1, programS* program, const st
 		e1->exprRes = res;
 		e1->refInfo = findFieldRefOrAdd(parentClassName, e1->stringOrId,
 			transformTypeToDescriptor(res.c_str(), program));
-		e1->varInTableNum = 0;
+		addThisToExpr(e1, className);
 		return;
 	}
 
@@ -1409,7 +1424,7 @@ void ClassFile::calcTypeOfParentMethodCall(exprS* e1, programS* program, const s
 		throw e;
 	}
 
-	e1->varInTableNum = 0;
+	addThisToExpr(e1, className);
 	string res = getMethodTypeForUserClass(createShortInfo(e1), program, parentClassName);
 	if (res != "")
 	{
