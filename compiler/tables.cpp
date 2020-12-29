@@ -1316,6 +1316,7 @@ void ClassFile::calcTypeOfMethodCalcExpr(exprS* e1, programS* program, const str
 	res = getMethodTypeForStandartClass(createShortInfo(e1), e1->left->exprRes);
 	if (res != "")
 	{
+		e1->exprRes = res;
 		if (strcmp(e1->stringOrId, "toString") == 0 && paramsCount == 0)
 		{
 			char* tmp = new char[strlen("toMyString") + 1];
@@ -1338,7 +1339,6 @@ void ClassFile::calcTypeOfMethodCalcExpr(exprS* e1, programS* program, const str
 		//Если методы toChar(), toInt()...
 		else
 		{
-			e1->exprRes = res;
 			e1->refInfo = findMethodRefOrAdd(e1->left->exprRes, e1->stringOrId,
 				transformMethodCallToDescriptor(e1, program));
 		}
