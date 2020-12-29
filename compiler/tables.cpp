@@ -1878,7 +1878,7 @@ bool canCastType(const string& type1, const string& type2, const programS* const
 	{
 		string subType1 = type1;
 		string subType2 = type2;
-		while (type1.find('[') != -1 && type2.find('[') != -1)
+		while (subType1.find('[') != -1 && subType1.find('[') != -1)
 		{
 			subType1.pop_back();
 			subType2.pop_back();
