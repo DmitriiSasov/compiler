@@ -341,8 +341,6 @@ class ClassFile
 
 	void convertBasicTypeExprToString(exprS* e);
 	
-	void addToStringCall(exprS* e, programS* program);
-
 public:
 
 	bool isAbstract = false;

@@ -919,30 +919,6 @@ bool checkUnitOperandsInExpr(exprS* e, const string& methodKey)
 	}
 }
 
-void ClassFile::addToStringCall(exprS* e, programS* program)
-{
-	exprS* newE = createExprCopy(e);
-	e->type = MethodCalcExpr;
-	char* tmp = new char[strlen("toString") + 1];
-	strcpy(tmp, "toString");
-	e->stringOrId = tmp;
-	e->left = newE;
-	e->factParams = 0;
-
-	string basicToStringClass;
-	if (strstr(newE->exprRes.c_str(), "[]") != 0)
-	{
-		basicToStringClass = "java/lang/Object";
-	}
-	else
-	{
-		basicToStringClass = newE->exprRes;
-	}
-	e->exprRes = "String";
-	e->refInfo = findMethodRefOrAdd(basicToStringClass, "toString", "()Ljava/lang/String;");
-}
-
-
 void ClassFile::calcTypeOfIdentifier(exprS* e1, programS* program, const string& methodKey)
 {
 	if (e1->type != Identificator)
