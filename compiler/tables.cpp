@@ -1922,50 +1922,6 @@ bool canCastType(const string& type1, const string& type2, const programS* const
 	return false;
 }
 
-void ClassFile::convertBasicTypeExprToString(exprS* e)
-{
-	string descr = "(";
-	if (e->exprRes == "Int")
-	{
-		descr += "I";
-	}
-	else if (e->exprRes != "Float")
-	{
-		descr += "F";
-	}
-	else if (e->exprRes != "Double")
-	{
-		descr += "D";
-	}
-	else if (e->exprRes != "Char")
-	{
-		descr += "C";
-	}
-	else if (e->exprRes != "Boolean")
-	{
-		descr += "Z";
-	}
-	else
-	{
-		return;
-	}
-	descr += ')';
-
-	e->factParams = createFactParamsList(createExprCopy(e));
-	e->type = MethodCalcExpr;
-	e->exprRes = "String";
-	e->isStaticCall = true;
-	char* tmp = new char[strlen("valueOf") + 1];
-	strcpy(tmp, "valueOf");
-	e->stringOrId = tmp;
-	tmp = new char[strlen("String") + 1];
-	strcpy(tmp, "String");
-	e->left = createExpr(tmp, Identificator);
-	e->left->exprRes = tmp;
-	e->left->exprRes = "String";
-	e->refInfo = findMethodRefOrAdd("java/lang/String", "valueOf", descr + "Ljava/lang/String;");
-}
-
 void ClassFile::addConstantsFrom(varOrValDeclS* v, programS* program, const string& methodKey)
 {
 	MethodTableElement res = methodTable.at(methodKey);

@@ -341,7 +341,6 @@ class ClassFile
 	
 	int calcType(factParamsList* fpl, programS* program, const string& methodKey);
 
-	void convertBasicTypeExprToString(exprS* e);
 	
 public:
 
