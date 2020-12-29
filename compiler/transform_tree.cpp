@@ -1765,6 +1765,6 @@ programS* transformProgram(list<ClassFile>& classesFiles, programS* program)
 	checkPropertyInitialization(program);
 	transformAssignmentWithFieldAndArrays(program);
 	fillClassesFiles(classesFiles, program);
-	
+	checkReturns(program);
 	return program;
 }
