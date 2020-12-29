@@ -1562,7 +1562,7 @@ void ClassFile::calcTypeOfUnaryOperators(exprS* e1, programS* program, const str
 	}
 
 	//Îøèáêè
-	if (e1->type == LogicalNot)
+	if (methodName == "not")
 	{
 		char message[200] = "EXCEPTION! Incorrect operator! operand with not boolean type in method - ";
 		exception e(strcat(message, (methodKey + "\n").c_str()));
@@ -1747,6 +1747,7 @@ void ClassFile::calcTypeOfOtherArithmeticOperations(exprS* e1, programS* program
 	string* params = new string[3];
 	char* operatorName = transformOperatorToMethod(e1->type);
 	char* operanorSymbol = transformOperatorToString(e1->type);
+	exprType exprTypeBeforeTransforming = e1->type;
 	e1->type = MethodCalcExpr;
 	e1->factParams = createFactParamsList(e1->right);
 	e1->right = 0;
@@ -1756,7 +1757,8 @@ void ClassFile::calcTypeOfOtherArithmeticOperations(exprS* e1, programS* program
 	if (res != "")
 	{
 		e1->exprRes = res;
-		if (e1->type != Sub && e1->type != Mul && e1->type != Div)
+		if (exprTypeBeforeTransforming != Sub && exprTypeBeforeTransforming != Mul &&
+			exprTypeBeforeTransforming != Div)
 		{
 			params = generateMethodRefParams(operatorName, e1->left->exprRes, 1);
 			if (params[0] == "" || params[1] == "" || params[2] == "")
