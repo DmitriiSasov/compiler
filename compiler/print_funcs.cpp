@@ -256,10 +256,20 @@ void print(struct exprS * e, FILE* file)
 		case ParentFieldCall:
 			fprintf(file, "Id%p [label=\"super.%s\n%d\n%d\n%d\n%s\"]\n", e, e->stringOrId,
 				e->varInTableNum, e->refInfo, e->isStaticCall, e->exprRes.c_str());
+			if (e->left != 0)
+			{
+				fprintf(file, "Id%p->Id%p\n", e, e->left);
+				print(e->left, file);
+			}			
 		break;
 		case ParentMethodCall:
 			fprintf(file, "Id%p [label=\"super.%s ( ... )\n%d\n%d\n%d\n%s\"]\n", e, e->stringOrId,
 				e->varInTableNum, e->refInfo, e->isStaticCall, e->exprRes.c_str());
+			if (e->left != 0) 
+			{
+				fprintf(file, "Id%p->Id%p\n", e, e->left);
+				print(e->left, file);
+			}
 			if (e->factParams != 0)
 			{
 				fprintf(file, "Id%p->Id%p\n", e, e->factParams);
