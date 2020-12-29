@@ -43,8 +43,10 @@ class B:A{
 
 public var value:Int = 5;
 
-fun addValue(v1:Int):Int{
+fun addValue(v1:Int, b:B):Int{
     var res:Double = (v1 + value).toDouble()
+    this.value
+    super.value = 6
     return res.toInt();
 }
 
@@ -72,7 +74,6 @@ fun main():Unit {
             var a:String = readLine()
         }
     }
-    f = 5
     while (a == 6)
         print(a)
     
