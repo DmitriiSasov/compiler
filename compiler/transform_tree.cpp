@@ -179,7 +179,7 @@ void transformAssignmentWithFieldAndArrays(assignmentS* assign)
 		{
 			assign->left->stringOrId = new char[5];
 			strcpy(assign->left->stringOrId, "this");
-			assign->left->type = Identificator;
+			assign->left->type = This;
 		}
 		else
 		{
