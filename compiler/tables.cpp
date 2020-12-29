@@ -965,6 +965,7 @@ void ClassFile::calcTypeOfIdentifier(exprS* e1, programS* program, const string&
 	res = getPropertyType(e1->stringOrId, program, className);
 	if (res != "")
 	{
+		e1->varInTableNum = 0;
 		e1->exprRes = res;
 		e1->refInfo = findFieldRefOrAdd(className, e1->stringOrId, 
 			transformTypeToDescriptor(res.c_str(), program));
