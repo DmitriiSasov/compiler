@@ -492,6 +492,11 @@ void print(struct assignmentS * a, FILE* file)
 		fprintf(file, "Id%p->Id%p\n", a, a->subLeft);
 		print(a->subLeft, file);
 	}
+	if (a->fieldName != 0)
+	{
+		fprintf(file, "Id%p->Id%p\n", a, a->fieldName);
+		fprintf(file, "Id%p [label=\"%s\"]\n", a->fieldName, a->fieldName);
+	}
 	fprintf(file, "Id%p->Id%p\n", a, a->right);
 	print(a->right, file);
 }
