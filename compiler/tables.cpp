@@ -2336,9 +2336,9 @@ LocalVariableInfo MethodTableElement::find(int indexInTable)
 	int index = 0;
 	for (auto i : localVarsAndConsts)
 	{
-		index++;
 		if (index == indexInTable)
 			tmp = i;
+		index++;
 	}
 
 	return tmp;
