@@ -1527,6 +1527,9 @@ void ClassFile::calcTypeOfLiterals(exprS* e1, const string& methodKey)
 		e1->booleanV = 0;
 	}
 	e1->type = ConstructorCall;
+	char* constructorName = new char[exprRes.size() + 1];
+	strcpy(constructorName, exprRes.c_str());
+	e1->stringOrId = constructorName;
 	e1->exprRes = exprRes;
 	e1->factParams = createFactParamsList(newOperand);
 	e1->refInfo = findMethodRefOrAdd(exprRes, "<init>", descr);
