@@ -1646,7 +1646,7 @@ void checkInheritance(const programS* const program)
 		throw exception("Exception! Errors in inheritance\n");
 }
 
-void fillClassesFiles(list<ClassFile> files, programS* program)
+void fillClassesFiles(list<ClassFile>& files, programS* program)
 {
 	for (programElementS* pe = program->first; pe != 0; pe = pe->next)
 	{
@@ -1659,7 +1659,7 @@ void fillClassesFiles(list<ClassFile> files, programS* program)
 }
 
 
-programS* transformProgram(list<ClassFile> classesFiles, programS* program)
+programS* transformProgram(list<ClassFile>& classesFiles, programS* program)
 {
 	if (program == 0 || program->first == 0) return program;
 
@@ -1677,5 +1677,6 @@ programS* transformProgram(list<ClassFile> classesFiles, programS* program)
 	checkPropertyInitialization(program);
 	transformAssignmentWithFieldAndArrays(program);
 	fillClassesFiles(classesFiles, program);
+	
 	return program;
 }

@@ -3,4 +3,4 @@
 
 void checkInheritance(const programS* const program);
 
-programS* transformProgram(list<ClassFile> classesFiles, programS* program);
+programS* transformProgram(list<ClassFile>& classesFiles, programS* program);
