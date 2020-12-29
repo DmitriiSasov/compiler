@@ -67,17 +67,17 @@ void print(struct exprS * e, FILE* file)
 	switch (e->type)
 	{
 		case Identificator:
-			fprintf(file, "Id%p [label=\"%s\n%d\n%d\n%d\n%s\"]\n", e, e->stringOrId,
-				e->varInTableNum, e->refInfo, e->isStaticCall, e->exprRes.c_str());
+			fprintf(file, "Id%p [label=\"%s\nvarNum - %d\nrefInfo - %d\nis static call - %d\n%s\"]\n", 
+				e, e->stringOrId, e->varInTableNum, e->refInfo, e->isStaticCall, e->exprRes.c_str());
 		break;
 		case This:
-			fprintf(file, "Id%p [label=\"this\n%d\n%d\n%d\n%s\"]\n", e,
+			fprintf(file, "Id%p [label=\"this\nvarNum - %d\nrefInfo - %d\nis static call - %d\n%s\"]\n", e,
 				e->varInTableNum, e->refInfo, e->isStaticCall, e->exprRes.c_str());
 		break;
 		case ConstructorCall:
 		case ArrayCreating:
 		case MethodCall:
-			fprintf(file, "Id%p [label=\"%s( ... )\n%d\n%d\n%d\n%s\"]\n", e, e->stringOrId,
+			fprintf(file, "Id%p [label=\"%s( ... )\nvarNum - %d\nrefInfo - %d\nis static call - %d\n%s\"]\n", e, e->stringOrId,
 				e->varInTableNum, e->refInfo, e->isStaticCall, e->exprRes.c_str());
 			if (e->factParams != 0)
 			{
@@ -86,19 +86,19 @@ void print(struct exprS * e, FILE* file)
 			}			
 		break;
 		case Int:
-			fprintf(file, "Id%p [label=\"%d\n%d\"]\n", e, e->intV, e->refInfo);
+			fprintf(file, "Id%p [label=\"%d\nrefInfo - %d\"]\n", e, e->intV, e->refInfo);
 		break;
 		case Float:
-			fprintf(file, "Id%p [label=\"%f\n%d\"]\n", e, e->floatV, e->refInfo);
+			fprintf(file, "Id%p [label=\"%f\nrefInfo - %d\"]\n", e, e->floatV, e->refInfo);
 		break;
 		case String:
-			fprintf(file, "Id%p [label=\"\\\"%s\\\"\n%d\"]\n", e, e->stringOrId, e->refInfo);
+			fprintf(file, "Id%p [label=\"\\\"%s\\\"\nrefInfo - %d\"]\n", e, e->stringOrId, e->refInfo);
 		break;
 		case Char:
 			fprintf(file, "Id%p [label=\"%c\"]\n", e, e->charV);
 		break;
 		case Double:
-			fprintf(file, "Id%p [label=\"%f\n%d\"]\n", e, e->doubleV, e->refInfo);
+			fprintf(file, "Id%p [label=\"%f\nrefInfo - %d\"]\n", e, e->doubleV, e->refInfo);
 		break;
 		case Boolean:
 			if (e->booleanV) fprintf(file, "Id%p [label=\"true\"]\n", e);
@@ -225,7 +225,7 @@ void print(struct exprS * e, FILE* file)
 			print(e->right, file);
 		break;
 		case FieldCalcExpr:
-			fprintf(file, "Id%p [label=\".\n%d\n%d\n%d\n%s\"]\n", e,
+			fprintf(file, "Id%p [label=\".\nvarNum - %d\nrefInfo - %d\nis static call - %d\n%s\"]\n", e,
 				e->varInTableNum, e->refInfo, e->isStaticCall, e->exprRes.c_str());
 			fprintf(file, "Id%p->Id%p\n", e, e->left);
 			print(e->left, file);
@@ -233,7 +233,7 @@ void print(struct exprS * e, FILE* file)
 			fprintf(file, "Id%p [label=\"%s\"]\n", e->stringOrId, e->stringOrId);
 		break;
 		case MethodCalcExpr:
-			fprintf(file, "Id%p [label=\".\n%d\n%d\n%d\n%s\"]\n", e,
+			fprintf(file, "Id%p [label=\".\nvarNum - %d\nrefInfo - %d\nis static call - %d\n%s\"]\n", e,
 				e->varInTableNum, e->refInfo, e->isStaticCall, e->exprRes.c_str());
 			fprintf(file, "Id%p->Id%p\n", e, e->left);
 			print(e->left, file);
@@ -246,7 +246,7 @@ void print(struct exprS * e, FILE* file)
 			}
 		break;
 		case ArrayElementCall:
-			fprintf(file, "Id%p [label=\"[ ... ]\n%d\n%d\n%d\n%s\"]\n", e,
+			fprintf(file, "Id%p [label=\"[ ... ]\nvarNum - %d\nrefInfo - %d\nis static call - %d\n%s\"]\n", e,
 				e->varInTableNum, e->refInfo, e->isStaticCall, e->exprRes.c_str());
 			fprintf(file, "Id%p->Id%p\n", e, e->left);
 			print(e->left, file);
@@ -254,7 +254,7 @@ void print(struct exprS * e, FILE* file)
 			print(e->right, file);
 		break;
 		case ParentFieldCall:
-			fprintf(file, "Id%p [label=\"super.%s\n%d\n%d\n%d\n%s\"]\n", e, e->stringOrId,
+			fprintf(file, "Id%p [label=\"super.%s\nvarNum - %d\nrefInfo - %d\nis static call - %d\n%s\"]\n", e, e->stringOrId,
 				e->varInTableNum, e->refInfo, e->isStaticCall, e->exprRes.c_str());
 			if (e->left != 0)
 			{
@@ -263,7 +263,7 @@ void print(struct exprS * e, FILE* file)
 			}			
 		break;
 		case ParentMethodCall:
-			fprintf(file, "Id%p [label=\"super.%s ( ... )\n%d\n%d\n%d\n%s\"]\n", e, e->stringOrId,
+			fprintf(file, "Id%p [label=\"super.%s ( ... )\nvarNum - %d\nrefInfo - %d\nis static call - %d\n%s\"]\n", e, e->stringOrId,
 				e->varInTableNum, e->refInfo, e->isStaticCall, e->exprRes.c_str());
 			if (e->left != 0) 
 			{
