@@ -1140,6 +1140,7 @@ void ClassFile::calcTypeOfMethodCall(exprS* e1, programS* program, const string&
 			e1->refInfo = findMethodRefOrAdd("MyLib/MyIO", e1->stringOrId,
 				transformMethodCallToDescriptor(e1, program));
 		}
+		return;
 	}
 
 	char message[200] = "EXCEPTION! Call of unknown method \"";
