@@ -138,7 +138,7 @@ using FloatT = double;
 
 class ConstantsTableElement
 {
-
+public:
 	ConstantType type = UTF_8;
 
 	int refValue[2] = { 0, 0 };
@@ -154,7 +154,6 @@ class ConstantsTableElement
 	string strV = "";
 
 
-public:
 	ConstantsTableElement(ConstantType type, string value)
 	{
 		this->type = type;
@@ -239,6 +238,7 @@ public:
 
 class ClassFile
 {
+public:
 	const uint32_t magic = 0xCAFEBABE;
 
 	const uint16_t minorV = 0;
@@ -303,14 +303,13 @@ class ClassFile
 	
 	void addToStringCall(exprS* e, programS* program);
 
-public:
-
 	bool isAbstract = false;
 
 	bool isFinal = true;
 
 	VisibilityMod vMod = _PUBLIC;
 
+	std::vector<ConstantsTableElement> getConstsTable() { return constsTable; }
 	
 	ClassFile(classS* clas, programS* program);
 
