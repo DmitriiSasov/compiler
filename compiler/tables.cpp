@@ -919,12 +919,24 @@ bool checkUnitOperandsInExpr(exprS* e, const string& methodKey)
 	}
 }
 
-//Добавляем неявное обращение к this 
-void addThisToExpr(exprS* e, const string& className)
+//Добавляем неявное обращение к this или super
+void addParentOrThisToExpr(exprS* e, const string& className, bool isParent)
 {
-	char* tmp = new char[5];
-	strcpy(tmp, "this");
-	e->left = createExpr(tmp, This);
+	char* tmp;
+	exprType et;
+	if (isParent)
+	{
+		tmp = new char[strlen("super") + 1];
+		strcpy(tmp, "super");
+		et = Identificator;
+	}
+	else
+	{
+		tmp = new char[strlen("this") + 1];
+		strcpy(tmp, "this");
+		et = This;
+	}
+	e->left = createExpr(tmp, et);
 	e->left->varInTableNum = 0;
 	e->left->exprRes = className;
 }
@@ -947,12 +959,20 @@ void ClassFile::calcTypeOfIdentifier(exprS* e1, programS* program, const string&
 		return;
 	}
 
+	//Для идентификатора super, он может попасть сюда, только если был выделен при присвоении
+	if (strcmp(e1->stringOrId, "super") == 0 && parentClassName != "")
+	{
+		e1->varInTableNum = 0;
+		e1->exprRes = parentClassName;
+		return;
+	}
+
 	//Ищем среди полей класса и его родителей
 	res = getPropertyType(e1->stringOrId, program, className);
 	if (res != "")
 	{
 		e1->type = FieldCalcExpr;
-		addThisToExpr(e1, className);
+		addParentOrThisToExpr(e1, className, false);
 		e1->exprRes = res;
 		e1->refInfo = findFieldRefOrAdd(className, e1->stringOrId, 
 			transformTypeToDescriptor(res.c_str(), program));
@@ -1059,7 +1079,7 @@ void ClassFile::calcTypeOfMethodCall(exprS* e1, programS* program, const string&
 		if (className != "Main$")
 		{
 			e1->type = MethodCalcExpr;
-			addThisToExpr(e1, className);
+			addParentOrThisToExpr(e1, className, false);
 		}			
 		else 
 			e1->isStaticCall = true;
@@ -1074,7 +1094,7 @@ void ClassFile::calcTypeOfMethodCall(exprS* e1, programS* program, const string&
 	if (res != "")
 	{
 		e1->type = MethodCalcExpr;
-		addThisToExpr(e1, className);
+		addParentOrThisToExpr(e1, className, false);
 		if (strcmp(e1->stringOrId, "toString") == 0 && paramsCount == 0)
 		{
 			char* tmp = new char[strlen("toMyString") + 1];
@@ -1353,7 +1373,10 @@ void ClassFile::calcTypeOfArrayElementCall(exprS* e1, programS* program, const s
 		e1->type = MethodCalcExpr;
 		e1->factParams = createFactParamsList(e1->right);
 		e1->right = 0;
-
+		
+		char* methodName = new char[4];
+		strcpy(methodName, "get");
+		e1->stringOrId = methodName;
 		if (strstr(e1->left->exprRes.c_str(), "[]") != 0)
 		{
 			//В возвращаемом значении уменьшить количество []
@@ -1399,7 +1422,7 @@ void ClassFile::calcTypeOfParentFieldCall(exprS* e1, programS* program, const st
 		e1->exprRes = res;
 		e1->refInfo = findFieldRefOrAdd(parentClassName, e1->stringOrId,
 			transformTypeToDescriptor(res.c_str(), program));
-		addThisToExpr(e1, className);
+		addParentOrThisToExpr(e1, parentClassName, true);
 		return;
 	}
 
@@ -1426,7 +1449,7 @@ void ClassFile::calcTypeOfParentMethodCall(exprS* e1, programS* program, const s
 		throw e;
 	}
 
-	addThisToExpr(e1, className);
+	addParentOrThisToExpr(e1, parentClassName, true);
 	string res = getMethodTypeForUserClass(createShortInfo(e1), program, parentClassName);
 	if (res != "")
 	{
@@ -2009,6 +2032,13 @@ void ClassFile::addConstantsFrom(assignmentS* a, programS* program, const string
 			string message = "EXCEPTION! Assignment to contant value in method \"" + methodKey + "\"\n";
 			exception e(message.c_str());
 			throw e;
+		}
+
+		if (a->left->type == FieldCalcExpr)
+		{
+			a->type = AssignToField;
+			a->fieldName = a->left->stringOrId;
+			a->left = a->left->left;
 		}
 	}
 	else
