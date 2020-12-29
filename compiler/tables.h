@@ -29,6 +29,8 @@ enum ConstantType
 
 VisibilityMod translateVisibilityMod(visibilityMod vMod);
 
+bool canCastType(const string& type1, const string& type2, const programS* const program);
+
 string transformTypeToDescriptor(const char* type, const programS* program);
 
 bool isUserClass(const char* name, const list<string>& classesNames);
