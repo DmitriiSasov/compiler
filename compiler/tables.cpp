@@ -2032,7 +2032,8 @@ void ClassFile::addConstantsFrom(assignmentS* a, programS* program, const string
 			LocalVariableInfo varInfo = methodTable.at(methodKey).find(a->left->varInTableNum);
 			if (varInfo.isConst && varInfo.hasValue)
 			{
-				string message = "EXCEPTION! Assignment to contant value in method \"" + methodKey + "\"\n";
+				string message = "EXCEPTION! Assignment to contant value " + varInfo.name + " in method \""
+					+ methodKey + "\"\n";
 				exception e(message.c_str());
 				throw e;
 			}
@@ -2082,7 +2083,7 @@ void ClassFile::addConstantsFrom(assignmentS* a, programS* program, const string
 		{
 			if (a->subLeft->exprRes != "MyLib/Int")
 			{
-				char message[] = "EXCEPTION! Not integer array index in assignment ";
+				char message[] = "EXCEPTION! Not integer array index in assignment \n";
 				exception e(message);
 				throw e;
 			}
