@@ -3940,7 +3940,7 @@ void main(int argc, char **argv )
 	file = fopen("const_table.txt", "w");
 	for (auto i : classesFiles)
 	{
-		fprintf(file, "%s", i.constsTableToStr().c_str());
+		fprintf(file, "%s\n\n\n\n", i.constsTableToStr().c_str());
 	}
 	fclose(file);
 
