@@ -1669,6 +1669,83 @@ void fillClassesFiles(list<ClassFile>& files, programS* program)
 		throw exception("Errors in compilation!\n");
 }
 
+void checkReturns(constructorS* constr)
+{
+	if (constr->stmts != 0 && constr->stmts->last->type != Return)
+		constr->stmts = addToStmtList(constr->stmts, createStmt(Return));
+	else if (constr->stmts == 0)
+		constr->stmts = createStmtList(createStmt(Return));
+}
+
+void checkReturns(methodS* meth, const programS* program)
+{
+	if (strcmp(meth->func->decl->type->easyType, "MyLib/Unit") != 0)
+	{
+		if (meth->func->stmts != 0 && meth->func->stmts->last->type == ReturnValue)
+		{
+			if (!canCastType(meth->func->stmts->last->expr->exprRes, 
+				meth->func->decl->type->easyType, program))
+			{
+				string message = "EXCEPTION! Method \"";
+				message = message + meth->func->decl->name + "\" has return value \"" + 
+					meth->func->stmts->last->expr->exprRes + "\", but return type is \"" + 
+					meth->func->decl->type->easyType + "\"\n";
+				exception e(message.c_str());
+				throw e;
+			}
+		}
+		else
+		{
+			string message = "EXCEPTION! Method \"";
+			message += meth->func->decl->name;
+			message += "\" hasn't return statement at end of statement list \n";
+			exception e(message.c_str());
+			throw e;
+		}
+	}
+	else
+	{
+		if (meth->func->stmts != 0 && meth->func->stmts->last->type != Return)
+			meth->func->stmts = addToStmtList(meth->func->stmts, createStmt(Return));
+		else if (meth->func->stmts == 0)
+			meth->func->stmts = createStmtList(createStmt(Return));
+	}
+}
+
+
+void checkReturns(programS* program)
+{
+	bool res = true;
+	for (auto pe = program->first; pe != 0; pe = pe->next)
+	{
+		if (pe->clas != 0 && pe->clas->body != 0)
+		{
+			for (auto cbe = pe->clas->body->first; cbe != 0; cbe = cbe->next)
+			{
+				try
+				{
+					if (cbe->constructor != 0)
+					{
+						checkReturns(cbe->constructor);
+					}
+					else if (cbe->method != 0)
+					{
+						checkReturns(cbe->method, program);
+					}
+				}
+				catch (exception e)
+				{
+					printf("%s", e.what());
+					res = false;
+				}
+			}
+		}
+	}
+	if (!res)
+	{
+		throw exception("Error in compilation!");
+	}
+}
 
 programS* transformProgram(list<ClassFile>& classesFiles, programS* program)
 {
