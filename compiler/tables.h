@@ -214,31 +214,31 @@ public:
 
 	string to_str() {
 		if (this->type == _INT) {
-			return "INT " + to_string(valueI)+"\n";
+			return "INT \t" + to_string(valueI)+"\n";
 		}
 		else if (this->type == _FLOAT) {
-			return "FLOAT " + to_string(valueF) + "\n";
+			return "FLOAT \t" + to_string(valueF) + "\n";
 		}
 		else if (this->type == _DOUBLE) {
-			return "DOUBLE " + to_string(valueD) + "\n";
+			return "DOUBLE \t" + to_string(valueD) + "\n";
 		}
 		else if (this->type == UTF_8) {
-			return "UTF-8 " + value + "\n";
+			return "UTF-8 \t" + value + "\n";
 		}
 		else if (this->type == _STRING) {
-			return "STRING " + value + "\n";
+			return "STRING \t" + value + "\n";
 		}
 		else if (this->type == _CLASS) {
-			return "CLASS " + to_string(refValue[0]) + "\n";
+			return "CLASS \t" + to_string(refValue[0]) + "\n";
 		}
 		else if (this->type == NAME_AND_TYPE) {
-			return "NAME_AND_TYPE " + to_string(refValue[0]) + (refValue[1] == 0 ? to_string(refValue[1]) : "") + "\n";
+			return "NAME_AND_TYPE \t" + to_string(refValue[0]) + (refValue[1] == 0 ? to_string(refValue[1]) : "") + "\n";
 		}
 		else if (this->type == METHOD_REF) {
-			return "METHOD_REF " + to_string(refValue[0]) + (refValue[1] == 0 ? to_string(refValue[1]) : "") + "\n";
+			return "METHOD_REF \t" + to_string(refValue[0]) + (refValue[1] == 0 ? to_string(refValue[1]) : "") + "\n";
 		}
 		else if (this->type == FIELD_REF) {
-			return "FIELD_REF " + to_string(refValue[0]) + (refValue[1] == 0 ? to_string(refValue[1]) : "") + "\n";
+			return "FIELD_REF \t" + to_string(refValue[0]) + (refValue[1] == 0 ? to_string(refValue[1]) : "") + "\n";
 		}
 
 	}

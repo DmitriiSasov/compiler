@@ -2281,7 +2281,7 @@ string ClassFile::constsTableToStr() {
 	string result = "";
 	int len = constsTable.size();
 	for (int i = 0; i < len; i++) {
-		result.append(constsTable[i].to_str());
+		result.append(to_string(i + 1) + '\t' + constsTable[i].to_str());
 	}
 	return result;
 }
