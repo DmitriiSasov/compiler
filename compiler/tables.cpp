@@ -1034,7 +1034,8 @@ void calcArrayOfType(exprS* e, programS* program, const string& methodKey)
 	{
 		fp1Type = calcParentClass(fp1Type, fp2->exprRes, program);
 	}
-
+	fp1Type.push_back('[');
+	fp1Type.push_back(']');
 	e->exprRes = fp1Type;
 }
 
@@ -1872,6 +1873,19 @@ bool canCastType(const string& type1, const string& type2, const programS* const
 
 	if (isParentClass(type1, type2, program))
 		return true;
+
+	if (type1.find('[') != -1 && type2.find('[') != -1)
+	{
+		string subType1 = type1;
+		string subType2 = type2;
+		while (type1.find('[') != -1 && type2.find('[') != -1)
+		{
+			subType1.pop_back();
+			subType2.pop_back();
+		}
+		return canCastType(subType1, subType2, program);
+	}
+	
 
 	return false;
 }
