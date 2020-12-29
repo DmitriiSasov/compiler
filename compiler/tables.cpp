@@ -1437,7 +1437,8 @@ void ClassFile::calcTypeOfParentMethodCall(exprS* e1, programS* program, const s
 	if (res != "")
 	{
 		e1->exprRes = res;
-		e1->refInfo = findMethodRefOrAdd(parentClassName, e1->stringOrId, "");
+		e1->refInfo = findMethodRefOrAdd(parentClassName, e1->stringOrId, 
+			transformMethodCallToDescriptor(e1, program));
 		return;
 	}
 
@@ -1927,8 +1928,8 @@ void ClassFile::convertBasicTypeExprToString(exprS* e)
 void ClassFile::addConstantsFrom(varOrValDeclS* v, programS* program, const string& methodKey)
 {
 	MethodTableElement res = methodTable.at(methodKey);
-	
 	v->varNumber = res.addLocalVar(v);
+	methodTable.at(methodKey) = res;
 	if (v->initValue != 0)
 	{
 		calcType(v->initValue, program, methodKey);
