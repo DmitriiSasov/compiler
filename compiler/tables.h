@@ -162,7 +162,7 @@ class ConstantsTableElement
 
 	ConstantType type = UTF_8;
 
-	int refValue[2] = { 0, 0 };
+	int refValue[2] = { -1, -1 };
 
 	string value = string("");
 
@@ -232,13 +232,13 @@ public:
 			return "CLASS \t" + to_string(refValue[0]) + "\n";
 		}
 		else if (this->type == NAME_AND_TYPE) {
-			return "NAME_AND_TYPE \t" + to_string(refValue[0]) + (refValue[1] == 0 ? to_string(refValue[1]) : "") + "\n";
+			return "NAME_AND_TYPE \t" + to_string(refValue[0]) + ' ' + (refValue[1] != -1 ? to_string(refValue[1]) : "") + "\n";
 		}
 		else if (this->type == METHOD_REF) {
-			return "METHOD_REF \t" + to_string(refValue[0]) + (refValue[1] == 0 ? to_string(refValue[1]) : "") + "\n";
+			return "METHOD_REF \t" + to_string(refValue[0]) + ' ' + (refValue[1] != -1 ? to_string(refValue[1]) : "") + "\n";
 		}
 		else if (this->type == FIELD_REF) {
-			return "FIELD_REF \t" + to_string(refValue[0]) + (refValue[1] == 0 ? to_string(refValue[1]) : "") + "\n";
+			return "FIELD_REF \t" + to_string(refValue[0]) + ' ' + (refValue[1] != -1 ? to_string(refValue[1]) : "") + "\n";
 		}
 
 	}
