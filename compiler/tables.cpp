@@ -226,7 +226,7 @@ string getMethodTypeForStandartClass(const string& methodSign, const string& cur
 		if (methodSign == "toBoolean()")
 			return "MyLib/Boolean";
 
-		if (methodSign == "ToDouble()")
+		if (methodSign == "toDouble()")
 			return "MyLib/Double";
 	}
 
@@ -1346,7 +1346,7 @@ void ClassFile::calcTypeOfMethodCalcExpr(exprS* e1, programS* program, const str
 	}
 
 	char message[200] = "EXCEPTION! Call of unknown method \"";
-	exception e(strcat(strcat(strcat(message, e1->right->stringOrId), "\" in method - "),
+	exception e(strcat(strcat(strcat(message, e1->stringOrId), "\" in method - "),
 		methodKey.c_str()));
 	throw e;
 }
