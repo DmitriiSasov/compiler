@@ -17,8 +17,8 @@ VisibilityMod translateVisibilityMod(visibilityMod vMod)
 	default:
 		break;
 	}
-	char message[200] = "EXCEPTION! Unsupported visibility mod translated \"";
-	exception e(message);
+	string message = "EXCEPTION! Unsupported visibility mod translated \"";
+	exception e(message.c_str());
 	throw e;
 }
 
@@ -890,8 +890,8 @@ bool checkUnitOperandsInExpr(assignmentS* a, const string& methodKey)
 		a->right != 0 && a->right->exprRes == "MyLib/Unit" ||
 		a->subLeft != 0 && a->subLeft->exprRes == "MyLib/Unit")
 	{
-		char message[200] = "EXCEPTION! Incorrect operand with UNIT (void) type in method - ";
-		exception e(strcat(message, methodKey.c_str()));
+		string message = "EXCEPTION! Incorrect operand with UNIT (void) type in method - ";
+		exception e((message + methodKey).c_str());
 		throw e;
 	}
 }
@@ -904,8 +904,8 @@ bool checkUnitOperandsInExpr(exprS* e, const string& methodKey)
 		{
 			if (fp->exprRes == "MyLib/Unit")
 			{
-				char message[200] = "EXCEPTION! Incorrect operand with UNIT (void) type in method - ";
-				exception e(strcat(message, methodKey.c_str()));
+				string message = "EXCEPTION! Incorrect operand with UNIT (void) type in method - ";
+				exception e((message + methodKey).c_str());
 				throw e;
 			}
 		}
@@ -913,8 +913,8 @@ bool checkUnitOperandsInExpr(exprS* e, const string& methodKey)
 	if (e->left != 0 && e->left->exprRes == "MyLib/Unit" 
 		|| e->right != 0 && e->right->exprRes == "MyLib/Unit")
 	{
-		char message[200] = "EXCEPTION! Incorrect operand with UNIT (void) type in method - ";
-		exception e(strcat(message, methodKey.c_str()));
+		string message = "EXCEPTION! Incorrect operand with UNIT (void) type in method - ";
+		exception e((message + methodKey).c_str());
 		throw e;
 	}
 }
@@ -991,8 +991,8 @@ void ClassFile::calcTypeOfIdentifier(exprS* e1, programS* program, const string&
 	}
 
 	//Поле не локальная переменная, не поле класса, не глобалка
-	char message[200] = "EXCEPTION! Undefined variable or property name \"";
-	exception e((strcat(strcat(message, e1->stringOrId), "\"")));
+	string message = "EXCEPTION! Undefined variable or property name \"";
+	exception e((message + e1->stringOrId + "\"\n").c_str());
 	throw e;
 }
 
@@ -1035,8 +1035,8 @@ void calcArrayOfType(exprS* e, programS* program, const string& methodKey)
 {
 	if (e->factParams == 0)
 	{
-		char message[200] = "EXCEPTION! Creating of array without elements and type in method\"";
-		exception e((strcat(strcat(message, methodKey.c_str()), "\"")));
+		string message = "EXCEPTION! Creating of array without elements and type in method\"";
+		exception e((message + methodKey + "\"\n").c_str());
 		throw e;
 	}
 
@@ -1164,8 +1164,8 @@ void ClassFile::calcTypeOfMethodCall(exprS* e1, programS* program, const string&
 		return;
 	}
 
-	char message[200] = "EXCEPTION! Call of unknown method \"";
-	exception e((strcat(strcat(message, methodKey.c_str()), "\"")));
+	string message = "EXCEPTION! Call of unknown method \"";
+	exception e((message + e1->stringOrId + "\" in method - \"" + methodKey + "\"\n").c_str());
 	throw e;
 }
 
@@ -1189,9 +1189,8 @@ void ClassFile::calcTypeOfFieldCalsExpr(exprS* e1, programS* program, const stri
 		return;
 	}
 
-	char message[200] = "EXCEPTION! Call of unknown field \"";
-	exception e(strcat(strcat(strcat(message, methodKey.c_str()), "\" in method - "),
-		methodKey.c_str()));
+	string message = "EXCEPTION! Call of unknown field \"";
+	exception e((message + e1->stringOrId + "\" in method - " + methodKey + "\n").c_str());
 	throw e;
 }
 
@@ -1345,9 +1344,8 @@ void ClassFile::calcTypeOfMethodCalcExpr(exprS* e1, programS* program, const str
 		return;
 	}
 
-	char message[200] = "EXCEPTION! Call of unknown method \"";
-	exception e(strcat(strcat(strcat(message, e1->stringOrId), "\" in method - "),
-		methodKey.c_str()));
+	string message = "EXCEPTION! Call of unknown method \"";
+	exception e((message + e1->stringOrId + "\" in method - " + methodKey + "\n").c_str());
 	throw e;
 }
 
@@ -1362,8 +1360,8 @@ void ClassFile::calcTypeOfArrayElementCall(exprS* e1, programS* program, const s
 
 	if (e1->right->exprRes != "MyLib/Int")
 	{
-		char message[200] = "EXCEPTION! Not integer index  in method \"";
-		exception e(strcat(strcat(message, methodKey.c_str()), "\""));
+		string message = "EXCEPTION! Not integer index  in method \"";
+		exception e((message, methodKey + "\"\n").c_str());
 		throw e;
 	}
 
@@ -1396,8 +1394,8 @@ void ClassFile::calcTypeOfArrayElementCall(exprS* e1, programS* program, const s
 		return;
 	}
 			
-	char message[200] = "EXCEPTION! Try to get index of not array or string object in method \"";
-	exception e(strcat(strcat(message, methodKey.c_str()), "\""));
+	string message = "EXCEPTION! Try to get index of not array or string object in method \"";
+	exception e((message + methodKey + "\"\n").c_str());
 	throw e;
 
 }
@@ -1409,9 +1407,8 @@ void ClassFile::calcTypeOfParentFieldCall(exprS* e1, programS* program, const st
 
 	if (parentClassName == "MyLib/Any" || parentClassName == "")
 	{
-		char message[200] = "EXCEPTION! Call of unknown parent field \"";
-		exception e(strcat(strcat(strcat(message, methodKey.c_str()), "\" in method - "),
-			methodKey.c_str()));
+		string message = "EXCEPTION! Call of unknown parent field \"";
+		exception e((message + e1->stringOrId + "\" in method - " + methodKey + "\n").c_str());
 		throw e;
 	}
 
@@ -1426,9 +1423,8 @@ void ClassFile::calcTypeOfParentFieldCall(exprS* e1, programS* program, const st
 		return;
 	}
 
-	char message[200] = "EXCEPTION! Call of unknown parent field \"";
-	exception e(strcat(strcat(strcat(message, methodKey.c_str()), "\" in method - "),
-		methodKey.c_str()));
+	string message = "EXCEPTION! Call of unknown parent field \"";
+	exception e((message + e1->stringOrId + "\" in method - " + methodKey + "\n").c_str());
 	throw e;
 	
 }
@@ -1443,9 +1439,8 @@ void ClassFile::calcTypeOfParentMethodCall(exprS* e1, programS* program, const s
 
 	if (parentClassName == "")
 	{
-		char message[200] = "EXCEPTION! Call of unknown parent method \"";
-		exception e(strcat(strcat(strcat(message, methodKey.c_str()), "\" in method - "),
-			methodKey.c_str()));
+		string message = "EXCEPTION! Call of unknown parent method \"";
+		exception e((message + e1->stringOrId + "\" in method - " + methodKey + "\n").c_str());
 		throw e;
 	}
 
@@ -1479,9 +1474,8 @@ void ClassFile::calcTypeOfParentMethodCall(exprS* e1, programS* program, const s
 		return;
 	}
 
-	char message[200] = "EXCEPTION! Call of unknown parent method \"";
-	exception e(strcat(strcat(strcat(message, e1->stringOrId), "\" in method - "),
-		methodKey.c_str()));
+	string message = "EXCEPTION! Call of unknown parent method \"";
+	exception e((message + e1->stringOrId + "\" in method - " + methodKey + "\n").c_str());
 	throw e;
 }
 
@@ -1596,13 +1590,13 @@ void ClassFile::calcTypeOfUnaryOperators(exprS* e1, programS* program, const str
 	//Ошибки
 	if (methodName == "not")
 	{
-		char message[200] = "EXCEPTION! Incorrect operator! operand with not boolean type in method - ";
-		exception e(strcat(message, (methodKey + "\n").c_str()));
+		string message = "EXCEPTION! Incorrect operator! operand with not boolean type in method - ";
+		exception e((message + methodKey + "\n").c_str());
 		throw e;
 	}
 	
-	char message[200] = "EXCEPTION! Incorrect operator+ (unary) operand with not number type in method - ";
-	exception e(strcat(message, (methodKey + "\n").c_str()));
+	string message = "EXCEPTION! Incorrect operator+ (unary) operand with not number type in method - ";
+	exception e((message + methodKey + "\n").c_str());
 	throw e;
 }
 
@@ -1761,8 +1755,8 @@ void ClassFile::calcTypeOfSum(exprS* e1, programS* program, const string & metho
 		return;
 	}
 
-	char message[200] = "EXCEPTION! Incorrect operator+ operands";
-	exception e(strcat(strcat(message, " in method - "), (methodKey + "\n").c_str()));
+	string message = "EXCEPTION! Incorrect operator+ operands";
+	exception e((message + " in method - " + methodKey + "\n").c_str());
 	throw e;
 }
 
@@ -1830,8 +1824,8 @@ void ClassFile::calcType(exprS* e1, programS* program, const string& methodKey)
 		auto method = methodTable.at(methodKey);
 		if (method.isStatic)
 		{
-			char message[200] = "EXCEPTION! Call THIS in static method \"";
-			exception e((strcat(strcat(message, methodKey.c_str()), "\"")));
+			string message = "EXCEPTION! Call THIS in static method \"";
+			exception e((message + methodKey + "\"\n").c_str());
 			throw e;
 		}
 		e1->varInTableNum = 0;
@@ -1868,8 +1862,8 @@ void ClassFile::calcType(exprS* e1, programS* program, const string& methodKey)
 	}
 	else if (e1->type == Range)
 	{
-		char message[200] = "EXCEPTION! Unsupported range out of FOR loop in method - ";
-		exception e(strcat(message,methodKey.c_str()));
+		string message = "EXCEPTION! Unsupported range out of FOR loop in method - ";
+		exception e((message + methodKey + "\n").c_str());
 		throw e;
 	}
 	else if (e1->type == LogicalNot || e1->type == UnaryPlusExpr || e1->type == UnaryMinusExpr)
@@ -1888,8 +1882,8 @@ void ClassFile::calcType(exprS* e1, programS* program, const string& methodKey)
 	}
 	else if (e1->type == Mod)
 	{
-		char message[200] = "EXCEPTION! Unsupported operator% in method - ";
-		exception e(strcat(message, methodKey.c_str()));
+		string message = "EXCEPTION! Unsupported operator% in method - ";
+		exception e((message + methodKey + "\n").c_str());
 		throw e;
 	}
 }
@@ -1979,9 +1973,9 @@ void ClassFile::addConstantsFrom(varOrValDeclS* v, programS* program, const stri
 		{
 			if (!canCastType(v->type->easyType, v->initValue->exprRes, program))
 			{
-				char message[300] = "EXCEPTION! Cast error. Cannot cast \"";
-				exception e(strcat(strcat(strcat(strcat(strcat(strcat(message, v->type->easyType), 
-					"\" of variable \""), v->id), "\" to type \""), v->initValue->exprRes.c_str()), "\""));
+				string message = "EXCEPTION! Cast error. Cannot cast \"";
+				exception e((message + v->type->easyType + "\" of variable \"" + v->id + 
+					"\" to type \"" + v->initValue->exprRes + "\"\n").c_str());
 				throw e;
 			}
 		}
@@ -1993,14 +1987,14 @@ void ClassFile::addConstantsFrom(assignmentS* a, programS* program, const string
 {
 	if (a->left->type != Identificator && a->subLeft == 0 && a->fieldName == 0)
 	{
-		char message[100] = "EXCEPTION! Not l-value expr in assignment \n";
+		char message[] = "EXCEPTION! Not l-value expr in assignment \n";
 		exception e(message);
 		throw e;
 	}
 	
 	if (a->type != Assign && a->type != AssignToArray && a->type != AssignToField)
 	{
-		char message[100] = "EXCEPTION! Unsupported +=, -=, /=, *=, %= operators \n";
+		char message[] = "EXCEPTION! Unsupported +=, -=, /=, *=, %= operators \n";
 		exception e(message);
 		throw e;
 	}
@@ -2087,7 +2081,7 @@ void ClassFile::addConstantsFrom(assignmentS* a, programS* program, const string
 		{
 			if (a->subLeft->exprRes != "MyLib/Int")
 			{
-				char message[300] = "EXCEPTION! Not integer array index in assignment ";
+				char message[] = "EXCEPTION! Not integer array index in assignment ";
 				exception e(message);
 				throw e;
 			}
@@ -2330,8 +2324,8 @@ int MethodTableElement::addLocalVar(LocalVariableInfo* varOrValDecl)
 	if (std::find(localVarsAndConsts.begin(), localVarsAndConsts.end(), *varOrValDecl)
 		!= localVarsAndConsts.end())
 	{
-		char message[200] = "EXCEPTION! Redefine of variable \"";
-		exception e((strcat(strcat(message, varOrValDecl->name.c_str()), "\"")));
+		string message = "EXCEPTION! Redefine of variable \"";
+		exception e((message + varOrValDecl->name + "\"\n").c_str());
 		throw e;
 	}
 
