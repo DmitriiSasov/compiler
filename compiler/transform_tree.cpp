@@ -1341,10 +1341,11 @@ bool transformTypes(typeS* type, const list<string>& classesNames)
 		char* arrayType = collectArrayInfo(type->complexType, classesNames, templateNestingLevel);
 		if (arrayType != 0)
 		{
-			char* newType = new char(strlen(arrayType) + templateNestingLevel * 2 + 1);
+			char* newType = new char(strlen(arrayType) + templateNestingLevel * 2 + 2);
+			newType[0] = 0;
 			strcpy(newType, arrayType);
 			for (int i = 0; i < templateNestingLevel; ++i)
-				strcat(newType, "[]");
+				strcat(newType, "[]\0");
 			type->easyType = newType;
 			templateTypeFree(type->complexType);
 			free(type->complexType);
