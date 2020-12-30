@@ -74,6 +74,10 @@ void print(struct exprS * e, FILE* file)
 			fprintf(file, "Id%p [label=\"this\nvarNum - %d\nrefInfo - %d\nis static call - %d\n%s\"]\n", e,
 				e->varInTableNum, e->refInfo, e->isStaticCall, e->exprRes.c_str());
 		break;
+		case ParentConstrCall:
+			fprintf(file, "Id%p [label=\"%s()\nvarNum - %d\nrefInfo - %d\nis static call - %d\n%s\"]\n", e, e->stringOrId,
+				e->varInTableNum, e->refInfo, e->isStaticCall, e->exprRes.c_str());
+			break;
 		case ConstructorCall:
 		case ArrayCreating:
 		case MethodCall:
