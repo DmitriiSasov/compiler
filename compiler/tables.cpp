@@ -74,10 +74,8 @@ string getPropertyType(const char* propName, const programS* const program, cons
 //явл€етс€ ли метод библиотечным
 string isStandartStaticMethod(string methodSign)
 {
-	if (methodSign == "print(MyLib/Int|)" || methodSign == "print(MyLib/Float|)" 
-		|| methodSign == "print(MyLib/Double|)" || methodSign == "print(MyLib/Char|)" 
-		|| methodSign == "print(MyLib/MyString|)" || methodSign == "print(MyLib/Boolean|)"
-		|| methodSign == "print(MyLib/Any|)")
+	if (methodSign.find("print(") == 0 && methodSign.find_first_of('|') == 
+		methodSign.find_last_of('|') && methodSign.find_first_of('|') != -1)
 		return "MyLib/Unit";
 	else if (methodSign == "readInt()")	return "MyLib/Int";
 	else if (methodSign == "readLine()") return "MyLib/MyString";
@@ -191,7 +189,7 @@ string getMethodTypeForStandartClass(const string& methodSign, const string& cur
 	{
 		//¬ equals один параметр
 		if (methodSign.find("equals(") == 0 && methodSign.find_last_of('|')
-			== methodSign.find_first_of('|'))
+			== methodSign.find_first_of('|') && methodSign.find_last_of('|') != -1)
 		{
 			return "MyLib/Boolean";
 		}
@@ -284,13 +282,15 @@ string getOperatorTypeForArray(const string& methodSign, const string& currentCl
 	if (currentClassName.find('[') != -1)
 	{
 		//add
-		if (methodSign.find("add(") == 0 && methodSign.find_first_of('|') == methodSign.find_last_of('|'))
+		if (methodSign.find("add(") == 0 && methodSign.find_first_of('|') == 
+			methodSign.find_last_of('|') && methodSign.find_last_of('|') != -1)
 		{
 			res = "MyLib/Array";
 		}
 
 		//addAssign
-		if (methodSign.find("addAssign(") == 0 && methodSign.find_first_of('|') == methodSign.find_last_of('|'))
+		if (methodSign.find("addAssign(") == 0 && methodSign.find_first_of('|') == 
+			methodSign.find_last_of('|') && methodSign.find_last_of('|') != -1)
 		{
 			res = "MyLib/Unit";
 		}
@@ -420,7 +420,8 @@ string getOperatorTypeForInt(const string& methodSign)
 
 string getOperatorTypeForMyString(const string& methodSign)
 {
-	if (methodSign.find("add(") == 0 && methodSign.find_first_of('|') == methodSign.find_last_of('|'))
+	if (methodSign.find("add(") == 0 && methodSign.find_first_of('|') 
+		== methodSign.find_last_of('|') && methodSign.find_last_of('|') != -1)
 		return "MyLib/MyString";
 
 	if (methodSign == "less(MyLib/MyString|)" || methodSign == "more(MyLib/MyString|)" ||
