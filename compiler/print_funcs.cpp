@@ -562,7 +562,7 @@ void print(struct typeS * t, FILE* file)
 	fprintf(file, "Id%p [label=\"type", t);
 	if (t->easyType != "")
 	{
-		fprintf(file, " - %s\"]\n", t->easyType);
+		fprintf(file, " - %s\"]\n", t->easyType.c_str());
 	}
 	else
 	{
