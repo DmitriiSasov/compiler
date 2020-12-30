@@ -13,7 +13,7 @@ open class AreaPrimitive : GeometricPrimitive{
     
     constructor()
     
-    open fun constructPrimitive(area:Int){
+    open fun constructPrimitive(area:Int):Unit {
         this.area = area;
     }
     
@@ -83,7 +83,7 @@ class Rectangle:AreaPrimitive{
     
     constructor()
 
-    fun constructPrimitive(length:Int, width:Int){
+    fun constructPrimitive(length:Int, width:Int):Unit{
         super.area = length * width;
         this.length = length;
         this.width = width;
@@ -93,7 +93,7 @@ class Rectangle:AreaPrimitive{
         return "Rectangle(length=$length, width=$width)"
     }
 
-    override fun scale(scale: Int) {
+    override fun scale(scale: Int):Unit {
         super.scale(scale)
         this.length = length * scale;
         this.width = width * scale;
