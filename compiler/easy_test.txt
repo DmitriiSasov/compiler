@@ -1,78 +1,185 @@
-open class A{
-    
-    private var v1:Int = 5
-    
-    var v2:String = "Hello"
-    
-    constructor()
-    
-    public fun getV1():Int{
-        return v1;
-    }
-    
-    public fun addValueToV1():Int {
-        var res1: Int = v1 + value
-        if (res1 == addValue(v1))
-            return res1
-        else
-            return addValue(v1)
-	return 5
-    }
-    
-    public open fun calcFieldSum():String {
-        return v2+v1
-    }
-    
-}
-
-class B:A{
+open class GeometricPrimitive{
 
     constructor()
     
-    public var v3: Double = 3254235.2;
-    
-    override fun calcFieldSum():String{
-        var res:String = super.calcFieldSum() + super.v2
-        super.v2 = "sdad"
-        return v2 + v3;
-    }
-    
-    fun calcFieldSub():Double{
-        return v3 - super.getV1();
+    override fun toString(): String {
+        return "Figure()"
     }
 }
 
-public var value:Int = 5;
+open class AreaPrimitive : GeometricPrimitive{
 
-fun addValue(v1:Int):Int{
-    var res:Double = (v1 + value).toDouble()
-    return res.toInt();
-}
-
-fun main():Unit {
+    protected var area:Int = 0;
     
-    val a :Int = 5;
-    var arr: Array<Any> = arrayOf(1, 3, 4, 5)
-    arr = arr + "Hello"
-    arr = arr + B()
-    var b :A = B()
-    arr[3+1-5.243f.toInt() + "2".toInt()] = "Hello"[1];
-    b.calcFieldSum();
-    arr[1] = 'a'
-    var index:Int = 0
-    while(index < a){
-        print(arr[index + 5 - 6 + 1])   
-        index = index + 1
+    constructor()
+    
+    open fun constructPrimitive(area:Int){
+        this.area = area;
+    }
+    
+    open fun area(): Int{
+        return area;
     }
 
-    if (a == 5){
-        var f:Int = 5
-        print(a)
-        if (a == 6) {
-            var a:String = readLine()
+    open fun scale(scale:Int):Unit {
+        area = area * scale * scale;
+    }
+    
+    open fun compare(other:AreaPrimitive):Int {
+        if (area > other.area){
+            return 1
         }
+        else if (area < other.area) {
+            return -1
+        }
+        return 0
     }
-    while (a == 6)
-        print(a)
     
+    override fun toString(): String {
+        return "AreaPrimitive(area=$area)"
+    }
+    
+}
+
+class Square:AreaPrimitive {
+
+    private var size:Int = 0;
+        
+    constructor()
+    
+    fun size():Int{
+        return size;
+    }
+    
+    fun size(newSize:Int):Unit{
+        size = newSize;
+    }
+    
+    override fun constructPrimitive(size:Int):Unit {
+        super.area = size * size;
+        this.size = size;        
+    }
+    
+    fun compare(other:Square):Int{
+        if (size > other.size){
+            return 1;
+        } else if (size < other.size){
+            return -1;
+        }        
+        return 0;
+    }
+
+    override fun toString(): String {
+        return "Square(size=$size)"
+    }
+
+}
+
+class Rectangle:AreaPrimitive{
+    
+    private var length:Int = 0;
+    
+    private var width: Int = 0;
+    
+    constructor()
+
+    fun constructPrimitive(length:Int, width:Int){
+        super.area = length * width;
+        this.length = length;
+        this.width = width;
+    }
+
+    override fun toString(): String {
+        return "Rectangle(length=$length, width=$width)"
+    }
+
+    override fun scale(scale: Int) {
+        super.scale(scale)
+        this.length = length * scale;
+        this.width = width * scale;
+    }
+}
+
+fun sortInAscendingOrder(primitives: Array<AreaPrimitive>):Unit{
+    if (primitives.size < 2)
+        return
+
+    val size:Int = primitives.size
+    var i:Int = 0
+    while(i < size){
+        var j:Int = i + 1
+        var currentMinIndex:Int = i;
+        while (j < size){
+            if (primitives[j].compare(primitives[currentMinIndex]) < 0)
+                currentMinIndex = j
+            j = j + 1
+        }
+        var tmp:AreaPrimitive = primitives[i]
+        primitives[i] = primitives[currentMinIndex]
+        primitives[currentMinIndex] = tmp
+        i = i + 1
+    }
+}
+
+fun sortInAscendingOrder(numbers: Array<Int>):Unit{
+    if (numbers.size < 2)
+        return
+    
+    val size:Int = numbers.size
+    var i:Int = 0
+    while(i < size){
+        var j:Int = i + 1
+        var currentMinIndex:Int = i;
+        while (j < size){
+            if (numbers[j] < numbers[currentMinIndex])
+                currentMinIndex = j
+            j = j + 1
+        }
+        var tmp:Int = numbers[i]
+        numbers[i] = numbers[currentMinIndex]
+        numbers[currentMinIndex] = tmp
+        i = i + 1
+    }
+}
+
+fun changeSquare(square:Square, newSize:Int):Unit{
+    square.size(newSize)
+}
+
+fun main():Unit{
+    var tmp:Square = Square()
+    tmp.constructPrimitive(3)
+    var areaPrimitives:Array<AreaPrimitive> = arrayOf(tmp)
+    var i:Int = 2
+    while (i >= 0){
+        tmp = Square()
+        tmp.constructPrimitive(i)
+        areaPrimitives = areaPrimitives +  tmp
+        i = i - 1
+    }
+    
+    var tmpR:Rectangle = Rectangle()
+    tmpR.constructPrimitive(1,2)
+    areaPrimitives = areaPrimitives + tmpR
+
+    sortInAscendingOrder(areaPrimitives)
+    
+    i = 0
+    while (i < areaPrimitives.size){
+        print(areaPrimitives[i])
+        print("\n")
+        i = i + 1
+    }
+    
+    var nums:Array<Int> = arrayOf(4,2,3,1)
+    sortInAscendingOrder(nums)
+    
+    i = 0
+    while(i < nums.size){
+        print(nums[i].toString())
+        print("\n")
+        i = i + 1
+    }
+    
+    print("End\n")
 }
