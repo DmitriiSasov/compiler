@@ -1294,8 +1294,8 @@ void ClassFile::calcTypeOfFieldCalsExpr(exprS* e1, programS* program, const stri
 	if (res != "")
 	{
 		e1->exprRes = res;
-		string clName = res;
-		if (res.find("[]") != -1)
+		string clName = e1->left->exprRes;
+		if (e1->left->exprRes.find('[') != -1)
 			clName = "MyLib/Array";
 		e1->refInfo = findFieldRefOrAdd(clName, e1->stringOrId,
 			transformTypeToDescriptor(res.c_str(), program));
