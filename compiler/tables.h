@@ -296,6 +296,8 @@ class ClassFile
 
 	bool addConstantsFrom(methodS* meth, programS* program);
 	
+	void addMain(classS* clas, const programS* const program);
+	
 	bool addConstantsFrom(stmtS* stmt, programS* program, const string& methodKey);
 
 	void addConstantsFrom(varOrValDeclS* v, programS* program, const string& methodKey);

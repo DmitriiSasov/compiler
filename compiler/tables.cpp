@@ -805,6 +805,60 @@ bool ClassFile::fillHighLevelObjectsConstants(methodS* meth, programS* program)
 	return addConstantsFrom(meth, program);
 }
 
+void ClassFile::addMain(classS* clas, const programS* const program)
+{
+	if (strcmp(clas->name, "Main$") != 0)
+		return;
+
+	//Найти main()
+	string res = getMethodType("main()", program, "Main$");
+
+	char* argName = new char[5];
+	strcpy(argName, "args");
+	char* argType = new char[20];
+	strcpy(argType, "java/lang/String[]");
+	formalParamsList* fpl = createFormalParamsList(argName, createType(argType));
+	char* funName = new char[5];
+	strcpy(funName, "main");
+	char* funType = new char[5];
+	strcpy(funType, "void");
+	funcDeclS* mainFuncDelc = createFuncDecl(funName, fpl, createType(funType));
+	
+	stmtList* stmts = 0;
+	//Если main() найдена
+	if (res == "MyLib/Unit")
+	{
+		exprS* mainCall = createExpr(funName, 0, MethodCall);
+		mainCall->exprRes = "void";
+		mainCall->refInfo = findMethodRefOrAdd("Main$", "main", "()MyLib/Unit");
+		mainCall->isStaticCall = true;
+		stmtS* stmt = createStmt(mainCall, Expr);
+		stmts = createStmtList(stmt);
+		stmts = addToStmtList(stmts, createStmt(Return));
+	}
+	else
+	{
+		stmts = createStmtList(createStmt(Return));
+	}
+
+	funcS* mainFunc = createFunc(mainFuncDelc, stmts);
+	modifiersS* mods = createModifiers(0, 0, Public, Open);
+	mods->isStatic = true;
+	methodS* main = createMethod(mods, mainFunc);
+	
+	//Добавить таблицу переменных в метод + добавить сам метод в таблицу методов
+	int methNameRef = findUtf8OrAdd("main");
+	int methDescr = findUtf8OrAdd("([Ljava/lang/String;)V");
+	MethodTableElement mte(methNameRef, methDescr, _PUBLIC, false, true);
+	mte.addLocalVar(new LocalVariableInfo(true, true, "args", "java/lang/String[]", 0));
+	methodTable.insert(make_pair("main(java/lang/String[]|)",  mte));
+
+	if (clas->body == 0)
+		clas->body = createClassBody(main);
+	else
+		clas->body = addToClassBody(clas->body, main);
+}
+
 bool ClassFile::fillHighLevelObjectsConstants(classS* clas, programS* program)
 {
 	findUtf8OrAdd("Code");
@@ -839,6 +893,10 @@ bool ClassFile::fillHighLevelObjectsConstants(classS* clas, programS* program)
 			}
 		}
 	}
+
+	if (res && strcmp(clas->name, "Main$") == 0)
+		//Добавляем main(String[] args)
+	
 
 	if (clas->parentClassName == 0 && strcmp(clas->name, "Main$") == 0)
 		superClass = findClassOrAdd("java/lang/Object");
