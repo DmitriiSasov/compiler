@@ -820,8 +820,8 @@ void ClassFile::addMain(classS* clas, const programS* const program)
 	formalParamsList* fpl = createFormalParamsList(argName, createType(argType));
 	char* funName = new char[5];
 	strcpy(funName, "main");
-	char* funType = new char[5];
-	strcpy(funType, "void");
+	char* funType = new char[11];
+	strcpy(funType, "MyLib/Unit");
 	funcDeclS* mainFuncDelc = createFuncDecl(funName, fpl, createType(funType));
 	
 	stmtList* stmts = 0;
@@ -895,7 +895,7 @@ bool ClassFile::fillHighLevelObjectsConstants(classS* clas, programS* program)
 	}
 
 	if (res && strcmp(clas->name, "Main$") == 0)
-		//Добавляем main(String[] args)
+		addMain(clas, program);
 	
 
 	if (clas->parentClassName == 0 && strcmp(clas->name, "Main$") == 0)
