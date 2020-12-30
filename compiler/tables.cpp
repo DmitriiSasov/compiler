@@ -1265,8 +1265,12 @@ void ClassFile::calcTypeOfMethodCall(exprS* e1, programS* program, const string&
 		else
 		{
 			e1->exprRes = res;
-			e1->refInfo = findMethodRefOrAdd("MyLib/MyIO", e1->stringOrId,
-				transformMethodCallToDescriptor(e1, program));
+			if (strcmp(e1->stringOrId, "print") == 0)
+				e1->refInfo = findMethodRefOrAdd("MyLib/MyIO", e1->stringOrId,
+					"(LMyLib/Any;)V");
+			else
+				e1->refInfo = findMethodRefOrAdd("MyLib/MyIO", e1->stringOrId,
+					transformMethodCallToDescriptor(e1, program));
 		}
 		return;
 	}
