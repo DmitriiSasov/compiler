@@ -777,7 +777,45 @@ bool ClassFile::fillHighLevelObjectsConstants(constructorS* constr, programS* pr
 		mte.getNestingLevel()));
 	methodTable.insert(make_pair(constrName + "()V", mte));
 	
-	return addConstantsFrom(constr->stmts, program, constrName + "()V");
+	bool res = addConstantsFrom(constr->stmts, program, constrName + "()V");
+
+	//Добавить return и вызов родительского конструктора
+	if (res)
+	{
+		if (constrName == "<init>")
+		{
+			//Добавить вызов родительского конструктора
+			char* pClassName = new char[parentClassName.size() + 1];
+			strcpy(pClassName, parentClassName.c_str());
+			exprS* parentConstructorCall = createExpr(pClassName, 0, ParentConstrCall);
+			parentConstructorCall->exprRes = parentClassName;
+			parentConstructorCall->refInfo = findMethodRefOrAdd(parentClassName, "<init>", "()V");
+			stmtS* newFirstStmt = createStmt(parentConstructorCall, Expr);
+			if (constr->stmts == 0)
+			{
+				constr->stmts = createStmtList(newFirstStmt);
+			}
+			else
+			{
+				newFirstStmt->next = constr->stmts->first;
+				constr->stmts->first = newFirstStmt;
+			}
+			constr->stmts = addToStmtList(constr->stmts, createStmt(Return));
+		}
+		else
+		{
+			if (constr->stmts == 0)
+			{
+				constr->stmts = createStmtList(createStmt(Return));
+			}
+			else
+			{
+				constr->stmts = addToStmtList(constr->stmts, createStmt(Return));
+			}			
+		}		
+	}
+
+	return res;
 }
 
 bool ClassFile::fillHighLevelObjectsConstants(methodS* meth, programS* program)
