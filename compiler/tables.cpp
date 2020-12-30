@@ -740,7 +740,7 @@ string transformTypeToDescriptor(const char* type, const programS* program)
 		{
 			typeName.push_back(type[i]);
 		}
-		return descriptor + transformTypeToDescriptor(typeName.c_str(), program) + ';';
+		return descriptor + transformTypeToDescriptor(typeName.c_str(), program);
 	}
 }
 
