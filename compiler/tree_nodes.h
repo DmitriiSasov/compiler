@@ -4,6 +4,7 @@ using namespace std;
 
 enum exprType 
 {
+	ParentConstrCall,
 	Identificator,
 	This,
 	MethodCall,
