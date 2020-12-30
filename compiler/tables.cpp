@@ -2129,6 +2129,15 @@ void ClassFile::addConstantsFrom(assignmentS* a, programS* program, const string
 	}
 }
 
+exprS* addToBoolean(exprS* e)
+{
+	char* methodName = new char[strlen("getV") + 1];
+	strcpy(methodName, "getV");
+	exprS* newCondition = createExpr(e, methodName, 0, MethodCalcExpr);
+	newCondition->exprRes = "Boolean";
+	return newCondition;
+}
+
 bool ClassFile::addConstantsFrom(whileLoopS* w, programS* program, const string& methodKey)
 {
 	methodTable.at(methodKey).incNestingLevel();
@@ -2142,6 +2151,10 @@ bool ClassFile::addConstantsFrom(whileLoopS* w, programS* program, const string&
 		exception e(message.c_str());
 		throw e;
 	}
+
+	//Приводим MyLib/Boolean к boolean
+	w->cond = addToBoolean(w->cond);
+	w->cond->refInfo = findMethodRefOrAdd("MyLib/Boolean", "getV", "()Z");
 
 	if (w->stmts != 0)
 	{
@@ -2183,6 +2196,9 @@ bool ClassFile::addConstantsFrom(ifStmtS* i, programS* program, const string& me
 		exception e(message.c_str());
 		throw e;
 	}
+
+	i->condition = addToBoolean(i->condition);
+	i->condition->refInfo = findMethodRefOrAdd("MyLib/Boolean", "getV", "()Z");
 
 	if (i->actions != 0)
 	{
