@@ -481,31 +481,31 @@ string createShortInfo(exprS* methodCall)
 	{
 		return "";
 	}
-	string methInfo = string(methodCall->stringOrId) + '(';
+	string methInfo = string(methodCall->stringOrId) + "(";
 
 	if (methodCall->factParams != 0)
 	{
 		for (exprS* e = methodCall->factParams->first; e != 0; e = e->next)
 		{
-			methInfo += e->exprRes + '|';
+			methInfo += e->exprRes + "|";
 		}
 	}
 	
-	return methInfo + ')';
+	return methInfo + ")";
 }
 
 string createMethodSignature(methodS* meth)
 {
-	string methInfo = string(meth->func->decl->name) + '(';
+	string methInfo = string(meth->func->decl->name) + "(";
 
 	if (meth->func->decl->params != 0)
 	{
 		for (formalParamS* fp = meth->func->decl->params->first; fp != 0; fp = fp->next)
 		{
-			methInfo = methInfo + fp->type->easyType + '|';
+			methInfo = methInfo + string(fp->type->easyType) + "|";
 		}
 	}
-	methInfo += ')';
+	methInfo += ")";
 	return methInfo;
 }
 
@@ -728,7 +728,7 @@ string transformMethodCallToDescriptor(exprS* e, const programS* program)
 
 string transformTypeToDescriptor(const char* type, const programS* program)
 {
-	if (isUserClass(type, program) || isMyStandartClass(type))	return string("L") + type + ';';
+	if (isUserClass(type, program) || isMyStandartClass(type))	return string("L") + string(type) + ";";
 	else
 	{
 		string typeName = type;
@@ -750,7 +750,7 @@ void ClassFile::fillHighLevelObjectsConstants(propertyS* prop, programS* program
 	
 	uint16_t nameId = findUtf8OrAdd(prop->varOrVal->id);
 	
-	uint16_t descId = findUtf8OrAdd(transformTypeToDescriptor(prop->varOrVal->type->easyType, 
+	uint16_t descId = findUtf8OrAdd(transformTypeToDescriptor(prop->varOrVal->type->easyType.c_str(), 
 		program));
 	
 	FieldTableElement fte(nameId, descId, translateVisibilityMod(prop->mods->vMod), prop->mods->isStatic, 
@@ -828,12 +828,12 @@ bool ClassFile::fillHighLevelObjectsConstants(methodS* meth, programS* program)
 	{
 		for (formalParamS* fp = meth->func->decl->params->first; fp != 0; fp = fp->next)
 		{
-			methodDescr += transformTypeToDescriptor(fp->type->easyType, program);
+			methodDescr += transformTypeToDescriptor(fp->type->easyType.c_str(), program);
 		}
 	}
 	methodDescr += ')';
 
-	methodDescr += transformTypeToDescriptor(meth->func->decl->type->easyType,
+	methodDescr += transformTypeToDescriptor(meth->func->decl->type->easyType.c_str(),
 		program);
 	uint16_t descId = findUtf8OrAdd(methodDescr);
 	
@@ -1099,7 +1099,7 @@ void ClassFile::calcTypeOfIdentifier(exprS* e1, programS* program, const string&
 
 	//Поле не локальная переменная, не поле класса, не глобалка
 	string message = "EXCEPTION! Undefined variable or property name \"";
-	exception e((message + e1->stringOrId + "\"\n").c_str());
+	exception e((message + string(e1->stringOrId) + "\"\n").c_str());
 	throw e;
 }
 
@@ -1152,6 +1152,8 @@ void calcArrayOfType(exprS* e, programS* program, const string& methodKey)
 	if (e->factParams->first == e->factParams->last)
 	{
 		e->exprRes = e->factParams->first->exprRes;
+		e->exprRes.push_back('[');
+		e->exprRes.push_back(']');
 		return;
 	}
 
@@ -1276,7 +1278,7 @@ void ClassFile::calcTypeOfMethodCall(exprS* e1, programS* program, const string&
 	}
 
 	string message = "EXCEPTION! Call of unknown method \"";
-	exception e((message + e1->stringOrId + "\" in method - \"" + methodKey + "\"\n").c_str());
+	exception e((message + string(e1->stringOrId) + "\" in method - \"" + methodKey + "\"\n").c_str());
 	throw e;
 }
 
@@ -1301,7 +1303,7 @@ void ClassFile::calcTypeOfFieldCalsExpr(exprS* e1, programS* program, const stri
 	}
 
 	string message = "EXCEPTION! Call of unknown field \"";
-	exception e((message + e1->stringOrId + "\" in method - " + methodKey + "\n").c_str());
+	exception e((message + string(e1->stringOrId) + "\" in method - " + methodKey + "\n").c_str());
 	throw e;
 }
 
@@ -1358,7 +1360,7 @@ string* generateMethodRefParams(const string& methodName, const string& classNam
 			res[0] = "MyLib/CalculatedClass";
 			res[1] = methodName;
 			res[2] = "(LMyLib/CalculatedClass;)L";
-			res[2] += className + ';';
+			res[2] += className + ";";
 			return res;
 		}
 	}
@@ -1456,7 +1458,7 @@ void ClassFile::calcTypeOfMethodCalcExpr(exprS* e1, programS* program, const str
 	}
 
 	string message = "EXCEPTION! Call of unknown method \"";
-	exception e((message + e1->stringOrId + "\" in method - " + methodKey + "\n").c_str());
+	exception e((message + string(e1->stringOrId) + "\" in method - " + methodKey + "\n").c_str());
 	throw e;
 }
 
@@ -1519,7 +1521,7 @@ void ClassFile::calcTypeOfParentFieldCall(exprS* e1, programS* program, const st
 	if (parentClassName == "MyLib/Any" || parentClassName == "")
 	{
 		string message = "EXCEPTION! Call of unknown parent field \"";
-		exception e((message + e1->stringOrId + "\" in method - " + methodKey + "\n").c_str());
+		exception e((message + string(e1->stringOrId) + "\" in method - " + methodKey + "\n").c_str());
 		throw e;
 	}
 
@@ -1535,7 +1537,7 @@ void ClassFile::calcTypeOfParentFieldCall(exprS* e1, programS* program, const st
 	}
 
 	string message = "EXCEPTION! Call of unknown parent field \"";
-	exception e((message + e1->stringOrId + "\" in method - " + methodKey + "\n").c_str());
+	exception e((message + string(e1->stringOrId) + "\" in method - " + methodKey + "\n").c_str());
 	throw e;
 	
 }
@@ -1551,7 +1553,7 @@ void ClassFile::calcTypeOfParentMethodCall(exprS* e1, programS* program, const s
 	if (parentClassName == "")
 	{
 		string message = "EXCEPTION! Call of unknown parent method \"";
-		exception e((message + e1->stringOrId + "\" in method - " + methodKey + "\n").c_str());
+		exception e((message + string(e1->stringOrId) + "\" in method - " + methodKey + "\n").c_str());
 		throw e;
 	}
 
@@ -1586,7 +1588,7 @@ void ClassFile::calcTypeOfParentMethodCall(exprS* e1, programS* program, const s
 	}
 
 	string message = "EXCEPTION! Call of unknown parent method \"";
-	exception e((message + e1->stringOrId + "\" in method - " + methodKey + "\n").c_str());
+	exception e((message + string(e1->stringOrId) + "\" in method - " + methodKey + "\n").c_str());
 	throw e;
 }
 
@@ -2015,7 +2017,7 @@ bool canCastType(const string& type1, const string& type2, const programS* const
 	{
 		string subType1 = type1;
 		string subType2 = type2;
-		while (subType1.find('[') != -1 && subType1.find('[') != -1)
+		while (subType1.find('[') != -1 && subType2.find('[') != -1)
 		{
 			subType1.pop_back();
 			subType2.pop_back();
@@ -2036,12 +2038,12 @@ void ClassFile::addConstantsFrom(varOrValDeclS* v, programS* program, const stri
 	{
 		calcType(v->initValue, program, methodKey);
 		checkUnitOperandsInExpr(v->initValue, methodKey);
-		if (strcmp(v->type->easyType, v->initValue->exprRes.c_str()) != 0)
+		if (strcmp(v->type->easyType.c_str(), v->initValue->exprRes.c_str()) != 0)
 		{
 			if (!canCastType(v->type->easyType, v->initValue->exprRes, program))
 			{
 				string message = "EXCEPTION! Cast error. Cannot cast \"";
-				exception e((message + v->type->easyType + "\" of variable \"" + v->id + 
+				exception e((message + string(v->type->easyType) + "\" of variable \"" + string(v->id) + 
 					"\" to type \"" + v->initValue->exprRes + "\"\n").c_str());
 				throw e;
 			}
@@ -2443,7 +2445,7 @@ int MethodTableElement::addLocalVar(LocalVariableInfo* varOrValDecl)
 		!= localVarsAndConsts.end())
 	{
 		string message = "EXCEPTION! Redefine of variable \"";
-		exception e((message + varOrValDecl->name + "\"\n").c_str());
+		exception e((message + string(varOrValDecl->name) + "\"\n").c_str());
 		throw e;
 	}
 

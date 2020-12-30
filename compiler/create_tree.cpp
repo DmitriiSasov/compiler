@@ -427,8 +427,9 @@ struct varOrValDeclS* createVarOrValDecl(struct formalParamsList* idsAndTypes, s
 
 struct typeS* createType(char* id, struct templateTypeS* type)
 {
-	struct typeS* t = (struct typeS*)malloc(sizeof(struct typeS));
-	t->easyType = id;
+	struct typeS* t = new typeS();
+	if (id != 0)
+		t->easyType = id;
 	t->complexType = type;
 	t->next = 0;
 	return t;

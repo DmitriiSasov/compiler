@@ -560,7 +560,7 @@ void print(struct varOrValDeclS * vd, FILE* file)
 void print(struct typeS * t, FILE* file)
 {
 	fprintf(file, "Id%p [label=\"type", t);
-	if (t->easyType != 0)
+	if (t->easyType != "")
 	{
 		fprintf(file, " - %s\"]\n", t->easyType);
 	}

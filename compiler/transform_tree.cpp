@@ -1,6 +1,6 @@
 #include "transform_root.h"
 
-char* transformStdKotlinTypeToMyKotlinTypes(const char* type);
+string transformStdKotlinTypeToMyKotlinTypes(const char* type);
 
 void transformAssignmentWithFieldAndArrays(stmtList* stmts);
 
@@ -1219,7 +1219,7 @@ void typeFree(typesList* type)
 {
 	for (typeS* t = type->first; t != 0;)
 	{
-		if (t->easyType != 0) return;
+		if (t->easyType != "") return;
 		else
 		{
 			templateTypeFree(t->complexType);
@@ -1249,13 +1249,13 @@ bool isStandartKotlinType(const char* typeName)
 	return false;
 }
 
-bool existsEasyType(char* typeName, const list<string>& classesNames)
+bool existsEasyType(const char* typeName, const list<string>& classesNames)
 {
 	return isStandartKotlinType(typeName) || isUserClass(typeName, classesNames) 
 		|| isMyStandartClass(typeName);
 }
 
-char* collectArrayInfo(templateTypeS* type, const list<string>& classesNames, int& nestingLevel)
+string collectArrayInfo(templateTypeS* type, const list<string>& classesNames, int& nestingLevel)
 {
 	if (type == 0)
 		return 0;
@@ -1268,23 +1268,25 @@ char* collectArrayInfo(templateTypeS* type, const list<string>& classesNames, in
 	{
 		printf("Error! More than 1 array type\n");
 	}
-	if (type->list->first->easyType != 0)
+	if (type->list->first->easyType != "")
 	{
-		char* typeOfArray = 0;
-		if (isStandartKotlinType(type->list->first->easyType)
-			&& !isUserClass(type->list->first->easyType, classesNames))
+		string typeOfArray = "";
+		if (isStandartKotlinType(type->list->first->easyType.c_str())
+			&& !isUserClass(type->list->first->easyType.c_str(), classesNames))
 		{
-			if (strcmp(type->list->first->easyType, "Unit")== 0)
+			if (type->list->first->easyType == "Unit")
 			{
 				printf("Error! Array type cannot be Unit\n");
 			}
-			typeOfArray = transformStdKotlinTypeToMyKotlinTypes(type->list->first->easyType);
+			typeOfArray = transformStdKotlinTypeToMyKotlinTypes(type->list->first->easyType.c_str());
 		}
-		else if (isUserClass(type->list->first->easyType, classesNames))
+		else if (isUserClass(type->list->first->easyType.c_str(), classesNames))
 		{
 			typeOfArray = type->list->first->easyType;
+			/*typeOfArray = new char[strlen(type->list->first->easyType) + 1];
+			strcpy(typeOfArray, type->list->first->easyType);*/
 		}
-		else if (!isUserClass(type->list->first->easyType, classesNames))
+		else if (!isUserClass(type->list->first->easyType.c_str(), classesNames))
 		{
 			printf("EXCEPTION! Unknown array type \"%s\"\n", type->list->first->easyType);
 		}
@@ -1297,20 +1299,22 @@ char* collectArrayInfo(templateTypeS* type, const list<string>& classesNames, in
 	}
 }
 
-char* transformStdKotlinTypeToMyKotlinTypes(const char* type)
+string transformStdKotlinTypeToMyKotlinTypes(const char* type)
 {
 	if (isStandartKotlinType(type))
 	{
-		char* myTypeName;
+		string myTypeName;
 		if (strcmp(type, "String") == 0)
 		{
-			myTypeName = new char[strlen("MyLib/MyString") + 1];
-			strcpy(myTypeName, "MyLib/MyString");
+			myTypeName = "MyLib/MyString";
+			/*myTypeName = new char[strlen("MyLib/MyString") + 1];
+			strcpy(myTypeName, "MyLib/MyString");*/
 		}
 		else
 		{
-			myTypeName = new char[strlen("MyLib/") + strlen(type) + 1];
-			strcat(strcpy(myTypeName, "MyLib/"), type);
+			myTypeName = "MyLib/" + string(type);
+			/*myTypeName = new char[strlen("MyLib/") + strlen(type) + 1];
+			strcat(strcpy(myTypeName, "MyLib/"), type);*/
 		}
 		return myTypeName;
 	}
@@ -1322,14 +1326,18 @@ bool transformTypes(typeS* type, const list<string>& classesNames)
 	bool res = true;
 
 	//Если простой тип является стандартным котлин типом, то меняем его на свой котлин тип
-	if (type->easyType != 0)
+	if (type->easyType != "")
 	{
-		if (isStandartKotlinType(type->easyType)
-			&& !isUserClass(type->easyType, classesNames))
+		if (isStandartKotlinType(type->easyType.c_str())
+			&& !isUserClass(type->easyType.c_str(), classesNames))
 		{
-			type->easyType = transformStdKotlinTypeToMyKotlinTypes(type->easyType);
+			string res = transformStdKotlinTypeToMyKotlinTypes(type->easyType.c_str());
+			char* tmp = new char[res.size() + 1];
+			strcpy(tmp, res.c_str());
+			type->easyType = tmp;
+			//type->easyType = transformStdKotlinTypeToMyKotlinTypes(type->easyType);
 		}
-		else if (!isUserClass(type->easyType, classesNames))
+		else if (!isUserClass(type->easyType.c_str(), classesNames))
 		{
 			printf("Error! Unknown type \"%s\"\n", type->easyType);
 			res = false;
@@ -1338,14 +1346,18 @@ bool transformTypes(typeS* type, const list<string>& classesNames)
 	else if (type->complexType != 0 )
 	{
 		int templateNestingLevel = 1;
-		char* arrayType = collectArrayInfo(type->complexType, classesNames, templateNestingLevel);
+		string _res = collectArrayInfo(type->complexType, classesNames, templateNestingLevel);
+		char* tmp = new char[_res.size() + 1];
+		strcpy(tmp, _res.c_str());
+		char* arrayType = tmp;
+		//char* arrayType = collectArrayInfo(type->complexType, classesNames, templateNestingLevel);
 		if (arrayType != 0)
 		{
-			char* newType = new char(strlen(arrayType) + templateNestingLevel * 2 + 2);
+			char* newType = new char(strlen(arrayType) + templateNestingLevel * 2 + 20);
 			newType[0] = 0;
 			strcpy(newType, arrayType);
 			for (int i = 0; i < templateNestingLevel; ++i)
-				strcat(newType, "[]\0");
+				strcat(newType, "[]");
 			type->easyType = newType;
 			templateTypeFree(type->complexType);
 			free(type->complexType);
@@ -1366,7 +1378,7 @@ bool transformTypes(formalParamsList* fps, const list<string>& classesNames)
 		for (auto fp = fps->first; fp != 0; fp = fp->next)
 		{
 			bool tmp = transformTypes(fp->type, classesNames);
-			if (strcmp(fp->type->easyType, "MyLib/Unit") == 0)
+			if (fp->type->easyType == "MyLib/Unit")
 			{
 				printf("Error! Formal parameter type is MyLib/Unit\n");
 				tmp = false;
@@ -1428,7 +1440,7 @@ bool transformTypes(stmtS* stmt, const list<string>& classesNames)
 		if (stmt->varOrVal->type != 0)
 		{
 			tmp = transformTypes(stmt->varOrVal->type, classesNames);
-			if (strcmp(stmt->varOrVal->type->easyType, "MyLib/Unit") == 0)
+			if (stmt->varOrVal->type->easyType == "MyLib/Unit")
 			{
 				printf("Error! Variable \"%s\" has type MyLib/Unit\n", stmt->varOrVal->id);
 				tmp = false;
@@ -1498,7 +1510,7 @@ bool transformTypes(propertyS* prop, const list<string>& classesNames)
 	}
 	if (res)
 	{
-		if (strcmp(prop->varOrVal->type->easyType, "MyLib/Unit") == 0)
+		if (prop->varOrVal->type->easyType == "MyLib/Unit")
 		{
 			printf("Error! Property \"%s\" has type MyLib/Unit\n", prop->varOrVal->id);
 			return false;
@@ -1680,7 +1692,7 @@ void checkReturns(constructorS* constr)
 
 void checkReturns(methodS* meth, const programS* program)
 {
-	if (strcmp(meth->func->decl->type->easyType, "MyLib/Unit") != 0)
+	if (meth->func->decl->type->easyType == "MyLib/Unit")
 	{
 		if (meth->func->stmts != 0 && meth->func->stmts->last->type == ReturnValue)
 		{
@@ -1688,9 +1700,9 @@ void checkReturns(methodS* meth, const programS* program)
 				meth->func->decl->type->easyType, program))
 			{
 				string message = "EXCEPTION! Method \"";
-				message = message + meth->func->decl->name + "\" has return value \"" + 
+				message = message + string(meth->func->decl->name) + "\" has return value \"" + 
 					meth->func->stmts->last->expr->exprRes + "\", but return type is \"" + 
-					meth->func->decl->type->easyType + "\"\n";
+					string(meth->func->decl->type->easyType) + "\"\n";
 				exception e(message.c_str());
 				throw e;
 			}
@@ -1698,7 +1710,7 @@ void checkReturns(methodS* meth, const programS* program)
 		else
 		{
 			string message = "EXCEPTION! Method \"";
-			message += meth->func->decl->name;
+			message += string(meth->func->decl->name);
 			message += "\" hasn't return statement at end of statement list \n";
 			exception e(message.c_str());
 			throw e;

@@ -203,7 +203,7 @@ struct varOrValDeclS
 
 struct typeS 
 {
-	char * easyType;
+	string easyType = "";
 	struct templateTypeS * complexType;
 	struct typeS * next;
 };
