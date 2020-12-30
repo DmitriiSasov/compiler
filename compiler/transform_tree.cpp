@@ -1692,7 +1692,7 @@ void checkReturns(constructorS* constr)
 
 void checkReturns(methodS* meth, const programS* program)
 {
-	if (meth->func->decl->type->easyType == "MyLib/Unit")
+	if (meth->func->decl->type->easyType != "MyLib/Unit")
 	{
 		if (meth->func->stmts != 0 && meth->func->stmts->last->type == ReturnValue)
 		{
