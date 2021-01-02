@@ -142,10 +142,13 @@ class MethodTableElement
 
 	bool isStatic = false;
 
-public:
+	methodS* method = 0;
 
-	MethodTableElement(uint16_t methName, uint16_t descriptor,
-		VisibilityMod vMod, bool isFinal, bool isStatic);
+	constructorS* constructor = 0;
+
+public:
+	MethodTableElement(uint16_t methName, uint16_t descriptor, VisibilityMod vMod, 
+		bool isFinal, bool isStatic, constructorS* constructor, methodS* method);
 
 	int addLocalVar(varOrValDeclS* varOrValDecl);
 

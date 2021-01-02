@@ -535,8 +535,9 @@ FieldTableElement::FieldTableElement(uint16_t fieldName, uint16_t descriptor, Vi
 	if (isFinal)	accessFlags |= 0x0010;
 }
 
+
 MethodTableElement::MethodTableElement(uint16_t methName, uint16_t descriptor,
-	VisibilityMod vMod, bool isFinal, bool isStatic)
+	VisibilityMod vMod, bool isFinal, bool isStatic, constructorS* constructor, methodS* method)
 {
 	this->name = methName;
 	this->descriptor = descriptor;
@@ -557,6 +558,8 @@ MethodTableElement::MethodTableElement(uint16_t methName, uint16_t descriptor,
 	if (isStatic)	accessFlags |= 0x0008;
 
 	if (isFinal)	accessFlags |= 0x0010;
+
+	this->constructor = constructor;
 }
 
 bool operator==(const ConstantsTableElement& lhs, const ConstantsTableElement& rhs)
@@ -774,7 +777,7 @@ bool ClassFile::fillHighLevelObjectsConstants(constructorS* constr, programS* pr
 	uint16_t descr = findUtf8OrAdd("()V");
 
 	MethodTableElement mte(nameId, descr, translateVisibilityMod(constr->mod),
-		false, constr->isStatic);
+		false, constr->isStatic, constr, 0);
 	mte.addLocalVar(new LocalVariableInfo(true, true, "this$", className,
 		mte.getNestingLevel()));
 	methodTable.insert(make_pair(constrName + "()V", mte));
@@ -839,7 +842,7 @@ bool ClassFile::fillHighLevelObjectsConstants(methodS* meth, programS* program)
 	uint16_t descId = findUtf8OrAdd(methodDescr);
 	
 	MethodTableElement mte(nameId, descId, translateVisibilityMod(meth->mods->vMod), 
-		meth->mods->iMod == Final, meth->mods->isStatic);
+		meth->mods->iMod == Final, meth->mods->isStatic, 0, meth);
 
 	methodTable.insert(make_pair(createMethodSignature(meth), mte));
 	return addConstantsFrom(meth, program);
@@ -889,7 +892,7 @@ void ClassFile::addMain(classS* clas, const programS* const program)
 	//Добавить таблицу переменных в метод + добавить сам метод в таблицу методов
 	int methNameRef = findUtf8OrAdd("main");
 	int methDescr = findUtf8OrAdd("([Ljava/lang/String;)V");
-	MethodTableElement mte(methNameRef, methDescr, _PUBLIC, false, true);
+	MethodTableElement mte(methNameRef, methDescr, _PUBLIC, false, true, 0, main);
 	mte.addLocalVar(new LocalVariableInfo(true, true, "args", "java/lang/String[]", 0));
 	methodTable.insert(make_pair("main(java/lang/String[]|)",  mte));
 
