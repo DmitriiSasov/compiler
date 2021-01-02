@@ -599,7 +599,7 @@ ClassFile::ClassFile(classS* clas, programS* program)
 	}
 }
 
-IdT ClassFile::findUtf8OrAdd(std::string const& utf8)
+int ClassFile::findUtf8OrAdd(std::string const& utf8)
 {
 	ConstantsTableElement constant(UTF_8, utf8);
 	const auto foundIter = std::find(constsTable.begin(), constsTable.end(), constant);
@@ -611,7 +611,7 @@ IdT ClassFile::findUtf8OrAdd(std::string const& utf8)
 	return foundIter - constsTable.begin() + 1;
 }
 
-IdT ClassFile::findIntOrAdd(IntT i)
+int ClassFile::findIntOrAdd(IntT i)
 {
 	ConstantsTableElement constant(_INT, i);
 	const auto foundIter = std::find(constsTable.begin(), constsTable.end(), constant);
@@ -623,7 +623,7 @@ IdT ClassFile::findIntOrAdd(IntT i)
 	return foundIter - constsTable.begin() + 1;
 }
 
-IdT ClassFile::findFloatOrAdd(float i)
+int ClassFile::findFloatOrAdd(float i)
 {
 	ConstantsTableElement constant(_FLOAT, i);
 	const auto foundIter = std::find(constsTable.begin(), constsTable.end(), constant);
@@ -635,7 +635,7 @@ IdT ClassFile::findFloatOrAdd(float i)
 	return foundIter - constsTable.begin() + 1;
 }
 
-IdT ClassFile::findDoubleOrAdd(double i)
+int ClassFile::findDoubleOrAdd(double i)
 {
 	ConstantsTableElement constant(_DOUBLE, i);
 	const auto foundIter = std::find(constsTable.begin(), constsTable.end(), constant);
@@ -647,9 +647,10 @@ IdT ClassFile::findDoubleOrAdd(double i)
 	return foundIter - constsTable.begin() + 1;
 }
 
-IdT ClassFile::findStringOrAdd(string& v)
+int ClassFile::findStringOrAdd(string& v)
 {
-	ConstantsTableElement constant(_STRING, v);
+	int value[2] = { findUtf8OrAdd(v), 0 };
+	ConstantsTableElement constant(_STRING, value);
 	const auto foundIter = std::find(constsTable.begin(), constsTable.end(), constant);
 	if (foundIter == constsTable.end())
 	{
@@ -659,7 +660,7 @@ IdT ClassFile::findStringOrAdd(string& v)
 	return foundIter - constsTable.begin() + 1;
 }
 
-IdT ClassFile::findClassOrAdd(std::string const& className)
+int ClassFile::findClassOrAdd(std::string const& className)
 {
 	int value[2] = { findUtf8OrAdd(className), 0 };
 	ConstantsTableElement constant(_CLASS, value);
@@ -672,7 +673,7 @@ IdT ClassFile::findClassOrAdd(std::string const& className)
 	return foundIter - constsTable.begin() + 1;
 }
 
-IdT ClassFile::findNameAndTypeOrAdd(std::string const& name, std::string const& type)
+int ClassFile::findNameAndTypeOrAdd(std::string const& name, std::string const& type)
 {
 	int value[2] = { findUtf8OrAdd(name), findUtf8OrAdd(type) };
 	ConstantsTableElement constant(NAME_AND_TYPE, value);
@@ -685,7 +686,7 @@ IdT ClassFile::findNameAndTypeOrAdd(std::string const& name, std::string const& 
 	return foundIter - constsTable.begin() + 1;
 }
 
-IdT ClassFile::findFieldRefOrAdd(std::string const& className, std::string const& name, std::string const& type)
+int ClassFile::findFieldRefOrAdd(std::string const& className, std::string const& name, std::string const& type)
 {
 
 	int value[2] = { findNameAndTypeOrAdd(name, type), findClassOrAdd(className) };
@@ -699,7 +700,7 @@ IdT ClassFile::findFieldRefOrAdd(std::string const& className, std::string const
 	return foundIter - constsTable.begin() + 1;
 }
 
-IdT ClassFile::findMethodRefOrAdd(std::string const& className, std::string const& name, std::string const& type)
+int ClassFile::findMethodRefOrAdd(std::string const& className, std::string const& name, std::string const& type)
 {
 	int value[2] = { findNameAndTypeOrAdd(name, type), findClassOrAdd(className) };
 	ConstantsTableElement constant(METHOD_REF, value);
@@ -1935,7 +1936,7 @@ void ClassFile::calcType(exprS* e1, programS* program, const string& methodKey)
 	else if (e1->type == This)
 	{
 		auto method = methodTable.at(methodKey);
-		if (method.isStatic)
+		if (method.isStaticMethod())
 		{
 			string message = "EXCEPTION! Call THIS in static method \"";
 			exception e((message + methodKey + "\"\n").c_str());
@@ -2395,7 +2396,7 @@ bool ClassFile::addConstantsFrom(methodS* meth, programS* program)
 {
 	//«‡„ÛÊ‡ÂÏ ÛÍ‡Á‡ÚÂÎ¸ Ì‡ Ó·˙ÂÍÚ
 	string methKey = createMethodSignature(meth);
-	if (!methodTable.at(methKey).isStatic)
+	if (!methodTable.at(methKey).isStaticMethod())
 	{
 		auto methodTableElement = methodTable.at(methKey);
 		methodTableElement.addLocalVar(new LocalVariableInfo(true, true, "this$", className, 
@@ -2506,4 +2507,196 @@ LocalVariableInfo MethodTableElement::find(int indexInTable)
 	}
 
 	return tmp;
+}
+
+
+
+void ClassFile::generate() {
+	std::string classname = className + ".class";
+	freopen(classname.c_str(), "wb", stdout);
+	std::vector<char> len = intToBytes(constsTable.size() + 1);
+
+	// CAFEBABE
+	vector<char> tmp = intToBytes(magic);
+	cout << tmp[0] << tmp[1] << tmp[2] << tmp[3];
+
+	// JAVA
+	tmp = intToBytes(minorV);
+	std::cout << tmp[2] << tmp[3];
+	tmp = intToBytes(majorV);
+	std::cout << tmp[1] << tmp[0];
+
+	// constants count
+	std::cout << len[2] << len[3];
+
+	//constants table
+	for (auto i : constsTable) {
+		i.generate();
+	}
+
+	// Flags 
+	tmp = intToBytes(accessFlags);
+	std::cout << tmp[2] << tmp[3];
+
+	// This class constant
+	tmp = intToBytes(thisClass);
+	std::cout << tmp[2] << tmp[3];
+
+	// Parent class constant
+	tmp = intToBytes(superClass);
+	std::cout << tmp[2] << tmp[3];
+
+	// Interfaces table
+	std::cout << (char)0x00 << (char)0x00;
+
+	// Fields table
+	tmp = intToBytes(fieldTable.size());
+	std::cout << tmp[2] << tmp[3];
+
+	for (auto i : fieldTable) {
+		i.second.generate();
+	}
+
+	// Methods table
+	tmp = intToBytes(methodTable.size());
+	std::cout << tmp[2] << tmp[3];
+
+	for (auto i : methodTable) {
+		i.second.generate();
+	}
+
+	// atributes
+	std::cout << (char)0x00 << (char)0x00;
+
+}
+
+void ConstantsTableElement::generate() {
+	// UTF-8
+	if (type == UTF_8) {
+		char const* c = value.c_str();
+		std::cout << (char)UTF_8;
+		std::vector<char> len = intToBytes(strlen(c));
+		std::cout << (char)len[2] << (char)len[3];
+		for (int i = 0; i < strlen(c); ++i) {
+			std::cout << c[i];
+		}
+	}
+
+	// Integer
+	if (type == _INT) {
+		std::cout << (char)_INT;
+		std::vector<char> len = intToBytes(valueI);
+		std::cout << len[0] << len[1] << len[2] << len[3];
+	}
+
+	// Float
+	if (type == _FLOAT) {
+		std::cout << (char)_FLOAT;
+		std::vector<char> len = flToBytes(valueF);
+		std::cout << len[0] << len[1] << len[2] << len[3];
+	}
+
+	// Class
+	if (type == _CLASS) {
+		std::cout << (char)_CLASS;
+		std::vector<char> len = intToBytes(refValue[0]);
+		std::cout << len[2] << len[3];
+	}
+
+	// String !!!!!!!Œ¡–¿“» ¬Õ»Ã¿Õ»≈ Õ¿ –≈‘ ¬¿À”≈ 0!!!!!!!!!!!!
+	if (type == _STRING) {
+		std::cout << (char)_STRING;
+		std::vector<char> len = intToBytes(refValue[0]);
+		std::cout << len[2] << len[3];
+	}
+
+	// Fieldref
+	if (type == FIELD_REF) {
+		std::cout << (char)FIELD_REF;
+		std::vector<char> len = intToBytes(refValue[0]);
+		std::cout << len[2] << len[3];
+		len = intToBytes(refValue[1]);
+		std::cout << len[2] << len[3];
+	}
+
+	// Methodref
+	if (type == METHOD_REF) {
+		std::cout << (char)METHOD_REF;
+		std::vector<char> len = intToBytes(refValue[0]);
+		std::cout << len[2] << len[3];
+		len = intToBytes(refValue[1]);
+		std::cout << len[2] << len[3];
+	}
+
+	// NameAndType
+	if (type == NAME_AND_TYPE) {
+		std::cout << (char)NAME_AND_TYPE;
+		std::vector<char> len = intToBytes(refValue[0]);
+		std::cout << len[2] << len[3];
+		len = intToBytes(refValue[1]);
+		std::cout << len[2] << len[3];
+	}
+}
+
+
+
+void FieldTableElement::generate() {
+	std::vector<char> tmp;
+	// flags
+	tmp = intToBytes(accessFlags);
+	std::cout << tmp[2] << tmp[3];
+
+	// name
+	tmp = intToBytes(fieldName);
+	std::cout << tmp[2] << tmp[3];
+
+	// descriptor
+	tmp = intToBytes(descriptor);
+	std::cout << tmp[2] << tmp[3];
+
+	// attributes
+	tmp = intToBytes(0);
+	std::cout << tmp[2] << tmp[3];
+}
+
+void MethodTableElement::generate() {
+	std::vector<char> tmp;
+
+	// flags
+	tmp = intToBytes(accessFlags);
+	std::cout << tmp[2] << tmp[3];
+
+	// name
+	tmp = intToBytes(name);
+	std::cout << tmp[2] << tmp[3];
+
+	// descriptor
+	tmp = intToBytes(descriptor);
+	std::cout << tmp[2] << tmp[3];
+
+	// method atributes count (01)
+	std::cout << (char)0x00 << (char)0x01;
+	// method atribute (Code - 0x01)
+	std::cout << (char)0x00 << (char)0x01;
+}
+
+std::vector <char> intToBytes(int value) {
+	std::vector<char> arrayOfByte(4);
+	for (int i = 0; i < 4; ++i) {
+		arrayOfByte[3 - i] = (value >> (i * 8));
+	}
+	return arrayOfByte;
+}
+
+std::vector<char> flToBytes(float value)
+{
+	std::vector<char> arrayOfByte(4);
+
+	for (int i = 0; i < sizeof(float); ++i)
+		arrayOfByte[3 - i] = ((char*)&value)[i];
+	return arrayOfByte;
+}
+
+bool cmp(std::pair<ConstantsTableElement, int>& a, std::pair<ConstantsTableElement, int>& b) {
+	return a.second < b.second;
 }

@@ -4,6 +4,7 @@
 #include <map>
 #include <list>
 #include <vector>
+#include <iostream>
 
 using namespace std;
 
@@ -26,6 +27,11 @@ enum ConstantType
 	FIELD_REF = 9,
 	METHOD_REF = 10,
 };
+
+
+vector <char> intToBytes(int value);
+
+vector<char> flToBytes(float value);
 
 VisibilityMod translateVisibilityMod(visibilityMod vMod);
 
@@ -65,17 +71,17 @@ string createMethodSignature(methodS* meth);
 
 struct FieldTableElement
 {
+	int fieldName = 0;
+
+	int descriptor = 0;
+
+	int accessFlags = 0;
 
 public:
 
-	uint16_t fieldName = 0;
-
-	uint16_t descriptor = 0;
-
-	uint16_t accessFlags = 0;
-
 	FieldTableElement(uint16_t fieldName, uint16_t descriptor, VisibilityMod vMod, bool isStatic, bool isFinal);
 
+	void generate();
 };
 
 struct attribute
@@ -90,6 +96,8 @@ struct LocalVariableInfo
 	string name;
 	string type;
 	int nestingLevel;
+
+public:
 
 	LocalVariableInfo(bool isConst, bool hasValue, string name, string type, 
 		int nestingLevel)
@@ -126,15 +134,15 @@ class MethodTableElement
 
 	attribute code;
 
-public:
+	int name = 0;
 
-	uint16_t name = 0;
+	int descriptor = 0;
 
-	uint16_t descriptor = 0;
-
-	uint16_t accessFlags = 0;
+	int accessFlags = 0;
 
 	bool isStatic = false;
+
+public:
 
 	MethodTableElement(uint16_t methName, uint16_t descriptor,
 		VisibilityMod vMod, bool isFinal, bool isStatic);
@@ -153,6 +161,9 @@ public:
 
 	int getNestingLevel() { return nestingLevel; }
 
+	bool isStaticMethod() { return this->isStatic; }
+
+	void generate();
 };
 
 using IdT = unsigned long long;
@@ -161,6 +172,7 @@ using FloatT = double;
 
 class ConstantsTableElement
 {
+public:
 
 	ConstantType type = UTF_8;
 
@@ -174,10 +186,7 @@ class ConstantsTableElement
 
 	int valueI = 0;
 
-	string strV = "";
 
-
-public:
 	ConstantsTableElement(ConstantType type, string value)
 	{
 		this->type = type;
@@ -193,7 +202,8 @@ public:
 
 	ConstantsTableElement(ConstantType type, char* value)
 	{
-		ConstantsTableElement(type, string(value));
+		this->type = type;
+		this->value = value;
 	}
 
 	ConstantsTableElement(ConstantType type, double value)
@@ -228,7 +238,7 @@ public:
 			return "UTF-8 \t" + value + "\n";
 		}
 		else if (this->type == _STRING) {
-			return "STRING \t" + value + "\n";
+			return "STRING \t" + to_string(refValue[0]) + "\n";
 		}
 		else if (this->type == _CLASS) {
 			return "CLASS \t" + to_string(refValue[0]) + "\n";
@@ -252,29 +262,33 @@ public:
 
 	string getValueString()
 	{
-		return strV;
+		return value;
 	}
+
+	void generate();
 
 	friend bool operator==(const ConstantsTableElement& lhs, const ConstantsTableElement& rhs);
 };
 
 
+bool cmp(pair<ConstantsTableElement, int>& a, pair<ConstantsTableElement, int>& b);
 
 class ClassFile
 {
-	const uint32_t magic = 0xCAFEBABE;
 
-	const uint16_t minorV = 0;
+	const int magic = 0xCAFEBABE;
 
-	const uint16_t majorV = 52;
+	const int minorV = 0;
 
-	uint16_t accessFlags = 0;
+	const int majorV = 52;
 
-	uint16_t thisClass = 0;
+	int accessFlags = 0;
+
+	int thisClass = 0;
 
 	string className = "";
 
-	uint16_t superClass = 0;
+	int superClass = 0;
 
 	string parentClassName = "";
 
@@ -344,35 +358,35 @@ class ClassFile
 	
 	int calcType(factParamsList* fpl, programS* program, const string& methodKey);
 
-	
-public:
-
 	bool isAbstract = false;
 
 	bool isFinal = true;
 
 	VisibilityMod vMod = _PUBLIC;
 
+public:
+
+	void generate();
 	
 	ClassFile(classS* clas, programS* program);
 
-	IdT findUtf8OrAdd(std::string const& utf8);
+	int findUtf8OrAdd(std::string const& utf8);
 
-	IdT findIntOrAdd(IntT i);
+	int findIntOrAdd(IntT i);
 
-	IdT findFloatOrAdd(float i);
+	int findFloatOrAdd(float i);
 
-	IdT findDoubleOrAdd(double i);
+	int findDoubleOrAdd(double i);
 
-	IdT findStringOrAdd(string& v);
+	int findStringOrAdd(string& v);
 
-	IdT findClassOrAdd(string const& className);
+	int findClassOrAdd(string const& className);
 
-	IdT findNameAndTypeOrAdd(string const& name, string const& type);
+	int findNameAndTypeOrAdd(string const& name, string const& type);
+	
+	int findFieldRefOrAdd(string const& className, string const& name, string const& type);
 
-	IdT findFieldRefOrAdd(string const& className, string const& name, string const& type);
-
-	IdT findMethodRefOrAdd(string const& className, string const& name, string const& type);
+	int findMethodRefOrAdd(string const& className, string const& name, string const& type);
 
 	string constsTableToStr();
 
