@@ -1,4 +1,0 @@
-fun main() {
-    val user = User("Alex", 1)
-    println(user)
-}
