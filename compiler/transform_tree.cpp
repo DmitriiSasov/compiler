@@ -639,7 +639,7 @@ void checkMethodsVilibilityLevelIncreasing(const programS* const program)
 		throw exception("Exception! Errors in methods visibility modifiers\n");
 }
 
-bool checkPropsNames(classS* clas, const  programS* const program)
+bool checkPropsNames(classS* clas, const programS* const program)
 {
 	if (clas == 0 || clas->body == 0)
 		return true;
@@ -662,11 +662,11 @@ bool checkPropsNames(classS* clas, const  programS* const program)
 			if (clas->parentClassName != 0 && getPropertyType(cbe->property->varOrVal->id, 
 				program, clas->parentClassName) != "")
 			{
-				printf("Error!  Redefine of parent property \"%s\" in class \"%s\"\n",
+				printf("Error! Redefine of parent property \"%s\" in class \"%s\"\n",
 					cbe->property->varOrVal->id, clas->name);
 				res = false;
 			}
-			
+
 			propertyNames.push_back(cbe->property->varOrVal->id);
 		}
 	}
@@ -1425,7 +1425,13 @@ bool transformTypes(methodS* meth, const list<string>& classesNames)
 	}
 
 	if (res == false)
-		printf("Errors in method \"%s\"\n", meth->func->decl->name);
+	{
+		if (meth->func->decl != 0)
+			printf("Errors in method \"%s\"\n", meth->func->decl->name);
+		else
+			printf("Errors in method \"%s\"\n", meth->funcDecl->name);
+	}
+		
 
 	return res;
 }
