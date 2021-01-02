@@ -38,7 +38,7 @@
     <ClCompile Include="transform_tree.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="generate_code.cpp">
+    <ClCompile Include="generate.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
@@ -66,7 +66,7 @@
     <ClInclude Include="transform_root.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="generate_code.h">
+    <ClInclude Include="generate.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
