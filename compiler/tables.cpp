@@ -2513,6 +2513,16 @@ LocalVariableInfo MethodTableElement::find(int indexInTable)
 }
 
 
+vector<char> generate(methodS* method)
+{
+	return vector<char>();
+}
+
+vector<char> generate(constructorS* constr)
+{
+	return vector<char>();
+}
+
 
 void ClassFile::generate() {
 	std::string classname = className + ".class";
@@ -2527,7 +2537,7 @@ void ClassFile::generate() {
 	tmp = intToBytes(minorV);
 	std::cout << tmp[2] << tmp[3];
 	tmp = intToBytes(majorV);
-	std::cout << tmp[1] << tmp[0];
+	std::cout << tmp[2] << tmp[3];
 
 	// constants count
 	std::cout << len[2] << len[3];
@@ -2597,6 +2607,14 @@ void ConstantsTableElement::generate() {
 		std::cout << (char)_FLOAT;
 		std::vector<char> len = flToBytes(valueF);
 		std::cout << len[0] << len[1] << len[2] << len[3];
+	}
+
+	// Double
+	if (type == _DOUBLE)
+	{
+		std::cout << (char)_DOUBLE;
+		std::vector<char> len = doubleToBytes(valueD);
+		std::cout << len[0] << len[1] << len[2] << len[3] << len[4] << len[5] << len[6] << len[7];
 	}
 
 	// Class
@@ -2681,9 +2699,23 @@ void MethodTableElement::generate() {
 	std::cout << (char)0x00 << (char)0x01;
 	// method atribute (Code - 0x01)
 	std::cout << (char)0x00 << (char)0x01;
+
+	//method code
+	vector<char> methodCode;
+	if (method != 0)
+		methodCode = ::generate(method);
+	else
+		methodCode = ::generate(constructor);
+
+	//size of code
+	tmp = intToBytes(methodCode.size());
+	for (auto i : tmp)
+		cout << i;
+
+
 }
 
-std::vector <char> intToBytes(int value) {
+vector <char> intToBytes(int value) {
 	std::vector<char> arrayOfByte(4);
 	for (int i = 0; i < 4; ++i) {
 		arrayOfByte[3 - i] = (value >> (i * 8));
@@ -2691,7 +2723,7 @@ std::vector <char> intToBytes(int value) {
 	return arrayOfByte;
 }
 
-std::vector<char> flToBytes(float value)
+vector<char> flToBytes(float value)
 {
 	std::vector<char> arrayOfByte(4);
 
@@ -2700,6 +2732,15 @@ std::vector<char> flToBytes(float value)
 	return arrayOfByte;
 }
 
-bool cmp(std::pair<ConstantsTableElement, int>& a, std::pair<ConstantsTableElement, int>& b) {
+vector<char> doubleToBytes(double value)
+{
+	std::vector<char> arrayOfByte(8);
+
+	for (int i = 0; i < sizeof(double); ++i)
+		arrayOfByte[8 - i] = ((char*)&value)[i];
+	return arrayOfByte;
+}
+
+bool cmp(pair<ConstantsTableElement, int>& a, pair<ConstantsTableElement, int>& b) {
 	return a.second < b.second;
 }

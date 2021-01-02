@@ -33,6 +33,8 @@ vector <char> intToBytes(int value);
 
 vector<char> flToBytes(float value);
 
+vector<char> doubleToBytes(double value);
+
 VisibilityMod translateVisibilityMod(visibilityMod vMod);
 
 bool canCastType(const string& type1, const string& type2, const programS* const program);
