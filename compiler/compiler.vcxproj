@@ -23,7 +23,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="create_tree.cpp" />
-    <ClCompile Include="generate.cpp" />
     <ClCompile Include="lexer.flex.cpp" />
     <ClCompile Include="print_funcs.cpp" />
     <ClCompile Include="synt_analyzer.tab.cpp" />
@@ -40,7 +39,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="create_tree.h" />
-    <ClInclude Include="generate.h" />
     <ClInclude Include="print_funcs.h" />
     <ClInclude Include="synt_analyzer.tab.h" />
     <ClInclude Include="tables.h" />
