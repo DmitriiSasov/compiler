@@ -1613,7 +1613,7 @@ void ClassFile::calcTypeOfLiterals(exprS* e1, const string& methodKey)
 	{
 		exprRes = "MyLib/Int";
 		newOperand = createExpr(e1->intV, Int);
-		if (e1->intV > 65535)
+		if (e1->intV > 32767 || e1->intV < -32768)
 			newOperand->refInfo = findIntOrAdd(e1->intV);
 		newOperand->exprRes = "int";
 		descr = "(I)V";
