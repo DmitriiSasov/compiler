@@ -2555,6 +2555,90 @@ vector<char> generate(exprS* expr)
 		resultCode.push_back(tmp[2]);
 		resultCode.push_back(tmp[3]);
 		break;
+	case ArrayCreating:
+	case MethodCall:
+		//Заносим параметры конструктора
+		if (expr->factParams != 0)
+		{
+			for (auto fp = expr->factParams->first; fp != 0; fp = fp->next)
+			{
+				tmp = generate(fp);
+				resultCode.insert(resultCode.end(), tmp.begin(), tmp.end());
+			}
+		}
+		resultCode.push_back((char)Command::invokestatic);
+		tmp = intToBytes(expr->refInfo);
+		resultCode.push_back(tmp[2]);
+		resultCode.push_back(tmp[3]);
+		break;
+	case FieldCalcExpr:		
+		tmp = generate(expr->left);
+		resultCode.insert(resultCode.end(), tmp.begin(), tmp.end());
+		resultCode.push_back((char)Command::getfield);			
+		tmp = intToBytes(expr->refInfo);
+		resultCode.push_back(tmp[2]);
+		resultCode.push_back(tmp[3]);
+		break;
+	case ParentFieldCall:
+		resultCode.push_back((char)Command::aload_0);
+		resultCode.push_back((char)Command::getfield);
+		tmp = intToBytes(expr->refInfo);
+		resultCode.push_back(tmp[2]);
+		resultCode.push_back(tmp[3]);
+		break;
+	case MethodCalcExpr:
+		tmp = generate(expr->left);
+		resultCode.insert(resultCode.end(), tmp.begin(), tmp.end());
+		//Заносим параметры метода
+		if (expr->factParams != 0)
+		{
+			for (auto fp = expr->factParams->first; fp != 0; fp = fp->next)
+			{
+				tmp = generate(fp);
+				resultCode.insert(resultCode.end(), tmp.begin(), tmp.end());
+			}
+		}
+		resultCode.push_back((char)Command::invokevirtual);
+		tmp = intToBytes(expr->refInfo);
+		resultCode.push_back(tmp[2]);
+		resultCode.push_back(tmp[3]);
+		break;
+	case ParentMethodCall:
+		resultCode.push_back((char)Command::aload_0);
+		//Заносим параметры метода
+		if (expr->factParams != 0)
+		{
+			for (auto fp = expr->factParams->first; fp != 0; fp = fp->next)
+			{
+				tmp = generate(fp);
+				resultCode.insert(resultCode.end(), tmp.begin(), tmp.end());
+			}
+		}
+		resultCode.push_back((char)Command::invokespecial);
+		tmp = intToBytes(expr->refInfo);
+		resultCode.push_back(tmp[2]);
+		resultCode.push_back(tmp[3]);
+		break;
+	case Identificator:
+		if (expr->isStaticCall)
+		{
+			resultCode.push_back((char)Command::getstatic);
+			tmp = intToBytes(expr->refInfo);
+			resultCode.push_back(tmp[2]);
+			resultCode.push_back(tmp[3]);
+		}			
+		else if (expr->varInTableNum != -1)
+		{
+			resultCode.push_back((char)Command::aload);
+			tmp = intToBytes(expr->varInTableNum);
+			resultCode.push_back(tmp[3]);
+		}		
+		break;
+	case This:
+		resultCode.push_back((char)Command::aload_0);
+		break;
+	case Int:
+		break;
 	default:
 		break;
 	}
@@ -2601,7 +2685,8 @@ vector<char> generate(stmtList* stmts)
 		switch (stmt->type)
 		{
 		case VarOrVal:
-
+			tmp = generate(stmt->varOrVal);
+			resultCode.insert(resultCode.end(), tmp.begin(), tmp.end());
 			break;
 		case Assignment:
 			tmp = generate(stmt->assignment);
@@ -2630,8 +2715,6 @@ vector<char> generate(stmtList* stmts)
 		default:
 			break;
 		}
-
-
 	}
 
 	return resultCode;
