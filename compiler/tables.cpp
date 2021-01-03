@@ -2638,11 +2638,53 @@ vector<char> generate(exprS* expr)
 		resultCode.push_back((char)Command::aload_0);
 		break;
 	case Int:
+		if (expr->intV < 128 && expr->intV > -129)
+		{
+			resultCode.push_back((char)Command::bipush);
+			tmp = intToBytes(expr->intV);
+			resultCode.push_back(tmp[3]);
+		}
+		else if (expr->intV < 32768 && expr->intV > -32769)
+		{
+			resultCode.push_back((char)Command::sipush);
+			tmp = intToBytes(expr->intV);
+			resultCode.push_back(tmp[2]);
+			resultCode.push_back(tmp[3]);
+		}
+		else
+		{
+			resultCode.push_back((char)Command::ldc_w);
+			tmp = intToBytes(expr->refInfo);
+			resultCode.push_back(tmp[2]);
+			resultCode.push_back(tmp[3]);
+		}
+		break;
+	case String:
+	case Float:		
+		resultCode.push_back((char)Command::ldc_w);
+		tmp = intToBytes(expr->refInfo);
+		resultCode.push_back(tmp[2]);
+		resultCode.push_back(tmp[3]);
+		break;
+	case Boolean:
+		if (expr->booleanV == true)
+			resultCode.push_back((char)Command::iconst_1);
+		else
+			resultCode.push_back((char)Command::iconst_0);
+		break;
+	case Char:
+		resultCode.push_back((char)Command::bipush);
+		resultCode.push_back(expr->charV);
+		break;
+	case Double:
+		resultCode.push_back((char)Command::ldc2_w);
+		tmp = intToBytes(expr->refInfo);
+		resultCode.push_back(tmp[2]);
+		resultCode.push_back(tmp[3]);
 		break;
 	default:
 		break;
 	}
-
 
 	return resultCode;
 }
