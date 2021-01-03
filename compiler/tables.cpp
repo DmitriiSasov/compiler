@@ -2699,7 +2699,47 @@ vector<char> generate(whileLoopS* l, bool isDoWhile)
 vector<char> generate(assignmentS* a)
 {
 	vector<char> resultCode;
-
+	if (a->left->type == Identificator && a->subLeft == 0 && a->fieldName == 0)
+	{
+		tmp = generate(a->right);
+		resultCode.insert(resultCode.end(), tmp.begin(), tmp.end());
+		if (a->left->isStaticCall)
+		{
+			resultCode.push_back((char)Command::putstatic);
+			tmp = intToBytes(a->left->refInfo);
+			resultCode.push_back(tmp[2]);
+			resultCode.push_back(tmp[3]);
+		}
+		else
+		{			
+			resultCode.push_back((char)Command::astore);
+			resultCode.push_back(intToBytes(a->left->varInTableNum)[3]);
+		}		
+	}
+	else if (a->subLeft != 0)
+	{
+		tmp = generate(a->left);
+		resultCode.insert(resultCode.end(), tmp.begin(), tmp.end());
+		tmp = generate(a->subLeft);
+		resultCode.insert(resultCode.end(), tmp.begin(), tmp.end());
+		tmp = generate(a->right);
+		resultCode.insert(resultCode.end(), tmp.begin(), tmp.end());
+		resultCode.push_back((char)Command::invokevirtual);
+		tmp = intToBytes(a->refInfo);
+		resultCode.push_back(tmp[2]);
+		resultCode.push_back(tmp[3]);
+	}
+	else if (a->fieldName != 0)
+	{
+		tmp = generate(a->left);
+		resultCode.insert(resultCode.end(), tmp.begin(), tmp.end());
+		tmp = generate(a->right);
+		resultCode.insert(resultCode.end(), tmp.begin(), tmp.end());
+		resultCode.push_back((char)Command::putfield);
+		tmp = intToBytes(a->refInfo);
+		resultCode.push_back(tmp[2]);
+		resultCode.push_back(tmp[3]);
+	}
 	return resultCode;
 }
 
