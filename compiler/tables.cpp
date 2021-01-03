@@ -2513,14 +2513,73 @@ LocalVariableInfo MethodTableElement::find(int indexInTable)
 }
 
 
+vector<char> generate(stmtList* stmts)
+{
+	vector<char> bytes;
+	vector<char> tmp;
+
+	for (auto stmt = stmts->first; stmt != 0; stmt = stmt->next)
+	{
+		switch (stmt->type)
+		{
+		case VarOrVal:
+
+			break;
+		case Assignment:
+
+			break;
+		case WhileLoop:
+
+			break;
+		case ForLoop:
+
+			break;
+		case DoWhileLoop:
+
+			break;
+		case IfStmt:
+
+			break;
+		case Break:
+
+			break;
+		case Return:
+
+			break;
+
+		case ReturnValue:
+
+			break;
+		default:
+			break;
+		}
+
+
+	}
+
+	return bytes;
+}
+
 vector<char> generate(methodS* method)
 {
-	return vector<char>();
+	vector<char> bytes;
+
+	if (method->func->stmts != 0)
+	{
+		bytes = generate(method->func->stmts);
+	}
+	return bytes;
 }
 
 vector<char> generate(constructorS* constr)
 {
-	return vector<char>();
+	vector<char> bytes;
+
+	if (constr->stmts != 0)
+	{
+		bytes = generate(constr->stmts);
+	}
+	return bytes;
 }
 
 
@@ -2681,38 +2740,72 @@ void FieldTableElement::generate() {
 }
 
 void MethodTableElement::generate() {
-	std::vector<char> tmp;
+	vector<char> tmp;
 
 	// flags
 	tmp = intToBytes(accessFlags);
-	std::cout << tmp[2] << tmp[3];
+	cout << tmp[2] << tmp[3];
 
 	// name
 	tmp = intToBytes(name);
-	std::cout << tmp[2] << tmp[3];
+	cout << tmp[2] << tmp[3];
 
 	// descriptor
 	tmp = intToBytes(descriptor);
-	std::cout << tmp[2] << tmp[3];
+	cout << tmp[2] << tmp[3];
 
 	// method atributes count (01)
-	std::cout << (char)0x00 << (char)0x01;
+	cout << (char)0x00 << (char)0x01;
 	// method atribute (Code - 0x01)
-	std::cout << (char)0x00 << (char)0x01;
+	cout << (char)0x00 << (char)0x01;
 
-	//method code
+	// attribute code
+	std::vector<char> result_bytes = std::vector<char>();
+
+	// size of operands stack
+	vector<char> tmp_bytes = intToBytes(1000);
+	result_bytes.push_back(tmp_bytes[2]);
+	result_bytes.push_back(tmp_bytes[3]);
+
+	// size of local variables
+	tmp_bytes = intToBytes(localVarsAndConsts.size());
+	result_bytes.push_back(tmp_bytes[2]);
+	result_bytes.push_back(tmp_bytes[3]);
+
+	// method code
 	vector<char> methodCode;
 	if (method != 0)
 		methodCode = ::generate(method);
 	else
 		methodCode = ::generate(constructor);
 
-	//size of code
+	// size of method code
 	tmp = intToBytes(methodCode.size());
 	for (auto i : tmp)
-		cout << i;
+		result_bytes.push_back(i);
 
+	// method code
+	for (auto i : methodCode)
+		result_bytes.push_back(i);
 
+	// exception table 
+	result_bytes.push_back((char)0x00);
+	result_bytes.push_back((char)0x00);
+
+	// attrs table
+	result_bytes.push_back((char)0x00);
+	result_bytes.push_back((char)0x00);
+
+	// attribute length
+	tmp = intToBytes(result_bytes.size());
+	for (auto i : tmp) {
+		std::cout << i;
+	}
+
+	// attribute code
+	for (auto i : result_bytes) {
+		std::cout << i;
+	}
 }
 
 vector <char> intToBytes(int value) {
