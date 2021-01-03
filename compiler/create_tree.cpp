@@ -599,6 +599,7 @@ struct exprS* createExpr(char* idOrString, int iVal, struct factParamsList* para
 	e->next = 0;
 	e->varInTableNum = -1;
 	e->refInfo = -1;
+	e->classId = -1;
 	e->isStaticCall = false;
 	return e;
 

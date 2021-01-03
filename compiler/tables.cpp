@@ -1,6 +1,7 @@
 #include "tables.h"
 
 
+
 string* generateMethodRefParams(const string& methodName, const string& className,
 	int paramsCount);
 
@@ -1232,6 +1233,7 @@ void ClassFile::calcTypeOfMethodCall(exprS* e1, programS* program, const string&
 		{
 			e1->exprRes = e1->stringOrId;
 			e1->type = ConstructorCall;
+			e1->classId = findClassOrAdd(e1->stringOrId);
 			e1->refInfo = findMethodRefOrAdd(e1->stringOrId, "<init>", "()V");
 			return;
 		}
@@ -1241,6 +1243,7 @@ void ClassFile::calcTypeOfMethodCall(exprS* e1, programS* program, const string&
 			strcpy(tmp, "MyLib/Any");
 			e1->type = ConstructorCall;
 			e1->stringOrId = tmp;
+			e1->classId = findClassOrAdd(tmp);
 			e1->exprRes = tmp;
 			e1->refInfo = findMethodRefOrAdd(tmp, "<init>", "()V");
 			return;
@@ -2518,10 +2521,79 @@ LocalVariableInfo MethodTableElement::find(int indexInTable)
 	return tmp;
 }
 
+vector<char> generate(exprS* expr)
+{
+	vector<char> resultCode;
+	vector<char> tmp;
+
+	switch (expr->type)
+	{
+	case ParentConstrCall:
+		resultCode.push_back((char)Command::aload_0);
+		resultCode.push_back((char)Command::invokespecial);
+		tmp = intToBytes(expr->refInfo);
+		resultCode.push_back(tmp[2]);
+		resultCode.push_back(tmp[3]);
+		break;
+	case ConstructorCall:
+		resultCode.push_back((char)Command::new_);
+		tmp = intToBytes(expr->classId);
+		resultCode.push_back(tmp[2]);
+		resultCode.push_back(tmp[3]);
+		resultCode.push_back((char)Command::dup);
+		//Заносим параметры конструктора
+		if (expr->factParams != 0) 
+		{
+			for (auto fp = expr->factParams->first; fp != 0; fp = fp->next)
+			{
+				tmp = generate(fp);
+				resultCode.insert(resultCode.end(), tmp.begin(), tmp.end());
+			}
+		}		
+		resultCode.push_back((char)Command::invokespecial);
+		tmp = intToBytes(expr->refInfo);
+		resultCode.push_back(tmp[2]);
+		resultCode.push_back(tmp[3]);
+		break;
+	default:
+		break;
+	}
+
+
+	return resultCode;
+}
+
+vector<char> generate(whileLoopS* l, bool isDoWhile)
+{
+	vector<char> resultCode;
+
+	return resultCode;
+}
+
+vector<char> generate(assignmentS* a)
+{
+	vector<char> resultCode;
+
+	return resultCode;
+}
+
+vector<char> generate(varOrValDeclS* v)
+{
+	vector<char> resultCode;
+
+	return resultCode;
+}
+
+vector<char> generate(ifStmtS* i)
+{
+	vector<char> resultCode;
+
+	return resultCode;
+}
 
 vector<char> generate(stmtList* stmts)
 {
-	vector<char> bytes;
+	vector<char> resultCode;
 	vector<char> tmp;
 
 	for (auto stmt = stmts->first; stmt != 0; stmt = stmt->next)
@@ -2532,29 +2604,28 @@ vector<char> generate(stmtList* stmts)
 
 			break;
 		case Assignment:
-
+			tmp = generate(stmt->assignment);
+			resultCode.insert(resultCode.end(), tmp.begin(), tmp.end());
 			break;
 		case WhileLoop:
-
-			break;
-		case ForLoop:
-
+			tmp = generate(stmt->whileLoop, false);
+			resultCode.insert(resultCode.end(), tmp.begin(), tmp.end());
 			break;
 		case DoWhileLoop:
-
+			tmp = generate(stmt->whileLoop, true);
+			resultCode.insert(resultCode.end(), tmp.begin(), tmp.end());
 			break;
 		case IfStmt:
-
-			break;
-		case Break:
-
+			tmp = generate(stmt->ifStmt);
+			resultCode.insert(resultCode.end(), tmp.begin(), tmp.end());
 			break;
 		case Return:
-
+			resultCode.push_back((char)Command::return_);
 			break;
-
 		case ReturnValue:
-
+			tmp = generate(stmt->expr);
+			resultCode.insert(resultCode.end(), tmp.begin(), tmp.end());
+			resultCode.push_back((char)Command::areturn);
 			break;
 		default:
 			break;
@@ -2563,7 +2634,7 @@ vector<char> generate(stmtList* stmts)
 
 	}
 
-	return bytes;
+	return resultCode;
 }
 
 vector<char> generate(methodS* method)
