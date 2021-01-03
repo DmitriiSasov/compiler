@@ -2331,6 +2331,12 @@ bool ClassFile::addConstantsFrom(stmtS* stmt, programS* program, const string& m
 		throw e;
 	}
 
+	if (stmt->type == Break)
+	{
+		exception e("EXCEPTION! Unsupported BREAK operator");
+		throw e;
+	}
+
 	bool res = true;
 	bool tmp = true;
 	switch (stmt->type)
