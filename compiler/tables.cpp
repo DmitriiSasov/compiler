@@ -2726,6 +2726,29 @@ vector<char> generate(exprS* expr)
 vector<char> generate(whileLoopS* l, bool isDoWhile)
 {
 	vector<char> resultCode;
+	vector<char> tmp;
+	vector<char> code;
+	vector<char> condition;
+
+	condition = generate(l->cond);
+
+	if (l->stmts != 0)
+		code = generate(l->stmts);	
+		
+	if (!isDoWhile)
+	{
+		resultCode.push_back((char)Command::goto_);
+		tmp = intToBytes(3 + code.size());
+		resultCode.push_back(tmp[2]);
+		resultCode.push_back(tmp[3]);
+	}
+	if (l->stmts != 0)
+		resultCode.insert(resultCode.end(), code.begin(), code.end());
+	resultCode.insert(resultCode.end(), condition.begin(), condition.end());
+	resultCode.push_back((char)Command::ifne);
+	tmp = intToBytes(-1 * (code.size() + condition.size()));
+	resultCode.push_back(tmp[2]);
+	resultCode.push_back(tmp[3]);
 
 	return resultCode;
 }
