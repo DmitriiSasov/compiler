@@ -1,6 +1,7 @@
 #include "tables.h"
 
 
+vector<char> generate(stmtList* stmts);
 
 string* generateMethodRefParams(const string& methodName, const string& className,
 	int paramsCount);
@@ -2528,7 +2529,8 @@ vector<char> generate(exprS* expr)
 {
 	vector<char> resultCode;
 	vector<char> tmp;
-
+	int currentParamNum = 0;
+	int paramsCount = 0;
 	switch (expr->type)
 	{
 	case ParentConstrCall:
@@ -2559,8 +2561,7 @@ vector<char> generate(exprS* expr)
 		resultCode.push_back(tmp[3]);
 		break;
 	case ArrayCreating:
-		//Посчитать количество параметров
-		int paramsCount = 0;
+		//Посчитать количество параметров		
 		for (auto fp = expr->factParams->first; fp != 0; fp = fp->next)
 			++paramsCount;
 		//Создать массив
@@ -2573,7 +2574,6 @@ vector<char> generate(exprS* expr)
 		resultCode.push_back(tmp[3]);
 		
 		//Засунуть в соответствующий элемент массива параметр вызова функции
-		int currentParamNum = 0;
 		for (auto fp = expr->factParams->first; fp != 0; fp = fp->next)
 		{
 			resultCode.push_back((char)Command::dup);
@@ -2718,8 +2718,6 @@ vector<char> generate(exprS* expr)
 		resultCode.push_back(tmp[2]);
 		resultCode.push_back(tmp[3]);
 		break;
-	default:
-		break;
 	}
 
 	return resultCode;
@@ -2783,6 +2781,11 @@ vector<char> generate(assignmentS* a)
 vector<char> generate(varOrValDeclS* v)
 {
 	vector<char> resultCode;
+	vector<char> tmp;
+	tmp = generate(v->initValue);
+	resultCode.insert(resultCode.end(), tmp.begin(), tmp.end());
+	resultCode.push_back((char)Command::astore);
+	resultCode.push_back(intToBytes(v->varNumber)[3]);
 
 	return resultCode;
 }
@@ -2790,7 +2793,56 @@ vector<char> generate(varOrValDeclS* v)
 vector<char> generate(ifStmtS* i)
 {
 	vector<char> resultCode;
+	vector<char> tmp;
+	vector<char> condition = generate(i->condition);
+	vector<char> trueBranch;
+	vector<char> altBranch;
+	if (i->actions != 0)
+	{
+		trueBranch = generate(i->actions);
+	}
+	if (i->altActions != 0)
+	{
+		altBranch = generate(i->altActions);
+	}
 
+	if (i->actions == 0 && i->altActions == 0)
+	{
+		resultCode.insert(resultCode.end(), condition.begin(), condition.end());
+	}
+	else if (i->actions == 0)
+	{
+		condition.push_back((char)Command::ifne);
+		tmp = intToBytes(altBranch.size());
+		condition.push_back(tmp[2]);
+		condition.push_back(tmp[3]);
+	}
+	else if (i->altActions == 0)
+	{
+		condition.push_back((char)Command::ifeq);
+		tmp = intToBytes(trueBranch.size());
+		condition.push_back(tmp[2]);
+		condition.push_back(tmp[3]);
+	}
+	else
+	{
+		trueBranch.push_back((char)Command::goto_);
+		tmp = intToBytes(altBranch.size() + 3);
+		trueBranch.push_back(tmp[2]);
+		trueBranch.push_back(tmp[3]);
+
+		condition.push_back((char)Command::ifeq);
+		tmp = intToBytes(trueBranch.size() + 3);
+		condition.push_back(tmp[2]);
+		condition.push_back(tmp[3]);
+	}
+
+	resultCode.insert(resultCode.end(), condition.begin(), condition.end());
+	if (trueBranch.size() != 0)
+		resultCode.insert(resultCode.end(), trueBranch.begin(), trueBranch.end());
+	if (altBranch.size() != 0)
+		resultCode.insert(resultCode.end(), altBranch.begin(), altBranch.end());
+	
 	return resultCode;
 }
 
