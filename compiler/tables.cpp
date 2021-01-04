@@ -695,7 +695,7 @@ int ClassFile::findNameAndTypeOrAdd(std::string const& name, std::string const& 
 int ClassFile::findFieldRefOrAdd(std::string const& className, std::string const& name, std::string const& type)
 {
 
-	int value[2] = { findNameAndTypeOrAdd(name, type), findClassOrAdd(className) };
+	int value[2] = { findClassOrAdd(className), findNameAndTypeOrAdd(name, type) };
 	ConstantsTableElement constant(FIELD_REF, value);
 	const auto foundIter = std::find(constsTable.begin(), constsTable.end(), constant);
 	if (foundIter == constsTable.end())
@@ -708,7 +708,7 @@ int ClassFile::findFieldRefOrAdd(std::string const& className, std::string const
 
 int ClassFile::findMethodRefOrAdd(std::string const& className, std::string const& name, std::string const& type)
 {
-	int value[2] = { findNameAndTypeOrAdd(name, type), findClassOrAdd(className) };
+	int value[2] = { findClassOrAdd(className),  findNameAndTypeOrAdd(name, type) };
 	ConstantsTableElement constant(METHOD_REF, value);
 	const auto foundIter = std::find(constsTable.begin(), constsTable.end(), constant);
 	if (foundIter == constsTable.end())
@@ -2879,6 +2879,10 @@ vector<char> generate(stmtList* stmts)
 	{
 		switch (stmt->type)
 		{
+		case Expr:
+			tmp = generate(stmt->expr);
+			resultCode.insert(resultCode.end(), tmp.begin(), tmp.end());
+			break;
 		case VarOrVal:
 			tmp = generate(stmt->varOrVal);
 			resultCode.insert(resultCode.end(), tmp.begin(), tmp.end());
