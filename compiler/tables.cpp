@@ -2938,9 +2938,9 @@ vector<char> generate(constructorS* constr)
 
 
 void ClassFile::generate() {
-	std::string classname = className + ".class";
+	string classname = className + ".class";
 	freopen(classname.c_str(), "wb", stdout);
-	std::vector<char> len = intToBytes(constsTable.size() + 1);
+	vector<char> len = intToBytes(constsTable.size() + 1);
 
 	// CAFEBABE
 	vector<char> tmp = intToBytes(magic);
@@ -2948,12 +2948,12 @@ void ClassFile::generate() {
 
 	// JAVA
 	tmp = intToBytes(minorV);
-	std::cout << tmp[2] << tmp[3];
+	cout << tmp[2] << tmp[3];
 	tmp = intToBytes(majorV);
-	std::cout << tmp[2] << tmp[3];
+	cout << tmp[2] << tmp[3];
 
 	// constants count
-	std::cout << len[2] << len[3];
+	cout << len[2] << len[3];
 
 	//constants table
 	for (auto i : constsTable) {
@@ -2962,22 +2962,22 @@ void ClassFile::generate() {
 
 	// Flags 
 	tmp = intToBytes(accessFlags);
-	std::cout << tmp[2] << tmp[3];
+	cout << tmp[2] << tmp[3];
 
 	// This class constant
 	tmp = intToBytes(thisClass);
-	std::cout << tmp[2] << tmp[3];
+	cout << tmp[2] << tmp[3];
 
 	// Parent class constant
 	tmp = intToBytes(superClass);
-	std::cout << tmp[2] << tmp[3];
+	cout << tmp[2] << tmp[3];
 
 	// Interfaces table
-	std::cout << (char)0x00 << (char)0x00;
+	cout << (char)0x00 << (char)0x00;
 
 	// Fields table
 	tmp = intToBytes(fieldTable.size());
-	std::cout << tmp[2] << tmp[3];
+	cout << tmp[2] << tmp[3];
 
 	for (auto i : fieldTable) {
 		i.second.generate();
@@ -2985,15 +2985,15 @@ void ClassFile::generate() {
 
 	// Methods table
 	tmp = intToBytes(methodTable.size());
-	std::cout << tmp[2] << tmp[3];
+	cout << tmp[2] << tmp[3];
 
 	for (auto i : methodTable) {
 		i.second.generate();
 	}
 
 	// atributes
-	std::cout << (char)0x00 << (char)0x00;
-
+	cout << (char)0x00 << (char)0x00;
+	fclose(stdout);
 }
 
 void ConstantsTableElement::generate() {
