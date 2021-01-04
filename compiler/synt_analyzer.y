@@ -581,6 +581,7 @@ void main(int argc, char **argv )
 	for (auto i : classesFiles)
 	{
 		fprintf(file, "%s\n\n\n\n", i.constsTableToStr().c_str());
+		i.generate();
 	}
 	fclose(file);
 
