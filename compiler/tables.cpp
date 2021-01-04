@@ -562,6 +562,7 @@ MethodTableElement::MethodTableElement(uint16_t methName, uint16_t descriptor,
 	if (isFinal)	accessFlags |= 0x0010;
 
 	this->constructor = constructor;
+	this->method = method;
 }
 
 bool operator==(const ConstantsTableElement& lhs, const ConstantsTableElement& rhs)
