@@ -1153,7 +1153,6 @@ void calcArrayOfType(exprS* e, programS* program, const string& methodKey)
 	}
 
 	e->type = ArrayCreating;
-
 	if (e->factParams->first == e->factParams->last)
 	{
 		e->exprRes = e->factParams->first->exprRes;
@@ -1270,6 +1269,10 @@ void ClassFile::calcTypeOfMethodCall(exprS* e1, programS* program, const string&
 		{
 			calcArrayOfType(e1, program, methodKey);
 			e1->refInfo = findMethodRefOrAdd("MyLib/Array", e1->stringOrId, "([Ljava/lang/Object;)LMyLib/Array;");
+			if (e1->exprRes.find('[') != -1)
+				e1->classId = findClassOrAdd("MyLib/Array");
+			else
+				e1->classId = findClassOrAdd(e1->exprRes);
 		}
 		else
 		{
@@ -2556,6 +2559,39 @@ vector<char> generate(exprS* expr)
 		resultCode.push_back(tmp[3]);
 		break;
 	case ArrayCreating:
+		//Посчитать количество параметров
+		int paramsCount = 0;
+		for (auto fp = expr->factParams->first; fp != 0; fp = fp->next)
+			++paramsCount;
+		//Создать массив
+		resultCode.push_back((char)Command::bipush);
+		tmp = intToBytes(paramsCount);
+		resultCode.push_back(tmp[3]);
+		resultCode.push_back((char)Command::anewarray);
+		tmp = intToBytes(expr->classId);
+		resultCode.push_back(tmp[2]);
+		resultCode.push_back(tmp[3]);
+		
+		//Засунуть в соответствующий элемент массива параметр вызова функции
+		int currentParamNum = 0;
+		for (auto fp = expr->factParams->first; fp != 0; fp = fp->next)
+		{
+			resultCode.push_back((char)Command::dup);
+			tmp = intToBytes(currentParamNum);
+			resultCode.push_back((char)Command::bipush);
+			resultCode.push_back(tmp[3]);
+			tmp = generate(fp);
+			resultCode.insert(resultCode.end(), tmp.begin(), tmp.end());
+			resultCode.push_back((char)Command::aastore);
+			++currentParamNum;
+		}
+		
+		//Вызвать функцию создания массива
+		resultCode.push_back((char)Command::invokestatic);
+		tmp = intToBytes(expr->refInfo);
+		resultCode.push_back(tmp[2]);
+		resultCode.push_back(tmp[3]);
+		break;
 	case MethodCall:
 		//Заносим параметры конструктора
 		if (expr->factParams != 0)
@@ -2699,6 +2735,7 @@ vector<char> generate(whileLoopS* l, bool isDoWhile)
 vector<char> generate(assignmentS* a)
 {
 	vector<char> resultCode;
+	vector<char> tmp;
 	if (a->left->type == Identificator && a->subLeft == 0 && a->fieldName == 0)
 	{
 		tmp = generate(a->right);
