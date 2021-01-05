@@ -1696,18 +1696,19 @@ void checkReturns(constructorS* constr)
 		constr->stmts = createStmtList(createStmt(Return));
 }
 
+
 void checkReturns(methodS* meth, const programS* program)
 {
 	if (meth->func->decl->type->easyType != "MyLib/Unit")
 	{
 		if (meth->func->stmts != 0 && meth->func->stmts->last->type == ReturnValue)
 		{
-			if (!canCastType(meth->func->stmts->last->expr->exprRes, 
+			if (!canCastType(meth->func->stmts->last->expr->exprRes,
 				meth->func->decl->type->easyType, program))
 			{
 				string message = "EXCEPTION! Method \"";
-				message = message + string(meth->func->decl->name) + "\" has return value \"" + 
-					meth->func->stmts->last->expr->exprRes + "\", but return type is \"" + 
+				message = message + string(meth->func->decl->name) + "\" has return value \"" +
+					meth->func->stmts->last->expr->exprRes + "\", but return type is \"" +
 					string(meth->func->decl->type->easyType) + "\"\n";
 				exception e(message.c_str());
 				throw e;
@@ -1730,7 +1731,6 @@ void checkReturns(methodS* meth, const programS* program)
 			meth->func->stmts = createStmtList(createStmt(Return));
 	}
 }
-
 
 void checkReturns(programS* program)
 {
