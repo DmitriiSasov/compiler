@@ -735,7 +735,12 @@ string transformMethodCallToDescriptor(exprS* e, const programS* program)
 
 string transformTypeToDescriptor(const char* type, const programS* program)
 {
-	if (isUserClass(type, program) || isMyStandartClass(type))	return string("L") + string(type) + ";";
+	if (isUserClass(type, program) || isMyStandartClass(type))
+	{
+		if (strcmp(type, "MyLib/Unit") == 0)
+			return "V";
+		return string("L") + string(type) + ";";
+	}
 	else
 	{
 		string typeName = type;
@@ -848,7 +853,9 @@ bool ClassFile::fillHighLevelObjectsConstants(methodS* meth, programS* program)
 		meth->mods->iMod == Final, meth->mods->isStatic, 0, meth);
 
 	methodTable.insert(make_pair(createMethodSignature(meth), mte));
-	return addConstantsFrom(meth, program);
+	bool res = addConstantsFrom(meth, program);
+	
+	return res;
 }
 
 void ClassFile::addMain(classS* clas, const programS* const program)
@@ -876,7 +883,7 @@ void ClassFile::addMain(classS* clas, const programS* const program)
 	{
 		exprS* mainCall = createExpr(funName, 0, MethodCall);
 		mainCall->exprRes = "void";
-		mainCall->refInfo = findMethodRefOrAdd("Main$", "main", "()MyLib/Unit");
+		mainCall->refInfo = findMethodRefOrAdd("Main$", "main", "()V");
 		mainCall->isStaticCall = true;
 		stmtS* stmt = createStmt(mainCall, Expr);
 		stmts = createStmtList(stmt);
@@ -888,14 +895,14 @@ void ClassFile::addMain(classS* clas, const programS* const program)
 	}
 
 	funcS* mainFunc = createFunc(mainFuncDelc, stmts);
-	modifiersS* mods = createModifiers(0, 0, Public, Open);
+	modifiersS* mods = createModifiers(0, 0, Public, Final);
 	mods->isStatic = true;
 	methodS* main = createMethod(mods, mainFunc);
 	
 	//Добавить таблицу переменных в метод + добавить сам метод в таблицу методов
 	int methNameRef = findUtf8OrAdd("main");
 	int methDescr = findUtf8OrAdd("([Ljava/lang/String;)V");
-	MethodTableElement mte(methNameRef, methDescr, _PUBLIC, false, true, 0, main);
+	MethodTableElement mte(methNameRef, methDescr, _PUBLIC, true, true, 0, main);
 	mte.addLocalVar(new LocalVariableInfo(true, true, "args", "java/lang/String[]", 0));
 	methodTable.insert(make_pair("main(java/lang/String[]|)",  mte));
 
