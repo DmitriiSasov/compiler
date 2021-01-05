@@ -1278,10 +1278,13 @@ void ClassFile::calcTypeOfMethodCall(exprS* e1, programS* program, const string&
 		{
 			calcArrayOfType(e1, program, methodKey);
 			e1->refInfo = findMethodRefOrAdd("MyLib/Array", e1->stringOrId, "([Ljava/lang/Object;)LMyLib/Array;");
-			if (e1->exprRes.find('[') != -1)
-				e1->classId = findClassOrAdd("MyLib/Array");
+			string arrayElementType = e1->exprRes;
+			arrayElementType.pop_back();
+			arrayElementType.pop_back();
+			if (arrayElementType.find('[') != -1)
+				e1->classId = findClassOrAdd("MyLib/Any");
 			else
-				e1->classId = findClassOrAdd(e1->exprRes);
+				e1->classId = findClassOrAdd(arrayElementType);
 		}
 		else
 		{
