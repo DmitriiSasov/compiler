@@ -1368,7 +1368,7 @@ string* generateMethodRefParams(const string& methodName, const string& classNam
 			methodName == "lessOrEqual" || methodName == "moreOrEqual")
 			&& paramsCount == 1)
 		{
-			res[0] = "MyLib/CalculatedClass";
+			res[0] = className;
 			res[1] = methodName;
 			res[2] = "(LMyLib/CalculatedClass;)LMyLib/Boolean;";
 			return res;
@@ -1376,9 +1376,9 @@ string* generateMethodRefParams(const string& methodName, const string& classNam
 		else if ((methodName == "not" || methodName == "unaryPlus" || methodName == "unaryMinus")
 			&& paramsCount == 0)
 		{
-			res[0] = "MyLib/CalculatedClass";
+			res[0] = className;
 			res[1] = methodName;
-			res[2] = "(LMyLib/CalculatedClass;)L";
+			res[2] = "()L";
 			res[2] += className + ";";
 			return res;
 		}
@@ -2838,25 +2838,22 @@ vector<char> generate(ifStmtS* i)
 		altBranch = generate(i->altActions);
 	}
 
-	if (i->actions == 0 && i->altActions == 0)
-	{
-		resultCode.insert(resultCode.end(), condition.begin(), condition.end());
-	}
-	else if (i->actions == 0)
+	
+	if (i->actions == 0 && i->altActions != 0)
 	{
 		condition.push_back((char)Command::ifne);
-		tmp = intToBytes(altBranch.size());
+		tmp = intToBytes(altBranch.size() + 3);
 		condition.push_back(tmp[2]);
 		condition.push_back(tmp[3]);
 	}
-	else if (i->altActions == 0)
+	else if (i->altActions == 0 && i->actions != 0)
 	{
 		condition.push_back((char)Command::ifeq);
-		tmp = intToBytes(trueBranch.size());
+		tmp = intToBytes(trueBranch.size() + 3);
 		condition.push_back(tmp[2]);
 		condition.push_back(tmp[3]);
 	}
-	else
+	else if (i->altActions != 0 && i->actions != 0)
 	{
 		trueBranch.push_back((char)Command::goto_);
 		tmp = intToBytes(altBranch.size() + 3);
