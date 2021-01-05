@@ -67,7 +67,7 @@ programS* removeRedundantNodes(programS* program)
 programS* transformProgramToClass(programS* programTreeRoot)
 {
 	classS* newClass = new classS();
-	newClass->name = new char[7]();
+	newClass->name = new char[6];
 	strcpy(newClass->name, "Main$");
 	newClass->mods = createModifiers(0, 0, Public, None);
 	newClass->parentClassName = 0;
@@ -1258,7 +1258,7 @@ bool existsEasyType(const char* typeName, const list<string>& classesNames)
 string collectArrayInfo(templateTypeS* type, const list<string>& classesNames, int& nestingLevel)
 {
 	if (type == 0)
-		return 0;
+		return "";
 
 	if (strcmp(type->type, "Array") != 0)
 	{
@@ -1283,8 +1283,6 @@ string collectArrayInfo(templateTypeS* type, const list<string>& classesNames, i
 		else if (isUserClass(type->list->first->easyType.c_str(), classesNames))
 		{
 			typeOfArray = type->list->first->easyType;
-			/*typeOfArray = new char[strlen(type->list->first->easyType) + 1];
-			strcpy(typeOfArray, type->list->first->easyType);*/
 		}
 		else if (!isUserClass(type->list->first->easyType.c_str(), classesNames))
 		{
@@ -1307,14 +1305,10 @@ string transformStdKotlinTypeToMyKotlinTypes(const char* type)
 		if (strcmp(type, "String") == 0)
 		{
 			myTypeName = "MyLib/MyString";
-			/*myTypeName = new char[strlen("MyLib/MyString") + 1];
-			strcpy(myTypeName, "MyLib/MyString");*/
 		}
 		else
 		{
 			myTypeName = "MyLib/" + string(type);
-			/*myTypeName = new char[strlen("MyLib/") + strlen(type) + 1];
-			strcat(strcpy(myTypeName, "MyLib/"), type);*/
 		}
 		return myTypeName;
 	}
@@ -1332,10 +1326,7 @@ bool transformTypes(typeS* type, const list<string>& classesNames)
 			&& !isUserClass(type->easyType.c_str(), classesNames))
 		{
 			string res = transformStdKotlinTypeToMyKotlinTypes(type->easyType.c_str());
-			char* tmp = new char[res.size() + 1];
-			strcpy(tmp, res.c_str());
-			type->easyType = tmp;
-			//type->easyType = transformStdKotlinTypeToMyKotlinTypes(type->easyType);
+			type->easyType = res;
 		}
 		else if (!isUserClass(type->easyType.c_str(), classesNames))
 		{
@@ -1347,18 +1338,12 @@ bool transformTypes(typeS* type, const list<string>& classesNames)
 	{
 		int templateNestingLevel = 1;
 		string _res = collectArrayInfo(type->complexType, classesNames, templateNestingLevel);
-		char* tmp = new char[_res.size() + 1];
-		strcpy(tmp, _res.c_str());
-		char* arrayType = tmp;
-		//char* arrayType = collectArrayInfo(type->complexType, classesNames, templateNestingLevel);
-		if (arrayType != 0)
+		
+		if (_res != "")
 		{
-			char* newType = new char(strlen(arrayType) + templateNestingLevel * 2 + 20);
-			newType[0] = 0;
-			strcpy(newType, arrayType);
 			for (int i = 0; i < templateNestingLevel; ++i)
-				strcat(newType, "[]");
-			type->easyType = newType;
+				_res += "[]";
+			type->easyType = _res;
 			templateTypeFree(type->complexType);
 			free(type->complexType);
 			type->complexType = 0;
