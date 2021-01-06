@@ -13,7 +13,7 @@ fun sort(arr:Array<Float>, isIncrease:Boolean):Unit {
                 if (arr[j] > arr[currentMinIndex]) {
                     currentMinIndex = j
                 }
-            }            
+            }
             j = j + 1
         }
         var tmp:Float = arr[i]
@@ -49,29 +49,25 @@ fun sort(arr:Array<Array<Float>>, isIncrease:Boolean):Unit {
     }
 }
 
-fun main():Unit{
-    
-    var arr:Array<Array<Float>> = arrayOf(arrayOf(3213132.1f, 321313.1f, 321323.0f), arrayOf(1.0f), arrayOf(1.0f))
+fun printArray(arr:Array<Array<Float>>):Unit {
     var i:Int = 0
     while (i < arr.size){
         var j:Int = 0
         while (j < arr[i].size){
-            print(arr[i][j])
-            print("\n")
+            print("" + arr[i][j] + "\n")
             j = j + 1
         }
         i = i + 1
     }
-    var arrSize:Int = arr.size
+}
+
+fun main():Unit{
+
+    var arr:Array<Array<Float>> = arrayOf(arrayOf(3213132.1f, 321313.1f, 321323.0f), arrayOf(1.0f, 242f), arrayOf(1.0f, -13f))
+    printArray(arr)
+    arr[1][0] = arr[2][0] * 5.2f + 5 * 4.54f
+    arr[2][0] = (arr[1][0] - 5 * 4.54f) / 5.2f
+    print("\n")
     sort(arr, true)
-    i = 0
-    while (i < arr.size){
-        var j:Int = 0
-        while (j < arr[i].size){
-            print(arr[i][j])
-            print("\n")
-            j = j + 1
-        }
-        i = i + 1
-    }
+    printArray(arr)
 }
