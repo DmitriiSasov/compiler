@@ -187,7 +187,7 @@ string getMethodTypeForStandartClass(const string& methodSign, const string& cur
 	if (currentClassName == "")	return "";
 
 	//Если класс - базовый
-	if (isMyStandartClass(currentClassName) || currentClassName.find('[') != -1)
+	if (currentClassName != "Main$")
 	{
 		//В equals один параметр
 		if (methodSign.find("equals(") == 0 && methodSign.find_last_of('|')
@@ -1465,7 +1465,7 @@ void ClassFile::calcTypeOfMethodCalcExpr(exprS* e1, programS* program, const str
 
 		//Если метод toMyString, Equals или метод массива
 		if (strcmp(e1->stringOrId, "toMyString") == 0 && paramsCount == 0 ||
-			strcmp(e1->stringOrId, "toMyString") == 0 && paramsCount == 0 || 
+			strcmp(e1->stringOrId, "equals") == 0 && paramsCount == 1 || 
 			e1->left->exprRes.find('[') != -1)
 		{
 			string* params = generateMethodRefParams(e1->stringOrId, e1->left->exprRes, paramsCount);
@@ -1862,7 +1862,8 @@ void ClassFile::calcTypeOfSum(exprS* e1, programS* program, const string & metho
 		string arrayType = e1->left->exprRes;
 		arrayType.pop_back();
 		arrayType.pop_back();
-		if (isParentClass(arrayType, e1->factParams->first->exprRes, program))
+		if (isParentClass(arrayType, e1->factParams->first->exprRes, program) || 
+			arrayType == e1->factParams->first->exprRes)
 		{
 			e1->exprRes = e1->left->exprRes;
 			string* params = generateMethodRefParams("add", e1->left->exprRes, 1);
