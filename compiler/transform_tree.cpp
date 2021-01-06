@@ -1692,8 +1692,8 @@ void checkReturns(methodS* meth, const programS* program)
 	{
 		if (meth->func->stmts != 0 && meth->func->stmts->last->type == ReturnValue)
 		{
-			if (!canCastType(meth->func->stmts->last->expr->exprRes,
-				meth->func->decl->type->easyType, program))
+			if (!canCastType(meth->func->decl->type->easyType,
+				meth->func->stmts->last->expr->exprRes, program))
 			{
 				string message = "EXCEPTION! Method \"";
 				message = message + string(meth->func->decl->name) + "\" has return value \"" +
