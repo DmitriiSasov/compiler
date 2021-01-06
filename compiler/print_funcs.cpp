@@ -788,12 +788,15 @@ void print(struct programElementS * pe, FILE* file)
 void print(struct programS * p, FILE* file)
 {
 	fprintf(file, "Id%p [label=\"program\"]\n", p);
-	programElementS * pe = p->first;
-	while(pe != 0)
+	if (p != 0)
 	{
-		fprintf(file, "Id%p->", p);
-		print(pe, file);
-		pe = pe->next;
-	}
+		programElementS* pe = p->first;
+		while (pe != 0)
+		{
+			fprintf(file, "Id%p->", p);
+			print(pe, file);
+			pe = pe->next;
+		}
+	}	
 }
 
