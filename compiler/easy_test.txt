@@ -1,2 +1,35 @@
-fun main():Unit {
+
+fun sort(arr:Array<Int>, isIncrease:Boolean):Unit {
+    var i:Int = 0
+    var arrSize:Int = arr.size
+    while(i < arrSize){
+        var j:Int = i
+        var currentMinIndex:Int = j
+        while (j < arrSize){
+            if (isIncrease){
+                if (arr[j] < arr[currentMinIndex]) {
+                    currentMinIndex = j
+                }
+            } else {
+                if (arr[j] > arr[currentMinIndex]) {
+                    currentMinIndex = j
+                }
+            }            
+            j = j + 1
+        }
+        var tmp:Int = arr[i]
+        arr[i] = arr[currentMinIndex]
+        arr[currentMinIndex] = tmp
+        i = i + 1
+    }
+}
+
+var arr:Array<Int> = arrayOf()
+
+fun main():Unit{
+    var i:Int = 5
+    var arr:Array<Int> = arrayOf(4,5,1,3,2)
+    print(arr)
+    sort(arr, false)
+    print(arr)
 }
