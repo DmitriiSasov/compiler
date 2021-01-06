@@ -411,7 +411,11 @@ bool complementModifiers(methodS* meth)
 
 	if (meth->mods != 0)
 	{
-		if (meth->mods->iMod == None) meth->mods->iMod = Final;
+		if (meth->mods->iMod == None && !meth->mods->isOverride)
+			meth->mods->iMod = Final;
+		else if (meth->mods->iMod == None)
+			meth->mods->iMod = Open;
+
 		if (meth->mods->vMod == Unknown) meth->mods->vMod = Public;
 		else if (meth->mods->vMod == Internal)
 		{
