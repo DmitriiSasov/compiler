@@ -1118,6 +1118,7 @@ void ClassFile::calcTypeOfIdentifier(exprS* e1, programS* program, const string&
 }
 
 
+
 string calcParentClass(const string& class1, const string& class2, const programS* const program)
 {
 	//≈сли классы одинаковые
@@ -1132,8 +1133,6 @@ string calcParentClass(const string& class1, const string& class2, const program
 	if (isMyStandartClass(class1) || isMyStandartClass(class2))
 		return "MyLib/Any";
 
-
-
 	//≈сли оба класса пользовательские
 	if (isUserClass(class1.c_str(), program) && isUserClass(class2.c_str(), program))
 	{
@@ -1142,6 +1141,12 @@ string calcParentClass(const string& class1, const string& class2, const program
 
 		if (isParentClass(class2, class1, program))
 			return class2;
+
+		for (auto pe = program->first; pe != 0; pe = pe->next)
+		{
+			if (pe->clas != 0 && class1 == pe->clas->name)
+				return calcParentClass(pe->clas->parentClassName, class2, program);
+		}
 	}
 
 	//≈сли пользовательский класс сравниваетс€ с массивом, сравниваютс€ разные массивы и т.д.
@@ -1282,7 +1287,7 @@ void ClassFile::calcTypeOfMethodCall(exprS* e1, programS* program, const string&
 			arrayElementType.pop_back();
 			arrayElementType.pop_back();
 			if (arrayElementType.find('[') != -1)
-				e1->classId = findClassOrAdd("MyLib/Any");
+				e1->classId = findClassOrAdd("MyLib/Array");
 			else
 				e1->classId = findClassOrAdd(arrayElementType);
 		}
@@ -2063,7 +2068,9 @@ void ClassFile::addConstantsFrom(varOrValDeclS* v, programS* program, const stri
 		checkUnitOperandsInExpr(v->initValue, methodKey);
 		if (strcmp(v->type->easyType.c_str(), v->initValue->exprRes.c_str()) != 0)
 		{
-			if (!canCastType(v->type->easyType, v->initValue->exprRes, program))
+			if (!canCastType(v->type->easyType, v->initValue->exprRes, program) ||
+				v->type->easyType.find('[') != -1 && v->initValue->exprRes.find('[') != -1 &&
+				v->type->easyType != v->initValue->exprRes)
 			{
 				string message = "EXCEPTION! Cast error. Cannot cast \"";
 				exception e((message + string(v->type->easyType) + "\" of variable \"" + string(v->id) + 
@@ -2110,7 +2117,9 @@ void ClassFile::addConstantsFrom(assignmentS* a, programS* program, const string
 			if (a->left->exprRes != a->right->exprRes)
 			{
 				//≈сли типы можно привести
-				if (!canCastType(a->left->exprRes, a->right->exprRes, program))
+				if (!canCastType(a->left->exprRes, a->right->exprRes, program) || 
+					a->left->exprRes.find('[') != -1 && a->right->exprRes.find('[') != -1 &&
+					a->left->exprRes != a->right->exprRes)
 				{
 					string message = "EXCEPTION! Cast error. Cannot cast \"" + a->left->exprRes +
 						"\" to type \"" + a->right->exprRes + "\" in assignment in method \"" +
@@ -2148,7 +2157,9 @@ void ClassFile::addConstantsFrom(assignmentS* a, programS* program, const string
 			if (res != a->right->exprRes)
 			{
 				//≈сли типы можно привести
-				if (!canCastType(res, a->right->exprRes, program))
+				if (!canCastType(res, a->right->exprRes, program) ||
+					res.find('[') != -1 && a->right->exprRes.find('[') != -1 && 
+					res != a->right->exprRes)
 				{
 					string message = "EXCEPTION! Cast error. Cannot cast \"" + res +
 						"\" to type \"" + a->right->exprRes + "\" in assignment in method \"" + 
@@ -2183,7 +2194,9 @@ void ClassFile::addConstantsFrom(assignmentS* a, programS* program, const string
 			string exprRes = a->left->exprRes;
 			exprRes.pop_back();
 			exprRes.pop_back();
-			if (!canCastType(exprRes, a->right->exprRes, program))
+			if (!canCastType(exprRes, a->right->exprRes, program) ||
+				exprRes.find('[') != -1 && a->right->exprRes.find('[') != -1 &&
+				exprRes != a->right->exprRes)
 			{
 				string message = "EXCEPTION! Cast error. Cannot cast \"" + exprRes +
 					"\" to type \"" + a->right->exprRes + "\" in assignment in method \"" +
