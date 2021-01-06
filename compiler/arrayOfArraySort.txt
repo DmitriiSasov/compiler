@@ -221,6 +221,7 @@ fun main():Unit{
         tmpS = Square()
         tmpS.constructPrimitive(i)
         tmp = tmpS
+	tmp.scale(i + 1)
         areaPrimitives1 = areaPrimitives1 +  tmp
         i = i - 1
     }
@@ -234,6 +235,7 @@ fun main():Unit{
         tmpR = Rectangle()
         tmpR.constructPrimitive(i, i + 1)
         tmp = tmpR
+	tmp.scale(i + 1)
         areaPrimitives2 = areaPrimitives2 +  tmp
         i = i - 1
     }
