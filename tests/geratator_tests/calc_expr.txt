@@ -1,0 +1,153 @@
+class Types {
+
+    constructor()
+    
+    private var sum:Int = 1
+    private var sub:Int = 2
+    private var div:Int = 3
+    private var mul:Int = 4
+    private var float:Int = 6
+
+    fun sum():Int = sum
+
+    fun sub():Int = sub
+
+    fun div():Int = div
+
+    fun mul():Int = mul
+    
+    fun float():Int = float
+}
+
+open class Expr {
+    
+    constructor()
+    
+    protected var type:Int = 0;
+        
+    public open fun calc():Float{
+        return 0.0f
+    }
+}
+
+class Operand : Expr {
+
+    constructor()
+   
+    private var value:Float = 0.0f 
+    
+    public fun value(): Float{
+        return value
+    }
+
+    public fun value(v:Float): Unit{
+        super.type = Types().float()
+        value = v
+    }
+    
+    public override fun calc():Float{
+        return value
+    }
+}
+
+open class Operator : Expr {
+
+    constructor()
+
+    protected var operand1:Expr = Expr()
+
+    protected var operand2:Expr = Expr()
+
+    fun operand1():Expr {
+        return operand1
+    }
+
+    fun operand2():Expr {
+        return operand2
+    }
+    
+    open fun setOperands(o1:Expr, o2:Expr):Unit {
+        operand1 = o1
+        operand2 = o2
+    }
+    
+}
+
+open class Sum : Operator {
+
+    constructor()
+
+    override fun setOperands(o1:Expr, o2:Expr):Unit {
+        super.setOperands(o1, o2)
+        type = Types().sum()
+    }
+    
+    public override fun calc():Float{
+        return operand1().calc() + operand2().calc()
+    }
+    
+}
+
+open class Sub : Operator {
+
+    constructor()
+
+    override fun setOperands(o1:Expr, o2:Expr):Unit {
+        super.setOperands(o1, o2)
+        type = Types().sub()
+    }
+
+    public override fun calc():Float{
+        return operand1().calc() - operand2().calc()
+    }
+
+}
+
+open class Div : Operator {
+
+    constructor()
+
+    override fun setOperands(o1:Expr, o2:Expr):Unit {
+        super.setOperands(o1, o2)
+        type = Types().div()
+    }
+
+    public override fun calc():Float{
+        return operand1().calc() / operand2().calc()
+    }
+
+}
+
+open class Mul : Operator {
+
+    constructor()
+
+    override fun setOperands(o1:Expr, o2:Expr):Unit {
+        super.setOperands(o1, o2)
+        type = Types().mul()
+    }
+
+    public override fun calc():Float{
+        return operand1().calc() * operand2().calc()
+    }
+
+}
+
+fun createExpr(): Expr{
+    var o1:Operand = Operand()
+    o1.value(1.5f)
+    var o2:Operand = Operand()
+    o2.value(2.0f)
+    var oper1:Operator = Mul()
+    oper1.setOperands(o1,o2)
+    var o3:Operand = Operand()
+    o3.value(3.5f)
+    var oper2:Operator = Sum()
+    oper2.setOperands(o3, oper1)
+    return oper2
+}
+
+fun main():Unit {
+    var expr:Expr = createExpr()
+    print(expr.calc())
+}
