@@ -239,6 +239,87 @@ string getMethodTypeForStandartClass(const string& methodSign, const string& cur
 	return "";
 }
 
+void findMethods(string methodName, const programS* const program,
+	const string& currentClassName, list<methodS*>& methods)
+{
+	if (currentClassName == "" || methodName == "")
+		return;
+
+	if (currentClassName == "MyLib/Any")
+	{
+		return;
+	}
+	else
+	{
+		for (auto pe = program->first; pe != 0; pe = pe->next)
+		{
+			if (pe->clas != 0 && pe->clas->name == currentClassName && pe->clas->body != 0)
+			{
+				for (auto cbe = pe->clas->body->first; cbe != 0; cbe = cbe->next)
+				{
+					if (cbe->method != 0 && cbe->method->func->decl->name == methodName)
+					{
+						methods.push_back(cbe->method);
+					}
+				}
+				if (pe->clas->parentClassName != 0)
+					findMethods(methodName, program, pe->clas->parentClassName, methods);
+			}
+		}
+	}
+}
+
+//»щет метод только в пользовательских классах с учетом наследовани€
+string getMethodTypeForUserClass(const exprS* methodCallAndOperands, const programS* const program,
+	const string& currentClassName)
+{
+	if (currentClassName == "")	return "";
+
+	string res = "";
+	if (res == "")
+	{
+		list<methodS*> methods;
+		findMethods(methodCallAndOperands->stringOrId, program, currentClassName, methods);
+		for(auto method : methods)
+		{
+			if (method->func->decl->params != 0 && methodCallAndOperands->factParams != 0)
+			{
+				bool isEqualParams = true;
+				auto methodParamType = method->func->decl->params->first;
+				auto callParamType = methodCallAndOperands->factParams->first;
+				do
+				{
+					if (!canCastType(methodParamType->type->easyType, callParamType->exprRes, program))
+					{
+						isEqualParams = false;
+					}
+					callParamType = callParamType->next;
+					methodParamType = methodParamType->next;
+				} 
+				while (callParamType != 0 && methodParamType != 0);
+
+				if (callParamType == 0 && methodParamType == 0 && isEqualParams)
+				{
+					auto methodParamType = method->func->decl->params->first;
+					auto callParamType = methodCallAndOperands->factParams->first;
+					do
+					{
+						callParamType->exprRes = methodParamType->type->easyType;
+						callParamType = callParamType->next;
+						methodParamType = methodParamType->next;
+					} while (callParamType != 0 && methodParamType != 0);
+					return method->func->decl->type->easyType;
+				}
+			}
+			else if (method->func->decl->params == 0 && methodCallAndOperands->factParams == 0)
+			{
+				return method->func->decl->type->easyType;
+			}			
+		}
+	}
+	return res;
+}
+
 //»щет метод только в пользовательских классах с учетом наследовани€
 string getMethodTypeForUserClass(const string& methodSign, const programS* const program, 
 	const string& currentClassName)
@@ -1198,7 +1279,7 @@ void ClassFile::calcTypeOfMethodCall(exprS* e1, programS* program, const string&
 	string res = "";
 
 	//≈сли вызван метод класса или его родител€ (пользовательского класса)
-	res = getMethodTypeForUserClass(createShortInfo(e1), program, className);
+	res = getMethodTypeForUserClass(e1, program, className);
 	if (res != "")
 	{
 		e1->exprRes = res;
@@ -1264,7 +1345,7 @@ void ClassFile::calcTypeOfMethodCall(exprS* e1, programS* program, const string&
 	}
 	
 	//¬ызов глобального метода
-	res = getMethodType(createShortInfo(e1), program, "Main$");
+	res = getMethodTypeForUserClass(e1, program, "Main$");
 	if (res != "")
 	{
 		e1->isStaticCall = true;
@@ -1442,7 +1523,7 @@ void ClassFile::calcTypeOfMethodCalcExpr(exprS* e1, programS* program, const str
 	calcType(e1->left, program, methodKey);
 	checkUnitOperandsInExpr(e1, methodKey);
 
-	string res = getMethodTypeForUserClass(createShortInfo(e1), program, e1->left->exprRes);
+	string res = getMethodTypeForUserClass(e1, program, e1->left->exprRes);
 	//≈сли у класса есть такой метода
 	if (res != "")
 	{
@@ -1585,7 +1666,7 @@ void ClassFile::calcTypeOfParentMethodCall(exprS* e1, programS* program, const s
 	}
 
 	addParentOrThisToExpr(e1, parentClassName, true);
-	string res = getMethodTypeForUserClass(createShortInfo(e1), program, parentClassName);
+	string res = getMethodTypeForUserClass(e1, program, parentClassName);
 	if (res != "")
 	{
 		e1->exprRes = res;
