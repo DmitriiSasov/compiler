@@ -1954,6 +1954,17 @@ void ClassFile::calcTypeOfOtherArithmeticOperations(exprS* e1, programS* program
 		return;
 	}
 
+	//Если сравниваются ссылки на объекты
+	if ((e1->left->exprRes == e1->factParams->first->exprRes ||
+		isParentClass(e1->left->exprRes, e1->factParams->first->exprRes, program) || 
+		e1->left->exprRes == "MyLib/Any") && (strcmp(e1->stringOrId, "notEqual") == 0 || 
+			strcmp(e1->stringOrId, "equal") == 0))
+	{
+		e1->exprRes = "MyLib/Boolean";
+		e1->refInfo = findMethodRefOrAdd("MyLib/Any", e1->stringOrId, "(LMyLib/Any;)LMyLib/Boolean;");
+		return;
+	}
+
 	string message = "EXCEPTION! Incorrect operator";
 	message += operanorSymbol;
 	message += " operands in method - " + methodKey + "\n";
