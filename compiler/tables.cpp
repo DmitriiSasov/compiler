@@ -1862,16 +1862,21 @@ void ClassFile::calcTypeOfSum(exprS* e1, programS* program, const string & metho
 		string arrayType = e1->left->exprRes;
 		arrayType.pop_back();
 		arrayType.pop_back();
-		e1->exprRes = calcParentClass(arrayType, e1->factParams->first->exprRes, program);
-		e1->exprRes.push_back('[');
-		e1->exprRes.push_back(']');
-		string* params = generateMethodRefParams("add", e1->left->exprRes, 1);
-		if (params[0] == "" || params[1] == "" || params[2] == "")
+		if (isParentClass(arrayType, e1->factParams->first->exprRes, program))
 		{
-			throw exception("EXCEPTION! Unknown my std method name\n");
+			e1->exprRes = e1->left->exprRes;
+			string* params = generateMethodRefParams("add", e1->left->exprRes, 1);
+			if (params[0] == "" || params[1] == "" || params[2] == "")
+			{
+				throw exception("EXCEPTION! Unknown my std method name\n");
+			}
+			e1->refInfo = findMethodRefOrAdd(params[0], params[1], params[2]);
+			return;
 		}
-		e1->refInfo = findMethodRefOrAdd(params[0], params[1], params[2]);		
-		return;
+		else
+		{
+			res = "";
+		}
 	}
 
 	if (res != "")
@@ -1896,7 +1901,8 @@ void ClassFile::calcTypeOfSum(exprS* e1, programS* program, const string & metho
 		return;
 	}
 
-	string message = "EXCEPTION! Incorrect operator+ operands";
+	string message = "EXCEPTION! Incorrect operator+ operands: " + e1->left->exprRes + " and " +
+		e1->factParams->first->exprRes;
 	exception e((message + " in method - " + methodKey + "\n").c_str());
 	throw e;
 }
