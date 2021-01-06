@@ -2830,11 +2830,13 @@ vector<char> generate(varOrValDeclS* v)
 {
 	vector<char> resultCode;
 	vector<char> tmp;
-	tmp = generate(v->initValue);
-	resultCode.insert(resultCode.end(), tmp.begin(), tmp.end());
-	resultCode.push_back((char)Command::astore);
-	resultCode.push_back(intToBytes(v->varNumber)[3]);
-
+	if (v->initValue != 0)
+	{
+		tmp = generate(v->initValue);
+		resultCode.insert(resultCode.end(), tmp.begin(), tmp.end());
+		resultCode.push_back((char)Command::astore);
+		resultCode.push_back(intToBytes(v->varNumber)[3]);
+	}
 	return resultCode;
 }
 
