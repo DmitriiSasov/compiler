@@ -24,12 +24,16 @@ fun sort(arr:Array<Int>, isIncrease:Boolean):Unit {
     }
 }
 
-var arr:Array<Int> = arrayOf()
 
 fun main():Unit{
-    var i:Int = 5
-    var arr:Array<Int> = arrayOf(4,5,1,3,2)
+    
+    var arr:Array<Array<Int>> = arrayOf(arrayOf(4,5,1,3,2), arrayOf(4,5,1,3,7), arrayOf(4,5,1,8,9))
     print(arr)
-    sort(arr, false)
+    var arrSize:Int = arr.size
+    var i:Int = 0
+    while (i < arrSize){
+        sort(arr[i], false)
+        i = i + 1
+    }
     print(arr)
 }
