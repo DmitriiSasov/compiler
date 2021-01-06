@@ -1641,12 +1641,9 @@ void ClassFile::calcTypeOfLiterals(exprS* e1, const string& methodKey)
 	}
 	else if (e1->type == Double)
 	{
-		exprRes = "MyLib/Double";
-		newOperand = createExpr(e1->doubleV, Double);
-		newOperand->refInfo = findDoubleOrAdd(e1->doubleV);
-		newOperand->exprRes = "double";
-		descr = "(D)V";
-		e1->doubleV = 0;
+		string message = "EXCEPTION! Unsupported Double constant ";
+		exception e((message + "in method - " + methodKey + "\n").c_str());
+		throw e;
 	}
 	else if (e1->type == Float)
 	{
@@ -3227,10 +3224,13 @@ vector<char> flToBytes(float value)
 
 vector<char> doubleToBytes(double value)
 {
-	std::vector<char> arrayOfByte(8);
-
+	std::vector<char> arrayOfByte;
+	auto tmp = ((char*)&value);
 	for (int i = 0; i < sizeof(double); ++i)
-		arrayOfByte[8 - i] = ((char*)&value)[i];
+	{		
+		arrayOfByte.push_back(tmp[7 - i]);
+	}
+
 	return arrayOfByte;
 }
 
