@@ -13,7 +13,7 @@ open class AreaPrimitive : GeometricPrimitive{
     
     constructor()
     
-    open fun constructPrimitive(area:Int):Unit {
+    open fun constructPrimitive(area:Int):Unit{
         this.area = area;
     }
     
@@ -146,8 +146,10 @@ fun changeSquare(square:Square, newSize:Int):Unit{
     square.size(newSize)
 }
 
+
+
 fun main():Unit{
-    var tmp:Square = Square()
+    var tmp:AreaPrimitive = Square()
     tmp.constructPrimitive(3)
     var areaPrimitives:Array<AreaPrimitive> = arrayOf(tmp)
     var i:Int = 2
@@ -157,30 +159,29 @@ fun main():Unit{
         areaPrimitives = areaPrimitives +  tmp
         i = i - 1
     }
-    
+
     var tmpR:Rectangle = Rectangle()
     tmpR.constructPrimitive(1,2)
     areaPrimitives = areaPrimitives + tmpR
 
     sortInAscendingOrder(areaPrimitives)
-    
+
     i = 0
     while (i < areaPrimitives.size){
         print(areaPrimitives[i])
         print("\n")
         i = i + 1
     }
-    
+
     var nums:Array<Int> = arrayOf(4,2,3,1)
     sortInAscendingOrder(nums)
-    
+
     i = 0
     while(i < nums.size){
         print(nums[i].toString())
         print("\n")
         i = i + 1
     }
-    print("Hello world!".length)
-    
+
     print("End\n")
 }
