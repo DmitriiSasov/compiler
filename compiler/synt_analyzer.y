@@ -470,11 +470,11 @@ expr: STR 	{$$ = createExpr($1, String);  puts("expr created"); }
 ;
 
 optFactParams: /*empty*/	{$$ = 0;   puts("opt fact params created"); }
-| factParams	{$$ = $1;   puts("opt fact params created"); }
+| optNewLines factParams optNewLines	{$$ = $2;   puts("opt fact params created"); }
 ;
 
 factParams: expr	{$$ = createFactParamsList($1);   puts("fact params created"); }
-| factParams ',' expr	{$$ = addToFactParamsList($1, $3);   puts("fact params created"); }
+| factParams optNewLines ',' optNewLines expr	{$$ = addToFactParamsList($1, $5);   puts("fact params created"); }
 ;
 
 assignment: expr '=' expr	{$$ = createAssignment($1, $3, Assign); puts("assignment created"); }
