@@ -1,0 +1,41 @@
+fun sort(arr:Array<Float>, isIncrease:Boolean):Unit {
+    var i:Int = 0
+    var arrSize:Int = arr.size
+    while(i < arrSize){
+        var j:Int = i
+        var currentMinIndex:Int = j
+        while (j < arrSize){
+            if (isIncrease){
+                if (arr[j] < arr[currentMinIndex]) {
+                    currentMinIndex = j
+                }
+            } else {
+                if (arr[j] > arr[currentMinIndex]) {
+                    currentMinIndex = j
+                }
+            }
+            j = j + 1
+        }
+        var tmp:Float = arr[i]
+        arr[i] = arr[currentMinIndex]
+        arr[currentMinIndex] = tmp
+        i = i + 1
+    }
+}
+
+fun print(arr:Array<Float>):Unit {
+    var index:Int = 0
+    while (index < arr.size){
+        print(arr[index].toString() + "\n")
+        index = index + 1
+    }
+}
+
+fun main():Unit{
+
+    var arr:Array<Float> = arrayOf(-5.3f, -1f, 0f, 4f, +25f, 273f);
+    print(arr)
+    print("\n")
+    sort(arr, false)
+    print(arr)
+}

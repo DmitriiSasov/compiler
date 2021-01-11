@@ -1,0 +1,18 @@
+fun main() : Unit{
+    var a : AA = AA()
+    print("${a.firstField} ${a.secondField} ${a.thirdField}\n")
+    changeA(a)
+    print("${a.firstField} ${a.secondField} ${a.thirdField}\n")
+}
+
+open class AA{
+    var firstField : Int = 10
+    var secondField : String = "10"
+    var thirdField : Float = 10.1f
+}
+
+fun changeA(a : AA) : Unit{
+    a.firstField = 20
+    a.secondField = "20"
+    a.thirdField = 20.2f
+} 

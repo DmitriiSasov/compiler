@@ -1,0 +1,40 @@
+open class A{
+    constructor()
+
+
+    open fun printState():Unit {
+        print("A state\n")
+    }
+}
+
+open class B: A{
+    
+    constructor()
+
+
+    open override fun printState():Unit {
+        print("B state\n")
+    }
+}
+
+open class C: B{
+
+    constructor()
+
+
+    open override fun printState():Unit {
+        super.printState()
+        print("С state\n")
+    }
+}
+
+fun main():Unit {
+    var a:A = A()
+    var b:B = B()
+    var c:C = C()
+    a.printState()
+    b.printState()
+    c.printState()
+    a = C()
+    a.printState()
+}

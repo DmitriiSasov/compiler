@@ -1,0 +1,12 @@
+fun printObj(int:Int):Unit{
+    print("$int\n")
+}
+
+fun printObj(float:Float):Unit{
+    print("$float\n")
+}
+
+fun main():Unit {
+    printObj(1)
+    printObj(1.2f)
+}

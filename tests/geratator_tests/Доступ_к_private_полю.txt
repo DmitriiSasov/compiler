@@ -1,0 +1,8 @@
+fun main() : Unit{
+var a : A = A()
+a.firstField
+}
+
+open class A{
+private var firstField : Int = 5
+}

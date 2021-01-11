@@ -1,0 +1,23 @@
+fun main():Unit {
+    if(returnFalse() && printTrue()){
+        print("IF\n")
+    } else {
+        print("ELSE\n")
+    }
+
+    if(printTrue() || returnFalse()){
+        print("IF\n")
+    } else {
+        print("ELSE\n")
+    }
+
+}
+
+fun returnFalse() : Boolean{
+    return false
+}
+
+fun printTrue() : Boolean{
+    print("True\n")
+    return true;
+}

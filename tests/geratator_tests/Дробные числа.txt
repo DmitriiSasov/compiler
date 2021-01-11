@@ -1,0 +1,88 @@
+
+fun floatInt():Unit {
+    print(1.2f + 1)
+    print("+\n")
+    print(1.2f * 2)
+    print("*\n")
+    print(1.2f / 2)
+    print("/\n")
+    print(1.2f - 2)
+    print("-\n")
+    print(1.2f < 2)
+    print("<\n")
+    print(1.2f > 2)
+    print(">\n")
+    print(1.2f <= 2)
+    print("<=\n")
+    print(1.2f >= 2)
+    print(">=\n")
+}
+
+fun intInt():Unit {
+    print(1 + 1)
+    print("+\n")
+    print(1 * 2)
+    print("*\n")
+    print(1 / 2)
+    print("/\n")
+    print(1 - 2)
+    print("-\n")
+    print(1 < 2)
+    print(">\n")
+    print(1 > 2)
+    print(">\n")
+    print(1 <= 2)
+    print("<=\n")
+    print(1 >= 2)
+    print(">=\n")
+    print(1 == 2)
+    print("==\n")
+    print(1 != 2)
+    print("!=\n")
+}
+
+fun intFloat():Unit {
+    print(1 + 1.2f)
+    print("+\n")
+    print(2 * 1.2f)
+    print("*\n")
+    print(2 / 1.2f)
+    print("/\n")
+    print(2 - 1.2f)
+    print("-\n")
+    print(2 < 1.2f)
+    print("<\n")
+    print(2 > 1.2f)
+    print(">\n")
+    print(2 <= 1.2f)
+    print("<=\n")
+    print(2 >= 1.2f)
+    print(">=\n")
+}
+
+fun floatFloat():Unit {
+    print(1.2f + 1.2f)
+    print("+\n")
+    print(2.2f * 1.2f)
+    print("*\n")
+    print(2.2f / 1.2f)
+    print("/\n")
+    print(2.2f - 1.2f)
+    print("-\n")
+    print(2.2f < 1.2f)
+    print("<\n")
+    print(2.2f > 1.2f)
+    print(">\n")
+    print(2.2f <= 1.2f)
+    print("<=\n")
+    print(2.2f >= 1.2f)
+    print(">=\n")
+}
+
+fun main():Unit {
+
+
+    floatInt()
+    
+   
+}

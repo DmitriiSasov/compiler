@@ -1,0 +1,44 @@
+fun paint(array:Array<Array<Int>>, curX:Int, curY:Int, maxX:Int, maxY:Int):Unit {
+    if (curX > maxX){
+        return
+    } else if (curX < 0) {
+        return
+    } else if( curY > maxY) {
+        return
+    } else if(curY < 0) {
+        return
+    } 
+    if(array[curX][curY]>=1) {
+        return
+    }
+    array[curX][curY]=2
+    paint(array, curX-1, curY, maxX, maxY)
+    paint(array, curX, curY-1, maxX, maxY)
+    paint(array, curX+1, curY, maxX, maxY)
+    paint(array, curX, curY+1, maxX, maxY)
+    return
+}
+
+fun print(arr:Array<Int>):Unit{
+    var index: Int = 0
+    while (index < arr.size){
+        print(arr[index])
+        index = index + 1
+    }
+}
+
+fun print(arr:Array<Array<Int>>):Unit{
+    var index: Int = 0
+    while (index < arr.size){
+        print(arr[index])
+        print("\n")
+        index = index + 1
+    }
+}
+
+fun main():Unit {
+    paint(arr, 3, 3, arr[0].size - 1, arr.size - 1)
+    print(arr)
+}
+
+var arr:Array<Array<Int>> = arrayOf(arrayOf(0,0,1,0,0,0,0,0,0,0),arrayOf(0,0,1,0,0,0,0,0,0,0),arrayOf(0,0,1,1,1,1,1,1,1,1),arrayOf(0,0,0,0,0,0,0,0,0,1),arrayOf(1,0,1,1,1,1,1,1,0,1),arrayOf(0,0,1,0,0,0,0,1,0,1),arrayOf(0,0,1,0,1,1,1,1,0,1),arrayOf(0,0,1,0,0,0,0,0,0,1),arrayOf(0,0,1,1,1,1,1,1,1,1),arrayOf(0,0,0,0,0,0,0,0,0,0))
