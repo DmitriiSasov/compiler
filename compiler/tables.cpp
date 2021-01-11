@@ -1780,7 +1780,7 @@ void ClassFile::calcTypeOfUnaryOperators(exprS* e1, programS* program, const str
 	calcType(e1->left, program, methodKey);
 	checkUnitOperandsInExpr(e1, methodKey);
 	
-	e1->type = MethodCalcExpr;
+	
 	string methodName;
 	if (e1->type == LogicalNot)
 		methodName = "not";
@@ -1788,6 +1788,7 @@ void ClassFile::calcTypeOfUnaryOperators(exprS* e1, programS* program, const str
 		methodName = "unaryPlus";
 	else
 		methodName = "unaryMinus";
+	e1->type = MethodCalcExpr;
 	char* tmp = new char[methodName.size() + 1];
 	strcpy(tmp, methodName.c_str());
 	e1->stringOrId = tmp;
