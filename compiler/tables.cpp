@@ -2029,7 +2029,10 @@ void ClassFile::calcTypeOfOtherArithmeticOperations(exprS* e1, programS* program
 		}
 		e1->refInfo = findMethodRefOrAdd(params[0], params[1],
 			params[2]);
-
+		if (strcmp(operatorName, "and") == 0 || strcmp(operatorName, "or") == 0)
+		{
+			e1->supportRef = findMethodRefOrAdd("MyLib/Boolean", "getV", "()Z");
+		}
 		return;
 	}
 
@@ -2651,6 +2654,8 @@ vector<char> generate(exprS* expr)
 {
 	vector<char> resultCode;
 	vector<char> tmp;
+	vector<char> operandsCode;
+	vector<char> operationCode;
 	int currentParamNum = 0;
 	int paramsCount = 0;
 	switch (expr->type)
@@ -2753,13 +2758,37 @@ vector<char> generate(exprS* expr)
 			for (auto fp = expr->factParams->first; fp != 0; fp = fp->next)
 			{
 				tmp = generate(fp);
-				resultCode.insert(resultCode.end(), tmp.begin(), tmp.end());
+				operandsCode.insert(operandsCode.end(), tmp.begin(), tmp.end());
 			}
 		}
-		resultCode.push_back((char)Command::invokevirtual);
+
+		operationCode.push_back((char)Command::invokevirtual);
 		tmp = intToBytes(expr->refInfo);
-		resultCode.push_back(tmp[2]);
-		resultCode.push_back(tmp[3]);
+		operationCode.push_back(tmp[2]);
+		operationCode.push_back(tmp[3]);
+
+		if (strcmp(expr->stringOrId, "and") == 0 || strcmp(expr->stringOrId, "or") == 0)
+		{
+			//Дублируем левый операнд
+			resultCode.push_back((char)Command::dup);
+			//Берем его значение в виде bool
+			resultCode.push_back((char)Command::invokevirtual);
+			tmp = intToBytes(expr->supportRef);
+			resultCode.push_back(tmp[2]);
+			resultCode.push_back(tmp[3]);
+			//Если 0, переходим пропускаем загрузку правого операнда
+			if (strcmp(expr->stringOrId, "and") == 0)
+				resultCode.push_back((char)Command::ifeq);
+			else
+				resultCode.push_back((char)Command::ifne);
+
+			tmp = intToBytes(operandsCode.size() + operationCode.size() + 3);
+			resultCode.push_back(tmp[2]);
+			resultCode.push_back(tmp[3]);
+		}
+		
+		resultCode.insert(resultCode.end(), operandsCode.begin(), operandsCode.end());
+		resultCode.insert(resultCode.end(), operationCode.begin(), operationCode.end());
 		break;
 	case ParentMethodCall:
 		resultCode.push_back((char)Command::aload_0);

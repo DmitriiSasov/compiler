@@ -125,6 +125,7 @@ struct exprS
 	int varInTableNum;
 	int refInfo;
 	int classId;
+	int supportRef;
 	bool isStaticCall;
 	string exprRes = "";
 };

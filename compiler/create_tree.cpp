@@ -600,6 +600,7 @@ struct exprS* createExpr(char* idOrString, int iVal, struct factParamsList* para
 	e->varInTableNum = -1;
 	e->refInfo = -1;
 	e->classId = -1;
+	e->supportRef = -1;
 	e->isStaticCall = false;
 	return e;
 
