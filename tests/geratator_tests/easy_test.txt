@@ -67,6 +67,8 @@ fun main():Unit{
     printArray(arr)
     arr[1][0] = arr[2][0] * 5.2f + 5 * 4.54f
     arr[2][0] = (arr[1][0] - 5 * 4.54f) / 5.2f
+    var (a:Float, b:Float) = arr[2]
+    print("\n${(a + b)}\n")
     print("\n")
     sort(arr, true)
     printArray(arr)
