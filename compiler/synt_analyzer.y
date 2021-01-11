@@ -554,16 +554,17 @@ void main(int argc, char **argv )
 	else yyin = fopen("logical.txt", "r");
 
 	FILE * file = fopen("tree.dot", "w");
-	root = 0;
-    yyparse();
-
-	fprintf(file, "digraph G {\n");
-	print(root, file);
-	fprintf(file, "\n}");
-
-	fclose(file);
+	
 	try
 	{
+		root = 0;
+		yyparse();
+
+		fprintf(file, "digraph G {\n");
+		print(root, file);
+		fprintf(file, "\n}");
+
+		fclose(file);
 		root = transformProgram(classesFiles ,root);
 		file = fopen("tree_after_semantic.dot", "w");
 		fprintf(file, "digraph G {\n");

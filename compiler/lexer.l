@@ -4,6 +4,7 @@
 
 %{
     #include <stdio.h>
+    #include <exception>
     #include "synt_analyzer.tab.h"
     void remove_all_inputs_of_symbol(const char * str, char * result, char deleted_symbol);
     int bin_from_str_to_dec(const char * str);
@@ -452,6 +453,7 @@ false 	{	yylval.Bool_v = false;
 <STRING,MLSTRING>\$             { strcat(str, yytext); }
 
 \"\"\"              {
+                        throw std::exception("Unsupported multiline constants");
                         str[0] = 0;
                         BEGIN(MLSTRING);
                     }
