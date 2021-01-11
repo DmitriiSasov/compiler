@@ -422,6 +422,11 @@ bool complementModifiers(methodS* meth)
 			printf("Error! Unsupported INTERNAL visibility mod with method \"%s\"\n", meth->func->decl->name);
 			res = false;
 		}
+		else if (meth->mods->vMod == Protected)
+		{
+			printf("Error! Unsupported PROTECTED visibility mod with method \"%s\"\n", meth->func->decl->name);
+			res = false;
+		}
 		if (meth->mods->isAbstract == true)
 		{
 			printf("Error! Unsupported ABSTRACT mod with method \"%s\"\n", meth->func->decl->name);
@@ -465,6 +470,12 @@ bool complementModifiers(propertyS* prop)
 		else if (prop->mods->vMod == Internal)
 		{
 			printf("Error! Unsupported INTERNAL visibility mod with property \"%s\"\n", 
+				prop->varOrVal->id);
+			res = false;
+		}
+		else if (prop->mods->vMod == Protected)
+		{
+			printf("Error! Unsupported PROTECTED visibility mod with property \"%s\"\n",
 				prop->varOrVal->id);
 			res = false;
 		}
