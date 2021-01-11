@@ -551,7 +551,7 @@ void main(int argc, char **argv )
 {
 
 	if (argc == 2) yyin = fopen(argv[1], "r");
-	else yyin = fopen("test.txt", "r");
+	else yyin = fopen("logical.txt", "r");
 
 	FILE * file = fopen("tree.dot", "w");
 	root = 0;
