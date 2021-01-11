@@ -2232,7 +2232,7 @@ void ClassFile::addConstantsFrom(assignmentS* a, programS* program, const string
 			LocalVariableInfo varInfo = methodTable.at(methodKey).find(a->left->varInTableNum);
 			if (varInfo.isConst && varInfo.hasValue)
 			{
-				string message = "EXCEPTION! Assignment to contant value " + varInfo.name + " in method \""
+				string message = "EXCEPTION! Assignment to constant value " + varInfo.name + " in method \""
 					+ methodKey + "\"\n";
 				exception e(message.c_str());
 				throw e;
