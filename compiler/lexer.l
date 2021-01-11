@@ -13,6 +13,8 @@
         _STRING,
         _ID,
         _PLUS,
+        _OPEN_BRACKET,
+        _CLOSE_BRACKET,
         _None
     };
     struct InterpolationElement 
@@ -29,6 +31,7 @@
     };
     bool addToList(struct InterpolElementsLinkedList * list, struct InterpolationElement * newElement);
     bool removeLastFromList(struct InterpolElementsLinkedList * list);
+    bool removeFirstFromList(InterpolElementsLinkedList * list);
     InterpolationElement * createInterpolationElement(char * strOrId, InterpolationElement * next, InterpolationElement * previous, enum InterpolElemType type);
     InterpolElementsLinkedList * createList();
 %}
@@ -55,31 +58,37 @@ static struct InterpolElementsLinkedList * list = createList();
 static int elementToRemoveFromStack = 0;
 struct InterpolationElement * el;
 
-
 while (elementToRemoveFromStack > 0)
 {
-    if (list->last->type == _PLUS)
+    if (list->first->type == _PLUS)
     {
-        removeLastFromList(list);
+        removeFirstFromList(list);
         --elementToRemoveFromStack;
         return '+';
     }
-    else if (list->last->type == _ID)
+    else if (list->first->type == _ID)
     {
-        yylval.IdOrString = list->last->stringOrId;
-        removeLastFromList(list);
+        yylval.IdOrString = list->first->stringOrId;
+        removeFirstFromList(list);
         --elementToRemoveFromStack;
         return ID;
     }
-    else if (list->last->type == _STRING)
+    else if (list->first->type == _STRING)
     {
-        yylval.IdOrString = list->last->stringOrId;
-        removeLastFromList(list);
+        yylval.IdOrString = list->first->stringOrId;
+        removeFirstFromList(list);
         --elementToRemoveFromStack;
         return STR;
     }
-    
+    else if (list->first->type == _OPEN_BRACKET) 
+    {
+         removeFirstFromList(list);
+        --elementToRemoveFromStack;
+        return '(';
+    }
 }
+
+
 
 %}
 
@@ -156,7 +165,11 @@ actual			{ return ACTUAL;}
 \}			{
                 if (complexTemplateNestingLevel > 0) 
                 {
-                    printf("Found operator - + ADD\n");
+                    //Сохраняем +, чтобы вернуть его после )
+                    el = createInterpolationElement(0, 0, 0, _PLUS);
+                    addToList(list, el);
+                    ++elementToRemoveFromStack;
+
                     str[0] = 0;
                     --complexTemplateNestingLevel;
                     if (isMLString)
@@ -168,7 +181,7 @@ actual			{ return ACTUAL;}
                     {
                         BEGIN(STRING);
                     }
-                    return '+';
+                    return ')';
                 }
                 else 
                 {
@@ -426,6 +439,10 @@ false 	{	yylval.Bool_v = false;
                                     addToList(list, el);
                                     ++elementToRemoveFromStack;
 
+                                    el = createInterpolationElement(0, 0, 0, _OPEN_BRACKET);
+                                    addToList(list, el);
+                                    ++elementToRemoveFromStack;
+
                                     ++complexTemplateNestingLevel;
                                     BEGIN(INITIAL);
 
@@ -455,6 +472,10 @@ false 	{	yylval.Bool_v = false;
                         strcpy(yylval.IdOrString, str);
 
                         el = createInterpolationElement(0, 0, 0, _PLUS);
+                        addToList(list, el);
+                        ++elementToRemoveFromStack;
+
+                        el = createInterpolationElement(0, 0, 0, _OPEN_BRACKET);
                         addToList(list, el);
                         ++elementToRemoveFromStack;
 
@@ -599,6 +620,28 @@ bool addToList(InterpolElementsLinkedList * list, InterpolationElement * newElem
     return true;
 }
 
+bool removeFirstFromList(InterpolElementsLinkedList * list) 
+{
+    if (list == 0) 
+    {
+        return false;
+    }
+    if (list->first == 0) 
+    {
+        return true;
+    }
+    if (list->first == list->last)
+    {
+        free(list->first);
+        list->first = list->last = 0;
+        return true;
+    }
+    InterpolationElement * tmp = list->first->next;
+    tmp->previous = 0;
+    free(list->first);
+    list->first = tmp;
+    return true;
+}
 
 bool removeLastFromList(InterpolElementsLinkedList * list) 
 {
